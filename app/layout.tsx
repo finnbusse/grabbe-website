@@ -1,19 +1,26 @@
 import type { Metadata, Viewport } from "next"
-import { Instrument_Serif, Josefin_Sans } from "next/font/google"
-import { GeistSans } from "geist/font/sans"
-import { GeistMono } from "geist/font/mono"
-import { GeistPixelSquare } from "geist/font/pixel"
+import { Geist, Geist_Mono, Instrument_Serif, Josefin_Sans } from "next/font/google"
 import { getSettings } from "@/lib/settings"
 import "./globals.css"
 
-const _instrumentSerif = Instrument_Serif({
+const geistSans = Geist({
+  subsets: ["latin"],
+  variable: "--font-geist-sans",
+})
+
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-geist-mono",
+})
+
+const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
   weight: "400",
   style: ["normal", "italic"],
   variable: "--font-instrument-serif",
 })
 
-const _josefinSans = Josefin_Sans({
+const josefinSans = Josefin_Sans({
   subsets: ["latin"],
   variable: "--font-josefin-sans",
 })
@@ -60,7 +67,7 @@ export default function RootLayout({
   return (
     <html
       lang="de"
-      className={`${GeistSans.variable} ${GeistMono.variable} ${GeistPixelSquare.variable} ${_instrumentSerif.variable} ${_josefinSans.variable}`}
+      className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} ${josefinSans.variable}`}
     >
       <body className="font-sans antialiased">{children}</body>
     </html>
