@@ -1,16 +1,28 @@
 import type { Metadata, Viewport } from "next"
-import { Inter, Space_Grotesk } from "next/font/google"
+import { Geist, Geist_Mono, Instrument_Serif, Josefin_Sans } from "next/font/google"
 import { getSettings } from "@/lib/settings"
 import "./globals.css"
 
-const _inter = Inter({
+const _geistSans = Geist({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-geist-sans",
 })
 
-const _spaceGrotesk = Space_Grotesk({
+const _geistMono = Geist_Mono({
   subsets: ["latin"],
-  variable: "--font-space-grotesk",
+  variable: "--font-geist-mono",
+})
+
+const _instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+  variable: "--font-instrument-serif",
+})
+
+const _josefinSans = Josefin_Sans({
+  subsets: ["latin"],
+  variable: "--font-josefin-sans",
 })
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -40,7 +52,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export const viewport: Viewport = {
-  themeColor: "#1a6dc0",
+  themeColor: "#1e2a3d",
   width: "device-width",
   initialScale: 1,
 }
@@ -51,7 +63,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="de" className={`${_inter.variable} ${_spaceGrotesk.variable}`}>
+    <html lang="de" className={`${_geistSans.variable} ${_geistMono.variable} ${_instrumentSerif.variable} ${_josefinSans.variable}`}>
       <body className="font-sans antialiased">{children}</body>
     </html>
   )

@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Menu, X, ChevronDown } from "lucide-react"
 
 export type NavItemData = {
@@ -24,28 +24,54 @@ export function SiteHeader({
   const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
+  const [scrolled, setScrolled] = useState(false)
+  const isHome = pathname === "/"
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 50)
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    handleScroll()
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  const headerBg = scrolled || !isHome
+    ? "bg-background/90 backdrop-blur-xl border-b border-border/40 shadow-sm"
+    : "bg-transparent border-b border-transparent"
+
+  const textColor = scrolled || !isHome ? "text-foreground" : "text-[hsl(40,20%,97%)]"
+  const mutedColor = scrolled || !isHome ? "text-muted-foreground" : "text-[hsl(40,20%,97%)]/70"
+  const activeColor = scrolled || !isHome ? "text-primary" : "text-[hsl(38,70%,55%)]"
+  const hoverBg = scrolled || !isHome ? "hover:bg-accent" : "hover:bg-[hsl(40,20%,97%)]/10"
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 lg:px-8">
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${headerBg}`}
+    >
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 lg:h-18 lg:px-8">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 transition-opacity hover:opacity-80">
           {logoUrl ? (
-            <img src={logoUrl} alt={schoolName} className="h-9 w-auto" />
+            <img
+              src={logoUrl}
+              alt={schoolName}
+              className={`h-8 w-auto transition-all duration-300 ${
+                scrolled || !isHome ? "" : "brightness-0 invert"
+              }`}
+            />
           ) : (
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground font-display">
-              G
+            <span className={`font-display text-xl font-normal transition-colors duration-300 ${textColor}`}>
+              {schoolName}
             </span>
           )}
           <div className="hidden sm:block">
-            <span className="font-display text-base font-bold leading-tight text-foreground">
+            <span className={`font-sub text-xs uppercase tracking-[0.15em] transition-colors duration-300 ${mutedColor}`}>
               {schoolName}
             </span>
           </div>
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden items-center gap-0.5 lg:flex" aria-label="Hauptnavigation">
+        <nav className="hidden items-center gap-1 lg:flex" aria-label="Hauptnavigation">
           {navItems.map((item) =>
             item.children && item.children.length > 0 ? (
               <div
@@ -55,26 +81,26 @@ export function SiteHeader({
                 onMouseLeave={() => setOpenDropdown(null)}
               >
                 <button
-                  className={`flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground ${
+                  className={`flex items-center gap-1 rounded-full px-4 py-2 text-[13px] font-medium transition-all duration-200 ${hoverBg} ${
                     pathname.startsWith(item.href) && item.href !== "/"
-                      ? "text-primary"
-                      : "text-muted-foreground"
+                      ? activeColor
+                      : mutedColor
                   }`}
                 >
                   {item.label}
                   <ChevronDown
-                    className={`h-3 w-3 transition-transform ${
+                    className={`h-3 w-3 transition-transform duration-200 ${
                       openDropdown === item.id ? "rotate-180" : ""
                     }`}
                   />
                 </button>
                 {openDropdown === item.id && (
-                  <div className="absolute left-0 top-full z-50 min-w-[230px] rounded-xl border border-border bg-card p-1.5 shadow-lg animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="absolute left-0 top-full z-50 min-w-[240px] rounded-xl border border-border bg-card/95 backdrop-blur-xl p-2 shadow-xl animate-blur-in">
                     {item.children.map((child) => (
                       <Link
                         key={child.id}
                         href={child.href}
-                        className={`block rounded-lg px-3 py-2.5 text-sm transition-colors hover:bg-accent ${
+                        className={`block rounded-lg px-4 py-2.5 text-[13px] transition-all hover:bg-accent ${
                           pathname === child.href
                             ? "font-medium text-primary"
                             : "text-muted-foreground hover:text-foreground"
@@ -90,10 +116,8 @@ export function SiteHeader({
               <Link
                 key={item.id}
                 href={item.href}
-                className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground ${
-                  pathname === item.href
-                    ? "text-primary"
-                    : "text-muted-foreground"
+                className={`rounded-full px-4 py-2 text-[13px] font-medium transition-all duration-200 ${hoverBg} ${
+                  pathname === item.href ? activeColor : mutedColor
                 }`}
               >
                 {item.label}
@@ -104,7 +128,7 @@ export function SiteHeader({
 
         {/* Mobile toggle */}
         <button
-          className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:bg-accent lg:hidden"
+          className={`flex h-10 w-10 items-center justify-center rounded-full transition-all lg:hidden ${hoverBg} ${mutedColor}`}
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label={mobileOpen ? "Navigation schliessen" : "Navigation oeffnen"}
         >
@@ -114,13 +138,13 @@ export function SiteHeader({
 
       {/* Mobile nav */}
       {mobileOpen && (
-        <div className="border-t border-border bg-background px-4 py-4 lg:hidden animate-in slide-in-from-top-2 duration-200">
-          <nav className="flex flex-col gap-0.5">
+        <div className="border-t border-border bg-background/95 backdrop-blur-xl px-4 py-6 lg:hidden animate-blur-in">
+          <nav className="flex flex-col gap-1">
             {navItems.map((item) => (
               <div key={item.id}>
                 <Link
                   href={item.href}
-                  className={`block rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors ${
+                  className={`block rounded-lg px-4 py-3 text-sm font-medium transition-colors ${
                     pathname === item.href
                       ? "bg-primary/10 text-primary"
                       : "text-foreground hover:bg-accent"
@@ -133,7 +157,7 @@ export function SiteHeader({
                   <Link
                     key={child.id}
                     href={child.href}
-                    className={`block rounded-lg py-2 pl-8 pr-3 text-sm transition-colors ${
+                    className={`block rounded-lg py-2.5 pl-8 pr-4 text-sm transition-colors ${
                       pathname === child.href
                         ? "font-medium text-primary"
                         : "text-muted-foreground hover:text-foreground"

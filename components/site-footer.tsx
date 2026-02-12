@@ -22,47 +22,55 @@ export function SiteFooter({
   const year = new Date().getFullYear()
 
   return (
-    <footer className="border-t border-border bg-foreground text-background">
-      <div className="mx-auto max-w-7xl px-4 py-16 lg:px-8">
-        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
-          {/* School info */}
-          <div className="lg:col-span-1">
-            <div className="flex items-center gap-3">
+    <footer className="relative bg-primary text-primary-foreground overflow-hidden noise-overlay">
+      {/* Large decorative serif text */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden" aria-hidden>
+        <span className="font-display text-[20vw] italic text-primary-foreground/[0.02] leading-none select-none whitespace-nowrap">
+          Grabbe
+        </span>
+      </div>
+
+      <div className="relative z-10 mx-auto max-w-6xl px-4 py-20 lg:px-8 lg:py-24">
+        {/* Top: Large branding */}
+        <div className="flex flex-col items-start gap-6 md:flex-row md:items-end md:justify-between">
+          <div>
+            <div className="flex items-center gap-4">
               {settings.school_logo_url ? (
                 <img
                   src={settings.school_logo_url}
                   alt={name}
-                  className="h-9 w-auto"
+                  className="h-10 w-auto brightness-0 invert opacity-80"
                 />
               ) : (
-                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground font-display">
-                  G
-                </span>
+                <span className="font-display text-3xl italic text-primary-foreground">{name}</span>
               )}
-              <div>
-                <p className="font-semibold font-display">{name}</p>
-                <p className="text-sm opacity-70">
-                  {settings.school_city || "Detmold"}
-                </p>
-              </div>
             </div>
-            <p className="mt-4 text-sm leading-relaxed opacity-70">
+            <p className="mt-3 max-w-sm text-sm leading-relaxed text-primary-foreground/50">
               {settings.school_description ||
                 "Wir foerdern Deine Talente und staerken Deine Persoenlichkeit."}
             </p>
           </div>
+          <p className="font-sub text-[10px] uppercase tracking-[0.3em] text-primary-foreground/30">
+            {settings.school_city || "Detmold"}, NRW
+          </p>
+        </div>
 
+        {/* Divider */}
+        <div className="mt-12 h-px bg-primary-foreground/10" />
+
+        {/* Main grid */}
+        <div className="mt-12 grid gap-12 md:grid-cols-2 lg:grid-cols-4">
           {/* Quick links */}
           <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider opacity-50">
+            <h3 className="font-sub text-[10px] uppercase tracking-[0.25em] text-primary-foreground/40">
               Schnellzugriff
             </h3>
-            <ul className="flex flex-col gap-2.5">
+            <ul className="mt-5 flex flex-col gap-3">
               {links.map((l) => (
                 <li key={l.id}>
                   <Link
                     href={l.href}
-                    className="text-sm opacity-70 transition-opacity hover:opacity-100"
+                    className="text-sm text-primary-foreground/60 transition-colors hover:text-accent"
                   >
                     {l.label}
                   </Link>
@@ -73,28 +81,28 @@ export function SiteFooter({
 
           {/* Contact */}
           <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider opacity-50">
+            <h3 className="font-sub text-[10px] uppercase tracking-[0.25em] text-primary-foreground/40">
               Kontakt
             </h3>
-            <ul className="flex flex-col gap-3">
-              <li className="flex items-start gap-2.5">
-                <MapPin className="mt-0.5 h-4 w-4 shrink-0 opacity-60" />
-                <span className="text-sm opacity-70">{address}</span>
+            <ul className="mt-5 flex flex-col gap-4">
+              <li className="flex items-start gap-3">
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary-foreground/30" />
+                <span className="text-sm text-primary-foreground/60">{address}</span>
               </li>
-              <li className="flex items-center gap-2.5">
-                <Phone className="h-4 w-4 shrink-0 opacity-60" />
+              <li className="flex items-center gap-3">
+                <Phone className="h-4 w-4 shrink-0 text-primary-foreground/30" />
                 <a
                   href={`tel:${phone.replace(/[\s-]/g, "")}`}
-                  className="text-sm opacity-70 hover:opacity-100"
+                  className="text-sm text-primary-foreground/60 hover:text-accent transition-colors"
                 >
                   {phone}
                 </a>
               </li>
-              <li className="flex items-center gap-2.5">
-                <Mail className="h-4 w-4 shrink-0 opacity-60" />
+              <li className="flex items-center gap-3">
+                <Mail className="h-4 w-4 shrink-0 text-primary-foreground/30" />
                 <a
                   href={`mailto:${email}`}
-                  className="text-sm opacity-70 hover:opacity-100"
+                  className="text-sm text-primary-foreground/60 hover:text-accent transition-colors"
                 >
                   {email}
                 </a>
@@ -104,15 +112,15 @@ export function SiteFooter({
 
           {/* Legal */}
           <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider opacity-50">
+            <h3 className="font-sub text-[10px] uppercase tracking-[0.25em] text-primary-foreground/40">
               Rechtliches
             </h3>
-            <ul className="flex flex-col gap-2.5">
+            <ul className="mt-5 flex flex-col gap-3">
               {legalLinks.map((l) => (
                 <li key={l.id}>
                   <Link
                     href={l.href}
-                    className="text-sm opacity-70 hover:opacity-100"
+                    className="text-sm text-primary-foreground/60 transition-colors hover:text-accent"
                   >
                     {l.label}
                   </Link>
@@ -120,15 +128,28 @@ export function SiteFooter({
               ))}
             </ul>
           </div>
+
+          {/* Motto */}
+          <div>
+            <h3 className="font-sub text-[10px] uppercase tracking-[0.25em] text-primary-foreground/40">
+              Unser Motto
+            </h3>
+            <blockquote className="mt-5">
+              <p className="font-display text-xl italic text-primary-foreground/70 leading-relaxed">
+                {'"'}Deine Talente. Deine Buehne. Dein Grabbe.{'"'}
+              </p>
+            </blockquote>
+          </div>
         </div>
 
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-background/10 pt-8 sm:flex-row">
-          <p className="text-xs opacity-50">
+        {/* Bottom bar */}
+        <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-primary-foreground/10 pt-8 sm:flex-row">
+          <p className="text-[11px] text-primary-foreground/30">
             {year} {fullName}
           </p>
           <Link
             href="/auth/login"
-            className="text-xs opacity-20 transition-opacity hover:opacity-50"
+            className="text-[11px] text-primary-foreground/15 transition-colors hover:text-primary-foreground/40"
           >
             Verwaltung
           </Link>

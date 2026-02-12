@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react"
 interface AnimateOnScrollProps {
   children: ReactNode
   className?: string
-  animation?: "fade-in-up" | "fade-in" | "slide-in-left" | "slide-in-right" | "scale-in"
+  animation?: "fade-in-up" | "fade-in" | "slide-in-left" | "slide-in-right" | "scale-in" | "blur-in" | "reveal-up"
   delay?: number
   threshold?: number
 }
@@ -13,7 +13,7 @@ interface AnimateOnScrollProps {
 export function AnimateOnScroll({
   children,
   className = "",
-  animation = "fade-in-up",
+  animation = "blur-in",
   delay = 0,
   threshold = 0.1,
 }: AnimateOnScrollProps) {
@@ -28,7 +28,7 @@ export function AnimateOnScroll({
           observer.unobserve(entry.target)
         }
       },
-      { threshold }
+      { threshold, rootMargin: "0px 0px -40px 0px" }
     )
 
     if (ref.current) {

@@ -1,5 +1,8 @@
+"use client"
+
 import Link from "next/link"
 import { ArrowRight, FileText, Clock, GraduationCap, BookOpen, CalendarDays, Utensils } from "lucide-react"
+import { AnimateOnScroll } from "./animate-on-scroll"
 
 const quickLinks = [
   { icon: FileText, label: "Downloads", href: "/downloads" },
@@ -12,60 +15,75 @@ const quickLinks = [
 
 export function InfoSection() {
   return (
-    <section className="mx-auto max-w-7xl px-4 py-20 lg:px-8 lg:py-28">
-      <div className="grid gap-16 lg:grid-cols-2">
-        {/* Left: Erprobungsstufe */}
-        <div>
-          <p className="text-sm font-medium uppercase tracking-widest text-primary">
-            Erprobungsstufe
-          </p>
-          <h2 className="mt-3 text-balance font-display text-3xl font-bold tracking-tight text-foreground">
-            Dein Start am Grabbe
-          </h2>
-          <div className="mt-6 space-y-4 text-muted-foreground">
-            <p className="text-sm leading-relaxed">
-              Die Jahrgaenge 5 und 6 bilden eine besondere paedagogische Einheit, die Erprobungsstufe.
-              Waehrend dieser Zeit begleiten wir Ihre Kinder intensiv. Anknuepfend an die Lernerfahrungen
-              in der Grundschule fuehren wir die Schueler:innen an die Unterrichtsmethoden und
-              Lernangebote des Gymnasiums heran.
-            </p>
-            <p className="text-sm leading-relaxed">
-              Die Klassenbildung erfolgt nach sozialen Kriterien und beruecksichtigt neben der
-              Grundschulzugehoerigkeit auch die Wunschpartner:innen. Eine einwoechige Klassenfahrt
-              zu Beginn der sechsten Klasse festigt die Klassengemeinschaft.
-            </p>
-          </div>
-          <Link
-            href="/unsere-schule/erprobungsstufe"
-            className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
-          >
-            Mehr zur Erprobungsstufe
-            <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
-        </div>
+    <section className="relative py-28 lg:py-36">
+      <div className="mx-auto max-w-6xl px-4 lg:px-8">
+        <div className="grid gap-20 lg:grid-cols-2">
+          {/* Left: Erprobungsstufe */}
+          <AnimateOnScroll animation="slide-in-left">
+            <div>
+              <p className="font-sub text-[11px] uppercase tracking-[0.3em] text-accent">
+                Erprobungsstufe
+              </p>
+              <h2 className="mt-3 font-display text-4xl md:text-5xl tracking-tight text-foreground">
+                Dein Start am <span className="italic text-accent">Grabbe</span>
+              </h2>
+              <div className="mt-8 space-y-5 text-muted-foreground">
+                <p className="text-sm leading-relaxed">
+                  Die Jahrgaenge 5 und 6 bilden eine besondere paedagogische Einheit, die Erprobungsstufe.
+                  Waehrend dieser Zeit begleiten wir Ihre Kinder intensiv. Anknuepfend an die Lernerfahrungen
+                  in der Grundschule fuehren wir die Schueler:innen an die Unterrichtsmethoden und
+                  Lernangebote des Gymnasiums heran.
+                </p>
+                <p className="text-sm leading-relaxed">
+                  Die Klassenbildung erfolgt nach sozialen Kriterien und beruecksichtigt neben der
+                  Grundschulzugehoerigkeit auch die Wunschpartner:innen. Eine einwoechige Klassenfahrt
+                  zu Beginn der sechsten Klasse festigt die Klassengemeinschaft.
+                </p>
+              </div>
 
-        {/* Right: Quick Links */}
-        <div>
-          <p className="text-sm font-medium uppercase tracking-widest text-primary">
-            Beliebte Themen
-          </p>
-          <h2 className="mt-3 text-balance font-display text-3xl font-bold tracking-tight text-foreground">
-            Schnellzugriff
-          </h2>
-          <div className="mt-6 grid grid-cols-2 gap-3">
-            {quickLinks.map((link) => (
+              {/* Decorative quote */}
+              <blockquote className="mt-8 border-l-2 border-accent/40 pl-6">
+                <p className="font-display text-xl italic text-foreground/80">
+                  {'"'}Ein Ort, an dem jedes Kind seinen Platz findet.{'"'}
+                </p>
+              </blockquote>
+
               <Link
-                key={link.href}
-                href={link.href}
-                className="group flex items-center gap-3 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/30 hover:shadow-md"
+                href="/unsere-schule/erprobungsstufe"
+                className="mt-8 inline-flex items-center gap-2 font-sub text-xs uppercase tracking-[0.15em] text-accent hover:text-foreground transition-colors group"
               >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                  <link.icon className="h-5 w-5" />
-                </div>
-                <span className="text-sm font-medium text-card-foreground">{link.label}</span>
+                Mehr zur Erprobungsstufe
+                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
               </Link>
-            ))}
-          </div>
+            </div>
+          </AnimateOnScroll>
+
+          {/* Right: Quick Links */}
+          <AnimateOnScroll animation="slide-in-right" delay={0.2}>
+            <div>
+              <p className="font-sub text-[11px] uppercase tracking-[0.3em] text-accent">
+                Beliebte Themen
+              </p>
+              <h2 className="mt-3 font-display text-4xl md:text-5xl tracking-tight text-foreground">
+                Schnellzugriff
+              </h2>
+              <div className="mt-8 grid grid-cols-2 gap-4">
+                {quickLinks.map((link, i) => (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    className="group flex items-center gap-4 rounded-2xl border border-border/60 bg-card p-5 transition-all duration-500 hover:border-accent/40 hover:shadow-lg hover:shadow-accent/5 hover:-translate-y-0.5"
+                    style={{ animationDelay: `${i * 0.05}s` }}
+                  >
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent/10 text-accent transition-all duration-500 group-hover:bg-primary group-hover:text-primary-foreground group-hover:rotate-3">
+                      <link.icon className="h-5 w-5" />
+                    </div>
+                    <span className="text-sm font-medium text-card-foreground group-hover:text-accent transition-colors">{link.label}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </AnimateOnScroll>
         </div>
       </div>
     </section>
