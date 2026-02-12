@@ -1,5 +1,6 @@
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
+import { AnmeldungForm } from "@/components/anmeldung-form"
 import { FileText, Download, CheckCircle2, ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -126,6 +127,12 @@ export default function AnmeldungPage() {
                 </Link>
               </Button>
             </div>
+          </div>
+        </section>
+
+        <section className="border-t bg-muted/50 mx-auto max-w-7xl px-4 py-16 lg:px-8">
+          <div className="mx-auto max-w-2xl">
+            <AnmeldungForm />
           </div>
         </section>
       </main>

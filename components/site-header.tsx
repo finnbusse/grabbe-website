@@ -33,6 +33,8 @@ const navigation = [
     ],
   },
   { label: "Aktuelles", href: "/aktuelles" },
+  { label: "Termine", href: "/termine" },
+  { label: "Downloads", href: "/downloads" },
   { label: "Kontakt", href: "/kontakt" },
 ]
 

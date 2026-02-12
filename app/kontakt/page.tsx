@@ -1,5 +1,6 @@
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
+import { ContactForm } from "@/components/contact-form"
 import { Mail, Phone, MapPin, Clock } from "lucide-react"
 
 export const metadata = {
@@ -82,18 +83,22 @@ export default function KontaktPage() {
               </div>
             </div>
 
-            {/* Contacts grid */}
-            <div className="lg:col-span-2">
-              <h2 className="font-display text-2xl font-bold text-foreground">Ansprechpartner:innen</h2>
-              <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                {contacts.map((c) => (
-                  <div key={c.name} className="rounded-xl border border-border bg-card p-5">
-                    <p className="text-xs font-medium uppercase tracking-wider text-primary">{c.role}</p>
-                    <p className="mt-2 font-display text-base font-semibold text-card-foreground">{c.name}</p>
-                    <p className="mt-1 text-xs text-muted-foreground">{c.desc}</p>
-                  </div>
-                ))}
+            {/* Contacts grid + Form */}
+            <div className="lg:col-span-2 space-y-8">
+              <div>
+                <h2 className="font-display text-2xl font-bold text-foreground">Ansprechpartner:innen</h2>
+                <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                  {contacts.map((c) => (
+                    <div key={c.name} className="rounded-xl border border-border bg-card p-5">
+                      <p className="text-xs font-medium uppercase tracking-wider text-primary">{c.role}</p>
+                      <p className="mt-2 font-display text-base font-semibold text-card-foreground">{c.name}</p>
+                      <p className="mt-1 text-xs text-muted-foreground">{c.desc}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
+
+              <ContactForm />
             </div>
           </div>
         </section>
