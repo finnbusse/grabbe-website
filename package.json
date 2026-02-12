@@ -60,7 +60,8 @@
     "zod": "^3.24.1",
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.49.1",
-    "swr": "^2.3.3"
+    "swr": "^2.3.3",
+    "@vercel/blob": "^0.27.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.13",
