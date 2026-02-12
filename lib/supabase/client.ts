@@ -8,6 +8,7 @@ export function createClient() {
     process.env.NEXT_PUBLIC_SUPABASE_URL || 
     ''
   
+  // Check both ANON_KEY (standard) and PUBLISHABLE_KEY (Vercel integration naming)
   const supabaseKey = 
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||

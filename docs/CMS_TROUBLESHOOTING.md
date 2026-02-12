@@ -221,8 +221,9 @@ The application accepts these variable names (in order of priority):
 2. `SUPABASE_URL` (server-side only)
 
 **For Supabase Key**:
-1. `NEXT_PUBLIC_SUPABASE_ANON_KEY` (required for browser/CMS)
-2. `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (alternative for browser/CMS)
+1. `NEXT_PUBLIC_SUPABASE_ANON_KEY` (required for browser/CMS, primary)
+2. `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (required for browser/CMS, alternative name)
+3. `SUPABASE_PUBLISHABLE_KEY` (server-side only)
 
 **IMPORTANT**: Variables without `NEXT_PUBLIC_` prefix are only available server-side. The CMS dashboard runs in the browser, so it MUST have the `NEXT_PUBLIC_*` versions.
 

@@ -1,10 +1,10 @@
 # SOFORTIGE REPARATUR - CMS Dashboard kann nicht speichern
 
 ## Das Problem
-Sie können keine neuen Sachen im CMS Dashboard speichern.
+Die Anwendung benötigt spezifische Umgebungsvariablen mit `NEXT_PUBLIC_` Präfix für den Browser-Zugriff (CMS Dashboard).
 
 ## Die Ursache
-Ihre Vercel Umgebungsvariablen verwenden andere Namen als die Anwendung erwartet hat.
+Ihre Vercel Umgebungsvariablen verwenden möglicherweise andere Namen oder fehlen das erforderliche `NEXT_PUBLIC_` Präfix.
 
 ## Die Lösung ✅
 
