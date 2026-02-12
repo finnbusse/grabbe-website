@@ -2,12 +2,12 @@ import Link from "next/link"
 import { ArrowRight, FileText, Clock, GraduationCap, BookOpen, CalendarDays, Utensils } from "lucide-react"
 
 const quickLinks = [
-  { icon: FileText, label: "Elternbriefe", href: "/schulleben/elternbriefe" },
-  { icon: CalendarDays, label: "Jahreskalender", href: "/schulleben/kalender" },
-  { icon: Clock, label: "Krankmeldung", href: "/schulleben/krankmeldung" },
+  { icon: FileText, label: "Downloads", href: "/downloads" },
+  { icon: CalendarDays, label: "Termine & Kalender", href: "/termine" },
+  { icon: Clock, label: "Nachmittagsprogramm", href: "/schulleben/nachmittag" },
   { icon: Utensils, label: "Uebermittag", href: "/schulleben/nachmittag" },
   { icon: GraduationCap, label: "Oberstufen-Portal", href: "/unsere-schule/oberstufe" },
-  { icon: BookOpen, label: "Lehrplaene", href: "/schulleben/faecher-ags" },
+  { icon: BookOpen, label: "Faecher & AGs", href: "/schulleben/faecher-ags" },
 ]
 
 export function InfoSection() {

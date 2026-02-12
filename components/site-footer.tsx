@@ -34,6 +34,8 @@ export function SiteFooter() {
                 { label: "Oberstufe", href: "/unsere-schule/oberstufe" },
                 { label: "Profilprojekte", href: "/unsere-schule/profilprojekte" },
                 { label: "Aktuelles", href: "/aktuelles" },
+                { label: "Termine", href: "/termine" },
+                { label: "Downloads", href: "/downloads" },
                 { label: "Faecher & AGs", href: "/schulleben/faecher-ags" },
               ].map((link) => (
                 <li key={link.href}>

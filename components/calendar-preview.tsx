@@ -34,7 +34,7 @@ export function CalendarPreview({ events }: { events: Event[] }) {
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {events.slice(0, 6).map((event) => {
-                const date = new Date(event.date || event.event_date)
+                const date = new Date(event.event_date)
                 const isFerien = event.category === "ferien"
                 return (
                   <div

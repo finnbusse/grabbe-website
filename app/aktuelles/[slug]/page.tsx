@@ -1,9 +1,11 @@
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
+import { MarkdownContent } from "@/components/markdown-content"
 import { createClient } from "@/lib/supabase/server"
 import { notFound } from "next/navigation"
 import { CalendarDays, ArrowLeft, User } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 
 export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -26,7 +28,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
           <Button variant="ghost" size="sm" asChild className="mb-8">
             <Link href="/aktuelles">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Zurueck zu Aktuelles
+              {"Zurueck zu Aktuelles"}
             </Link>
           </Button>
 
@@ -57,12 +59,26 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
             )}
           </div>
 
-          <div className="prose prose-neutral mt-10 max-w-none text-foreground">
-            {post.content.split("\n").map((paragraph: string, i: number) => (
-              <p key={i} className="mb-4 leading-relaxed text-muted-foreground">
-                {paragraph}
-              </p>
-            ))}
+          {post.image_url && (
+            <div className="mt-8 overflow-hidden rounded-xl">
+              <Image
+                src={post.image_url}
+                alt={post.title}
+                width={800}
+                height={400}
+                className="w-full object-cover"
+              />
+            </div>
+          )}
+
+          {post.excerpt && (
+            <p className="mt-8 text-lg leading-relaxed text-muted-foreground font-medium border-l-4 border-primary pl-4">
+              {post.excerpt}
+            </p>
+          )}
+
+          <div className="mt-10 max-w-none">
+            <MarkdownContent content={post.content} />
           </div>
         </article>
       </main>

@@ -28,6 +28,7 @@ export function EventEditor({ event }: EventEditorProps) {
   const [eventDate, setEventDate] = useState(event?.event_date ?? "")
   const [eventTime, setEventTime] = useState(event?.event_time ?? "")
   const [location, setLocation] = useState(event?.location ?? "")
+  const [category, setCategory] = useState((event as Record<string, unknown>)?.category as string ?? "termin")
   const [published, setPublished] = useState(event?.published ?? true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -47,6 +48,7 @@ export function EventEditor({ event }: EventEditorProps) {
         event_date: eventDate,
         event_time: eventTime || null,
         location: location || null,
+        category,
         published,
         user_id: user.id,
         updated_at: new Date().toISOString(),
@@ -112,7 +114,7 @@ export function EventEditor({ event }: EventEditorProps) {
                 className="font-display"
               />
             </div>
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-3">
               <div className="grid gap-2">
                 <Label htmlFor="event_date">Datum</Label>
                 <Input
@@ -130,6 +132,23 @@ export function EventEditor({ event }: EventEditorProps) {
                   onChange={(e) => setEventTime(e.target.value)}
                   placeholder="z.B. 18:00 Uhr"
                 />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="category">Kategorie</Label>
+                <select
+                  id="category"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  className="h-10 rounded-lg border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                >
+                  <option value="termin">Schultermin</option>
+                  <option value="ferien">Ferien</option>
+                  <option value="pruefung">Pruefung / Klausur</option>
+                  <option value="veranstaltung">Veranstaltung</option>
+                  <option value="elternabend">Elternabend</option>
+                  <option value="projekttag">Projekttag</option>
+                  <option value="sonstiges">Sonstiges</option>
+                </select>
               </div>
             </div>
             <div className="grid gap-2">
