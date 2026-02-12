@@ -32,7 +32,7 @@ export function SiteHeader({
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 shrink-0 transition-opacity hover:opacity-80">
           <img
-            src="/images/grabbe-logo.svg"
+            src={logoUrl || "/images/grabbe-logo.svg"}
             alt={schoolName}
             className="h-8 w-auto lg:h-9"
           />
