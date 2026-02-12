@@ -10,16 +10,45 @@ export async function SiteLayout({ children }: { children: React.ReactNode }) {
     getAllNavItems("footer-legal"),
   ])
 
-  const navItems: NavItemData[] = headerNav.map((item) => ({
-    id: item.id,
-    label: item.label,
-    href: item.href,
-    children: item.children?.map((c) => ({
-      id: c.id,
-      label: c.label,
-      href: c.href,
-    })),
-  }))
+  const defaultNavItems: NavItemData[] = [
+    { id: "home", label: "Startseite", href: "/" },
+    {
+      id: "schule",
+      label: "Unsere Schule",
+      href: "/unsere-schule",
+      children: [
+        { id: "profil", label: "Profilprojekte", href: "/unsere-schule/profilprojekte" },
+        { id: "erprobung", label: "Erprobungsstufe", href: "/unsere-schule/erprobungsstufe" },
+        { id: "oberstufe", label: "Oberstufe", href: "/unsere-schule/oberstufe" },
+        { id: "anmeldung", label: "Anmeldung", href: "/unsere-schule/anmeldung" },
+      ],
+    },
+    {
+      id: "schulleben",
+      label: "Schulleben",
+      href: "/schulleben",
+      children: [
+        { id: "nachmittag", label: "Nachmittag", href: "/schulleben/nachmittag" },
+        { id: "faecher", label: "Faecher & AGs", href: "/schulleben/faecher-ags" },
+      ],
+    },
+    { id: "aktuelles", label: "Aktuelles", href: "/aktuelles" },
+    { id: "termine", label: "Termine", href: "/termine" },
+    { id: "kontakt", label: "Kontakt", href: "/kontakt" },
+  ]
+
+  const navItems: NavItemData[] = headerNav.length > 0
+    ? headerNav.map((item) => ({
+        id: item.id,
+        label: item.label,
+        href: item.href,
+        children: item.children?.map((c) => ({
+          id: c.id,
+          label: c.label,
+          href: c.href,
+        })),
+      }))
+    : defaultNavItems
 
   const footerLinks: FooterLink[] = footerNav.map((l) => ({
     id: l.id,

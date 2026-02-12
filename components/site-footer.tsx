@@ -30,11 +30,6 @@ export function SiteFooter({
         </span>
       </div>
 
-      {/* Decorative glow */}
-      <div className="absolute inset-0 pointer-events-none" aria-hidden>
-        <div className="absolute top-0 left-1/3 h-[300px] w-[400px] rounded-full bg-[hsl(200,90%,75%)]/[0.05] blur-[100px]" />
-      </div>
-
       <div className="relative z-10 mx-auto max-w-6xl px-4 py-20 lg:px-8 lg:py-24">
         {/* Top: Large branding */}
         <div className="flex flex-col items-start gap-6 md:flex-row md:items-end md:justify-between">

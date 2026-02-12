@@ -51,12 +51,6 @@ export function HeroSection() {
 
   return (
     <section className="relative flex flex-col bg-background overflow-hidden">
-      {/* Ambient blue background glow */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden>
-        <div className="absolute -top-40 -right-40 h-[500px] w-[500px] rounded-full bg-primary/[0.06] blur-[120px] animate-gentle-pulse" />
-        <div className="absolute bottom-0 -left-20 h-[400px] w-[400px] rounded-full bg-accent/[0.04] blur-[100px] animate-gentle-pulse" style={{ animationDelay: "2s" }} />
-      </div>
-
       {/* Spacer for fixed navbar */}
       <div className="h-20" />
 
@@ -98,7 +92,8 @@ export function HeroSection() {
               <img
                 src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/grabbe-axyrHnKg5v3J1TKdQffEYr4F54zwpn.jpg"
                 alt="Grabbe-Gymnasium Logo"
-                className="h-8 w-auto brightness-0 invert opacity-90 md:h-12"
+                className="h-8 w-auto md:h-12"
+                style={{ filter: "brightness(0) invert(1)" }}
               />
             </div>
 

@@ -330,25 +330,18 @@ html {
 }
 
 .font-pixel {
-  font-family: var(--font-geist-mono);
+  font-family: var(--font-geist-pixel-square), var(--font-geist-mono), monospace;
   letter-spacing: 0.05em;
 }
 
-/* Noise texture overlay */
-.noise-overlay::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  opacity: 0.025;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 1;
+/* Noise texture overlay -- lightweight */
+.noise-overlay {
+  position: relative;
 }
 
 /* Blue gradient mesh background helper */
 .bg-mesh-blue {
   background:
-    radial-gradient(ellipse at 20% 50%, hsla(210, 80%, 55%, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, hsla(195, 75%, 50%, 0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 80%, hsla(230, 55%, 55%, 0.05) 0%, transparent 50%);
+    radial-gradient(ellipse at 20% 50%, hsla(210, 80%, 55%, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, hsla(195, 75%, 50%, 0.04) 0%, transparent 50%);
 }

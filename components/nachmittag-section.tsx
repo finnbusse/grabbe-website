@@ -7,12 +7,7 @@ import { AnimateOnScroll } from "./animate-on-scroll"
 export function NachmittagSection() {
   return (
     <section className="relative py-28 lg:py-36 bg-muted/40 overflow-hidden">
-      {/* Decorative */}
-      <div className="absolute inset-0 pointer-events-none" aria-hidden>
-        <div className="absolute -top-32 left-1/2 -translate-x-1/2 h-[500px] w-[800px] rounded-full bg-primary/[0.03] blur-[128px]" />
-      </div>
-
-      <div className="relative mx-auto max-w-6xl px-4 lg:px-8">
+      <div className="mx-auto max-w-6xl px-4 lg:px-8">
         <div className="grid gap-16 lg:grid-cols-2 lg:items-center">
           <AnimateOnScroll animation="slide-in-left">
             <div>

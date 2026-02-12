@@ -18,12 +18,6 @@ export function CalendarPreview({ events }: { events: Event[] }) {
 
   return (
     <section className="relative py-28 lg:py-36 bg-primary text-primary-foreground overflow-hidden noise-overlay">
-      {/* Decorative light blue blobs */}
-      <div className="absolute inset-0 pointer-events-none" aria-hidden>
-        <div className="absolute -top-20 -right-20 h-[400px] w-[400px] rounded-full bg-[hsl(200,90%,75%)]/10 blur-[96px]" />
-        <div className="absolute -bottom-20 -left-20 h-[300px] w-[300px] rounded-full bg-primary-foreground/5 blur-[80px]" />
-      </div>
-
       <div className="relative z-10 mx-auto max-w-6xl px-4 lg:px-8">
         <AnimateOnScroll>
           <div className="flex items-end justify-between">

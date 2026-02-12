@@ -1,17 +1,10 @@
 import type { Metadata, Viewport } from "next"
-import { Geist, Geist_Mono, Instrument_Serif, Josefin_Sans } from "next/font/google"
+import { GeistSans } from "geist/font/sans"
+import { GeistMono } from "geist/font/mono"
+import { GeistPixelSquare } from "geist/font/pixel"
+import { Instrument_Serif, Josefin_Sans } from "next/font/google"
 import { getSettings } from "@/lib/settings"
 import "./globals.css"
-
-const _geistSans = Geist({
-  subsets: ["latin"],
-  variable: "--font-geist-sans",
-})
-
-const _geistMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-geist-mono",
-})
 
 const _instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
@@ -63,7 +56,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="de" className={`${_geistSans.variable} ${_geistMono.variable} ${_instrumentSerif.variable} ${_josefinSans.variable}`}>
+    <html lang="de" className={`${GeistSans.variable} ${GeistMono.variable} ${GeistPixelSquare.variable} ${_instrumentSerif.variable} ${_josefinSans.variable}`}>
       <body className="font-sans antialiased">{children}</body>
     </html>
   )

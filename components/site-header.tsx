@@ -46,16 +46,11 @@ export function SiteHeader({
             <img
               src={logoUrl}
               alt={schoolName}
-              className="h-8 w-auto"
+              className="h-9 w-auto"
             />
           ) : (
             <span className="font-display text-xl text-foreground">{schoolName}</span>
           )}
-          <div className="hidden sm:block">
-            <span className="font-sub text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
-              {schoolName}
-            </span>
-          </div>
         </Link>
 
         {/* Desktop nav */}

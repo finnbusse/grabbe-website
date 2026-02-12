@@ -15,6 +15,7 @@ const config: Config = {
         display: ['var(--font-instrument-serif)', 'Georgia', 'serif'],
         sub: ['var(--font-josefin-sans)', 'system-ui', 'sans-serif'],
         mono: ['var(--font-geist-mono)', 'monospace'],
+        pixel: ['var(--font-geist-pixel-square)', 'var(--font-geist-mono)', 'monospace'],
       },
       colors: {
         background: 'hsl(var(--background))',
