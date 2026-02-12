@@ -57,14 +57,13 @@ export function HeroSection() {
           sizes="100vw"
         />
 
-        {/* School logo - top left corner */}
-        <div className="absolute top-5 left-5 md:top-8 md:left-8 lg:top-12 lg:left-12 z-20">
+        {/* School logo - aligned with navbar height */}
+        <div className="absolute top-3 left-5 md:left-8 lg:top-4 lg:left-12 z-20">
           <div className={`transition-all duration-700 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
             <img
               src="/images/grabbe-logo.svg"
               alt="Grabbe-Gymnasium Logo"
-              className="h-12 w-auto md:h-16 lg:h-20 drop-shadow-lg"
-              style={{ filter: "brightness(0) invert(1)" }}
+              className="h-16 w-auto md:h-20 lg:h-24 drop-shadow-lg"
             />
           </div>
         </div>

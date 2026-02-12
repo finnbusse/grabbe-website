@@ -40,10 +40,10 @@ export function SiteHeader({
         </Link>
 
         {/* Desktop nav - centered */}
-        <nav className="hidden items-center gap-0.5 lg:flex flex-1 justify-center" aria-label="Hauptnavigation">
+        <nav className="hidden items-center gap-0 lg:flex flex-1 justify-center" aria-label="Hauptnavigation">
           {navItems
             .filter(item => item.href !== "/") // Home/Start is handled by dedicated Start button
-            .map((item) =>
+            .map((item, index, array) =>
             item.children && item.children.length > 0 ? (
               <div
                 key={item.id}
@@ -52,7 +52,11 @@ export function SiteHeader({
                 onMouseLeave={() => setOpenDropdown(null)}
               >
                 <button
-                  className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-[13px] font-medium transition-all duration-200 hover:bg-white/20 ${
+                  className={`flex items-center gap-1 px-4 py-1.5 text-[13px] font-medium transition-all duration-200 hover:bg-white/20 ${
+                    index === 0 ? "rounded-l-full" : ""
+                  } ${
+                    index === array.length - 1 ? "rounded-r-full" : ""
+                  } ${
                     pathname.startsWith(item.href) && item.href !== "/"
                       ? "text-foreground"
                       : "text-foreground/80 hover:text-foreground"
@@ -87,7 +91,11 @@ export function SiteHeader({
               <Link
                 key={item.id}
                 href={item.href}
-                className={`rounded-full px-3 py-1.5 text-[13px] font-medium transition-all duration-200 hover:bg-white/20 ${
+                className={`px-4 py-1.5 text-[13px] font-medium transition-all duration-200 hover:bg-white/20 ${
+                  index === 0 ? "rounded-l-full" : ""
+                } ${
+                  index === array.length - 1 ? "rounded-r-full" : ""
+                } ${
                   pathname === item.href ? "text-foreground" : "text-foreground/80 hover:text-foreground"
                 }`}
               >
