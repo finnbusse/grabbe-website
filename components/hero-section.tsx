@@ -77,8 +77,8 @@ export function HeroSection() {
             style={{ textShadow: "0 2px 24px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.4)" }}
           >
             <span className="block">Deine Talente.</span>
-            <span className="block italic text-[hsl(200,85%,80%)]" style={{ textShadow: "0 2px 24px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.4)" }}>Deine Buehne.</span>
-            <span className="block">Dein Grabbe.</span>
+            <span className="block">Deine Bühne.</span>
+            <span className="block italic text-[hsl(200,85%,80%)]" style={{ textShadow: "0 2px 24px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.4)" }}>Dein Grabbe.</span>
           </h1>
 
           {/* Subtitle with typing animation */}
