@@ -18,20 +18,25 @@ Die Anwendung wurde gerade aktualisiert und unterstützt jetzt **BEIDE** Namensk
 
 2. **Überprüfen Sie diese Variablen**
    
-   Sie sollten EINE dieser Konfigurationen haben:
+   **WICHTIG**: Für das CMS Dashboard (Browser) MÜSSEN die Variablen mit `NEXT_PUBLIC_` beginnen!
 
-   **Option A** (Standard):
+   **Option A** (Standard - empfohlen):
    ```
    NEXT_PUBLIC_SUPABASE_URL = https://ihr-projekt.supabase.co
    NEXT_PUBLIC_SUPABASE_ANON_KEY = ihr-anon-key
    ```
 
-   **Option B** (Vercel Integration - was Sie wahrscheinlich haben):
+   **Option B** (Vercel Integration):
+   Wenn Sie Vercels Supabase Integration verwenden, brauchen Sie BEIDE:
    ```
    SUPABASE_URL = https://ihr-projekt.supabase.co
+   NEXT_PUBLIC_SUPABASE_URL = https://ihr-projekt.supabase.co
+   
    SUPABASE_PUBLISHABLE_KEY = ihr-anon-key
    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = ihr-anon-key
    ```
+   
+   **Das ist der Schlüssel**: Die `NEXT_PUBLIC_*` Variablen sind für den Browser (CMS Dashboard) erforderlich!
 
 3. **Wo finden Sie die richtigen Werte?**
    - Gehen Sie zu https://app.supabase.com

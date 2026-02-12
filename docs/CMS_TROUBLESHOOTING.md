@@ -33,7 +33,7 @@ SUPABASE_PUBLISHABLE_KEY=your-anon-key
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your-anon-key
 ```
 
-**Important**: The application now supports BOTH naming conventions, so you can use whichever your Vercel integration provides.
+**Important**: For the CMS dashboard to work, you MUST have `NEXT_PUBLIC_*` prefixed variables. Next.js only exposes these to the browser.
 
 ### Step-by-Step Fix
 
@@ -42,9 +42,7 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your-anon-key
    - Click "Settings" → "Environment Variables"
 
 2. **Check Your Current Variables**
-   You should see variables for Supabase. Common names include:
-   - `SUPABASE_URL` or `NEXT_PUBLIC_SUPABASE_URL`
-   - `SUPABASE_PUBLISHABLE_KEY` or `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   You should see variables for Supabase. **CRITICAL**: Browser-side code (CMS) requires `NEXT_PUBLIC_*` prefix.
 
 3. **Verify Variable Values**
    - Go to your Supabase Dashboard: https://app.supabase.com
@@ -54,14 +52,23 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your-anon-key
 
 4. **Set/Update Variables in Vercel**
    
-   If using Vercel's Supabase integration:
+   **Option A - Standard (Recommended):**
+   ```
+   NEXT_PUBLIC_SUPABASE_URL = [Your Project URL]
+   NEXT_PUBLIC_SUPABASE_ANON_KEY = [Your anon public key]
+   ```
+
+   **Option B - Vercel Integration:**
+   If using Vercel's Supabase integration, you need BOTH sets:
    ```
    SUPABASE_URL = [Your Project URL]
+   NEXT_PUBLIC_SUPABASE_URL = [Your Project URL]
+   
    SUPABASE_PUBLISHABLE_KEY = [Your anon public key]
    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = [Your anon public key]
    ```
-
-   Or using standard naming:
+   
+   **Why both?** Server-side code can use `SUPABASE_*`, but browser code (CMS) needs `NEXT_PUBLIC_*`.
    ```
    NEXT_PUBLIC_SUPABASE_URL = [Your Project URL]
    NEXT_PUBLIC_SUPABASE_ANON_KEY = [Your anon public key]
@@ -214,13 +221,14 @@ export default function DebugPage() {
 The application accepts these variable names (in order of priority):
 
 **For Supabase URL**:
-1. `NEXT_PUBLIC_SUPABASE_URL` (standard)
-2. `SUPABASE_URL` (Vercel integration)
+1. `NEXT_PUBLIC_SUPABASE_URL` (required for browser/CMS)
+2. `SUPABASE_URL` (server-side only)
 
 **For Supabase Key**:
-1. `NEXT_PUBLIC_SUPABASE_ANON_KEY` (standard)
-2. `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (Vercel integration)
-3. `SUPABASE_PUBLISHABLE_KEY` (Vercel integration)
+1. `NEXT_PUBLIC_SUPABASE_ANON_KEY` (required for browser/CMS)
+2. `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (alternative for browser/CMS)
+
+**IMPORTANT**: Variables without `NEXT_PUBLIC_` prefix are only available server-side. The CMS dashboard runs in the browser, so it MUST have the `NEXT_PUBLIC_*` versions.
 
 ## Still Having Issues?
 
