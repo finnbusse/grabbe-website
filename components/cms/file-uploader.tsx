@@ -28,11 +28,25 @@ export function FileUploader({ onUpload, accept = "*/*", label = "Datei hochlade
       const formData = new FormData()
       formData.append("file", file)
       const res = await fetch("/api/upload", { method: "POST", body: formData })
-      if (!res.ok) throw new Error("Upload fehlgeschlagen")
+      
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: 'Upload fehlgeschlagen' }))
+        
+        // Show specific error message
+        let errorMsg = errorData.error || "Upload fehlgeschlagen"
+        if (errorData.hint) {
+          errorMsg += "\n\n" + errorData.hint
+        }
+        
+        alert(errorMsg)
+        throw new Error(errorMsg)
+      }
+      
       const data = await res.json()
       onUpload(data)
-    } catch {
-      alert("Upload fehlgeschlagen. Bitte versuchen Sie es erneut.")
+    } catch (error: any) {
+      console.error("Upload error:", error)
+      // Error already shown in alert above
     } finally {
       setUploading(false)
     }

@@ -190,6 +190,19 @@ export async function GET() {
       results.errors.push(`Events insert exception: ${e.message}`)
     }
 
+    // 6. Check Vercel Blob Storage configuration
+    results.checks.blob_storage = {
+      configured: !!process.env.BLOB_READ_WRITE_TOKEN,
+      status: process.env.BLOB_READ_WRITE_TOKEN ? 'SUCCESS' : 'WARNING',
+      message: process.env.BLOB_READ_WRITE_TOKEN 
+        ? 'Vercel Blob Storage ist konfiguriert'
+        : 'Vercel Blob Storage nicht konfiguriert - Dokument-Upload wird nicht funktionieren',
+    }
+
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      results.errors.push('BLOB_READ_WRITE_TOKEN fehlt - Dokument-Upload funktioniert nicht. Bitte Vercel Blob Store in Vercel Dashboard hinzufügen.')
+    }
+
     // Summary
     results.summary = {
       total_checks: Object.keys(results.checks).length,
@@ -198,7 +211,19 @@ export async function GET() {
     }
 
     if (results.errors.length > 0) {
-      results.recommended_action = 'Run the database schema: scripts/complete_schema.sql in Supabase SQL Editor'
+      const actions = []
+      
+      // Check if database issues
+      if (results.errors.some(e => e.includes('Table') || e.includes('relation'))) {
+        actions.push('Run the database schema: scripts/complete_schema.sql in Supabase SQL Editor')
+      }
+      
+      // Check if blob storage issue
+      if (results.errors.some(e => e.includes('BLOB'))) {
+        actions.push('Configure Vercel Blob Storage: Vercel Dashboard → Storage → Add Blob Store')
+      }
+      
+      results.recommended_action = actions.join(' | ')
     }
 
     return NextResponse.json(results, { 
