@@ -250,15 +250,24 @@ export default function NavigationPage() {
     setSaving(true)
     const supabase = createClient()
     try {
-      for (const item of items) {
-        await supabase.from("navigation_items").update({
-          label: item.label, 
-          href: item.href, 
-          sort_order: item.sort_order,
-          visible: item.visible, 
-          updated_at: new Date().toISOString(),
-        }).eq("id", item.id)
-      }
+      // Batch update all items using upsert for better performance
+      const updates = items.map(item => ({
+        id: item.id,
+        label: item.label,
+        href: item.href,
+        parent_id: item.parent_id,
+        sort_order: item.sort_order,
+        visible: item.visible,
+        location: item.location,
+        updated_at: new Date().toISOString(),
+      }))
+      
+      const { error } = await supabase
+        .from("navigation_items")
+        .upsert(updates, { onConflict: 'id' })
+      
+      if (error) throw error
+      
       setMsg("✓ Navigation erfolgreich gespeichert!")
       setTimeout(() => setMsg(""), 3000)
     } catch (error) {

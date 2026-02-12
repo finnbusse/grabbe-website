@@ -41,7 +41,9 @@ export function SiteHeader({
 
         {/* Desktop nav - centered */}
         <nav className="hidden items-center gap-0.5 lg:flex flex-1 justify-center" aria-label="Hauptnavigation">
-          {navItems.filter(item => item.href !== "/").map((item) =>
+          {navItems
+            .filter(item => item.href !== "/") // Home/Start is handled by dedicated Start button
+            .map((item) =>
             item.children && item.children.length > 0 ? (
               <div
                 key={item.id}

@@ -25,16 +25,13 @@ function TypingText({ text, delay = 0, speed = 40 }: { text: string; delay?: num
     return () => clearInterval(interval)
   }, [started, text, speed])
 
-  // Reserve space by rendering invisible placeholder text before animation starts
+  // Reserve space using min-height to prevent layout shift
   return (
-    <span className="relative">
-      {!started && <span className="invisible">{text}</span>}
-      <span className={started ? "" : "absolute top-0 left-0"}>
-        {displayed}
-        {started && displayed.length < text.length && (
-          <span className="inline-block w-[2px] h-[1em] bg-white align-middle ml-0.5 animate-pulse" />
-        )}
-      </span>
+    <span className="inline-block" style={{ minWidth: started ? 'auto' : `${text.length * 0.5}em` }}>
+      {displayed}
+      {started && displayed.length < text.length && (
+        <span className="inline-block w-[2px] h-[1em] bg-white align-middle ml-0.5 animate-pulse" />
+      )}
     </span>
   )
 }
