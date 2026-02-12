@@ -1,5 +1,4 @@
-import { SiteHeader } from "@/components/site-header"
-import { SiteFooter } from "@/components/site-footer"
+import { SiteLayout } from "@/components/site-layout"
 import { Languages, Palette, FlaskConical, Globe, BookOpen, Calendar, Monitor } from "lucide-react"
 import Link from "next/link"
 
@@ -37,8 +36,7 @@ const categories = [
 
 export default function FaecherAGsPage() {
   return (
-    <>
-      <SiteHeader />
+    <SiteLayout>
       <main>
         <section className="border-b border-border bg-muted">
           <div className="mx-auto max-w-7xl px-4 pb-12 pt-16 lg:px-8 lg:pb-16 lg:pt-24">
@@ -97,7 +95,6 @@ export default function FaecherAGsPage() {
           </div>
         </section>
       </main>
-      <SiteFooter />
-    </>
+    </SiteLayout>
   )
 }

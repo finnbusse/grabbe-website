@@ -1,5 +1,4 @@
-import { SiteHeader } from "@/components/site-header"
-import { SiteFooter } from "@/components/site-footer"
+import { SiteLayout } from "@/components/site-layout"
 import { AnmeldungForm } from "@/components/anmeldung-form"
 import { FileText, Download, CheckCircle2, ArrowRight } from "lucide-react"
 import Link from "next/link"
@@ -12,8 +11,7 @@ export const metadata = {
 
 export default function AnmeldungPage() {
   return (
-    <>
-      <SiteHeader />
+    <SiteLayout>
       <main>
         <section className="border-b border-border bg-muted">
           <div className="mx-auto max-w-7xl px-4 pb-12 pt-16 lg:px-8 lg:pb-16 lg:pt-24">
@@ -136,7 +134,6 @@ export default function AnmeldungPage() {
           </div>
         </section>
       </main>
-      <SiteFooter />
-    </>
+    </SiteLayout>
   )
 }
