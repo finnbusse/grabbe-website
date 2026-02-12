@@ -9,3 +9,14 @@ node_modules/
 .env*.local
 .DS_Store
 .vercel
+
+# Build artifacts
+tsconfig.tsbuildinfo
+package-lock.json
+*.tsbuildinfo
+
+# Local environment files
+.env
+.env.local
+.env.production.local
+.env.development.local
