@@ -3,7 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight, ArrowDown } from "lucide-react"
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState } from "react"
 
 function TypingText({ text, delay = 0, speed = 40 }: { text: string; delay?: number; speed?: number }) {
   const [displayed, setDisplayed] = useState("")
@@ -29,85 +29,47 @@ function TypingText({ text, delay = 0, speed = 40 }: { text: string; delay?: num
     <span>
       {displayed}
       {started && displayed.length < text.length && (
-        <span className="inline-block w-[2px] h-[1em] bg-primary align-middle ml-0.5 animate-pulse" />
+        <span className="inline-block w-[2px] h-[1em] bg-white align-middle ml-0.5 animate-pulse" />
       )}
     </span>
   )
 }
 
-function CountUpNumber({ target, suffix = "", delay = 0 }: { target: number; suffix?: string; delay?: number }) {
-  const [count, setCount] = useState(0)
-  const [started, setStarted] = useState(false)
-  const ref = useRef<HTMLSpanElement>(null)
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !started) {
-          setTimeout(() => setStarted(true), delay)
-          observer.unobserve(entry.target)
-        }
-      },
-      { threshold: 0.5 }
-    )
-    if (ref.current) observer.observe(ref.current)
-    return () => observer.disconnect()
-  }, [delay, started])
-
-  useEffect(() => {
-    if (!started) return
-    const duration = 2000
-    const steps = 60
-    const increment = target / steps
-    let current = 0
-    const timer = setInterval(() => {
-      current += increment
-      if (current >= target) {
-        setCount(target)
-        clearInterval(timer)
-      } else {
-        setCount(Math.floor(current))
-      }
-    }, duration / steps)
-    return () => clearInterval(timer)
-  }, [started, target])
-
-  return <span ref={ref}>{count}{suffix}</span>
-}
-
 export function HeroSection() {
   const [scrollY, setScrollY] = useState(0)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    setMounted(true)
     const handleScroll = () => setScrollY(window.scrollY)
     window.addEventListener("scroll", handleScroll, { passive: true })
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  const imageScale = 1 + scrollY * 0.0003
-  const imageY = scrollY * 0.15
+  const imageScale = 1 + scrollY * 0.0002
+  const contentOpacity = Math.max(0, 1 - scrollY * 0.002)
 
   return (
-    <section className="relative min-h-screen flex flex-col bg-background overflow-hidden">
-      {/* Ambient blue blobs in background */}
+    <section className="relative flex flex-col bg-background overflow-hidden">
+      {/* Ambient blue background glow */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden>
-        <div className="absolute -top-40 -right-40 h-[600px] w-[600px] rounded-full bg-primary/[0.07] blur-[120px] animate-gentle-pulse" />
-        <div className="absolute top-1/3 -left-40 h-[500px] w-[500px] rounded-full bg-accent/[0.05] blur-[100px] animate-gentle-pulse delay-1000" />
-        <div className="absolute bottom-0 right-1/4 h-[400px] w-[400px] rounded-full bg-[hsl(195,75%,50%)]/[0.04] blur-[100px] animate-gentle-pulse delay-500" />
+        <div className="absolute -top-40 -right-40 h-[500px] w-[500px] rounded-full bg-primary/[0.06] blur-[120px] animate-gentle-pulse" />
+        <div className="absolute bottom-0 -left-20 h-[400px] w-[400px] rounded-full bg-accent/[0.04] blur-[100px] animate-gentle-pulse" style={{ animationDelay: "2s" }} />
       </div>
 
-      {/* Spacer for navbar */}
+      {/* Spacer for fixed navbar */}
       <div className="h-20" />
 
-      {/* Image with rounded corners and padding */}
-      <div className="relative z-10 px-4 pt-4 md:px-8 lg:px-12">
+      {/* Hero image with rounded corners, padding, NO darkening overlay */}
+      <div className="relative z-10 px-4 pt-2 md:px-6 lg:px-10">
         <div
-          className="relative w-full overflow-hidden rounded-3xl shadow-2xl shadow-primary/10"
+          className="relative w-full overflow-hidden rounded-3xl shadow-2xl shadow-primary/[0.08]"
           style={{ aspectRatio: "21/9" }}
         >
+          {/* The image -- no dark overlays */}
           <div
             style={{
-              transform: `translateY(${imageY}px) scale(${imageScale})`,
+              transform: `scale(${imageScale})`,
               transition: "transform 0.1s linear",
             }}
             className="absolute inset-0"
@@ -122,30 +84,39 @@ export function HeroSection() {
             />
           </div>
 
-          {/* Light blue overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[hsl(215,70%,15%)]/70 via-[hsl(215,70%,25%)]/20 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[hsl(215,70%,15%)]/50 via-transparent to-transparent" />
+          {/* Minimal localised gradient only at the very bottom-left corner for text readability */}
+          <div className="absolute bottom-0 left-0 right-1/2 h-2/3 bg-gradient-to-t from-black/30 via-black/10 to-transparent pointer-events-none rounded-bl-3xl" />
+          <div className="absolute bottom-0 left-0 top-1/3 w-1/2 bg-gradient-to-r from-black/20 via-transparent to-transparent pointer-events-none rounded-bl-3xl" />
 
           {/* Content overlay - bottom left aligned */}
-          <div className="absolute inset-0 z-10 flex flex-col justify-end p-6 md:p-10 lg:p-14">
-            {/* Logo */}
-            <div className="mb-4 animate-blur-in delay-200">
+          <div
+            className="absolute inset-0 z-10 flex flex-col justify-end p-5 md:p-8 lg:p-12"
+            style={{ opacity: contentOpacity }}
+          >
+            {/* School logo */}
+            <div className={`mb-3 transition-all duration-700 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
               <img
                 src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/grabbe-axyrHnKg5v3J1TKdQffEYr4F54zwpn.jpg"
                 alt="Grabbe-Gymnasium Logo"
-                className="h-10 w-auto brightness-0 invert opacity-90 md:h-14"
+                className="h-8 w-auto brightness-0 invert opacity-90 md:h-12"
               />
             </div>
 
-            {/* Main headline - left aligned */}
-            <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-7xl text-white leading-[1.1] tracking-tight animate-blur-in delay-300 max-w-3xl">
+            {/* Headline */}
+            <h1
+              className={`font-display text-2xl sm:text-3xl md:text-4xl lg:text-6xl text-white leading-[1.1] tracking-tight transition-all duration-700 delay-200 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+              style={{ textShadow: "0 2px 20px rgba(0,0,0,0.3)" }}
+            >
               <span className="block">Deine Talente.</span>
-              <span className="block italic text-[hsl(200,90%,75%)]">Deine Buehne.</span>
+              <span className="block italic text-[hsl(200,85%,80%)]">Deine Buehne.</span>
               <span className="block">Dein Grabbe.</span>
             </h1>
 
-            {/* Subtitle with typing */}
-            <p className="mt-4 max-w-md text-white/70 text-sm md:text-base leading-relaxed font-sans animate-blur-in delay-500">
+            {/* Subtitle with typing animation */}
+            <p
+              className={`mt-3 max-w-md text-white/80 text-xs md:text-sm leading-relaxed font-sans transition-all duration-700 delay-500 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+              style={{ textShadow: "0 1px 8px rgba(0,0,0,0.3)" }}
+            >
               <TypingText
                 text="Wir foerdern Deine Talente und staerken Deine Persoenlichkeit."
                 delay={1200}
@@ -153,18 +124,18 @@ export function HeroSection() {
               />
             </p>
 
-            {/* CTAs */}
-            <div className="mt-6 flex flex-col sm:flex-row items-start gap-3 animate-blur-in delay-700">
+            {/* CTA buttons */}
+            <div className={`mt-5 flex flex-col sm:flex-row items-start gap-3 transition-all duration-700 delay-700 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
               <Link
                 href="/unsere-schule/anmeldung"
-                className="group flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-medium text-[hsl(215,70%,25%)] transition-all hover:bg-[hsl(200,90%,75%)] hover:text-[hsl(215,70%,15%)] hover:shadow-lg hover:shadow-primary/30"
+                className="group flex items-center gap-2 rounded-full bg-white/95 px-5 py-2.5 text-sm font-medium text-primary transition-all hover:bg-white hover:shadow-lg hover:shadow-white/20"
               >
                 Anmeldung Klasse 5
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
               <Link
                 href="/unsere-schule/profilprojekte"
-                className="group flex items-center gap-2 rounded-full glass-dark px-6 py-3 text-sm font-medium text-white/90 transition-all hover:bg-white/20"
+                className="group flex items-center gap-2 rounded-full bg-white/15 backdrop-blur-md border border-white/20 px-5 py-2.5 text-sm font-medium text-white transition-all hover:bg-white/25"
               >
                 Profilprojekte entdecken
               </Link>
@@ -173,35 +144,8 @@ export function HeroSection() {
         </div>
       </div>
 
-      {/* Stats row - glass cards below the image */}
-      <div className="relative z-10 px-4 md:px-8 lg:px-12 -mt-8 md:-mt-10">
-        <div className="mx-auto max-w-4xl">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 animate-blur-in delay-900">
-            {[
-              { value: 900, suffix: "+", label: "Schueler:innen" },
-              { value: 80, suffix: "+", label: "Lehrkraefte" },
-              { value: 4, suffix: "", label: "Profilprojekte" },
-              { value: 25, suffix: "+", label: "AGs & Projekte" },
-            ].map((stat, i) => (
-              <div
-                key={stat.label}
-                className="glass rounded-2xl p-4 md:p-5 text-center transition-all duration-500 hover:shadow-lg hover:shadow-primary/10 animate-glow-pulse"
-                style={{ animationDelay: `${i * 0.8}s` }}
-              >
-                <p className="font-display text-2xl md:text-3xl text-primary">
-                  <CountUpNumber target={stat.value} suffix={stat.suffix} delay={1500 + i * 200} />
-                </p>
-                <p className="mt-1 text-[10px] font-sub uppercase tracking-[0.15em] text-muted-foreground">
-                  {stat.label}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Scroll down indicator */}
-      <div className="relative z-10 flex justify-center py-10 mt-auto animate-blur-in delay-1200">
+      {/* Scroll indicator */}
+      <div className="relative z-10 flex justify-center py-8">
         <button
           onClick={() => {
             document.getElementById("welcome")?.scrollIntoView({ behavior: "smooth" })
