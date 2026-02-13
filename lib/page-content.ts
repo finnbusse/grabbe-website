@@ -227,6 +227,151 @@ export const PAGE_DEFAULTS = {
     cta1_text: 'Profilprojekte entdecken',
     cta2_text: 'Zur Anmeldung',
   },
+
+  // Profilprojekte
+  'profilprojekte': {
+    page_label: 'Unser besonderes Profil',
+    page_title: 'Profilprojekte',
+    page_subtitle: 'Waehle das Profilprojekt nach deinen Interessen! Gestalte frei - ohne Leistungsdruck! In Klasse 5 und 6 kannst du in einem der vier Profilprojekte neue Lernwege entdecken.',
+    kunst_title: 'Kunstprojekt',
+    kunst_p1: 'Das Fach Kunst ist durch selbstbestimmtes Handeln und anschauliches Denken gepraegt, was Lernen besonders nachhaltig macht und zum ganzheitlichen Erleben und Verstehen der Wirklichkeit fuehrt. Dies ist bedeutsam in Bezug auf die zunehmende Aesthetisierung und Virtualisierung der Lebenswelt. Durch die Staerkung der Ich-Identitaet ermoeglicht das Fach Kunst den Kindern, sich in der Welt zu behaupten und diese als gestaltbar und veraenderbar zu begreifen.',
+    kunst_p2: 'Der Kunstunterricht am Grabbe-Gymnasium versteht sich so als bedeutsamer und hochwertiger Baustein im Aufbau zukunftsrelevanter Kompetenzen fuer alle Schueler und Schuelerinnen.',
+    kunst_p3: 'Neben den fuer alle Gymnasien obligatorischen Wochenstunden im Fach Kunst wird in den Klassen 5 und 6 ein Projektkurs "Werkstatt Kunst - Unsere Welt mit den Augen von Kuenstlerinnen und Kuenstlern" zusaetzlich verankert. Dies bietet weiteren Freiraum, in dem die Schuelerinnen und Schueler ohne Notendruck projektbezogen arbeiten koennen.',
+    kunst_p4: 'Dem Profilprojekt liegt ein ganzheitliches und erfahrungsbezogenes Konzept zugrunde, in dem in besonderer Weise der kuenstlerische Prozess im Mittelpunkt steht. Ein Anliegen des Kurses ist u.a. die Sensibilisierung und Schaerfung der Wahrnehmung, die Auseinandersetzung mit der eigenen Lebenswelt und der Aufbau kuenstlerischen Ausdrucks.',
+    musik_title: 'Musikprojekt',
+    musik_p1: 'Im Musikprofil entdecken Schuelerinnen und Schueler ihre musikalischen Interessen, Kreativitaet und Begabungen - in Theorie und Praxis, individuell und im Miteinander. Der Musikunterricht bildet dabei das kontinuierliche Rueckgrat ihrer musikalischen Bildung.',
+    musik_p2: 'Ergaenzend zum Musikunterricht wird im Musikprofil Instrumentalunterricht in Kooperation mit externen Instrumentallehrkraeften angeboten. Im zweiten Halbjahr des Jahrgangs 5 wird die instrumentale Praxis im Profilorchester intensiviert und vertieft.',
+    musik_p3: 'Im Musikprojekt arbeiten die Schuelerinnen und Schueler praxisorientiert in unterschiedlichen Vorhaben: Instrument & Stimme (Jg. 5.1), Profilorchester (Jg. 5.2, woechentlich), Klang & Szene (Jg. 6).',
+    musik_p4: 'Darueber hinaus bieten die AG-Angebote vielfaeltige Moeglichkeiten Musik aktiv zu leben. Die Ensembles arbeiten jahrgangsuebergreifend und foerdern Begabungen nachhaltig und individuell. Das Profilfach Musik ist Teil des Schulversuchs "NRW-Musikprofil-Schule".',
+    sport_title: 'Sportprojekt',
+    sport_p1: 'Als eine der wenigen ausgewaehlten "Partnerschulen des Sports" in NRW zeichnet sich das Grabbe-Gymnasium durch ein besonders sportfreundliches Klima aus und bietet allen jugendlichen Talenten die Chance, eine fundierte Schulausbildung mit einer optimalen Sportfoerderung zu verbinden.',
+    sport_p2: 'Diese Foerderung erfolgt u.a. durch frei waehlbare Sport-Projektkurse, vielfaeltige Sport-AGs in den Sportarten Kunstturnen, Fussball, Leichtathletik und Volleyball und die besondere Unterstuetzung von leistungssport-orientierten Schuelerinnen und Schuelern.',
+    sport_p3: 'Regelmaessig nehmen Schulmannschaften des Grabbe-Gymnasiums erfolgreich an Schulwettkaempfen teil. Basierend auf einer engen Zusammenarbeit von Schule, Verein, Eltern und Schuelerinnen und Schuelern werden darueber hinaus individuelle Loesungen fuer Kaderathleten gefunden, sodass sportliche Begabungen in besonderer Form gefoerdert werden.',
+    nawi_title: 'NaWi-Projekt',
+    nawi_p1: 'Im Profilprojekt NaWi entdecken die Schuelerinnen und Schueler der Klassen 5 und 6 die spannende Welt der Naturwissenschaften. Mit Neugier und Forschergeist gehen sie Phaenomenen aus Biologie, Chemie, Physik und Informatik auf den Grund - immer mit dem Ziel, durch eigenes Beobachten, Experimentieren und Nachdenken Zusammenhaenge in der Natur und Technik zu verstehen.',
+    nawi_p2: 'Im Mittelpunkt steht das selbststaendige und entdeckende Lernen. Die Kinder lernen, Fragen zu stellen, eigene Ideen zu entwickeln, Versuche zu planen und ihre Ergebnisse zu praesentieren. So erwerben sie nicht nur naturwissenschaftliches Wissen, sondern auch wichtige Faehigkeiten wie Teamarbeit, Genauigkeit und Ausdauer.',
+    nawi_p3: 'Die Themen orientieren sich an der Lebenswelt der Kinder und wechseln mit den Jahreszeiten. Ob beim Erkunden der Sinne, beim Beobachten von Pflanzen und Tieren, beim Experimentieren mit Wasser und Energie oder beim Untersuchen von Wetterphaenomenen - ueberall steht das eigene Erleben und Ausprobieren im Vordergrund. Digitale Messgeraete und Sensoren helfen dabei, Daten zu erfassen und wissenschaftlich auszuwerten.',
+    nawi_p4: 'Ergaenzt wird das Profilprojekt durch Wettbewerbe und Exkursionen, die Einblicke in die Anwendung naturwissenschaftlicher Erkenntnisse geben und die Freude am Forschen vertiefen. Dass die Naturwissenschaften an unserer Schule einen besonderen Stellenwert haben, zeigt die wiederholte Auszeichnung durch die Initiative "MINT Zukunft Schaffen!". Als MINT-freundliche Schule legen wir grossen Wert darauf, Begeisterung fuer Mathematik, Informatik, Naturwissenschaften und Technik zu wecken und zu foerdern.',
+  },
+
+  // Oberstufe
+  'oberstufe': {
+    page_label: 'Sekundarstufe II',
+    page_title: 'Oberstufe',
+    page_subtitle: 'Dein Start in der Oberstufe - Wir freuen uns ueber Ihr/euer Interesse an unserer Schule!',
+    portal_title: 'Oberstufen-Portal',
+    portal_text: 'Naehere Informationen ueber unsere Oberstufe finden sich unter dem Oberstufen-Portal, z.B. in der Broschuere, die unter der Rubrik "Laufbahnplanung" zur Verfuegung steht.',
+    anmeldewoche_title: 'Anmeldewoche Oberstufe',
+    anmeldewoche_date: '23. bis 27. Februar 2026',
+    anmeldewoche_text: 'Anders als bei den fuenften Klassen erfolgt die Terminvergabe nicht ueber das Online-Tool, sondern telefonisch oder per Mail.',
+    anmeldewoche_phone: '05231 992617',
+    anmeldewoche_email: 'b.mannebach@grabbe.nrw.schule',
+    documents: 'Anmeldeformular,Einwilligung Datenverarbeitung,Antrag auf Busfahrkarte',
+    voraussetzung_title: 'Voraussetzung fuer die Aufnahme',
+    voraussetzung_text: 'Voraussetzung fuer die Aufnahme in die Sekundarstufe II des Grabbe-Gymnasiums ist das Vorliegen der Berechtigung zum Besuch der gymnasialen Oberstufe, die am Gymnasium durch die Versetzung am Ende der Jahrgangsstufe 10 oder an anderen Schulformen durch den Erwerb des Mittleren Schulabschlusses mit Q-Vermerk erworben wird. Das entsprechende Zeugnis muss vor Beginn der Einfuehrungsphase nachgereicht werden.',
+    koordination_name: 'Frau Mannebach',
+    koordination_text: 'Frau Mannebach steht Ihnen fuer alle Fragen zur Oberstufe zur Verfuegung.',
+    koordination_phone: '05231 992617',
+    koordination_email: 'b.mannebach@grabbe.nrw.schule',
+    hospitationstage_title: 'Hospitationstage',
+    hospitationstage_text: 'Gerne koennen Interessent:innen sich auch im Vorfeld der Anmeldewoche persoenlich oder telefonisch beraten lassen oder einen oder zwei Tage bei uns hospitieren.',
+  },
+
+  // Anmeldung
+  'anmeldung': {
+    page_label: 'Herzlich willkommen',
+    page_title: 'Anmeldung',
+    page_subtitle: 'Wir freuen uns, dass Sie Ihr Kind bei uns am Grabbe anmelden wollen.',
+    klasse5_title: 'Anmeldung Klasse 5',
+    klasse5_subtitle: 'Schuljahr 2026/27',
+    klasse5_text: 'Liebe Eltern und Erziehungsberechtigte, wir freuen uns, dass Sie Ihr Kind bei uns am Grabbe anmelden wollen. Alle weiteren Infos zur Erprobungsstufe (Konzept etc.) finden sich auf der Seite zur Erprobungsstufe.',
+    klasse5_checklist: 'Anmeldeformular (Unterschrift BEIDER Erziehungsberechtigten),Einwilligung Datenverarbeitung,Kopie der Geburtsurkunde,Das letzte Zeugnis,Nachweis ueber erfolgte Masernimpfung',
+    oberstufe_title: 'Anmeldung Oberstufe',
+    oberstufe_subtitle: 'Einfuehrungsphase',
+    oberstufe_text1: 'Wir freuen uns ueber Ihr/euer Interesse an unserer Schule! Die Anmeldewoche fuer die Oberstufe findet vom 23. bis 27.02.2026 statt. Die Terminvergabe erfolgt unter Tel. 05231 992617 oder per Mail an b.mannebach@grabbe.nrw.schule.',
+    oberstufe_text2: 'Gerne koennen Interessent:innen sich auch im Vorfeld der Anmeldewoche persoenlich oder telefonisch beraten lassen oder ein bis zwei Tage bei uns hospitieren.',
+    oberstufe_checklist: 'Anmeldeformular (Unterschrift BEIDER Erziehungsberechtigten),Einwilligung Datenverarbeitung,Antrag auf Busfahrkarte,Kopie der Geburtsurkunde,Letztes Zeugnis,Nachweis Masernimpfung',
+    oberstufe_hinweis: 'Voraussetzung fuer die Aufnahme in die Sekundarstufe II ist die Berechtigung zum Besuch der gymnasialen Oberstufe, die am Gymnasium durch die Versetzung am Ende der Jahrgangsstufe 10 oder an anderen Schulformen durch den Erwerb des Mittleren Schulabschlusses mit Q-Vermerk erworben wird.',
+  },
+
+  // Faecher & AGs
+  'faecher-ags': {
+    page_label: 'Schulleben',
+    page_title: 'Faecher & Arbeitsgemeinschaften',
+    page_subtitle: 'Viele Faecher warten auf dich! Am Nachmittag hast du bei uns die freie Wahl!',
+    intro_text: 'Das Grabbe-Gymnasium wird zum Lebensort Ihrer Kinder. Ihre Kinder koennen sich in vielen verschiedenen Faechern mit engagierten Kolleg:innen bilden. Sie haben nach Englisch die Moeglichkeit, Franzoesisch oder Latein und spaeter Spanisch zu waehlen. Alle Naturwissenschaften und Informatik werden einzeln und auch verbunden, wie in der Natur, angeboten. Die Gesellschaftswissenschaften runden das immer wichtigere Thema rund um Nachhaltigkeit, Demokratiebildung und geschichtliche Verantwortung und mehr ab. Ganz besonders betonen wir die Bildung im Bereich Kunst, Musik und Sport und NaWi.',
+    cat1_title: 'Sprachen, Kunst, Musik',
+    cat1_desc: 'Nach Englisch waehlen Sie Franzoesisch oder Latein, spaeter Spanisch. Besonders betonen wir Kunst, Musik und Sport.',
+    cat2_title: 'MINT',
+    cat2_desc: 'Alle Naturwissenschaften und Informatik werden einzeln und verbunden angeboten. MINT-freundliche Schule!',
+    cat3_title: 'Gesellschaft',
+    cat3_desc: 'Nachhaltigkeit, Demokratiebildung und geschichtliche Verantwortung runden das Angebot ab.',
+    cat4_title: 'Weitere Faecher',
+    cat4_desc: 'Ein breites Spektrum an weiteren Faechern mit engagierten Kolleg:innen erwartet dich.',
+  },
+
+  // Nachmittag
+  'nachmittag': {
+    page_label: 'Schulleben',
+    page_title: 'Nachmittags am Grabbe',
+    page_subtitle: '"Verlaesslich und flexibel" - Beate Bossmanns',
+    text_p1: 'Nach Unterrichtsschluss bietet das Grabbe-Gymnasium mit einem breiten Spektrum an Nachmittagsaktivitaeten eine verlaessliche und flexibel gestaltbare Betreuungszeit bis 15:30 Uhr an. Neben unserer verlaesslichen Nachmittagsbetreuung mit offenen Betreuungszeiten in unseren modernen Betreuungsraeumen, die von engagierten Betreuungskraeften geleitet wird, kann Ihr Kind aus zahlreichen AG-Angeboten waehlen oder in der Hausaufgabenbetreuung unter der Anleitung unserer Schuelertutorinnen und -tutoren Hausaufgaben erledigen.',
+    text_p2: 'Alle Angebote sind miteinander kombinierbar, sodass Sie die Nachmittagsgestaltung Ihres Kindes auf Ihre individuellen Betreuungswuensche anpassen koennen.',
+    text_p3: 'Module der Hausaufgabenbetreuung und Arbeitsgemeinschaften werden fuer ein halbes Jahr gewaehlt. In der Mensa stehen zudem jeden Tag durch unseren Schulcaterer LKS - Pop & Corn sowohl ein ansprechendes Kioskangebot als auch ein reichhaltiges Mittagsessenangebot in Buffetform zur Verfuegung.',
+    card1_title: 'Betreuungszeiten',
+    card1_text: 'Verlaessliche Betreuung bis 15:30 Uhr mit offenen Zeiten in modernen Raeumen.',
+    card2_title: 'Arbeitsgemeinschaften',
+    card2_text: 'Zahlreiche AG-Angebote fuer ein halbes Jahr waehlbar.',
+    card3_title: 'Hausaufgabenbetreuung',
+    card3_text: 'Unter Anleitung von Schuelertutorinnen und -tutoren.',
+    card4_title: 'Mensa & Kiosk',
+    card4_text: 'Taeglich Mittagessen in Buffetform und Kioskangebot durch LKS.',
+    combined_title: 'Alle Angebote kombinierbar',
+    combined_items: 'Offene Betreuungszeiten,AG-Angebote,Hausaufgabenbetreuung,Mittagessen',
+  },
+
+  // Netzwerk
+  'netzwerk': {
+    page_label: 'Schulleben',
+    page_title: 'Vernetzt in Detmold',
+    page_subtitle: 'Wir bieten Ihren Kindern nicht nur in der Schule lebensnahe Erfahrungen, sondern auch mit unseren vertrauensvollen Partnern.',
+    partners: 'Hochschule fuer Musik|Kultur,Landestheater Detmold|Kultur,Johanniter|Soziales,Stadtbibliothek Detmold|Bildung,Lippische Landesbibliothek|Bildung,Landesarchiv NRW|Bildung,Holocaust-Gedenkstaette Yad Vashem|Gedenken,McLean Highschool Washington|International,Wortmann KG|Wirtschaft,Weidmueller GmbH & Co KG|Wirtschaft,Peter-Glaesel-Schule Detmold|Bildung',
+  },
+
+  // Kontakt
+  'kontakt': {
+    page_label: 'Wer, Was, Wo?',
+    page_title: 'Kontakt',
+    page_subtitle: 'Kommunikation miteinander macht den Grabbe-Spirit aus.',
+    address_name: 'Christian-Dietrich-Grabbe-Gymnasium',
+    address_street: 'Kuester-Meyer-Platz 2',
+    address_city: '32756 Detmold',
+    phone: '05231 - 99260',
+    fax: '05231 - 992616',
+    email: 'sekretariat@grabbe.nrw.schule',
+    travel_info: 'Du bist in hoechstens 30 min bei uns',
+    steuergruppe_title: 'Steuergruppe Schulentwicklung',
+    steuergruppe_text: 'Herr Beckmann, Frau Bossmanns, Frau Knueppel, Herr Wessel mit Herrn Dr. Hilbing',
+    contacts: 'Schulleitung|Dr. Claus Hilbing|Personal- und Organisationsentwicklung, Unterrichtsverteilung,Staendige Vertretung (komm.)|Tanja Brentrup-Lappe|Haushaltsmittel, Schulgebaeude und Schulanlagen,Erprobungsstufe (Kl. 5-6)|Herr Hecker|Koordination der Erprobungsstufe,Mittelstufe (Kl. 7-10)|Dr. Chee|Koordination der Mittelstufe,Oberstufe|Frau Mannebach|Koordination der gymnasialen Oberstufe,Verwaltung|Herr Schilling|Koordination der Verwaltung',
+  },
+
+  // Impressum
+  'impressum': {
+    page_title: 'Impressum',
+    verantwortlich: 'Dr. Claus Hilbing und Oliver Sprenger',
+    anschrift: 'Christian-Dietrich-Grabbe-Gymnasium, Kuester-Meyer-Platz 2, 32756 Detmold',
+    kontakt_info: 'Telefon: 05231 - 99260, Telefax: 05231 - 992616, E-Mail: sekretariat@grabbe.nrw.schule',
+    schultraeger: 'Stadt Detmold',
+    aufsichtsbehoerde: 'Bezirksregierung Detmold',
+  },
+
+  // Datenschutz
+  'datenschutz': {
+    page_title: 'Datenschutz',
+    intro_text: 'Der Schutz Ihrer persoenlichen Daten ist uns ein besonderes Anliegen. Wir verarbeiten Ihre Daten daher ausschliesslich auf Grundlage der gesetzlichen Bestimmungen (DSGVO, DSG-NRW, SchulG NRW). In diesen Datenschutzinformationen informieren wir Sie ueber die wichtigsten Aspekte der Datenverarbeitung im Rahmen unserer Website.',
+    verantwortlicher: 'Christian-Dietrich-Grabbe-Gymnasium, Kuester-Meyer-Platz 2, 32756 Detmold, Telefon: 05231 - 99260, E-Mail: sekretariat@grabbe.nrw.schule',
+    hosting_text: 'Diese Website wird bei Vercel Inc. gehostet. Die Server befinden sich in der EU. Beim Besuch unserer Website werden automatisch technisch notwendige Daten erhoben (IP-Adresse, Zeitpunkt des Zugriffs, abgerufene Seite). Diese Daten werden ausschliesslich zum Betrieb der Website und zur Sicherstellung der Systemsicherheit verarbeitet.',
+  },
 } as const
 
 // ============================================================================
@@ -538,5 +683,375 @@ export const EDITABLE_PAGES: PageDefinition[] = [
       },
     ],
     defaults: PAGE_DEFAULTS['erprobungsstufe'],
+  },
+  {
+    id: 'profilprojekte',
+    title: 'Profilprojekte',
+    description: 'Die Seite "Unsere Schule > Profilprojekte" mit den vier Profilprojekten Kunst, Musik, Sport und NaWi.',
+    route: '/unsere-schule/profilprojekte',
+    sections: [
+      {
+        id: 'header',
+        title: 'Seitenkopf',
+        fields: [
+          { key: 'page_label', label: 'Label', type: 'text' },
+          { key: 'page_title', label: 'Seitentitel', type: 'text' },
+          { key: 'page_subtitle', label: 'Untertitel', type: 'textarea' },
+        ],
+      },
+      {
+        id: 'kunst',
+        title: 'Kunstprojekt',
+        fields: [
+          { key: 'kunst_title', label: 'Titel', type: 'text' },
+          { key: 'kunst_p1', label: 'Absatz 1', type: 'textarea' },
+          { key: 'kunst_p2', label: 'Absatz 2', type: 'textarea' },
+          { key: 'kunst_p3', label: 'Absatz 3', type: 'textarea' },
+          { key: 'kunst_p4', label: 'Absatz 4', type: 'textarea' },
+        ],
+      },
+      {
+        id: 'musik',
+        title: 'Musikprojekt',
+        fields: [
+          { key: 'musik_title', label: 'Titel', type: 'text' },
+          { key: 'musik_p1', label: 'Absatz 1', type: 'textarea' },
+          { key: 'musik_p2', label: 'Absatz 2', type: 'textarea' },
+          { key: 'musik_p3', label: 'Absatz 3', type: 'textarea' },
+          { key: 'musik_p4', label: 'Absatz 4', type: 'textarea' },
+        ],
+      },
+      {
+        id: 'sport',
+        title: 'Sportprojekt',
+        fields: [
+          { key: 'sport_title', label: 'Titel', type: 'text' },
+          { key: 'sport_p1', label: 'Absatz 1', type: 'textarea' },
+          { key: 'sport_p2', label: 'Absatz 2', type: 'textarea' },
+          { key: 'sport_p3', label: 'Absatz 3', type: 'textarea' },
+        ],
+      },
+      {
+        id: 'nawi',
+        title: 'NaWi-Projekt',
+        fields: [
+          { key: 'nawi_title', label: 'Titel', type: 'text' },
+          { key: 'nawi_p1', label: 'Absatz 1', type: 'textarea' },
+          { key: 'nawi_p2', label: 'Absatz 2', type: 'textarea' },
+          { key: 'nawi_p3', label: 'Absatz 3', type: 'textarea' },
+          { key: 'nawi_p4', label: 'Absatz 4', type: 'textarea' },
+        ],
+      },
+    ],
+    defaults: PAGE_DEFAULTS['profilprojekte'],
+  },
+  {
+    id: 'oberstufe',
+    title: 'Oberstufe',
+    description: 'Die Seite "Unsere Schule > Oberstufe" mit Informationen zur gymnasialen Oberstufe.',
+    route: '/unsere-schule/oberstufe',
+    sections: [
+      {
+        id: 'header',
+        title: 'Seitenkopf',
+        fields: [
+          { key: 'page_label', label: 'Label', type: 'text' },
+          { key: 'page_title', label: 'Seitentitel', type: 'text' },
+          { key: 'page_subtitle', label: 'Untertitel', type: 'textarea' },
+        ],
+      },
+      {
+        id: 'portal',
+        title: 'Oberstufen-Portal',
+        fields: [
+          { key: 'portal_title', label: 'Titel', type: 'text' },
+          { key: 'portal_text', label: 'Text', type: 'textarea' },
+        ],
+      },
+      {
+        id: 'anmeldewoche',
+        title: 'Anmeldewoche',
+        fields: [
+          { key: 'anmeldewoche_title', label: 'Titel', type: 'text' },
+          { key: 'anmeldewoche_date', label: 'Datum', type: 'text' },
+          { key: 'anmeldewoche_text', label: 'Text', type: 'textarea' },
+          { key: 'anmeldewoche_phone', label: 'Telefon', type: 'text' },
+          { key: 'anmeldewoche_email', label: 'E-Mail', type: 'text' },
+        ],
+      },
+      {
+        id: 'documents',
+        title: 'Anmeldeunterlagen',
+        fields: [
+          { key: 'documents', label: 'Dokumente (kommagetrennt)', type: 'textarea', description: 'Dokumentbezeichnungen getrennt durch Komma eingeben.' },
+        ],
+      },
+      {
+        id: 'voraussetzung',
+        title: 'Voraussetzungen',
+        fields: [
+          { key: 'voraussetzung_title', label: 'Titel', type: 'text' },
+          { key: 'voraussetzung_text', label: 'Text', type: 'textarea' },
+        ],
+      },
+      {
+        id: 'koordination',
+        title: 'Oberstufen-Koordination',
+        fields: [
+          { key: 'koordination_name', label: 'Name', type: 'text' },
+          { key: 'koordination_text', label: 'Beschreibung', type: 'textarea' },
+          { key: 'koordination_phone', label: 'Telefon', type: 'text' },
+          { key: 'koordination_email', label: 'E-Mail', type: 'text' },
+        ],
+      },
+      {
+        id: 'hospitationstage',
+        title: 'Hospitationstage',
+        fields: [
+          { key: 'hospitationstage_title', label: 'Titel', type: 'text' },
+          { key: 'hospitationstage_text', label: 'Text', type: 'textarea' },
+        ],
+      },
+    ],
+    defaults: PAGE_DEFAULTS['oberstufe'],
+  },
+  {
+    id: 'anmeldung',
+    title: 'Anmeldung',
+    description: 'Die Seite "Unsere Schule > Anmeldung" mit Informationen zur Anmeldung fuer Klasse 5 und Oberstufe.',
+    route: '/unsere-schule/anmeldung',
+    sections: [
+      {
+        id: 'header',
+        title: 'Seitenkopf',
+        fields: [
+          { key: 'page_label', label: 'Label', type: 'text' },
+          { key: 'page_title', label: 'Seitentitel', type: 'text' },
+          { key: 'page_subtitle', label: 'Untertitel', type: 'textarea' },
+        ],
+      },
+      {
+        id: 'klasse5',
+        title: 'Anmeldung Klasse 5',
+        fields: [
+          { key: 'klasse5_title', label: 'Titel', type: 'text' },
+          { key: 'klasse5_subtitle', label: 'Untertitel', type: 'text' },
+          { key: 'klasse5_text', label: 'Text', type: 'textarea' },
+          { key: 'klasse5_checklist', label: 'Checkliste (kommagetrennt)', type: 'textarea', description: 'Eintraege getrennt durch Komma eingeben.' },
+        ],
+      },
+      {
+        id: 'oberstufe',
+        title: 'Anmeldung Oberstufe',
+        fields: [
+          { key: 'oberstufe_title', label: 'Titel', type: 'text' },
+          { key: 'oberstufe_subtitle', label: 'Untertitel', type: 'text' },
+          { key: 'oberstufe_text1', label: 'Text 1', type: 'textarea' },
+          { key: 'oberstufe_text2', label: 'Text 2', type: 'textarea' },
+          { key: 'oberstufe_checklist', label: 'Checkliste (kommagetrennt)', type: 'textarea', description: 'Eintraege getrennt durch Komma eingeben.' },
+          { key: 'oberstufe_hinweis', label: 'Hinweis', type: 'textarea' },
+        ],
+      },
+    ],
+    defaults: PAGE_DEFAULTS['anmeldung'],
+  },
+  {
+    id: 'faecher-ags',
+    title: 'Faecher & Arbeitsgemeinschaften',
+    description: 'Die Seite "Schulleben > Faecher & AGs" mit Faecheruebersicht und Kategorien.',
+    route: '/schulleben/faecher-ags',
+    sections: [
+      {
+        id: 'header',
+        title: 'Seitenkopf',
+        fields: [
+          { key: 'page_label', label: 'Label', type: 'text' },
+          { key: 'page_title', label: 'Seitentitel', type: 'text' },
+          { key: 'page_subtitle', label: 'Untertitel', type: 'textarea' },
+        ],
+      },
+      {
+        id: 'intro',
+        title: 'Einleitung',
+        fields: [
+          { key: 'intro_text', label: 'Einleitungstext', type: 'textarea' },
+        ],
+      },
+      {
+        id: 'categories',
+        title: 'Kategorien',
+        fields: [
+          { key: 'cat1_title', label: 'Kategorie 1: Titel', type: 'text' },
+          { key: 'cat1_desc', label: 'Kategorie 1: Beschreibung', type: 'textarea' },
+          { key: 'cat2_title', label: 'Kategorie 2: Titel', type: 'text' },
+          { key: 'cat2_desc', label: 'Kategorie 2: Beschreibung', type: 'textarea' },
+          { key: 'cat3_title', label: 'Kategorie 3: Titel', type: 'text' },
+          { key: 'cat3_desc', label: 'Kategorie 3: Beschreibung', type: 'textarea' },
+          { key: 'cat4_title', label: 'Kategorie 4: Titel', type: 'text' },
+          { key: 'cat4_desc', label: 'Kategorie 4: Beschreibung', type: 'textarea' },
+        ],
+      },
+    ],
+    defaults: PAGE_DEFAULTS['faecher-ags'],
+  },
+  {
+    id: 'nachmittag',
+    title: 'Nachmittags am Grabbe',
+    description: 'Die Seite "Schulleben > Nachmittag" mit Betreuungsangeboten und Informationen.',
+    route: '/schulleben/nachmittag',
+    sections: [
+      {
+        id: 'header',
+        title: 'Seitenkopf',
+        fields: [
+          { key: 'page_label', label: 'Label', type: 'text' },
+          { key: 'page_title', label: 'Seitentitel', type: 'text' },
+          { key: 'page_subtitle', label: 'Untertitel', type: 'text' },
+        ],
+      },
+      {
+        id: 'content',
+        title: 'Inhalt',
+        fields: [
+          { key: 'text_p1', label: 'Absatz 1', type: 'textarea' },
+          { key: 'text_p2', label: 'Absatz 2', type: 'textarea' },
+          { key: 'text_p3', label: 'Absatz 3', type: 'textarea' },
+        ],
+      },
+      {
+        id: 'cards',
+        title: 'Angebots-Karten',
+        fields: [
+          { key: 'card1_title', label: 'Karte 1: Titel', type: 'text' },
+          { key: 'card1_text', label: 'Karte 1: Text', type: 'textarea' },
+          { key: 'card2_title', label: 'Karte 2: Titel', type: 'text' },
+          { key: 'card2_text', label: 'Karte 2: Text', type: 'textarea' },
+          { key: 'card3_title', label: 'Karte 3: Titel', type: 'text' },
+          { key: 'card3_text', label: 'Karte 3: Text', type: 'textarea' },
+          { key: 'card4_title', label: 'Karte 4: Titel', type: 'text' },
+          { key: 'card4_text', label: 'Karte 4: Text', type: 'textarea' },
+        ],
+      },
+      {
+        id: 'combined',
+        title: 'Kombinierbare Angebote',
+        fields: [
+          { key: 'combined_title', label: 'Titel', type: 'text' },
+          { key: 'combined_items', label: 'Eintraege (kommagetrennt)', type: 'textarea', description: 'Eintraege getrennt durch Komma eingeben.' },
+        ],
+      },
+    ],
+    defaults: PAGE_DEFAULTS['nachmittag'],
+  },
+  {
+    id: 'netzwerk',
+    title: 'Netzwerk & Partner',
+    description: 'Die Seite "Schulleben > Netzwerk" mit Kooperationspartnern.',
+    route: '/schulleben/netzwerk',
+    sections: [
+      {
+        id: 'header',
+        title: 'Seitenkopf',
+        fields: [
+          { key: 'page_label', label: 'Label', type: 'text' },
+          { key: 'page_title', label: 'Seitentitel', type: 'text' },
+          { key: 'page_subtitle', label: 'Untertitel', type: 'textarea' },
+        ],
+      },
+      {
+        id: 'partners',
+        title: 'Partner',
+        fields: [
+          { key: 'partners', label: 'Partner (Name|Kategorie, kommagetrennt)', type: 'textarea', description: 'Format: Name|Kategorie getrennt durch Komma.' },
+        ],
+      },
+    ],
+    defaults: PAGE_DEFAULTS['netzwerk'],
+  },
+  {
+    id: 'kontakt',
+    title: 'Kontakt',
+    description: 'Die Kontaktseite mit Adresse, Ansprechpartnern und Kontaktformular.',
+    route: '/kontakt',
+    sections: [
+      {
+        id: 'header',
+        title: 'Seitenkopf',
+        fields: [
+          { key: 'page_label', label: 'Label', type: 'text' },
+          { key: 'page_title', label: 'Seitentitel', type: 'text' },
+          { key: 'page_subtitle', label: 'Untertitel', type: 'textarea' },
+        ],
+      },
+      {
+        id: 'address',
+        title: 'Adresse & Kontaktdaten',
+        fields: [
+          { key: 'address_name', label: 'Schulname', type: 'text' },
+          { key: 'address_street', label: 'Strasse', type: 'text' },
+          { key: 'address_city', label: 'PLZ und Ort', type: 'text' },
+          { key: 'phone', label: 'Telefon', type: 'text' },
+          { key: 'fax', label: 'Fax', type: 'text' },
+          { key: 'email', label: 'E-Mail', type: 'text' },
+          { key: 'travel_info', label: 'Anfahrtshinweis', type: 'text' },
+        ],
+      },
+      {
+        id: 'steuergruppe',
+        title: 'Steuergruppe',
+        fields: [
+          { key: 'steuergruppe_title', label: 'Titel', type: 'text' },
+          { key: 'steuergruppe_text', label: 'Text', type: 'textarea' },
+        ],
+      },
+      {
+        id: 'contacts',
+        title: 'Ansprechpartner:innen',
+        fields: [
+          { key: 'contacts', label: 'Kontakte (Rolle|Name|Beschreibung, kommagetrennt)', type: 'textarea', description: 'Format: Rolle|Name|Beschreibung getrennt durch Komma.' },
+        ],
+      },
+    ],
+    defaults: PAGE_DEFAULTS['kontakt'],
+  },
+  {
+    id: 'impressum',
+    title: 'Impressum',
+    description: 'Die Impressum-Seite mit rechtlichen Angaben.',
+    route: '/impressum',
+    sections: [
+      {
+        id: 'content',
+        title: 'Inhalt',
+        fields: [
+          { key: 'page_title', label: 'Seitentitel', type: 'text' },
+          { key: 'verantwortlich', label: 'Verantwortlich', type: 'textarea' },
+          { key: 'anschrift', label: 'Anschrift', type: 'textarea' },
+          { key: 'kontakt_info', label: 'Kontakt', type: 'textarea' },
+          { key: 'schultraeger', label: 'Schultraeger', type: 'text' },
+          { key: 'aufsichtsbehoerde', label: 'Aufsichtsbehoerde', type: 'text' },
+        ],
+      },
+    ],
+    defaults: PAGE_DEFAULTS['impressum'],
+  },
+  {
+    id: 'datenschutz',
+    title: 'Datenschutz',
+    description: 'Die Datenschutzerklaerung der Schule.',
+    route: '/datenschutz',
+    sections: [
+      {
+        id: 'content',
+        title: 'Inhalt',
+        fields: [
+          { key: 'page_title', label: 'Seitentitel', type: 'text' },
+          { key: 'intro_text', label: 'Einleitungstext', type: 'textarea' },
+          { key: 'verantwortlicher', label: 'Verantwortlicher', type: 'textarea' },
+          { key: 'hosting_text', label: 'Hosting', type: 'textarea' },
+        ],
+      },
+    ],
+    defaults: PAGE_DEFAULTS['datenschutz'],
   },
 ]
