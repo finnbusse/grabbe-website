@@ -13,7 +13,16 @@ const quickLinks = [
   { icon: BookOpen, label: "Faecher & AGs", href: "/schulleben/faecher-ags" },
 ]
 
-export function InfoSection() {
+export function InfoSection({ content }: { content?: Record<string, unknown> }) {
+  const c = content || {}
+  const leftLabel = (c.left_label as string) || 'Erprobungsstufe'
+  const leftHeadline = (c.left_headline as string) || 'Dein Start am Grabbe'
+  const leftText1 = (c.left_text1 as string) || 'Die Jahrgaenge 5 und 6 bilden eine besondere paedagogische Einheit, die Erprobungsstufe. Waehrend dieser Zeit begleiten wir Ihre Kinder intensiv. Anknuepfend an die Lernerfahrungen in der Grundschule fuehren wir die Schueler:innen an die Unterrichtsmethoden und Lernangebote des Gymnasiums heran.'
+  const leftText2 = (c.left_text2 as string) || 'Die Klassenbildung erfolgt nach sozialen Kriterien und beruecksichtigt neben der Grundschulzugehoerigkeit auch die Wunschpartner:innen. Eine einwoechige Klassenfahrt zu Beginn der sechsten Klasse festigt die Klassengemeinschaft.'
+  const leftQuote = (c.left_quote as string) || 'Ein Ort, an dem jedes Kind seinen Platz findet.'
+  const leftLinkText = (c.left_link_text as string) || 'Mehr zur Erprobungsstufe'
+  const rightLabel = (c.right_label as string) || 'Beliebte Themen'
+  const rightHeadline = (c.right_headline as string) || 'Schnellzugriff'
   return (
     <section className="relative py-28 lg:py-36 bg-mesh-blue">
       <div className="mx-auto max-w-6xl px-4 lg:px-8">
@@ -22,29 +31,26 @@ export function InfoSection() {
           <AnimateOnScroll animation="slide-in-left">
             <div>
               <p className="font-sub text-[11px] uppercase tracking-[0.3em] text-primary">
-                Erprobungsstufe
+                {leftLabel}
               </p>
               <h2 className="mt-3 font-display text-4xl md:text-5xl tracking-tight text-foreground">
-                Dein Start am <span className="italic text-primary">Grabbe</span>
+                {leftHeadline.includes('Grabbe') ? (
+                  <>{leftHeadline.split('Grabbe')[0]}<span className="italic text-primary">Grabbe</span>{leftHeadline.split('Grabbe')[1]}</>
+                ) : leftHeadline}
               </h2>
               <div className="mt-8 space-y-5 text-muted-foreground">
                 <p className="text-sm leading-relaxed">
-                  Die Jahrgaenge 5 und 6 bilden eine besondere paedagogische Einheit, die Erprobungsstufe.
-                  Waehrend dieser Zeit begleiten wir Ihre Kinder intensiv. Anknuepfend an die Lernerfahrungen
-                  in der Grundschule fuehren wir die Schueler:innen an die Unterrichtsmethoden und
-                  Lernangebote des Gymnasiums heran.
+                  {leftText1}
                 </p>
                 <p className="text-sm leading-relaxed">
-                  Die Klassenbildung erfolgt nach sozialen Kriterien und beruecksichtigt neben der
-                  Grundschulzugehoerigkeit auch die Wunschpartner:innen. Eine einwoechige Klassenfahrt
-                  zu Beginn der sechsten Klasse festigt die Klassengemeinschaft.
+                  {leftText2}
                 </p>
               </div>
 
               {/* Decorative quote */}
               <blockquote className="mt-8 border-l-2 border-primary/40 pl-6">
                 <p className="font-display text-xl italic text-foreground/80">
-                  {'"'}Ein Ort, an dem jedes Kind seinen Platz findet.{'"'}
+                  {'"'}{leftQuote}{'"'}
                 </p>
               </blockquote>
 
@@ -52,7 +58,7 @@ export function InfoSection() {
                 href="/unsere-schule/erprobungsstufe"
                 className="mt-8 inline-flex items-center gap-2 font-sub text-xs uppercase tracking-[0.15em] text-primary hover:text-foreground transition-colors group"
               >
-                Mehr zur Erprobungsstufe
+                {leftLinkText}
                 <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
@@ -62,10 +68,10 @@ export function InfoSection() {
           <AnimateOnScroll animation="slide-in-right" delay={0.2}>
             <div>
               <p className="font-sub text-[11px] uppercase tracking-[0.3em] text-primary">
-                Beliebte Themen
+                {rightLabel}
               </p>
               <h2 className="mt-3 font-display text-4xl md:text-5xl tracking-tight text-foreground">
-                Schnellzugriff
+                {rightHeadline}
               </h2>
               <div className="mt-8 grid grid-cols-2 gap-4">
                 {quickLinks.map((link, i) => (

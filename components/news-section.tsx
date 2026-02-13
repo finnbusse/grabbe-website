@@ -15,7 +15,14 @@ interface Post {
   created_at: string
 }
 
-export function NewsSection({ posts }: { posts: Post[] }) {
+export function NewsSection({ posts, content }: { posts: Post[]; content?: Record<string, unknown> }) {
+  const c = content || {}
+  const sLabel = (c.label as string) || 'Aktuelles'
+  const sHeadline = (c.headline as string) || 'Neuigkeiten vom Grabbe'
+  const allLinkText = (c.all_link_text as string) || 'Alle Beitraege'
+  const readMoreText = (c.read_more_text as string) || 'Weiterlesen'
+  const allButtonText = (c.all_button_text as string) || 'Alle Beitraege ansehen'
+
   if (posts.length === 0) return null
 
   const featured = posts[0]
@@ -27,13 +34,15 @@ export function NewsSection({ posts }: { posts: Post[] }) {
         <AnimateOnScroll>
           <div className="flex items-end justify-between">
             <div>
-              <p className="font-sub text-[11px] uppercase tracking-[0.3em] text-primary">Aktuelles</p>
+              <p className="font-sub text-[11px] uppercase tracking-[0.3em] text-primary">{sLabel}</p>
               <h2 className="mt-3 font-display text-4xl md:text-5xl tracking-tight text-foreground">
-                Neuigkeiten vom <span className="italic text-primary">Grabbe</span>
+                {sHeadline.includes('Grabbe') ? (
+                  <>{sHeadline.split('Grabbe')[0]}<span className="italic text-primary">Grabbe</span>{sHeadline.split('Grabbe')[1]}</>
+                ) : sHeadline}
               </h2>
             </div>
             <Link href="/aktuelles" className="hidden items-center gap-2 font-sub text-xs uppercase tracking-[0.15em] text-primary hover:text-foreground transition-colors sm:flex group">
-              Alle Beitraege
+              {allLinkText}
               <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
@@ -64,7 +73,7 @@ export function NewsSection({ posts }: { posts: Post[] }) {
                 <h3 className="mt-4 font-display text-2xl md:text-3xl text-card-foreground group-hover:text-primary transition-colors duration-300">{featured.title}</h3>
                 {featured.excerpt && <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground line-clamp-3">{featured.excerpt}</p>}
                 <div className="mt-6 flex items-center gap-2 font-sub text-xs uppercase tracking-[0.15em] text-primary">
-                  Weiterlesen
+                  {readMoreText}
                   <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                 </div>
               </div>
@@ -102,7 +111,7 @@ export function NewsSection({ posts }: { posts: Post[] }) {
 
             <AnimateOnScroll animation="fade-in-up" delay={0.4}>
               <Link href="/aktuelles" className="flex items-center justify-center gap-2 rounded-2xl border border-dashed border-border/60 p-5 font-sub text-xs uppercase tracking-[0.15em] text-muted-foreground hover:border-primary hover:text-primary transition-all duration-300 group">
-                Alle Beitraege ansehen
+                {allButtonText}
                 <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
               </Link>
             </AnimateOnScroll>

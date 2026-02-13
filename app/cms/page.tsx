@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
-import { FileText, CalendarDays, BookOpen, Upload, Mail, GraduationCap } from "lucide-react"
+import { FileText, CalendarDays, BookOpen, Upload, Mail, GraduationCap, FileEdit } from "lucide-react"
 import Link from "next/link"
 
 export default async function CmsDashboardPage() {
@@ -40,6 +40,24 @@ export default async function CmsDashboardPage() {
       </div>
 
       <div className="mt-10 grid gap-6 lg:grid-cols-2">
+        <div className="rounded-2xl border border-primary/20 bg-primary/5 p-6">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <FileEdit className="h-5 w-5" />
+            </div>
+            <div>
+              <h2 className="font-display text-lg font-semibold">Seiten-Editor</h2>
+              <p className="text-sm text-muted-foreground">Texte und Inhalte aller Seiten bearbeiten</p>
+            </div>
+          </div>
+          <p className="mt-3 text-sm text-muted-foreground">
+            Bearbeiten Sie die Texte der Startseite und aller Unterseiten. Design und Layout bleiben dabei erhalten.
+          </p>
+          <Link href="/cms/seiten-editor" className="mt-4 inline-flex rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors">
+            Seiten bearbeiten
+          </Link>
+        </div>
+
         <div className="rounded-2xl border bg-card p-6">
           <h2 className="font-display text-lg font-semibold">Schnellstart</h2>
           <p className="mt-1 text-sm text-muted-foreground">Erstellen Sie neue Inhalte fuer die Website.</p>

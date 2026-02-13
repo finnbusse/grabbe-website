@@ -7,8 +7,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
-import { ArrowLeft, Save, Eye, Loader2 } from "lucide-react"
+import { ArrowLeft, Save, Eye, Loader2, Blocks, FileText } from "lucide-react"
 import { FileUploader, FileListItem } from "./file-uploader"
+import { BlockEditor, type ContentBlock } from "./block-editor"
 import Link from "next/link"
 
 interface PageEditorProps {
@@ -29,6 +30,20 @@ interface AttachedFile {
   type: string
 }
 
+type EditorMode = 'markdown' | 'blocks'
+
+function parseBlocks(content: string): ContentBlock[] | null {
+  try {
+    if (content.startsWith('[{') || content.startsWith('[{"')) {
+      const parsed = JSON.parse(content)
+      if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].type && parsed[0].id) {
+        return parsed
+      }
+    }
+  } catch { /* not blocks */ }
+  return null
+}
+
 export function PageEditor({ page }: PageEditorProps) {
   const router = useRouter()
   const [title, setTitle] = useState(page?.title ?? "")
@@ -41,6 +56,11 @@ export function PageEditor({ page }: PageEditorProps) {
   const [error, setError] = useState<string | null>(null)
   const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([])
 
+  // Determine editor mode based on content format
+  const existingBlocks = parseBlocks(content)
+  const [editorMode, setEditorMode] = useState<EditorMode>(existingBlocks ? 'blocks' : 'markdown')
+  const [blocks, setBlocks] = useState<ContentBlock[]>(existingBlocks || [])
+
   const generateSlug = (text: string) =>
     text.toLowerCase().replace(/[^a-z0-9\s-]/g, "").replace(/\s+/g, "-").replace(/-+/g, "-").trim()
 
@@ -51,6 +71,21 @@ export function PageEditor({ page }: PageEditorProps) {
 
   const insertIntoContent = (text: string) => setContent((prev) => prev + "\n" + text)
 
+  const handleModeChange = (mode: EditorMode) => {
+    if (mode === 'blocks' && editorMode === 'markdown') {
+      // Switch to blocks - blocks start fresh (markdown content not auto-converted)
+      if (content.trim() && blocks.length === 0) {
+        setBlocks([{ id: `block_${Date.now()}`, type: 'text', data: { heading: '', text: content } }])
+      }
+    } else if (mode === 'markdown' && editorMode === 'blocks') {
+      // Switch to markdown - serialize blocks to content
+      if (blocks.length > 0) {
+        setContent(JSON.stringify(blocks))
+      }
+    }
+    setEditorMode(mode)
+  }
+
   const handleSave = async () => {
     setSaving(true)
     setError(null)
@@ -59,8 +94,11 @@ export function PageEditor({ page }: PageEditorProps) {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) throw new Error("Nicht angemeldet")
 
+      // If in blocks mode, serialize blocks to content
+      const finalContent = editorMode === 'blocks' ? JSON.stringify(blocks) : content
+
       const payload = {
-        title, slug, content, section,
+        title, slug, content: finalContent, section,
         sort_order: sortOrder, published,
         user_id: user.id,
         updated_at: new Date().toISOString(),
@@ -124,36 +162,69 @@ export function PageEditor({ page }: PageEditorProps) {
             </div>
           </div>
 
-          <div className="rounded-2xl border bg-card p-6 space-y-3">
-            <Label htmlFor="content">Inhalt (Markdown)</Label>
-            <p className="text-xs text-muted-foreground">**fett**, *kursiv*, ## Ueberschrift, [Link](url), ![Bild](url)</p>
-            <textarea
-              id="content"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="Seiteninhalt hier eingeben..."
-              className="min-h-[400px] w-full resize-y rounded-lg border border-input bg-background px-4 py-3 text-sm leading-relaxed font-mono placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-            />
+          {/* Editor Mode Toggle */}
+          <div className="flex items-center gap-2 rounded-2xl border bg-card px-4 py-3">
+            <span className="text-sm text-muted-foreground mr-2">Bearbeitungsmodus:</span>
+            <Button
+              variant={editorMode === 'markdown' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => handleModeChange('markdown')}
+            >
+              <FileText className="mr-1.5 h-3.5 w-3.5" />
+              Markdown
+            </Button>
+            <Button
+              variant={editorMode === 'blocks' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => handleModeChange('blocks')}
+            >
+              <Blocks className="mr-1.5 h-3.5 w-3.5" />
+              Bausteine
+            </Button>
           </div>
 
-          <div className="rounded-2xl border bg-card p-6 space-y-4">
-            <h3 className="font-display font-semibold">Dateien & Medien</h3>
-            <FileUploader
-              label="Bild oder Dokument hochladen"
-              onUpload={(file) => setAttachedFiles((prev) => [...prev, { url: file.url, name: file.filename, type: file.type }])}
-            />
-            {attachedFiles.length > 0 && (
-              <div className="space-y-2">
-                {attachedFiles.map((file, i) => (
-                  <FileListItem
-                    key={i} url={file.url} name={file.name} type={file.type}
-                    onInsert={() => insertIntoContent(file.type.startsWith("image/") ? `![${file.name}](${file.url})` : `[${file.name} herunterladen](${file.url})`)}
-                    onRemove={() => setAttachedFiles((prev) => prev.filter((_, j) => j !== i))}
-                  />
-                ))}
+          {editorMode === 'markdown' ? (
+            <>
+              <div className="rounded-2xl border bg-card p-6 space-y-3">
+                <Label htmlFor="content">Inhalt (Markdown)</Label>
+                <p className="text-xs text-muted-foreground">**fett**, *kursiv*, ## Ueberschrift, [Link](url), ![Bild](url)</p>
+                <textarea
+                  id="content"
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  placeholder="Seiteninhalt hier eingeben..."
+                  className="min-h-[400px] w-full resize-y rounded-lg border border-input bg-background px-4 py-3 text-sm leading-relaxed font-mono placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                />
               </div>
-            )}
-          </div>
+
+              <div className="rounded-2xl border bg-card p-6 space-y-4">
+                <h3 className="font-display font-semibold">Dateien & Medien</h3>
+                <FileUploader
+                  label="Bild oder Dokument hochladen"
+                  onUpload={(file) => setAttachedFiles((prev) => [...prev, { url: file.url, name: file.filename, type: file.type }])}
+                />
+                {attachedFiles.length > 0 && (
+                  <div className="space-y-2">
+                    {attachedFiles.map((file, i) => (
+                      <FileListItem
+                        key={i} url={file.url} name={file.name} type={file.type}
+                        onInsert={() => insertIntoContent(file.type.startsWith("image/") ? `![${file.name}](${file.url})` : `[${file.name} herunterladen](${file.url})`)}
+                        onRemove={() => setAttachedFiles((prev) => prev.filter((_, j) => j !== i))}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </>
+          ) : (
+            <div className="rounded-2xl border bg-card p-6 space-y-4">
+              <div>
+                <h3 className="font-display font-semibold">Seiteninhalt</h3>
+                <p className="text-xs text-muted-foreground">Fuegen Sie Bausteine hinzu und bearbeiten Sie den Inhalt der Seite.</p>
+              </div>
+              <BlockEditor blocks={blocks} onChange={setBlocks} />
+            </div>
+          )}
         </div>
 
         <div className="space-y-6">
@@ -178,6 +249,19 @@ export function PageEditor({ page }: PageEditorProps) {
               <Input id="sort" type="number" value={sortOrder} onChange={(e) => setSortOrder(parseInt(e.target.value) || 0)} />
             </div>
           </div>
+
+          {editorMode === 'blocks' && (
+            <div className="rounded-2xl border border-primary/20 bg-primary/5 p-6">
+              <h3 className="font-display text-sm font-semibold">Bausteine-Info</h3>
+              <ul className="mt-3 space-y-2 text-xs text-muted-foreground">
+                <li>• <strong>Textabschnitt:</strong> Ueberschrift + Absatz</li>
+                <li>• <strong>Karten:</strong> 2-4 Info-Karten nebeneinander</li>
+                <li>• <strong>FAQ:</strong> Aufklappbare Fragen & Antworten</li>
+                <li>• <strong>Galerie:</strong> Bilder-Raster</li>
+                <li>• <strong>Aufzaehlung:</strong> Punkteliste</li>
+              </ul>
+            </div>
+          )}
         </div>
       </div>
     </div>

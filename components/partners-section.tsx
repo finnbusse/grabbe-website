@@ -40,9 +40,18 @@ function MarqueeRow({ items, reverse = false }: { items: string[]; reverse?: boo
   )
 }
 
-export function PartnersSection() {
-  const firstRow = partners.slice(0, 6)
-  const secondRow = partners.slice(6)
+export function PartnersSection({ content }: { content?: Record<string, unknown> }) {
+  const c = content || {}
+  const sLabel = (c.label as string) || 'Vernetzt in Detmold'
+  const sHeadline = (c.headline as string) || 'Unsere Partner'
+  const sDescription = (c.description as string) || 'Wir bieten Ihren Kindern nicht nur in der Schule lebensnahe Erfahrungen, sondern auch mit unseren vertrauensvollen Partnern.'
+  
+  // Parse partners from comma-separated string or use defaults
+  const partnersStr = (c.partners as string) || partners.join(', ')
+  const dynamicPartners = partnersStr.split(',').map(p => p.trim()).filter(Boolean)
+  
+  const firstRow = dynamicPartners.slice(0, Math.ceil(dynamicPartners.length / 2))
+  const secondRow = dynamicPartners.slice(Math.ceil(dynamicPartners.length / 2))
 
   return (
     <section className="relative py-24 lg:py-28 border-t border-border/40 bg-muted/30 overflow-hidden">
@@ -50,14 +59,15 @@ export function PartnersSection() {
         <AnimateOnScroll>
           <div className="text-center">
             <p className="font-sub text-[11px] uppercase tracking-[0.3em] text-primary">
-              Vernetzt in Detmold
+              {sLabel}
             </p>
             <h2 className="mt-3 font-display text-3xl md:text-4xl tracking-tight text-foreground">
-              Unsere <span className="italic text-primary">Partner</span>
+              {sHeadline.includes('Partner') ? (
+                <>{sHeadline.split('Partner')[0]}<span className="italic text-primary">Partner</span>{sHeadline.split('Partner')[1]}</>
+              ) : sHeadline}
             </h2>
             <p className="mt-4 text-sm text-muted-foreground max-w-lg mx-auto">
-              Wir bieten Ihren Kindern nicht nur in der Schule lebensnahe Erfahrungen, sondern auch
-              mit unseren vertrauensvollen Partnern.
+              {sDescription}
             </p>
           </div>
         </AnimateOnScroll>

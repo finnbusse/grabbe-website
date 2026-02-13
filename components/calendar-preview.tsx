@@ -13,7 +13,14 @@ interface Event {
   category?: string | null
 }
 
-export function CalendarPreview({ events }: { events: Event[] }) {
+export function CalendarPreview({ events, content }: { events: Event[]; content?: Record<string, unknown> }) {
+  const c = content || {}
+  const sLabel = (c.label as string) || 'Termine'
+  const sHeadline = (c.headline as string) || 'Naechste Veranstaltungen'
+  const allLinkText = (c.all_link_text as string) || 'Alle Termine'
+  const emptyText = (c.empty_text as string) || 'Aktuell sind keine Termine eingetragen.'
+  const allButtonText = (c.all_button_text as string) || 'Alle Termine ansehen'
+
   const monthNames = ["Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"]
 
   return (
@@ -22,13 +29,15 @@ export function CalendarPreview({ events }: { events: Event[] }) {
         <AnimateOnScroll>
           <div className="flex items-end justify-between">
             <div>
-              <p className="font-sub text-[11px] uppercase tracking-[0.3em] text-[hsl(200,90%,80%)]">Termine</p>
+              <p className="font-sub text-[11px] uppercase tracking-[0.3em] text-[hsl(200,90%,80%)]">{sLabel}</p>
               <h2 className="mt-3 font-display text-4xl md:text-5xl tracking-tight text-primary-foreground">
-                Naechste <span className="italic text-[hsl(200,90%,80%)]">Veranstaltungen</span>
+                {sHeadline.includes('Veranstaltungen') ? (
+                  <>{sHeadline.split('Veranstaltungen')[0]}<span className="italic text-[hsl(200,90%,80%)]">Veranstaltungen</span>{sHeadline.split('Veranstaltungen')[1]}</>
+                ) : sHeadline}
               </h2>
             </div>
             <Link href="/termine" className="hidden items-center gap-2 font-sub text-xs uppercase tracking-[0.15em] text-[hsl(200,90%,80%)] hover:text-primary-foreground transition-colors sm:flex group">
-              Alle Termine
+              {allLinkText}
               <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
@@ -36,7 +45,7 @@ export function CalendarPreview({ events }: { events: Event[] }) {
 
         <div className="mt-12">
           {events.length === 0 ? (
-            <p className="py-16 text-center text-sm text-primary-foreground/50">Aktuell sind keine Termine eingetragen.</p>
+            <p className="py-16 text-center text-sm text-primary-foreground/50">{emptyText}</p>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {events.slice(0, 6).map((event, i) => {
@@ -77,7 +86,7 @@ export function CalendarPreview({ events }: { events: Event[] }) {
 
           <div className="mt-10 text-center sm:hidden">
             <Link href="/termine" className="inline-flex items-center gap-2 font-sub text-xs uppercase tracking-[0.15em] text-[hsl(200,90%,80%)] hover:text-primary-foreground transition-colors">
-              Alle Termine ansehen <ArrowRight className="h-3.5 w-3.5" />
+              {allButtonText} <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
         </div>

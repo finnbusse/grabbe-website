@@ -3,13 +3,14 @@
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
-import { FileText, CalendarDays, Home, LogOut, LayoutDashboard, BookOpen, Upload, Mail, GraduationCap, Settings, Menu, Users, Activity } from "lucide-react"
+import { FileText, CalendarDays, Home, LogOut, LayoutDashboard, BookOpen, Upload, Mail, GraduationCap, Settings, Menu, Users, Activity, FileEdit } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 const contentLinks = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/cms" },
+  { icon: FileEdit, label: "Seiten-Editor", href: "/cms/seiten-editor" },
   { icon: FileText, label: "Beitraege", href: "/cms/posts" },
-  { icon: BookOpen, label: "Seiten", href: "/cms/pages" },
+  { icon: BookOpen, label: "Eigene Seiten", href: "/cms/pages" },
   { icon: CalendarDays, label: "Termine", href: "/cms/events" },
   { icon: Upload, label: "Dokumente", href: "/cms/documents" },
 ]

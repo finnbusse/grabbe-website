@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { SiteLayout } from "@/components/site-layout"
 import { MarkdownContent } from "@/components/markdown-content"
+import { BlockContentRenderer } from "@/components/block-content-renderer"
 import { notFound } from "next/navigation"
 import type { Metadata } from "next"
 
@@ -22,6 +23,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: page.title }
 }
 
+function isBlockContent(content: string): boolean {
+  try {
+    if (content.startsWith('[{') || content.startsWith('[{"')) {
+      const parsed = JSON.parse(content)
+      return Array.isArray(parsed) && parsed.length > 0 && parsed[0].type && parsed[0].id
+    }
+  } catch { /* not blocks */ }
+  return false
+}
+
 export default async function DynamicPage({ params }: Props) {
   const { slug } = await params
   const supabase = await createClient()
@@ -33,6 +44,8 @@ export default async function DynamicPage({ params }: Props) {
     .single()
 
   if (!page) notFound()
+
+  const useBlocks = isBlockContent(page.content)
 
   return (
     <SiteLayout>
@@ -49,7 +62,11 @@ export default async function DynamicPage({ params }: Props) {
         </section>
 
         <section className="mx-auto max-w-4xl px-4 py-12 lg:px-8">
-          <MarkdownContent content={page.content} />
+          {useBlocks ? (
+            <BlockContentRenderer content={page.content} />
+          ) : (
+            <MarkdownContent content={page.content} />
+          )}
         </section>
       </main>
     </SiteLayout>

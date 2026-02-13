@@ -36,7 +36,17 @@ function TypingText({ text, delay = 0, speed = 40 }: { text: string; delay?: num
   )
 }
 
-export function HeroSection() {
+export function HeroSection({ content }: { content?: Record<string, unknown> }) {
+  const c = content || {}
+  const headline1 = (c.headline1 as string) || 'Deine Talente.'
+  const headline2 = (c.headline2 as string) || 'Deine Bühne.'
+  const headline3 = (c.headline3 as string) || 'Dein Grabbe.'
+  const subtitle = (c.subtitle as string) || 'Wir foerdern Deine Talente und staerken Deine Persoenlichkeit.'
+  const cta1Text = (c.cta1_text as string) || 'Anmeldung Klasse 5'
+  const cta1Link = (c.cta1_link as string) || '/unsere-schule/anmeldung'
+  const cta2Text = (c.cta2_text as string) || 'Profilprojekte entdecken'
+  const cta2Link = (c.cta2_link as string) || '/unsere-schule/profilprojekte'
+  const scrollText = (c.scroll_text as string) || 'Entdecken'
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -78,9 +88,9 @@ export function HeroSection() {
             className={`font-display text-2xl sm:text-3xl md:text-4xl lg:text-6xl text-white leading-[1.1] tracking-tight transition-all duration-700 delay-200 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
             style={{ textShadow: "0 2px 24px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.4)" }}
           >
-            <span className="block">Deine Talente.</span>
-            <span className="block">Deine Bühne.</span>
-            <span className="block italic text-[hsl(200,85%,80%)]" style={{ textShadow: "0 2px 24px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.4)" }}>Dein Grabbe.</span>
+            <span className="block">{headline1}</span>
+            <span className="block">{headline2}</span>
+            <span className="block italic text-[hsl(200,85%,80%)]" style={{ textShadow: "0 2px 24px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.4)" }}>{headline3}</span>
           </h1>
 
           {/* Subtitle with typing animation */}
@@ -89,7 +99,7 @@ export function HeroSection() {
             style={{ textShadow: "0 1px 12px rgba(0,0,0,0.5)" }}
           >
             <TypingText
-              text="Wir foerdern Deine Talente und staerken Deine Persoenlichkeit."
+              text={subtitle}
               delay={1200}
               speed={30}
             />
@@ -98,17 +108,17 @@ export function HeroSection() {
           {/* CTA buttons */}
           <div className={`mt-5 flex flex-col sm:flex-row items-start gap-3 transition-all duration-700 delay-700 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
             <Link
-              href="/unsere-schule/anmeldung"
+              href={cta1Link}
               className="group flex items-center gap-2 rounded-full bg-white/95 px-5 py-2.5 text-sm font-medium text-primary shadow-lg transition-all hover:bg-white hover:shadow-xl"
             >
-              Anmeldung Klasse 5
+              {cta1Text}
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
             <Link
-              href="/unsere-schule/profilprojekte"
+              href={cta2Link}
               className="group flex items-center gap-2 rounded-full bg-white/15 backdrop-blur-md border border-white/25 px-5 py-2.5 text-sm font-medium text-white shadow-lg transition-all hover:bg-white/25"
             >
-              Profilprojekte entdecken
+              {cta2Text}
             </Link>
           </div>
         </div>
@@ -123,7 +133,7 @@ export function HeroSection() {
           className="flex flex-col items-center gap-2 text-muted-foreground/50 hover:text-primary transition-colors"
           aria-label="Weiter scrollen"
         >
-          <span className="text-[10px] font-sub uppercase tracking-[0.25em]">Entdecken</span>
+          <span className="text-[10px] font-sub uppercase tracking-[0.25em]">{scrollText}</span>
           <ArrowDown className="h-4 w-4 animate-bounce" />
         </button>
       </div>

@@ -2,27 +2,29 @@ import { SiteLayout } from "@/components/site-layout"
 import { Heart, Users, Lightbulb, ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
 
 export const metadata = {
   title: "Erprobungsstufe - Grabbe-Gymnasium Detmold",
   description: "Informationen zur Erprobungsstufe (Klassen 5 und 6) am Grabbe-Gymnasium Detmold.",
 }
 
-export default function ErprobungsstufePage() {
+export default async function ErprobungsstufePage() {
+  const content = await getPageContent('erprobungsstufe', PAGE_DEFAULTS['erprobungsstufe'])
+
   return (
     <SiteLayout>
       <main>
         <section className="border-b border-border bg-muted">
           <div className="mx-auto max-w-7xl px-4 pb-12 pt-16 lg:px-8 lg:pb-16 lg:pt-24">
             <p className="text-sm font-medium uppercase tracking-widest text-primary">
-              Klassen 5 & 6
+              {content.page_label}
             </p>
             <h1 className="mt-3 font-display text-4xl font-bold tracking-tight text-foreground md:text-5xl">
-              Erprobungsstufe
+              {content.page_title}
             </h1>
             <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
-              Entdecke deine Talente! Bringe deine Ideen ein und mach sie sichtbar!
-              Ich kann was - und es zaehlt!
+              {content.page_subtitle}
             </p>
           </div>
         </section>
@@ -33,18 +35,18 @@ export default function ErprobungsstufePage() {
             {[
               {
                 icon: Lightbulb,
-                title: "Deine Talente entdecken",
-                text: "Du wirst zunehmend kreativer und selbststaendiger!",
+                title: content.card1_title,
+                text: content.card1_text,
               },
               {
                 icon: Users,
-                title: "Gemeinschaft bilden",
-                text: "Wir beteiligen Dich an immer mehr Entscheidungen!",
+                title: content.card2_title,
+                text: content.card2_text,
               },
               {
                 icon: Heart,
-                title: "Persoenlichkeit staerken",
-                text: "Du kannst was - und es zaehlt!",
+                title: content.card3_title,
+                text: content.card3_text,
               },
             ].map((item) => (
               <div key={item.title} className="rounded-2xl border border-border bg-card p-6 text-center">
@@ -60,42 +62,28 @@ export default function ErprobungsstufePage() {
           {/* Content */}
           <div className="mt-16 max-w-3xl space-y-6">
             <p className="text-sm leading-relaxed text-muted-foreground">
-              Die Jahrgaenge 5 und 6 bilden eine besondere paedagogische Einheit, die Erprobungsstufe.
-              Waehrend dieser Zeit, die fuer Schueler:innen mit dem Uebergang von der Grundschule zum
-              Gymnasium viele Veraenderungen mit sich bringt, begleiten wir Ihre Kinder intensiv.
-              Anknuepfend an die Lernerfahrungen in der Grundschule fuehren wir die Schueler:innen
-              an die Unterrichtsmethoden und Lernangebote des Gymnasiums heran.
+              {content.content_p1}
             </p>
             <p className="text-sm leading-relaxed text-muted-foreground">
-              Das besondere Profil des Grabbe mit den Profilprojekten in Kunst, Musik, Sport oder
-              NaWi bietet den Schueler:innen die Moeglichkeit, frei waehlbar in einem der vier
-              Profilprojekte fuer ein Jahr in einer gemischten Gruppe neue Lernwege zu entdecken.
-              Moderner, vom Leistungsdruck befreiter und die unterschiedlichen Talente und Neigungen
-              der Schueler:innen foerdernder Projektunterricht steht dabei im Mittelpunkt.
+              {content.content_p2}
             </p>
             <p className="text-sm leading-relaxed text-muted-foreground">
-              Die Klassenbildung erfolgt dabei nach sozialen Kriterien und beruecksichtigt dabei neben
-              der Grundschulzugehoerigkeit auch die Wunschpartner:innen.
+              {content.content_p3}
             </p>
             <p className="text-sm leading-relaxed text-muted-foreground">
-              Wir laden Sie vor den Sommerferien zu einem Begruessungsnachmittag ein, an dem Ihre
-              Kinder ihre neuen Mitschueler:innen sowie ihr Klassenleitungsteam und ihren Klassenraum
-              kennenlernen. Die ersten Unterrichtstage zum Kennenlernen gestaltet das
-              Klassenleitungsteam mit einem paedagogischen Programm und auch in der
-              Klassenleitungsstunde liegt der Schwerpunkt auf dem sozialen Lernen. Eine einwoechige
-              Klassenfahrt zu Beginn der sechsten Klasse festigt weiterhin die Klassengemeinschaft.
+              {content.content_p4}
             </p>
           </div>
 
           <div className="mt-10 flex flex-wrap gap-3">
             <Button asChild>
               <Link href="/unsere-schule/profilprojekte">
-                Profilprojekte entdecken
+                {content.cta1_text}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
             <Button variant="outline" asChild>
-              <Link href="/unsere-schule/anmeldung">Zur Anmeldung</Link>
+              <Link href="/unsere-schule/anmeldung">{content.cta2_text}</Link>
             </Button>
           </div>
         </section>
