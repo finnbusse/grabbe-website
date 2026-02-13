@@ -56,7 +56,7 @@ export function HeroSection({ content }: { content?: Record<string, unknown> }) 
   return (
     <section className="relative flex flex-col bg-background overflow-hidden">
       {/* Hero image -- full width, flush to top, only rounded at bottom */}
-      <div className="relative w-full overflow-hidden rounded-b-[2rem] md:rounded-b-[3rem]" style={{ aspectRatio: "21/9" }}>
+      <div className="relative w-full overflow-hidden rounded-b-[1.5rem] sm:rounded-b-[2rem] md:rounded-b-[3rem]" style={{ aspectRatio: "16/9" }}>
         {/* The image -- NO dark overlays whatsoever */}
         <Image
           src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1770907263880.png-LbbwTH3bV3iIeTlN24uWwemZuKXx6y.jpeg"
@@ -69,12 +69,12 @@ export function HeroSection({ content }: { content?: Record<string, unknown> }) 
 
         {/* Content overlay -- bottom left, text has its own shadow for readability, NO image darkening */}
         <div
-          className="absolute inset-0 z-10 flex flex-col justify-end p-5 md:p-10 lg:p-14"
+          className="absolute inset-0 z-10 flex flex-col justify-end p-4 sm:p-6 md:p-10 lg:p-14"
           style={{ opacity: mounted ? 1 : 0, transition: "opacity 0.5s ease" }}
         >
           {/* Headline */}
           <h1
-            className={`font-display text-2xl sm:text-3xl md:text-4xl lg:text-6xl text-white leading-[1.1] tracking-tight transition-all duration-700 delay-200 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+            className={`font-display text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-6xl text-white leading-[1.1] tracking-tight transition-all duration-700 delay-200 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
             style={{ textShadow: "0 2px 24px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.4)" }}
           >
             <span className="block">{headline1}</span>
@@ -84,7 +84,7 @@ export function HeroSection({ content }: { content?: Record<string, unknown> }) 
 
           {/* Subtitle with typing animation */}
           <p
-            className={`mt-3 max-w-md text-white/90 text-xs md:text-sm leading-relaxed font-sans transition-all duration-700 delay-500 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+            className={`mt-2 sm:mt-3 max-w-md text-white/90 text-xs sm:text-sm leading-relaxed font-sans transition-all duration-700 delay-500 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
             style={{ textShadow: "0 1px 12px rgba(0,0,0,0.5)" }}
           >
             <TypingText
@@ -95,17 +95,17 @@ export function HeroSection({ content }: { content?: Record<string, unknown> }) 
           </p>
 
           {/* CTA buttons */}
-          <div className={`mt-5 flex flex-col sm:flex-row items-start gap-3 transition-all duration-700 delay-700 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+          <div className={`mt-4 sm:mt-5 flex flex-col sm:flex-row items-start gap-2 sm:gap-3 transition-all duration-700 delay-700 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
             <Link
               href={cta1Link}
-              className="group flex items-center gap-2 rounded-full bg-white/95 px-5 py-2.5 text-sm font-medium text-primary shadow-lg transition-all hover:bg-white hover:shadow-xl"
+              className="group flex items-center gap-2 rounded-full bg-white/95 px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-medium text-primary shadow-lg transition-all hover:bg-white hover:shadow-xl w-full sm:w-auto justify-center sm:justify-start"
             >
               {cta1Text}
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4 transition-transform group-hover:translate-x-1" />
             </Link>
             <Link
               href={cta2Link}
-              className="group flex items-center gap-2 rounded-full bg-white/15 backdrop-blur-md border border-white/25 px-5 py-2.5 text-sm font-medium text-white shadow-lg transition-all hover:bg-white/25"
+              className="group flex items-center gap-2 rounded-full bg-white/15 backdrop-blur-md border border-white/25 px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-medium text-white shadow-lg transition-all hover:bg-white/25 w-full sm:w-auto justify-center sm:justify-start"
             >
               {cta2Text}
             </Link>
@@ -114,7 +114,7 @@ export function HeroSection({ content }: { content?: Record<string, unknown> }) 
       </div>
 
       {/* Scroll indicator */}
-      <div className="relative z-10 flex justify-center py-8">
+      <div className="relative z-10 flex justify-center py-6 sm:py-8">
         <button
           onClick={() => {
             document.getElementById("welcome")?.scrollIntoView({ behavior: "smooth" })
