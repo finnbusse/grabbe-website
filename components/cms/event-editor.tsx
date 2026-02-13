@@ -44,11 +44,10 @@ export function EventEditor({ event }: EventEditorProps) {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) throw new Error("Nicht angemeldet")
 
-      const payload = {
+      const basePayload: Record<string, unknown> = {
         title,
         description: description || null,
         event_date: eventDate,
-        event_end_date: eventEndDate || null,
         event_time: eventTime || null,
         location: location || null,
         category,
@@ -57,18 +56,27 @@ export function EventEditor({ event }: EventEditorProps) {
         updated_at: new Date().toISOString(),
       }
 
-      if (event) {
-        const { error: updateError } = await supabase
-          .from("events")
-          .update(payload)
-          .eq("id", event.id)
-        if (updateError) throw updateError
-      } else {
-        const { error: insertError } = await supabase
-          .from("events")
-          .insert(payload)
-        if (insertError) throw insertError
+      // Try with event_end_date first, fall back without it if column doesn't exist
+      const payloadWithEndDate = { ...basePayload, event_end_date: eventEndDate || null }
+
+      const saveWithPayload = async (payload: Record<string, unknown>) => {
+        if (event) {
+          const { error } = await supabase.from("events").update(payload as never).eq("id", event.id)
+          return error
+        } else {
+          const { error } = await supabase.from("events").insert(payload as never)
+          return error
+        }
       }
+
+      let saveError = await saveWithPayload(payloadWithEndDate)
+
+      // If the error mentions event_end_date column, retry without it
+      if (saveError && saveError.message?.includes("event_end_date")) {
+        saveError = await saveWithPayload(basePayload)
+      }
+
+      if (saveError) throw saveError
 
       router.push("/cms/events")
       router.refresh()

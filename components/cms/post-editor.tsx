@@ -69,24 +69,37 @@ export function PostEditor({ post }: PostEditorProps) {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) throw new Error("Nicht angemeldet")
 
-      const payload = {
+      const basePayload: Record<string, unknown> = {
         title, slug, content,
         excerpt: excerpt || null,
         category, published, featured,
         image_url: imageUrl || null,
         author_name: authorName || user.email?.split("@")[0] || "Redaktion",
-        event_date: eventDate || null,
         user_id: user.id,
         updated_at: new Date().toISOString(),
       }
 
-      if (post) {
-        const { error: e } = await supabase.from("posts").update(payload).eq("id", post.id)
-        if (e) throw e
-      } else {
-        const { error: e } = await supabase.from("posts").insert(payload)
-        if (e) throw e
+      const payloadWithDate = { ...basePayload, event_date: eventDate || null }
+
+      const saveWithPayload = async (payload: Record<string, unknown>) => {
+        if (post) {
+          const { error } = await supabase.from("posts").update(payload as never).eq("id", post.id)
+          return error
+        } else {
+          const { error } = await supabase.from("posts").insert(payload as never)
+          return error
+        }
       }
+
+      let saveError = await saveWithPayload(payloadWithDate)
+
+      // If the error mentions event_date column, retry without it
+      if (saveError && saveError.message?.includes("event_date")) {
+        saveError = await saveWithPayload(basePayload)
+      }
+
+      if (saveError) throw saveError
+
       router.push("/cms/posts")
       router.refresh()
     } catch (err: unknown) {

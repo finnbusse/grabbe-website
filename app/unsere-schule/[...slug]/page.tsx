@@ -6,12 +6,14 @@ import { notFound } from "next/navigation"
 import type { Metadata } from "next"
 
 interface Props {
-  params: Promise<{ slug: string }>
+  params: Promise<{ slug: string[] }>
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const page = await resolveCustomPage(slug, "/unsere-schule")
+  const pageSlug = slug[slug.length - 1]
+  const routePath = "/unsere-schule" + (slug.length > 1 ? "/" + slug.slice(0, -1).join("/") : "")
+  const page = await resolveCustomPage(pageSlug, routePath)
   if (!page) return {}
   return { title: `${page.title} - Grabbe-Gymnasium` }
 }
@@ -28,7 +30,9 @@ function isBlockContent(content: string): boolean {
 
 export default async function UnsereSchuleDynamicPage({ params }: Props) {
   const { slug } = await params
-  const page = await resolveCustomPage(slug, "/unsere-schule")
+  const pageSlug = slug[slug.length - 1]
+  const routePath = "/unsere-schule" + (slug.length > 1 ? "/" + slug.slice(0, -1).join("/") : "")
+  const page = await resolveCustomPage(pageSlug, routePath)
 
   if (!page) notFound()
 

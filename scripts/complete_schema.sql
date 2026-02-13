@@ -63,6 +63,7 @@ CREATE TABLE IF NOT EXISTS public.posts (
   featured BOOLEAN DEFAULT false,
   image_url TEXT,
   author_name TEXT,
+  event_date DATE,
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   created_at TIMESTAMPTZ DEFAULT now(),
   updated_at TIMESTAMPTZ DEFAULT now()
@@ -101,6 +102,7 @@ CREATE TABLE IF NOT EXISTS public.events (
   title TEXT NOT NULL,
   description TEXT,
   event_date DATE NOT NULL,
+  event_end_date DATE,
   event_time TEXT,
   location TEXT,
   category TEXT DEFAULT 'termin',
