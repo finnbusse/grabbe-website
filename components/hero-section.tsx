@@ -56,7 +56,7 @@ export function HeroSection({ content }: { content?: Record<string, unknown> }) 
   return (
     <section className="relative flex flex-col bg-background overflow-hidden">
       {/* Hero image -- full width, flush to top, only rounded at bottom */}
-      <div className="relative w-full overflow-hidden rounded-b-[1.5rem] sm:rounded-b-[2rem] md:rounded-b-[3rem] aspect-[4/3] sm:aspect-[16/9]">
+      <div className="relative w-full overflow-hidden rounded-b-[1.5rem] sm:rounded-b-[2rem] md:rounded-b-[3rem] aspect-[4/3] sm:aspect-[16/9] lg:aspect-[21/9]">
         {/* The image -- NO dark overlays whatsoever */}
         <Image
           src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1770907263880.png-LbbwTH3bV3iIeTlN24uWwemZuKXx6y.jpeg"
