@@ -218,7 +218,7 @@ export default function SeitenstrukturPage() {
   const addCategory = (parentId: string | null) => {
     if (!newCategorySlug.trim() || !newCategoryLabel.trim()) return
 
-    const slug = newCategorySlug.toLowerCase().replace(/[^a-z0-9-]/g, "").replace(/\s+/g, "-")
+    const slug = newCategorySlug.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")
     const newCat: CategoryDef = {
       id: parentId ? `${parentId}/${slug}` : slug,
       slug,
@@ -593,7 +593,7 @@ function CategoryNode({
           <>
             <span className="text-sm font-semibold text-foreground">{category.label}</span>
             <span className="text-xs text-muted-foreground font-mono">/{category.id}/</span>
-            {isSystemCategory && <Lock className="h-3 w-3 text-muted-foreground/60" title="Systemkategorie" />}
+            {isSystemCategory && <span title="Systemkategorie"><Lock className="h-3 w-3 text-muted-foreground/60" /></span>}
           </>
         )}
 
