@@ -1,38 +1,31 @@
 import { SiteLayout } from "@/components/site-layout"
 import { Handshake } from "lucide-react"
+import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
 
 export const metadata = {
   title: "Netzwerk & Partner - Grabbe-Gymnasium Detmold",
   description: "Unsere Kooperationspartner und Vernetzung in Detmold.",
 }
 
-const partners = [
-  { name: "Hochschule fuer Musik", category: "Kultur" },
-  { name: "Landestheater Detmold", category: "Kultur" },
-  { name: "Johanniter", category: "Soziales" },
-  { name: "Stadtbibliothek Detmold", category: "Bildung" },
-  { name: "Lippische Landesbibliothek", category: "Bildung" },
-  { name: "Landesarchiv NRW", category: "Bildung" },
-  { name: "Holocaust-Gedenkstaette Yad Vashem", category: "Gedenken" },
-  { name: "McLean Highschool Washington", category: "International" },
-  { name: "Wortmann KG", category: "Wirtschaft" },
-  { name: "Weidmueller GmbH & Co KG", category: "Wirtschaft" },
-  { name: "Peter-Glaesel-Schule Detmold", category: "Bildung" },
-]
+export default async function NetzwerkPage() {
+  const content = await getPageContent('netzwerk', PAGE_DEFAULTS['netzwerk'])
 
-export default function NetzwerkPage() {
+  const partners = (content.partners as string).split(',').map((entry) => {
+    const [name, category] = entry.split('|')
+    return { name: name.trim(), category: category?.trim() ?? '' }
+  })
+
   return (
     <SiteLayout>
       <main>
         <section className="border-b border-border bg-muted">
           <div className="mx-auto max-w-7xl px-4 pb-12 pt-16 lg:px-8 lg:pb-16 lg:pt-24">
-            <p className="text-sm font-medium uppercase tracking-widest text-primary">Schulleben</p>
+            <p className="text-sm font-medium uppercase tracking-widest text-primary">{content.page_label}</p>
             <h1 className="mt-3 font-display text-4xl font-bold tracking-tight text-foreground md:text-5xl">
-              Vernetzt in Detmold
+              {content.page_title}
             </h1>
             <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
-              Wir bieten Ihren Kindern nicht nur in der Schule lebensnahe Erfahrungen,
-              sondern auch mit unseren vertrauensvollen Partnern.
+              {content.page_subtitle}
             </p>
           </div>
         </section>

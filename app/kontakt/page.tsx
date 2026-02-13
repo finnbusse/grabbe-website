@@ -1,35 +1,34 @@
 import { SiteLayout } from "@/components/site-layout"
 import { ContactForm } from "@/components/contact-form"
 import { Mail, Phone, MapPin, Clock } from "lucide-react"
+import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
 
 export const metadata = {
   title: "Kontakt - Grabbe-Gymnasium Detmold",
   description: "Kontaktinformationen und Ansprechpartner:innen am Grabbe-Gymnasium Detmold.",
 }
 
-const contacts = [
-  { role: "Schulleitung", name: "Dr. Claus Hilbing", desc: "Personal- und Organisationsentwicklung, Unterrichtsverteilung" },
-  { role: "Staendige Vertretung (komm.)", name: "Tanja Brentrup-Lappe", desc: "Haushaltsmittel, Schulgebaeude und Schulanlagen" },
-  { role: "Erprobungsstufe (Kl. 5-6)", name: "Herr Hecker", desc: "Koordination der Erprobungsstufe" },
-  { role: "Mittelstufe (Kl. 7-10)", name: "Dr. Chee", desc: "Koordination der Mittelstufe" },
-  { role: "Oberstufe", name: "Frau Mannebach", desc: "Koordination der gymnasialen Oberstufe" },
-  { role: "Verwaltung", name: "Herr Schilling", desc: "Koordination der Verwaltung" },
-]
+export default async function KontaktPage() {
+  const content = await getPageContent('kontakt', PAGE_DEFAULTS['kontakt'])
 
-export default function KontaktPage() {
+  const contacts = (content.contacts as string).split(',').map((entry) => {
+    const [role, name, desc] = entry.split('|')
+    return { role: role?.trim() ?? '', name: name?.trim() ?? '', desc: desc?.trim() ?? '' }
+  })
+
   return (
     <SiteLayout>
       <main>
         <section className="border-b border-border bg-muted">
           <div className="mx-auto max-w-7xl px-4 pb-12 pt-16 lg:px-8 lg:pb-16 lg:pt-24">
             <p className="text-sm font-medium uppercase tracking-widest text-primary">
-              Wer, Was, Wo?
+              {content.page_label}
             </p>
             <h1 className="mt-3 font-display text-4xl font-bold tracking-tight text-foreground md:text-5xl">
-              Kontakt
+              {content.page_title}
             </h1>
             <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
-              Kommunikation miteinander macht den Grabbe-Spirit aus.
+              {content.page_subtitle}
             </p>
           </div>
         </section>
@@ -44,28 +43,28 @@ export default function KontaktPage() {
                   <div className="flex items-start gap-3">
                     <MapPin className="mt-0.5 h-5 w-5 text-primary" />
                     <div className="text-sm text-muted-foreground">
-                      <p className="font-medium text-card-foreground">Christian-Dietrich-Grabbe-Gymnasium</p>
-                      <p>Kuester-Meyer-Platz 2</p>
-                      <p>32756 Detmold</p>
+                      <p className="font-medium text-card-foreground">{content.address_name}</p>
+                      <p>{content.address_street}</p>
+                      <p>{content.address_city}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
                     <Phone className="h-5 w-5 text-primary" />
                     <div className="text-sm">
-                      <p className="text-muted-foreground">Telefon: <a href="tel:0523199260" className="text-foreground hover:text-primary">05231 - 99260</a></p>
-                      <p className="text-muted-foreground">Fax: 05231 - 992616</p>
+                      <p className="text-muted-foreground">Telefon: <a href="tel:0523199260" className="text-foreground hover:text-primary">{content.phone}</a></p>
+                      <p className="text-muted-foreground">Fax: {content.fax}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
                     <Mail className="h-5 w-5 text-primary" />
-                    <a href="mailto:sekretariat@grabbe.nrw.schule" className="text-sm text-primary hover:underline">
-                      sekretariat@grabbe.nrw.schule
+                    <a href={`mailto:${content.email}`} className="text-sm text-primary hover:underline">
+                      {content.email}
                     </a>
                   </div>
                   <div className="flex items-center gap-3">
                     <Clock className="h-5 w-5 text-primary" />
                     <p className="text-sm text-muted-foreground">
-                      Du bist in hoechstens 30 min bei uns
+                      {content.travel_info}
                     </p>
                   </div>
                 </div>
@@ -73,10 +72,10 @@ export default function KontaktPage() {
 
               <div className="rounded-2xl border border-border bg-card p-6">
                 <h2 className="font-display text-lg font-semibold text-card-foreground">
-                  Steuergruppe Schulentwicklung
+                  {content.steuergruppe_title}
                 </h2>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  Herr Beckmann, Frau Bossmanns, Frau Knueppel, Herr Wessel mit Herrn Dr. Hilbing
+                  {content.steuergruppe_text}
                 </p>
               </div>
             </div>

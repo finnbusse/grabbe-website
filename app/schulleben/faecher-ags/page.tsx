@@ -1,53 +1,56 @@
 import { SiteLayout } from "@/components/site-layout"
 import { Languages, Palette, FlaskConical, Globe, BookOpen, Calendar, Monitor } from "lucide-react"
 import Link from "next/link"
+import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
 
 export const metadata = {
   title: "Faecher & Arbeitsgemeinschaften - Grabbe-Gymnasium Detmold",
   description: "Faecher und Arbeitsgemeinschaften am Grabbe-Gymnasium Detmold.",
 }
 
-const categories = [
-  {
-    icon: Languages,
-    title: "Sprachen, Kunst, Musik",
-    desc: "Nach Englisch waehlen Sie Franzoesisch oder Latein, spaeter Spanisch. Besonders betonen wir Kunst, Musik und Sport.",
-    color: "bg-rose-500",
-  },
-  {
-    icon: FlaskConical,
-    title: "MINT",
-    desc: "Alle Naturwissenschaften und Informatik werden einzeln und verbunden angeboten. MINT-freundliche Schule!",
-    color: "bg-sky-500",
-  },
-  {
-    icon: Globe,
-    title: "Gesellschaft",
-    desc: "Nachhaltigkeit, Demokratiebildung und geschichtliche Verantwortung runden das Angebot ab.",
-    color: "bg-emerald-500",
-  },
-  {
-    icon: BookOpen,
-    title: "Weitere Faecher",
-    desc: "Ein breites Spektrum an weiteren Faechern mit engagierten Kolleg:innen erwartet dich.",
-    color: "bg-amber-500",
-  },
-]
+export default async function FaecherAGsPage() {
+  const content = await getPageContent('faecher-ags', PAGE_DEFAULTS['faecher-ags'])
 
-export default function FaecherAGsPage() {
+  const categories = [
+    {
+      icon: Languages,
+      title: content.cat1_title,
+      desc: content.cat1_desc,
+      color: "bg-rose-500",
+    },
+    {
+      icon: FlaskConical,
+      title: content.cat2_title,
+      desc: content.cat2_desc,
+      color: "bg-sky-500",
+    },
+    {
+      icon: Globe,
+      title: content.cat3_title,
+      desc: content.cat3_desc,
+      color: "bg-emerald-500",
+    },
+    {
+      icon: BookOpen,
+      title: content.cat4_title,
+      desc: content.cat4_desc,
+      color: "bg-amber-500",
+    },
+  ]
+
   return (
     <SiteLayout>
       <main>
         <section className="border-b border-border bg-muted">
           <div className="mx-auto max-w-7xl px-4 pb-12 pt-16 lg:px-8 lg:pb-16 lg:pt-24">
             <p className="text-sm font-medium uppercase tracking-widest text-primary">
-              Schulleben
+              {content.page_label}
             </p>
             <h1 className="mt-3 font-display text-4xl font-bold tracking-tight text-foreground md:text-5xl">
-              Faecher & Arbeitsgemeinschaften
+              {content.page_title}
             </h1>
             <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
-              Viele Faecher warten auf dich! Am Nachmittag hast du bei uns die freie Wahl!
+              {content.page_subtitle}
             </p>
           </div>
         </section>
@@ -55,19 +58,13 @@ export default function FaecherAGsPage() {
         <section className="mx-auto max-w-7xl px-4 py-16 lg:px-8">
           <div className="max-w-3xl">
             <p className="text-sm leading-relaxed text-muted-foreground">
-              Das Grabbe-Gymnasium wird zum Lebensort Ihrer Kinder. Ihre Kinder koennen sich in
-              vielen verschiedenen Faechern mit engagierten Kolleg:innen bilden. Sie haben nach
-              Englisch die Moeglichkeit, Franzoesisch oder Latein und spaeter Spanisch zu waehlen.
-              Alle Naturwissenschaften und Informatik werden einzeln und auch verbunden, wie in der
-              Natur, angeboten. Die Gesellschaftswissenschaften runden das immer wichtigere Thema
-              rund um Nachhaltigkeit, Demokratiebildung und geschichtliche Verantwortung und mehr ab.
-              Ganz besonders betonen wir die Bildung im Bereich Kunst, Musik und Sport und NaWi.
+              {content.intro_text}
             </p>
           </div>
 
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {categories.map((cat) => (
-              <div key={cat.title} className="group rounded-2xl border border-border bg-card p-6 transition-all hover:border-primary/30 hover:shadow-lg">
+              <div key={String(cat.title)} className="group rounded-2xl border border-border bg-card p-6 transition-all hover:border-primary/30 hover:shadow-lg">
                 <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${cat.color} text-background`}>
                   <cat.icon className="h-6 w-6" />
                 </div>
