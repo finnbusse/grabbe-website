@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server"
+import { resolveCustomPage } from "@/lib/resolve-page"
 import { SiteLayout } from "@/components/site-layout"
 import { MarkdownContent } from "@/components/markdown-content"
 import { BlockContentRenderer } from "@/components/block-content-renderer"
@@ -6,62 +6,12 @@ import { notFound } from "next/navigation"
 import type { Metadata } from "next"
 
 interface Props {
-  params: Promise<{ slug: string[] }>
-}
-
-/**
- * Resolves a page from the URL segments.
- * Supports:
- *   /seiten/my-page          -> slug = "my-page", no route_path
- *   /seiten/category/my-page -> slug = "my-page", route_path = "/category"
- *   (also handles middleware rewrites from /category/my-page)
- */
-async function resolvePage(segments: string[]) {
-  const supabase = await createClient()
-
-  if (segments.length === 1) {
-    // Simple slug lookup: /seiten/my-page
-    const { data } = await supabase
-      .from("pages")
-      .select("*")
-      .eq("slug", segments[0])
-      .eq("published", true)
-      .single()
-    return data
-  }
-
-  if (segments.length >= 2) {
-    // Hierarchical lookup: /seiten/category/subcategory/my-page
-    const pageSlug = segments[segments.length - 1]
-    const routePath = "/" + segments.slice(0, -1).join("/")
-
-    // Try route_path + slug match
-    const { data } = await supabase
-      .from("pages")
-      .select("*")
-      .eq("slug", pageSlug)
-      .eq("route_path", routePath)
-      .eq("published", true)
-      .single()
-
-    if (data) return data
-
-    // Fallback: try slug-only lookup (page may have been moved)
-    const { data: fallback } = await supabase
-      .from("pages")
-      .select("*")
-      .eq("slug", pageSlug)
-      .eq("published", true)
-      .single()
-    return fallback
-  }
-
-  return null
+  params: Promise<{ slug: string }>
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const page = await resolvePage(slug)
+  const page = await resolveCustomPage(slug, "/unsere-schule")
   if (!page) return {}
   return { title: `${page.title} - Grabbe-Gymnasium` }
 }
@@ -76,9 +26,9 @@ function isBlockContent(content: string): boolean {
   return false
 }
 
-export default async function DynamicPage({ params }: Props) {
+export default async function UnsereSchuleDynamicPage({ params }: Props) {
   const { slug } = await params
-  const page = await resolvePage(slug)
+  const page = await resolveCustomPage(slug, "/unsere-schule")
 
   if (!page) notFound()
 
