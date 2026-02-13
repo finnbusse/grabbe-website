@@ -55,7 +55,7 @@ export default async function CmsPagesPage() {
                   )}
                 </div>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  /{page.slug} &middot; Bereich: {page.section}
+                  {page.route_path ? `${page.route_path}/${page.slug}` : `/seiten/${page.slug}`} &middot; Bereich: {page.section}
                 </p>
               </div>
               <Button variant="ghost" size="sm" asChild>

@@ -1,11 +1,17 @@
 import Link from "next/link"
 import { EDITABLE_PAGES } from "@/lib/page-content"
-import { FileEdit, ArrowRight, Home, BookOpen, GraduationCap } from "lucide-react"
+import { FileEdit, ArrowRight, Home, BookOpen, GraduationCap, School, FileText } from "lucide-react"
 
 export default function SeitenEditorPage() {
-  // Group pages by route
+  // Group pages by route category
   const homepagePages = EDITABLE_PAGES.filter((p) => p.route === "/")
-  const otherPages = EDITABLE_PAGES.filter((p) => p.route !== "/")
+  const unsereSchulePages = EDITABLE_PAGES.filter((p) => p.route.startsWith("/unsere-schule"))
+  const schullebenPages = EDITABLE_PAGES.filter((p) => p.route.startsWith("/schulleben"))
+  const otherPages = EDITABLE_PAGES.filter((p) =>
+    p.route !== "/" &&
+    !p.route.startsWith("/unsere-schule") &&
+    !p.route.startsWith("/schulleben")
+  )
 
   return (
     <div>
@@ -48,14 +54,48 @@ export default function SeitenEditorPage() {
         </div>
       </div>
 
-      {/* Other pages */}
-      {otherPages.length > 0 && (
+      {/* Unsere Schule */}
+      {unsereSchulePages.length > 0 && (
         <div className="mt-10">
           <div className="flex items-center gap-3 mb-4">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10">
               <GraduationCap className="h-4 w-4 text-emerald-600" />
             </div>
-            <h2 className="font-display text-xl font-semibold">Unterseiten</h2>
+            <h2 className="font-display text-xl font-semibold">Unsere Schule</h2>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {unsereSchulePages.map((page) => (
+              <PageCard key={page.id} page={page} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Schulleben */}
+      {schullebenPages.length > 0 && (
+        <div className="mt-10">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-500/10">
+              <School className="h-4 w-4 text-sky-600" />
+            </div>
+            <h2 className="font-display text-xl font-semibold">Schulleben</h2>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {schullebenPages.map((page) => (
+              <PageCard key={page.id} page={page} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Other pages (Kontakt, Impressum, Datenschutz etc.) */}
+      {otherPages.length > 0 && (
+        <div className="mt-10">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/10">
+              <FileText className="h-4 w-4 text-amber-600" />
+            </div>
+            <h2 className="font-display text-xl font-semibold">Weitere Seiten</h2>
           </div>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {otherPages.map((page) => (
@@ -65,11 +105,11 @@ export default function SeitenEditorPage() {
         </div>
       )}
 
-      {/* Separator */}
+      {/* Eigene Seiten hint */}
       <div className="mt-10 rounded-2xl border bg-card p-6">
         <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-500/10">
-            <BookOpen className="h-4 w-4 text-sky-600" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-500/10">
+            <BookOpen className="h-4 w-4 text-violet-600" />
           </div>
           <div>
             <h2 className="font-display text-lg font-semibold">Eigene Seiten</h2>

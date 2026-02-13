@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
-import { FileText, CalendarDays, BookOpen, Upload, Mail, GraduationCap, FileEdit } from "lucide-react"
+import { FileText, CalendarDays, BookOpen, Upload, Mail, GraduationCap, FileEdit, FolderTree } from "lucide-react"
 import Link from "next/link"
 
 export default async function CmsDashboardPage() {
@@ -86,6 +86,9 @@ export default async function CmsDashboardPage() {
             </Link>
             <Link href="/cms/navigation" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
               <span className="font-bold text-primary">{">"}</span> Navigation bearbeiten (Header, Footer, Links)
+            </Link>
+            <Link href="/cms/seitenstruktur" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
+              <span className="font-bold text-primary">{">"}</span> Seitenstruktur (Kategorien, Hierarchie, Pfade)
             </Link>
             <Link href="/cms/users" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
               <span className="font-bold text-primary">{">"}</span> Benutzerverwaltung (Lehrer-Accounts)

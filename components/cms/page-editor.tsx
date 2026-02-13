@@ -21,6 +21,7 @@ interface PageEditorProps {
     section: string | null
     sort_order: number
     published: boolean
+    route_path?: string | null
   }
 }
 
@@ -50,6 +51,7 @@ export function PageEditor({ page }: PageEditorProps) {
   const [slug, setSlug] = useState(page?.slug ?? "")
   const [content, setContent] = useState(page?.content ?? "")
   const [section, setSection] = useState(page?.section ?? "allgemein")
+  const [routePath, setRoutePath] = useState(page?.route_path ?? "")
   const [sortOrder, setSortOrder] = useState(page?.sort_order ?? 0)
   const [published, setPublished] = useState(page?.published ?? true)
   const [saving, setSaving] = useState(false)
@@ -100,6 +102,7 @@ export function PageEditor({ page }: PageEditorProps) {
       const payload = {
         title, slug, content: finalContent, section,
         sort_order: sortOrder, published,
+        route_path: routePath || null,
         user_id: user.id,
         updated_at: new Date().toISOString(),
       }
@@ -131,7 +134,7 @@ export function PageEditor({ page }: PageEditorProps) {
         </div>
         <div className="flex items-center gap-2">
           {page && published && slug && (
-            <Link href={`/seiten/${slug}`} target="_blank">
+            <Link href={routePath ? `${routePath}/${slug}` : `/seiten/${slug}`} target="_blank">
               <Button variant="outline" size="sm"><Eye className="mr-1.5 h-3.5 w-3.5" />Vorschau</Button>
             </Link>
           )}
@@ -156,9 +159,12 @@ export function PageEditor({ page }: PageEditorProps) {
             <div className="grid gap-2">
               <Label htmlFor="slug">URL-Pfad</Label>
               <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground shrink-0">/seiten/</span>
+                <span className="text-sm text-muted-foreground shrink-0">{routePath || "/seiten"}/</span>
                 <Input id="slug" value={slug} onChange={(e) => setSlug(e.target.value)} placeholder="url-pfad" className="font-mono text-sm" />
               </div>
+              <p className="text-xs text-muted-foreground">
+                Vollstaendige URL: {routePath ? `${routePath}/${slug}` : `/seiten/${slug}`}
+              </p>
             </div>
           </div>
 
@@ -243,6 +249,20 @@ export function PageEditor({ page }: PageEditorProps) {
                 <option value="schulleben">Schulleben</option>
                 <option value="informationen">Informationen</option>
               </select>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="routePath">Kategorie / Pfad</Label>
+              <Input
+                id="routePath"
+                value={routePath}
+                onChange={(e) => setRoutePath(e.target.value)}
+                placeholder="/seiten (Standard)"
+                className="font-mono text-xs"
+              />
+              <p className="text-[10px] text-muted-foreground">
+                z.B. /unsere-schule oder /schulleben. Leer lassen fuer /seiten/.
+                Pfad kann in der Seitenstruktur verwaltet werden.
+              </p>
             </div>
             <div className="grid gap-2">
               <Label htmlFor="sort">Sortierung</Label>
