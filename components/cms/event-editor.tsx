@@ -15,6 +15,7 @@ interface EventEditorProps {
     title: string
     description: string | null
     event_date: string
+    event_end_date?: string | null
     event_time: string | null
     location: string | null
     published: boolean
@@ -26,6 +27,7 @@ export function EventEditor({ event }: EventEditorProps) {
   const [title, setTitle] = useState(event?.title ?? "")
   const [description, setDescription] = useState(event?.description ?? "")
   const [eventDate, setEventDate] = useState(event?.event_date ?? "")
+  const [eventEndDate, setEventEndDate] = useState(event?.event_end_date ?? "")
   const [eventTime, setEventTime] = useState(event?.event_time ?? "")
   const [location, setLocation] = useState(event?.location ?? "")
   const [category, setCategory] = useState((event as Record<string, unknown>)?.category as string ?? "termin")
@@ -46,6 +48,7 @@ export function EventEditor({ event }: EventEditorProps) {
         title,
         description: description || null,
         event_date: eventDate,
+        event_end_date: eventEndDate || null,
         event_time: eventTime || null,
         location: location || null,
         category,
@@ -114,14 +117,24 @@ export function EventEditor({ event }: EventEditorProps) {
                 className="font-display"
               />
             </div>
-            <div className="grid gap-4 sm:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <div className="grid gap-2">
-                <Label htmlFor="event_date">Datum</Label>
+                <Label htmlFor="event_date">Startdatum</Label>
                 <Input
                   id="event_date"
                   type="date"
                   value={eventDate}
                   onChange={(e) => setEventDate(e.target.value)}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="event_end_date">Enddatum (optional)</Label>
+                <Input
+                  id="event_end_date"
+                  type="date"
+                  value={eventEndDate}
+                  onChange={(e) => setEventEndDate(e.target.value)}
+                  min={eventDate || undefined}
                 />
               </div>
               <div className="grid gap-2">

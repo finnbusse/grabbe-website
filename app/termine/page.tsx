@@ -82,6 +82,18 @@ export default async function TerminePage() {
                               <span className="text-[10px] font-medium uppercase leading-none">{monthNamesShort[d.getMonth()]}</span>
                               <span className="text-xl font-bold leading-none mt-0.5">{d.getDate()}</span>
                             </div>
+                            {ev.event_end_date && ev.event_end_date !== ev.event_date && (() => {
+                              const endD = new Date(ev.event_end_date)
+                              return (
+                                <>
+                                  <div className="flex items-center text-muted-foreground shrink-0">–</div>
+                                  <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-xl bg-primary/10 text-primary">
+                                    <span className="text-[10px] font-medium uppercase leading-none">{monthNamesShort[endD.getMonth()]}</span>
+                                    <span className="text-xl font-bold leading-none mt-0.5">{endD.getDate()}</span>
+                                  </div>
+                                </>
+                              )
+                            })()}
                             <div className="flex-1 min-w-0">
                               <div className="flex items-start gap-2 flex-wrap">
                                 <h3 className="font-display font-semibold">{ev.title}</h3>

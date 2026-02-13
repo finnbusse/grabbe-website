@@ -1,16 +1,11 @@
 import { SiteLayout } from "@/components/site-layout"
 import { createClient } from "@/lib/supabase/server"
 import { Download, FileText, ImageIcon, ExternalLink } from "lucide-react"
+import { DownloadCategories } from "@/components/download-categories"
 
 export const metadata = {
   title: "Downloads - Grabbe-Gymnasium Detmold",
   description: "Dokumente, Formulare und Materialien zum Herunterladen.",
-}
-
-function formatSize(bytes: number) {
-  if (bytes < 1024) return bytes + " B"
-  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB"
-  return (bytes / (1024 * 1024)).toFixed(1) + " MB"
 }
 
 export default async function DownloadsPage() {
@@ -31,15 +26,6 @@ export default async function DownloadsPage() {
     if (!grouped[cat]) grouped[cat] = []
     grouped[cat].push(doc)
   })
-
-  const catLabels: Record<string, string> = {
-    allgemein: "Allgemein",
-    elternbriefe: "Elternbriefe",
-    formulare: "Formulare",
-    lehrplaene: "Lehrplaene",
-    bilder: "Bilder & Medien",
-    praesentation: "Praesentationen",
-  }
 
   return (
     <SiteLayout>
@@ -66,39 +52,7 @@ export default async function DownloadsPage() {
               <p className="mt-4 text-muted-foreground">Aktuell sind keine Dokumente verfuegbar.</p>
             </div>
           ) : (
-            <div className="space-y-10">
-              {Object.entries(grouped).map(([cat, docItems]) => (
-                <div key={cat}>
-                  <h2 className="font-display text-xl font-bold border-b pb-3">{catLabels[cat] || cat}</h2>
-                  <div className="mt-4 space-y-2">
-                    {docItems.map((doc) => (
-                      <a
-                        key={doc.id}
-                        href={doc.file_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group flex items-center gap-4 rounded-xl border bg-card p-4 transition-all hover:shadow-md hover:border-primary/30"
-                      >
-                        {doc.file_type?.startsWith("image/") ? (
-                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                            <ImageIcon className="h-5 w-5" />
-                          </div>
-                        ) : (
-                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                            <FileText className="h-5 w-5" />
-                          </div>
-                        )}
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium text-sm group-hover:text-primary transition-colors">{doc.title}</p>
-                          <p className="text-xs text-muted-foreground">{doc.file_name} &middot; {formatSize(doc.file_size)}</p>
-                        </div>
-                        <ExternalLink className="h-4 w-4 shrink-0 text-muted-foreground group-hover:text-primary transition-colors" />
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
+            <DownloadCategories grouped={grouped} />
           )}
         </section>
       </main>
