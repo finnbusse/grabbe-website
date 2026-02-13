@@ -66,7 +66,7 @@ export default async function NachmittagPage() {
                   text: content.card4_text,
                 },
               ].map((item) => (
-                <div key={String(item.title)} className="flex items-start gap-4 rounded-xl border border-border bg-card p-5">
+                <div key={item.title as string} className="flex items-start gap-4 rounded-xl border border-border bg-card p-5">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
                     <item.icon className="h-5 w-5" />
                   </div>

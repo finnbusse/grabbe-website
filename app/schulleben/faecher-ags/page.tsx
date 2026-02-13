@@ -64,7 +64,7 @@ export default async function FaecherAGsPage() {
 
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {categories.map((cat) => (
-              <div key={String(cat.title)} className="group rounded-2xl border border-border bg-card p-6 transition-all hover:border-primary/30 hover:shadow-lg">
+              <div key={cat.title as string} className="group rounded-2xl border border-border bg-card p-6 transition-all hover:border-primary/30 hover:shadow-lg">
                 <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${cat.color} text-background`}>
                   <cat.icon className="h-6 w-6" />
                 </div>
