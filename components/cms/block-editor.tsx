@@ -974,10 +974,11 @@ function BlockRenderer({ block }: { block: ContentBlock }) {
         const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/)
         if (ytMatch) {
           embedUrl = `https://www.youtube.com/embed/${ytMatch[1]}`
-        }
-        const vimeoMatch = url.match(/vimeo\.com\/(\d+)/)
-        if (vimeoMatch) {
-          embedUrl = `https://player.vimeo.com/video/${vimeoMatch[1]}`
+        } else {
+          const vimeoMatch = url.match(/vimeo\.com\/(\d+)/)
+          if (vimeoMatch) {
+            embedUrl = `https://player.vimeo.com/video/${vimeoMatch[1]}`
+          }
         }
       }
       return (
