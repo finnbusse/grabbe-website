@@ -144,7 +144,7 @@ export function SiteFooter({
             {year} {fullName}
           </p>
           <Link
-            href="/auth/login"
+            href="/cms"
             className="text-[11px] text-primary-foreground/15 transition-colors hover:text-primary-foreground/40"
           >
             Verwaltung

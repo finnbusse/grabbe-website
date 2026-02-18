@@ -21,9 +21,9 @@ CREATE INDEX IF NOT EXISTS idx_user_profiles_user_id ON public.user_profiles(use
 -- Enable RLS
 ALTER TABLE public.user_profiles ENABLE ROW LEVEL SECURITY;
 
--- RLS Policies: any authenticated user can read all profiles, update own
-CREATE POLICY "user_profiles_select_auth" ON public.user_profiles
-  FOR SELECT USING (auth.uid() IS NOT NULL);
+-- RLS Policies: anyone can read profiles (for public news pages), authenticated can modify
+CREATE POLICY "user_profiles_select_all" ON public.user_profiles
+  FOR SELECT USING (true);
 
 CREATE POLICY "user_profiles_insert_auth" ON public.user_profiles
   FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);

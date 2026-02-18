@@ -13,12 +13,14 @@ export default async function CmsLayout({ children }: { children: React.ReactNod
   // Fetch user profile (gracefully handle missing table)
   let userProfile = null
   try {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("user_profiles")
       .select("first_name, last_name, title, avatar_url")
       .eq("user_id", user.id)
       .single()
-    userProfile = data
+    if (!error) {
+      userProfile = data
+    }
   } catch {
     // Table may not exist yet
   }

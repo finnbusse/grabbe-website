@@ -62,14 +62,20 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (existing) {
-      await supabase
+      const { error: updateError } = await supabase
         .from("user_profiles")
         .update({ avatar_url: blob.url } as never)
         .eq("user_id", targetUserId)
+      if (updateError) {
+        return NextResponse.json({ error: "Profil konnte nicht aktualisiert werden: " + updateError.message }, { status: 500 })
+      }
     } else {
-      await supabase
+      const { error: insertError } = await supabase
         .from("user_profiles")
         .insert({ user_id: targetUserId, avatar_url: blob.url } as never)
+      if (insertError) {
+        return NextResponse.json({ error: "Profil konnte nicht erstellt werden: " + insertError.message }, { status: 500 })
+      }
     }
 
     return NextResponse.json({ avatar_url: blob.url })
