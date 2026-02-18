@@ -76,41 +76,150 @@ export default async function ProfilprojektePage() {
           imageUrl={(content.hero_image_url as string) || undefined}
         />
 
-        <section className="mx-auto max-w-7xl px-4 py-16 lg:px-8">
-          <div className="space-y-24">
-            {profiles.map((profile, index) => (
-              <div
-                key={profile.id}
-                id={profile.id}
-                className={`grid items-start gap-10 lg:grid-cols-2 ${index % 2 === 1 ? "lg:direction-rtl" : ""}`}
-              >
-                <div className={index % 2 === 1 ? "lg:order-2" : ""}>
-                  <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
-                    <Image
-                      src={profile.image}
-                      alt={profile.title}
-                      fill
-                      className="object-cover"
-                    />
-                    <div className={`absolute left-4 top-4 flex h-12 w-12 items-center justify-center rounded-xl ${profile.color} text-background`}>
-                      <profile.icon className="h-6 w-6" />
-                    </div>
-                  </div>
+        {/* ═══ Section Header (blue mesh bg) ═══ */}
+        <section className="relative py-28 lg:py-36 bg-mesh-blue">
+          <div className="mx-auto max-w-6xl px-4 lg:px-8">
+            <div className="mx-auto max-w-2xl text-center">
+              <p className="font-sub text-[11px] uppercase tracking-[0.3em] text-primary">// Profilprojekte</p>
+              <h2 className="mt-3 font-display text-4xl md:text-5xl tracking-tight text-foreground">
+                Waehle Dein Profil
+              </h2>
+              <p className="mt-6 text-base leading-relaxed text-muted-foreground max-w-xl mx-auto">
+                Am Grabbe-Gymnasium kannst Du Dich in einem von vier Profilprojekten entfalten. Jedes Profil bietet einzigartige Moeglichkeiten, Deine Staerken zu entdecken und weiterzuentwickeln.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══ Kunst (white bg) ═══ */}
+        <section id="kunst" className="relative py-28 lg:py-36">
+          <div className="mx-auto max-w-6xl px-4 lg:px-8">
+            <div className="grid gap-16 lg:grid-cols-2 lg:items-start">
+              <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+                <Image
+                  src={profiles[0].image}
+                  alt={profiles[0].title as string}
+                  fill
+                  className="object-cover"
+                />
+                <div className={`absolute left-4 top-4 flex h-12 w-12 items-center justify-center rounded-xl ${profiles[0].color} text-background`}>
+                  <Palette className="h-6 w-6" />
                 </div>
-                <div className={index % 2 === 1 ? "lg:order-1" : ""}>
-                  <h2 className="font-display text-3xl font-bold tracking-tight text-foreground">
-                    {profile.title}
-                  </h2>
-                  <div className="mt-6 space-y-4">
-                    {profile.content.map((p, i) => (
-                      <p key={i} className="text-sm leading-relaxed text-muted-foreground">
-                        {p}
-                      </p>
-                    ))}
+              </div>
+              <div>
+                <p className="font-sub text-[11px] uppercase tracking-[0.3em] text-primary">Profilprojekt</p>
+                <h2 className="mt-3 font-display text-4xl md:text-5xl tracking-tight text-foreground">
+                  {profiles[0].title}
+                </h2>
+                <div className="mt-6 space-y-4">
+                  {profiles[0].content.map((p, i) => (
+                    <p key={i} className="text-sm leading-relaxed text-muted-foreground">
+                      {p}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══ Musik (muted bg, reversed) ═══ */}
+        <section id="musik" className="relative py-28 lg:py-36 bg-muted/40">
+          <div className="mx-auto max-w-6xl px-4 lg:px-8">
+            <div className="grid gap-16 lg:grid-cols-2 lg:items-start">
+              <div className="lg:order-2">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+                  <Image
+                    src={profiles[1].image}
+                    alt={profiles[1].title as string}
+                    fill
+                    className="object-cover"
+                  />
+                  <div className={`absolute left-4 top-4 flex h-12 w-12 items-center justify-center rounded-xl ${profiles[1].color} text-background`}>
+                    <Music className="h-6 w-6" />
                   </div>
                 </div>
               </div>
-            ))}
+              <div className="lg:order-1">
+                <p className="font-sub text-[11px] uppercase tracking-[0.3em] text-primary">Profilprojekt</p>
+                <h2 className="mt-3 font-display text-4xl md:text-5xl tracking-tight text-foreground">
+                  {profiles[1].title}
+                </h2>
+                <div className="mt-6 space-y-4">
+                  {profiles[1].content.map((p, i) => (
+                    <p key={i} className="text-sm leading-relaxed text-muted-foreground">
+                      {p}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══ Sport (white bg) ═══ */}
+        <section id="sport" className="relative py-28 lg:py-36">
+          <div className="mx-auto max-w-6xl px-4 lg:px-8">
+            <div className="grid gap-16 lg:grid-cols-2 lg:items-start">
+              <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+                <Image
+                  src={profiles[2].image}
+                  alt={profiles[2].title as string}
+                  fill
+                  className="object-cover"
+                />
+                <div className={`absolute left-4 top-4 flex h-12 w-12 items-center justify-center rounded-xl ${profiles[2].color} text-background`}>
+                  <Dumbbell className="h-6 w-6" />
+                </div>
+              </div>
+              <div>
+                <p className="font-sub text-[11px] uppercase tracking-[0.3em] text-primary">Profilprojekt</p>
+                <h2 className="mt-3 font-display text-4xl md:text-5xl tracking-tight text-foreground">
+                  {profiles[2].title}
+                </h2>
+                <div className="mt-6 space-y-4">
+                  {profiles[2].content.map((p, i) => (
+                    <p key={i} className="text-sm leading-relaxed text-muted-foreground">
+                      {p}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══ NaWi (blue mesh bg, reversed) ═══ */}
+        <section id="nawi" className="relative py-28 lg:py-36 bg-mesh-blue">
+          <div className="mx-auto max-w-6xl px-4 lg:px-8">
+            <div className="grid gap-16 lg:grid-cols-2 lg:items-start">
+              <div className="lg:order-2">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+                  <Image
+                    src={profiles[3].image}
+                    alt={profiles[3].title as string}
+                    fill
+                    className="object-cover"
+                  />
+                  <div className={`absolute left-4 top-4 flex h-12 w-12 items-center justify-center rounded-xl ${profiles[3].color} text-background`}>
+                    <FlaskConical className="h-6 w-6" />
+                  </div>
+                </div>
+              </div>
+              <div className="lg:order-1">
+                <p className="font-sub text-[11px] uppercase tracking-[0.3em] text-primary">Profilprojekt</p>
+                <h2 className="mt-3 font-display text-4xl md:text-5xl tracking-tight text-foreground">
+                  {profiles[3].title}
+                </h2>
+                <div className="mt-6 space-y-4">
+                  {profiles[3].content.map((p, i) => (
+                    <p key={i} className="text-sm leading-relaxed text-muted-foreground">
+                      {p}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </section>
       </main>
