@@ -1,5 +1,6 @@
 import { resolveCustomPage } from "@/lib/resolve-page"
 import { SiteLayout } from "@/components/site-layout"
+import { PageHero } from "@/components/page-hero"
 import { MarkdownContent } from "@/components/markdown-content"
 import { BlockContentRenderer } from "@/components/block-content-renderer"
 import { notFound } from "next/navigation"
@@ -41,16 +42,10 @@ export default async function UnsereSchuleDynamicPage({ params }: Props) {
   return (
     <SiteLayout>
       <main>
-        <section className="bg-primary/5 py-16">
-          <div className="mx-auto max-w-7xl px-4 lg:px-8">
-            {page.section && (
-              <p className="text-sm font-medium uppercase tracking-widest text-primary mb-3">{page.section}</p>
-            )}
-            <h1 className="font-display text-balance text-4xl font-bold tracking-tight text-foreground md:text-5xl">
-              {page.title}
-            </h1>
-          </div>
-        </section>
+        <PageHero
+          title={page.title}
+          label={page.section || undefined}
+        />
 
         <section className="mx-auto max-w-4xl px-4 py-12 lg:px-8">
           {useBlocks ? (

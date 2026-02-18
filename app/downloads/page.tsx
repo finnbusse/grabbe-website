@@ -1,4 +1,5 @@
 import { SiteLayout } from "@/components/site-layout"
+import { PageHero } from "@/components/page-hero"
 import { createClient } from "@/lib/supabase/server"
 import { Download, FileText, ImageIcon, ExternalLink } from "lucide-react"
 import { DownloadCategories } from "@/components/download-categories"
@@ -30,20 +31,11 @@ export default async function DownloadsPage() {
   return (
     <SiteLayout>
       <main>
-        <section className="border-b bg-muted">
-          <div className="mx-auto max-w-7xl px-4 pb-12 pt-16 lg:px-8 lg:pb-16 lg:pt-24">
-            <div className="flex items-center gap-3">
-              <Download className="h-8 w-8 text-primary" />
-              <div>
-                <p className="text-sm font-medium uppercase tracking-widest text-primary">Materialien</p>
-                <h1 className="mt-1 font-display text-4xl font-bold tracking-tight md:text-5xl">Downloads</h1>
-              </div>
-            </div>
-            <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
-              Hier finden Sie alle Dokumente, Formulare und Materialien zum Herunterladen.
-            </p>
-          </div>
-        </section>
+        <PageHero
+          title="Downloads"
+          label="Materialien"
+          subtitle="Hier finden Sie alle Dokumente, Formulare und Materialien zum Herunterladen."
+        />
 
         <section className="mx-auto max-w-4xl px-4 py-12 lg:px-8">
           {items.length === 0 ? (
