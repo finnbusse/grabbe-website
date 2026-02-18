@@ -25,6 +25,7 @@ export interface Page {
   updated_at: string; // timestamptz
   is_system: boolean; // Default: false
   route_path: string | null;
+  hero_image_url: string | null;
 }
 
 /**
@@ -55,6 +56,7 @@ export interface Event {
   title: string;
   description: string | null;
   event_date: string; // date (YYYY-MM-DD)
+  event_end_date: string | null; // date (YYYY-MM-DD)
   event_time: string | null;
   location: string | null;
   category: string; // Default: 'termin'
@@ -235,48 +237,61 @@ export interface Database {
         Row: Page;
         Insert: PageInsert;
         Update: PageUpdate;
+        Relationships: [];
       };
       posts: {
         Row: Post;
         Insert: PostInsert;
         Update: PostUpdate;
+        Relationships: [];
       };
       events: {
         Row: Event;
         Insert: EventInsert;
         Update: EventUpdate;
+        Relationships: [];
       };
       documents: {
         Row: Document;
         Insert: DocumentInsert;
         Update: DocumentUpdate;
+        Relationships: [];
       };
       navigation_items: {
         Row: NavigationItem;
         Insert: NavigationItemInsert;
         Update: NavigationItemUpdate;
+        Relationships: [];
       };
       site_settings: {
         Row: SiteSetting;
         Insert: SiteSettingInsert;
         Update: SiteSettingUpdate;
+        Relationships: [];
       };
       contact_submissions: {
         Row: ContactSubmission;
         Insert: ContactSubmissionInsert;
         Update: ContactSubmissionUpdate;
+        Relationships: [];
       };
       anmeldung_submissions: {
         Row: AnmeldungSubmission;
         Insert: AnmeldungSubmissionInsert;
         Update: AnmeldungSubmissionUpdate;
+        Relationships: [];
       };
       user_profiles: {
         Row: UserProfile;
         Insert: UserProfileInsert;
         Update: UserProfileUpdate;
+        Relationships: [];
       };
     };
+    Views: Record<string, never>;
+    Functions: Record<string, never>;
+    Enums: Record<string, never>;
+    CompositeTypes: Record<string, never>;
   };
 }
 
