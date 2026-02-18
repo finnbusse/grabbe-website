@@ -2,7 +2,7 @@ import { SiteLayout } from "@/components/site-layout"
 import { MarkdownContent } from "@/components/markdown-content"
 import { createClient } from "@/lib/supabase/server"
 import { notFound } from "next/navigation"
-import { CalendarDays, ArrowLeft, User } from "lucide-react"
+import { CalendarDays, ArrowLeft, UserCircle } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
@@ -12,12 +12,31 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   const supabase = await createClient()
   const { data: post } = await supabase
     .from("posts")
-    .select("*")
+    .select(`
+      *,
+      user_profiles (
+        first_name,
+        last_name,
+        title,
+        profile_image_url
+      )
+    `)
     .eq("slug", slug)
     .eq("published", true)
     .single()
 
   if (!post) notFound()
+
+  // Helper function to get author display name
+  const getAuthorName = () => {
+    if (post.user_profiles) {
+      const { first_name, last_name, title } = post.user_profiles
+      if (first_name || last_name) {
+        return `${title ? title + ' ' : ''}${first_name || ''} ${last_name || ''}`.trim()
+      }
+    }
+    return post.author_name || 'Redaktion'
+  }
 
   return (
     <SiteLayout>
@@ -36,12 +55,24 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
                 year: "numeric",
               })}
             </div>
-            {post.author_name && (
-              <div className="flex items-center gap-1.5">
-                <User className="h-4 w-4" />
-                {post.author_name}
+            <div className="flex items-center gap-2">
+              <div className="h-6 w-6 overflow-hidden rounded-full border border-border bg-muted shrink-0">
+                {post.user_profiles?.profile_image_url ? (
+                  <Image
+                    src={post.user_profiles.profile_image_url}
+                    alt={getAuthorName()}
+                    width={24}
+                    height={24}
+                    className="object-cover h-full w-full"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center">
+                    <UserCircle className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                )}
               </div>
-            )}
+              <span>{getAuthorName()}</span>
+            </div>
             {post.category && (
               <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-0.5 text-xs font-medium text-primary">
                 {post.category}

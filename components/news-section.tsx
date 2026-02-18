@@ -1,8 +1,9 @@
 "use client"
 
 import Link from "next/link"
-import { ArrowRight, Calendar } from "lucide-react"
+import { ArrowRight, Calendar, UserCircle } from "lucide-react"
 import { AnimateOnScroll } from "./animate-on-scroll"
+import Image from "next/image"
 
 interface Post {
   id: string
@@ -13,6 +14,12 @@ interface Post {
   image_url: string | null
   author_name: string | null
   created_at: string
+  user_profiles?: {
+    first_name: string | null
+    last_name: string | null
+    title: string | null
+    profile_image_url: string | null
+  } | null
 }
 
 export function NewsSection({ posts, content }: { posts: Post[]; content?: Record<string, unknown> }) {
@@ -22,6 +29,17 @@ export function NewsSection({ posts, content }: { posts: Post[]; content?: Recor
   const allLinkText = (c.all_link_text as string) || 'Alle Beitraege'
   const readMoreText = (c.read_more_text as string) || 'Weiterlesen'
   const allButtonText = (c.all_button_text as string) || 'Alle Beitraege ansehen'
+
+  // Helper function to get author display name
+  const getAuthorName = (post: Post) => {
+    if (post.user_profiles) {
+      const { first_name, last_name, title } = post.user_profiles
+      if (first_name || last_name) {
+        return `${title ? title + ' ' : ''}${first_name || ''} ${last_name || ''}`.trim()
+      }
+    }
+    return post.author_name || 'Redaktion'
+  }
 
   if (posts.length === 0) return null
 
@@ -70,6 +88,24 @@ export function NewsSection({ posts, content }: { posts: Post[]; content?: Recor
                     <span className="rounded-full bg-primary/10 px-3 py-0.5 font-sub text-[10px] uppercase tracking-wider text-primary">{featured.category}</span>
                   )}
                 </div>
+                <div className="mt-3 flex items-center gap-2">
+                  <div className="h-6 w-6 overflow-hidden rounded-full border border-border bg-muted shrink-0">
+                    {featured.user_profiles?.profile_image_url ? (
+                      <Image
+                        src={featured.user_profiles.profile_image_url}
+                        alt={getAuthorName(featured)}
+                        width={24}
+                        height={24}
+                        className="object-cover h-full w-full"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center">
+                        <UserCircle className="h-4 w-4 text-muted-foreground" />
+                      </div>
+                    )}
+                  </div>
+                  <span className="text-xs text-muted-foreground">{getAuthorName(featured)}</span>
+                </div>
                 <h3 className="mt-4 font-display text-2xl md:text-3xl text-card-foreground group-hover:text-primary transition-colors duration-300">{featured.title}</h3>
                 {featured.excerpt && <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground line-clamp-3">{featured.excerpt}</p>}
                 <div className="mt-6 flex items-center gap-2 font-sub text-xs uppercase tracking-[0.15em] text-primary">
@@ -104,6 +140,24 @@ export function NewsSection({ posts, content }: { posts: Post[]; content?: Recor
                     </div>
                     <h3 className="mt-2 font-display text-lg text-card-foreground line-clamp-2 group-hover:text-primary transition-colors">{post.title}</h3>
                     {post.excerpt && <p className="mt-1 text-xs text-muted-foreground line-clamp-2">{post.excerpt}</p>}
+                    <div className="mt-2 flex items-center gap-1.5">
+                      <div className="h-4 w-4 overflow-hidden rounded-full border border-border bg-muted shrink-0">
+                        {post.user_profiles?.profile_image_url ? (
+                          <Image
+                            src={post.user_profiles.profile_image_url}
+                            alt={getAuthorName(post)}
+                            width={16}
+                            height={16}
+                            className="object-cover h-full w-full"
+                          />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center">
+                            <UserCircle className="h-3 w-3 text-muted-foreground" />
+                          </div>
+                        )}
+                      </div>
+                      <span className="text-[10px] text-muted-foreground">{getAuthorName(post)}</span>
+                    </div>
                   </div>
                 </Link>
               </AnimateOnScroll>
