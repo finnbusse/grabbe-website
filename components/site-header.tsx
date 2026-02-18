@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useState } from "react"
+import { useState, useRef, useCallback, useEffect } from "react"
 import { Menu, X, ChevronDown } from "lucide-react"
 
 export type NavItemData = {
@@ -24,6 +24,37 @@ export function SiteHeader({
   const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
+  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  const handleDropdownEnter = useCallback((itemId: string) => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current)
+      closeTimeoutRef.current = null
+    }
+    setOpenDropdown(itemId)
+  }, [])
+
+  const handleDropdownLeave = useCallback(() => {
+    closeTimeoutRef.current = setTimeout(() => {
+      setOpenDropdown(null)
+    }, 150)
+  }, [])
+
+  useEffect(() => {
+    return () => {
+      if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current)
+    }
+  }, [])
+
+  // Close dropdown on route change
+  useEffect(() => {
+    setOpenDropdown(null)
+  }, [pathname])
+
+  const isActive = (href: string) => {
+    if (href === "/") return pathname === "/"
+    return pathname === href || pathname.startsWith(href + "/")
+  }
 
   return (
     <>
@@ -40,64 +71,67 @@ export function SiteHeader({
 
       <header className="fixed top-0 left-0 right-0 z-50">
         {/* Centered glass navbar */}
-        <div className="mx-auto mt-3 flex max-w-3xl items-center justify-between rounded-full px-3 py-1.5 bg-white/15 backdrop-blur-md border border-white/25 shadow-lg transition-all duration-300 hover:bg-white/20 hover:shadow-xl lg:mt-4 lg:px-4 lg:py-2">
+        <div className="mx-auto mt-3 flex max-w-3xl items-center justify-between rounded-full px-3 py-1.5 bg-white/15 backdrop-blur-md border border-white/25 shadow-lg lg:mt-4 lg:px-1 lg:py-1">
         {/* Start button */}
         <Link
           href="/"
-          className={`shrink-0 rounded-full px-5 py-1.5 text-[13px] font-medium transition-all duration-300 hover:bg-white/50 hover:scale-105 hover:shadow-lg ${
+          className={`shrink-0 rounded-full px-5 py-2 text-[13px] font-medium transition-colors duration-200 ${
             pathname === "/"
               ? "text-foreground bg-white/30"
-              : "text-foreground/80 hover:text-foreground"
+              : "text-foreground/80 hover:text-foreground hover:bg-white/25"
           }`}
         >
           Start
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden items-center gap-0 lg:flex flex-1 justify-center" aria-label="Hauptnavigation">
+        <nav className="hidden items-center gap-0.5 lg:flex flex-1 justify-center" aria-label="Hauptnavigation">
           {navItems
             .filter(item => item.href !== "/")
-            .map((item, index, array) =>
+            .map((item) =>
             item.children && item.children.length > 0 ? (
               <div
                 key={item.id}
-                className="relative h-full flex items-center"
-                onMouseEnter={() => setOpenDropdown(item.id)}
-                onMouseLeave={() => setOpenDropdown(null)}
+                className="relative"
+                onMouseEnter={() => handleDropdownEnter(item.id)}
+                onMouseLeave={handleDropdownLeave}
               >
-                <button
-                  className={`flex items-center gap-1 px-6 h-full text-[13px] font-medium transition-all duration-300 hover:bg-white/50 hover:scale-105 hover:shadow-lg ${
-                    index === 0 ? "rounded-l-full" : ""
-                  } ${
-                    index === array.length - 1 ? "rounded-r-full" : ""
-                  } ${
-                    pathname.startsWith(item.href) && item.href !== "/"
+                <Link
+                  href={item.href}
+                  className={`flex items-center gap-1 rounded-full px-4 py-2 text-[13px] font-medium transition-colors duration-200 ${
+                    isActive(item.href)
                       ? "text-foreground bg-white/30"
-                      : "text-foreground/80 hover:text-foreground"
+                      : "text-foreground/80 hover:text-foreground hover:bg-white/25"
                   }`}
                 >
                   {item.label}
                   <ChevronDown
-                    className={`h-3 w-3 transition-transform duration-300 ${
+                    className={`h-3 w-3 transition-transform duration-200 ${
                       openDropdown === item.id ? "rotate-180" : ""
                     }`}
                   />
-                </button>
+                </Link>
                 {openDropdown === item.id && (
-                  <div className="absolute left-1/2 -translate-x-1/2 top-full z-50 mt-1 min-w-[220px] bg-white/15 backdrop-blur-xl border border-white/25 rounded-3xl p-1.5 shadow-xl animate-blur-in">
-                    {item.children.map((child) => (
-                      <Link
-                        key={child.id}
-                        href={child.href}
-                        className={`block rounded-full px-3 py-2 text-[13px] transition-all duration-200 hover:bg-white/20 ${
-                          pathname === child.href
-                            ? "font-medium text-foreground"
-                            : "text-foreground/80 hover:text-foreground"
-                        }`}
-                      >
-                        {child.label}
-                      </Link>
-                    ))}
+                  <div
+                    className="absolute left-1/2 -translate-x-1/2 top-full z-50 pt-2"
+                    onMouseEnter={() => handleDropdownEnter(item.id)}
+                    onMouseLeave={handleDropdownLeave}
+                  >
+                    <div className="min-w-[220px] bg-white/15 backdrop-blur-xl border border-white/25 rounded-2xl p-1.5 shadow-xl animate-blur-in">
+                      {item.children.map((child) => (
+                        <Link
+                          key={child.id}
+                          href={child.href}
+                          className={`block rounded-xl px-4 py-2.5 text-[13px] transition-colors duration-200 ${
+                            pathname === child.href
+                              ? "font-medium text-foreground bg-white/20"
+                              : "text-foreground/80 hover:text-foreground hover:bg-white/20"
+                          }`}
+                        >
+                          {child.label}
+                        </Link>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
@@ -105,14 +139,10 @@ export function SiteHeader({
               <Link
                 key={item.id}
                 href={item.href}
-                className={`px-6 h-full flex items-center text-[13px] font-medium transition-all duration-300 hover:bg-white/50 hover:scale-105 hover:shadow-lg ${
-                  index === 0 ? "rounded-l-full" : ""
-                } ${
-                  index === array.length - 1 ? "rounded-r-full" : ""
-                } ${
-                  pathname === item.href
+                className={`rounded-full px-4 py-2 text-[13px] font-medium transition-colors duration-200 ${
+                  isActive(item.href)
                     ? "text-foreground bg-white/30"
-                    : "text-foreground/80 hover:text-foreground"
+                    : "text-foreground/80 hover:text-foreground hover:bg-white/25"
                 }`}
               >
                 {item.label}
