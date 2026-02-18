@@ -144,6 +144,41 @@ export interface AnmeldungSubmission {
 }
 
 /**
+ * Tags for categorizing events, documents, and posts
+ */
+export interface Tag {
+  id: string; // UUID
+  name: string;
+  color: string; // Default: 'blue'
+  created_at: string; // timestamptz
+  updated_at: string; // timestamptz
+}
+
+/**
+ * Junction: event ↔ tag
+ */
+export interface EventTag {
+  event_id: string; // UUID
+  tag_id: string; // UUID
+}
+
+/**
+ * Junction: document ↔ tag
+ */
+export interface DocumentTag {
+  document_id: string; // UUID
+  tag_id: string; // UUID
+}
+
+/**
+ * Junction: post ↔ tag
+ */
+export interface PostTag {
+  post_id: string; // UUID
+  tag_id: string; // UUID
+}
+
+/**
  * Extended user profiles for CMS users (teachers)
  */
 export interface UserProfile {
@@ -206,6 +241,12 @@ export type AnmeldungSubmissionInsert = Omit<AnmeldungSubmission, 'id' | 'create
   created_at?: string;
 };
 
+export type TagInsert = Omit<Tag, 'id' | 'created_at' | 'updated_at'> & {
+  id?: string;
+  created_at?: string;
+  updated_at?: string;
+};
+
 export type UserProfileInsert = Omit<UserProfile, 'id' | 'created_at' | 'updated_at'> & {
   id?: string;
   created_at?: string;
@@ -224,6 +265,7 @@ export type NavigationItemUpdate = Partial<Omit<NavigationItem, 'id' | 'created_
 export type SiteSettingUpdate = Partial<Omit<SiteSetting, 'id'>>;
 export type ContactSubmissionUpdate = Partial<Omit<ContactSubmission, 'id' | 'created_at'>>;
 export type AnmeldungSubmissionUpdate = Partial<Omit<AnmeldungSubmission, 'id' | 'created_at'>>;
+export type TagUpdate = Partial<Omit<Tag, 'id' | 'created_at'>>;
 export type UserProfileUpdate = Partial<Omit<UserProfile, 'id' | 'created_at'>>;
 
 // ============================================================================
@@ -285,6 +327,30 @@ export interface Database {
         Row: UserProfile;
         Insert: UserProfileInsert;
         Update: UserProfileUpdate;
+        Relationships: [];
+      };
+      tags: {
+        Row: Tag;
+        Insert: TagInsert;
+        Update: TagUpdate;
+        Relationships: [];
+      };
+      event_tags: {
+        Row: EventTag;
+        Insert: EventTag;
+        Update: EventTag;
+        Relationships: [];
+      };
+      document_tags: {
+        Row: DocumentTag;
+        Insert: DocumentTag;
+        Update: DocumentTag;
+        Relationships: [];
+      };
+      post_tags: {
+        Row: PostTag;
+        Insert: PostTag;
+        Update: PostTag;
         Relationships: [];
       };
     };

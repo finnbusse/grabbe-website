@@ -3,7 +3,8 @@
  * Renders block-based content that was created in the CMS block editor.
  */
 
-import { ChevronDown } from "lucide-react"
+import { ChevronDown, CalendarDays, MapPin, Clock, Download, FileText } from "lucide-react"
+import { createClient } from "@/lib/supabase/server"
 
 interface ContentBlock {
   id: string
@@ -11,7 +12,7 @@ interface ContentBlock {
   data: Record<string, unknown>
 }
 
-export function BlockContentRenderer({ content }: { content: string }) {
+export async function BlockContentRenderer({ content }: { content: string }) {
   let blocks: ContentBlock[] = []
   try {
     blocks = JSON.parse(content)
@@ -25,11 +26,194 @@ export function BlockContentRenderer({ content }: { content: string }) {
 
   return (
     <div>
-      {blocks.map((block) => (
-        <BlockRenderer key={block.id} block={block} />
-      ))}
+      {blocks.map((block) => {
+        if (block.type === 'tagged-events' || block.type === 'tagged-downloads' || block.type === 'tagged-posts') {
+          return <TaggedBlockRenderer key={block.id} block={block} />
+        }
+        return <BlockRenderer key={block.id} block={block} />
+      })}
     </div>
   )
+}
+
+async function TaggedBlockRenderer({ block }: { block: ContentBlock }) {
+  const tagId = block.data.tagId as string
+  const heading = block.data.heading as string
+  const limit = (block.data.limit as number) || 10
+
+  if (!tagId) {
+    return (
+      <div className="mb-8 rounded-2xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
+        Kein Tag ausgewaehlt
+      </div>
+    )
+  }
+
+  const supabase = await createClient()
+
+  // Get tag info for color
+  const { data: tag } = await supabase.from("tags").select("*").eq("id", tagId).single()
+  const tagColor = tag?.color || "blue"
+
+  if (block.type === 'tagged-events') {
+    const { data: eventTags } = await supabase.from("event_tags").select("event_id").eq("tag_id", tagId)
+    if (!eventTags || eventTags.length === 0) {
+      return (
+        <div className="mb-8">
+          {heading && <h2 className="font-display text-xl font-bold mb-4">{heading}</h2>}
+          <p className="text-sm text-muted-foreground">Keine Termine mit diesem Tag vorhanden.</p>
+        </div>
+      )
+    }
+    const today = new Date().toISOString().split("T")[0]
+    const { data: events } = await supabase
+      .from("events").select("*")
+      .in("id", eventTags.map((et) => et.event_id))
+      .eq("published", true)
+      .gte("event_date", today)
+      .order("event_date", { ascending: true })
+      .limit(limit)
+
+    if (!events || events.length === 0) {
+      return (
+        <div className="mb-8">
+          {heading && <h2 className="font-display text-xl font-bold mb-4">{heading}</h2>}
+          <p className="text-sm text-muted-foreground">Keine anstehenden Termine vorhanden.</p>
+        </div>
+      )
+    }
+
+    const monthNamesShort = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"]
+
+    return (
+      <div className="mb-8">
+        {heading && <h2 className="font-display text-xl font-bold mb-4">{heading}</h2>}
+        <div className="space-y-3">
+          {events.map((ev) => {
+            const d = new Date(ev.event_date)
+            return (
+              <div key={ev.id} className="flex gap-4 rounded-xl border bg-card p-4">
+                <div className="flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-xl bg-primary/10 text-primary">
+                  <span className="text-[10px] font-medium uppercase leading-none">{monthNamesShort[d.getMonth()]}</span>
+                  <span className="text-lg font-bold leading-none mt-0.5">{d.getDate()}</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-display text-sm font-semibold">{ev.title}</h3>
+                  {ev.description && <p className="mt-0.5 text-xs text-muted-foreground line-clamp-1">{ev.description}</p>}
+                  <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-muted-foreground">
+                    {ev.event_time && <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{ev.event_time}</span>}
+                    {ev.location && <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{ev.location}</span>}
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    )
+  }
+
+  if (block.type === 'tagged-downloads') {
+    const { data: docTags } = await supabase.from("document_tags").select("document_id").eq("tag_id", tagId)
+    if (!docTags || docTags.length === 0) {
+      return (
+        <div className="mb-8">
+          {heading && <h2 className="font-display text-xl font-bold mb-4">{heading}</h2>}
+          <p className="text-sm text-muted-foreground">Keine Downloads mit diesem Tag vorhanden.</p>
+        </div>
+      )
+    }
+    const { data: documents } = await supabase
+      .from("documents").select("*")
+      .in("id", docTags.map((dt) => dt.document_id))
+      .eq("published", true)
+      .order("created_at", { ascending: false })
+
+    if (!documents || documents.length === 0) {
+      return (
+        <div className="mb-8">
+          {heading && <h2 className="font-display text-xl font-bold mb-4">{heading}</h2>}
+          <p className="text-sm text-muted-foreground">Keine Downloads vorhanden.</p>
+        </div>
+      )
+    }
+
+    return (
+      <div className="mb-8">
+        {heading && <h2 className="font-display text-xl font-bold mb-4">{heading}</h2>}
+        <div className="space-y-2">
+          {documents.map((doc) => (
+            <a
+              key={doc.id}
+              href={doc.file_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 rounded-xl border bg-card p-4 transition-colors hover:bg-muted/50"
+            >
+              <FileText className="h-5 w-5 text-primary shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="font-medium text-sm">{doc.title}</p>
+                <p className="text-xs text-muted-foreground">{doc.file_name}</p>
+              </div>
+              <Download className="h-4 w-4 text-muted-foreground shrink-0" />
+            </a>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  if (block.type === 'tagged-posts') {
+    const { data: postTags } = await supabase.from("post_tags").select("post_id").eq("tag_id", tagId)
+    if (!postTags || postTags.length === 0) {
+      return (
+        <div className="mb-8">
+          {heading && <h2 className="font-display text-xl font-bold mb-4">{heading}</h2>}
+          <p className="text-sm text-muted-foreground">Keine Beitraege mit diesem Tag vorhanden.</p>
+        </div>
+      )
+    }
+    const { data: posts } = await supabase
+      .from("posts").select("*")
+      .in("id", postTags.map((pt) => pt.post_id))
+      .eq("published", true)
+      .order("created_at", { ascending: false })
+      .limit(limit)
+
+    if (!posts || posts.length === 0) {
+      return (
+        <div className="mb-8">
+          {heading && <h2 className="font-display text-xl font-bold mb-4">{heading}</h2>}
+          <p className="text-sm text-muted-foreground">Keine Beitraege vorhanden.</p>
+        </div>
+      )
+    }
+
+    return (
+      <div className="mb-8">
+        {heading && <h2 className="font-display text-xl font-bold mb-4">{heading}</h2>}
+        <div className="space-y-3">
+          {posts.map((post) => (
+            <a
+              key={post.id}
+              href={`/aktuelles/${post.slug}`}
+              className="block rounded-xl border bg-card p-4 transition-colors hover:bg-muted/50"
+            >
+              <h3 className="font-display text-sm font-semibold">{post.title}</h3>
+              {post.excerpt && <p className="mt-1 text-xs text-muted-foreground line-clamp-2">{post.excerpt}</p>}
+              <p className="mt-2 text-xs text-muted-foreground">
+                {new Date(post.event_date || post.created_at).toLocaleDateString("de-DE", {
+                  day: "numeric", month: "long", year: "numeric"
+                })}
+              </p>
+            </a>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  return null
 }
 
 function BlockRenderer({ block }: { block: ContentBlock }) {

@@ -5,13 +5,13 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Plus, Trash2, GripVertical, ChevronDown, ChevronUp, CreditCard, ImageIcon, HelpCircle, Type, List, Quote, Minus, Video, MousePointerClick, Columns, MoveVertical, ListCollapse, Table2 } from "lucide-react"
+import { Plus, Trash2, GripVertical, ChevronDown, ChevronUp, CreditCard, ImageIcon, HelpCircle, Type, List, Quote, Minus, Video, MousePointerClick, Columns, MoveVertical, ListCollapse, Table2, CalendarDays, Download, Newspaper } from "lucide-react"
 
 // ============================================================================
 // Block Types
 // ============================================================================
 
-export type BlockType = 'text' | 'cards' | 'faq' | 'gallery' | 'list' | 'hero' | 'quote' | 'divider' | 'video' | 'cta' | 'columns' | 'spacer' | 'accordion' | 'table'
+export type BlockType = 'text' | 'cards' | 'faq' | 'gallery' | 'list' | 'hero' | 'quote' | 'divider' | 'video' | 'cta' | 'columns' | 'spacer' | 'accordion' | 'table' | 'tagged-events' | 'tagged-downloads' | 'tagged-posts'
 
 export interface ContentBlock {
   id: string
@@ -41,6 +41,9 @@ const BLOCK_OPTIONS: BlockOption[] = [
   { type: 'spacer', icon: MoveVertical, label: 'Abstand', description: 'Vertikaler Abstand zwischen Abschnitten' },
   { type: 'accordion', icon: ListCollapse, label: 'Akkordeon', description: 'Aufklappbare Abschnitte mit Titel und Inhalt' },
   { type: 'table', icon: Table2, label: 'Tabelle', description: 'Einfache Tabelle mit Zeilen und Spalten' },
+  { type: 'tagged-events', icon: CalendarDays, label: 'Termine (Tag)', description: 'Termine mit bestimmtem Tag anzeigen' },
+  { type: 'tagged-downloads', icon: Download, label: 'Downloads (Tag)', description: 'Downloads mit bestimmtem Tag anzeigen' },
+  { type: 'tagged-posts', icon: Newspaper, label: 'Beitraege (Tag)', description: 'Beitraege mit bestimmtem Tag anzeigen' },
 ]
 
 // ============================================================================
@@ -94,6 +97,12 @@ function createDefaultBlock(type: BlockType): ContentBlock {
       return { id, type, data: { items: [{ title: '', content: '' }] } }
     case 'table':
       return { id, type, data: { rows: [['', ''], ['', '']] } }
+    case 'tagged-events':
+      return { id, type, data: { tagId: '', heading: 'Termine', limit: 5 } }
+    case 'tagged-downloads':
+      return { id, type, data: { tagId: '', heading: 'Downloads' } }
+    case 'tagged-posts':
+      return { id, type, data: { tagId: '', heading: 'Beitraege', limit: 5 } }
   }
 }
 
@@ -244,6 +253,10 @@ function BlockContent({ block, onChange }: { block: ContentBlock; onChange: (dat
       return <AccordionBlockEditor data={block.data} onChange={onChange} />
     case 'table':
       return <TableBlockEditor data={block.data} onChange={onChange} />
+    case 'tagged-events':
+    case 'tagged-downloads':
+    case 'tagged-posts':
+      return <TaggedContentBlockEditor type={block.type} data={block.data} onChange={onChange} />
     default:
       return <p className="text-sm text-muted-foreground">Unbekannter Block-Typ</p>
   }
@@ -840,6 +853,79 @@ function TableBlockEditor({ data, onChange }: { data: Record<string, unknown>; o
           </Button>
         )}
       </div>
+    </div>
+  )
+}
+
+function TaggedContentBlockEditor({ type, data, onChange }: { type: string; data: Record<string, unknown>; onChange: (data: Record<string, unknown>) => void }) {
+  const [tags, setTags] = useState<Array<{ id: string; name: string; color: string }>>([])
+
+  useState(() => {
+    fetch("/api/tags")
+      .then((r) => r.json())
+      .then((d) => { if (Array.isArray(d)) setTags(d) })
+      .catch(() => {})
+  })
+
+  const typeLabels: Record<string, string> = {
+    'tagged-events': 'Termine',
+    'tagged-downloads': 'Downloads',
+    'tagged-posts': 'Beitraege',
+  }
+
+  const selectedTag = tags.find((t) => t.id === data.tagId)
+
+  return (
+    <div className="space-y-3">
+      <p className="text-xs text-muted-foreground">
+        Zeigt {typeLabels[type] || 'Inhalte'} an, die mit einem bestimmten Tag versehen sind.
+      </p>
+      <div>
+        <Label className="text-xs">Ueberschrift</Label>
+        <Input
+          value={(data.heading as string) || ''}
+          onChange={(e) => onChange({ ...data, heading: e.target.value })}
+          placeholder={`z.B. ${typeLabels[type] || 'Inhalte'}`}
+          className="mt-1"
+        />
+      </div>
+      <div>
+        <Label className="text-xs">Tag auswaehlen</Label>
+        {tags.length === 0 ? (
+          <p className="mt-1 text-xs text-muted-foreground">
+            Noch keine Tags vorhanden. <a href="/cms/tags" className="text-primary underline">Tags erstellen</a>
+          </p>
+        ) : (
+          <select
+            value={(data.tagId as string) || ''}
+            onChange={(e) => onChange({ ...data, tagId: e.target.value })}
+            className="mt-1 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+          >
+            <option value="">— Tag waehlen —</option>
+            {tags.map((tag) => (
+              <option key={tag.id} value={tag.id}>{tag.name}</option>
+            ))}
+          </select>
+        )}
+      </div>
+      {type !== 'tagged-downloads' && (
+        <div>
+          <Label className="text-xs">Max. Anzahl</Label>
+          <Input
+            type="number"
+            value={(data.limit as number) || 5}
+            onChange={(e) => onChange({ ...data, limit: parseInt(e.target.value) || 5 })}
+            min={1}
+            max={20}
+            className="mt-1 w-24"
+          />
+        </div>
+      )}
+      {selectedTag && (
+        <p className="text-xs text-muted-foreground">
+          Gewaehlter Tag: <strong>{selectedTag.name}</strong>
+        </p>
+      )}
     </div>
   )
 }

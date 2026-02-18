@@ -1,11 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { FileUploader } from "./file-uploader"
+import { TagSelector, TagBadge } from "./tag-selector"
+import type { TagData } from "./tag-selector"
 import { Trash2, ExternalLink, FileText, ImageIcon, Copy, Check } from "lucide-react"
 
 interface Doc {
@@ -30,6 +32,50 @@ export function DocumentsManager({ initialDocuments }: { initialDocuments: Doc[]
   const [uploadedSize, setUploadedSize] = useState(0)
   const [saving, setSaving] = useState(false)
   const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [newDocTagIds, setNewDocTagIds] = useState<string[]>([])
+  const [docTags, setDocTags] = useState<Record<string, TagData[]>>({})
+  const [allTags, setAllTags] = useState<TagData[]>([])
+
+  // Load all tags and document-tag assignments
+  useEffect(() => {
+    const supabase = createClient()
+    fetch("/api/tags")
+      .then((r) => r.json())
+      .then((data) => { if (Array.isArray(data)) setAllTags(data) })
+      .catch(() => {})
+    // Load document_tags for all documents
+    supabase.from("document_tags").select("document_id, tag_id").then(({ data }) => {
+      if (!data) return
+      const map: Record<string, string[]> = {}
+      data.forEach((dt) => {
+        if (!map[dt.document_id]) map[dt.document_id] = []
+        map[dt.document_id].push(dt.tag_id)
+      })
+      // We'll resolve tag objects once allTags loads
+      setDocTags((prev) => {
+        const result: Record<string, TagData[]> = {}
+        // Will be resolved via allTags effect
+        Object.entries(map).forEach(([docId, tIds]) => {
+          result[docId] = tIds.map((tid) => ({ id: tid, name: "", color: "blue" }))
+        })
+        return result
+      })
+    }).catch(() => {})
+  }, [])
+
+  // Resolve tag names once allTags is loaded
+  useEffect(() => {
+    if (allTags.length === 0) return
+    setDocTags((prev) => {
+      const result: Record<string, TagData[]> = {}
+      Object.entries(prev).forEach(([docId, tags]) => {
+        result[docId] = tags
+          .map((t) => allTags.find((at) => at.id === t.id))
+          .filter(Boolean) as TagData[]
+      })
+      return result
+    })
+  }, [allTags])
 
   async function handleSave() {
     if (!title || !uploadedUrl) return
@@ -50,10 +96,21 @@ export function DocumentsManager({ initialDocuments }: { initialDocuments: Doc[]
     }).select().single()
 
     if (!error && data) {
+      // Save tags for the new document
+      if (newDocTagIds.length > 0) {
+        await supabase.from("document_tags").insert(
+          newDocTagIds.map((tag_id) => ({ document_id: data.id, tag_id }))
+        )
+        setDocTags((prev) => ({
+          ...prev,
+          [data.id]: newDocTagIds.map((tid) => allTags.find((t) => t.id === tid)).filter(Boolean) as TagData[],
+        }))
+      }
       setDocs([data, ...docs])
       setTitle("")
       setUploadedUrl("")
       setUploadedName("")
+      setNewDocTagIds([])
     }
     setSaving(false)
   }
@@ -103,6 +160,10 @@ export function DocumentsManager({ initialDocuments }: { initialDocuments: Doc[]
             </select>
           </div>
         </div>
+        <div className="space-y-2">
+          <Label>Tags</Label>
+          <TagSelector selectedTagIds={newDocTagIds} onChange={setNewDocTagIds} />
+        </div>
         {uploadedUrl ? (
           <div className="flex items-center gap-3 rounded-lg border bg-muted/50 p-3">
             <FileText className="h-5 w-5 text-primary shrink-0" />
@@ -133,6 +194,13 @@ export function DocumentsManager({ initialDocuments }: { initialDocuments: Doc[]
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-sm">{doc.title}</p>
                   <p className="text-xs text-muted-foreground">{doc.file_name} &middot; {formatSize(doc.file_size)} &middot; {doc.category}</p>
+                  {docTags[doc.id] && docTags[doc.id].length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {docTags[doc.id].map((tag) => (
+                        <TagBadge key={tag.id} tag={tag} size="xs" />
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
                   <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => copyUrl(doc.id, doc.file_url)} title="URL kopieren">

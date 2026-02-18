@@ -2,11 +2,13 @@
 
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ArrowLeft, Save } from "lucide-react"
+import { TagSelector, TagBadge } from "./tag-selector"
+import type { TagData } from "./tag-selector"
 import Link from "next/link"
 
 interface EventEditorProps {
@@ -34,6 +36,21 @@ export function EventEditor({ event }: EventEditorProps) {
   const [published, setPublished] = useState(event?.published ?? true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [tagIds, setTagIds] = useState<string[]>([])
+
+  // Load existing tags for this event
+  useEffect(() => {
+    if (!event) return
+    const supabase = createClient()
+    supabase
+      .from("event_tags")
+      .select("tag_id")
+      .eq("event_id", event.id)
+      .then(({ data }) => {
+        if (data) setTagIds(data.map((t) => t.tag_id))
+      })
+      .catch(() => {})
+  }, [event])
 
   const handleSave = async () => {
     setSaving(true)
@@ -77,6 +94,32 @@ export function EventEditor({ event }: EventEditorProps) {
       }
 
       if (saveError) throw saveError
+
+      // Save tags
+      const savedEventId = event?.id
+      if (savedEventId) {
+        // Delete old tag assignments and insert new ones
+        await supabase.from("event_tags").delete().eq("event_id", savedEventId)
+        if (tagIds.length > 0) {
+          await supabase.from("event_tags").insert(
+            tagIds.map((tag_id) => ({ event_id: savedEventId, tag_id }))
+          )
+        }
+      } else {
+        // For new events, get the created ID and assign tags
+        const { data: newEvents } = await supabase
+          .from("events")
+          .select("id")
+          .eq("title", title)
+          .eq("event_date", eventDate)
+          .order("created_at", { ascending: false })
+          .limit(1)
+        if (newEvents && newEvents.length > 0 && tagIds.length > 0) {
+          await supabase.from("event_tags").insert(
+            tagIds.map((tag_id) => ({ event_id: newEvents[0].id, tag_id }))
+          )
+        }
+      }
 
       router.push("/cms/events")
       router.refresh()
@@ -200,6 +243,10 @@ export function EventEditor({ event }: EventEditorProps) {
               />
               <span className="text-sm text-card-foreground">Termin veroeffentlichen</span>
             </label>
+            <div className="grid gap-2 pt-2 border-t">
+              <Label>Tags</Label>
+              <TagSelector selectedTagIds={tagIds} onChange={setTagIds} />
+            </div>
           </div>
         </div>
       </div>

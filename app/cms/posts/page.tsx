@@ -1,8 +1,20 @@
 import { createClient } from "@/lib/supabase/server"
 import Link from "next/link"
-import { Plus, CalendarDays, Eye, EyeOff } from "lucide-react"
+import { Plus, CalendarDays, Eye, EyeOff, Tag as TagIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { DeletePostButton } from "@/components/cms/delete-post-button"
+
+const TAG_COLORS: Record<string, { bg: string; text: string; border: string }> = {
+  blue:    { bg: "bg-blue-100",    text: "text-blue-700",    border: "border-blue-200" },
+  green:   { bg: "bg-emerald-100", text: "text-emerald-700", border: "border-emerald-200" },
+  red:     { bg: "bg-rose-100",    text: "text-rose-700",    border: "border-rose-200" },
+  yellow:  { bg: "bg-amber-100",   text: "text-amber-700",   border: "border-amber-200" },
+  purple:  { bg: "bg-violet-100",  text: "text-violet-700",  border: "border-violet-200" },
+  pink:    { bg: "bg-pink-100",    text: "text-pink-700",    border: "border-pink-200" },
+  orange:  { bg: "bg-orange-100",  text: "text-orange-700",  border: "border-orange-200" },
+  teal:    { bg: "bg-teal-100",    text: "text-teal-700",    border: "border-teal-200" },
+  gray:    { bg: "bg-gray-100",    text: "text-gray-700",    border: "border-gray-200" },
+}
 
 export default async function CmsPostsPage() {
   const supabase = await createClient()
@@ -10,6 +22,20 @@ export default async function CmsPostsPage() {
     .from("posts")
     .select("*")
     .order("created_at", { ascending: false })
+
+  // Load all tags and post-tag assignments
+  const { data: allTags } = await supabase.from("tags").select("*")
+  const { data: postTags } = await supabase.from("post_tags").select("*")
+
+  const tagsMap = new Map((allTags || []).map((t) => [t.id, t]))
+  const postTagsMap = new Map<string, typeof allTags>()
+  ;(postTags || []).forEach((pt) => {
+    const tag = tagsMap.get(pt.tag_id)
+    if (!tag) return
+    const existing = postTagsMap.get(pt.post_id) || []
+    existing.push(tag)
+    postTagsMap.set(pt.post_id, existing)
+  })
 
   return (
     <div>
@@ -36,7 +62,7 @@ export default async function CmsPostsPage() {
               className="flex items-center justify-between rounded-xl border border-border bg-card p-4"
             >
               <div className="flex-1">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <Link
                     href={`/cms/posts/${post.id}`}
                     className="font-display text-sm font-semibold text-card-foreground hover:text-primary"
@@ -54,6 +80,14 @@ export default async function CmsPostsPage() {
                       Entwurf
                     </span>
                   )}
+                  {(postTagsMap.get(post.id) || []).map((tag) => {
+                    const c = TAG_COLORS[tag.color] || TAG_COLORS.blue
+                    return (
+                      <span key={tag.id} className={`inline-flex items-center gap-0.5 rounded-full border px-1.5 py-0 text-[10px] font-medium ${c.bg} ${c.text} ${c.border}`}>
+                        <TagIcon className="h-2 w-2" />{tag.name}
+                      </span>
+                    )
+                  })}
                 </div>
                 <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
                   <span className="flex items-center gap-1">

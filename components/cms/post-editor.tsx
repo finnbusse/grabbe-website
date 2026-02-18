@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { ArrowLeft, Save, Eye, Loader2 } from "lucide-react"
 import { FileUploader, FileListItem } from "./file-uploader"
+import { TagSelector } from "./tag-selector"
 import Link from "next/link"
 
 interface PostEditorProps {
@@ -48,7 +49,21 @@ export function PostEditor({ post }: PostEditorProps) {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([])
+  const [tagIds, setTagIds] = useState<string[]>([])
 
+  // Load existing tags for this post
+  useEffect(() => {
+    if (!post) return
+    const supabase = createClient()
+    supabase
+      .from("post_tags")
+      .select("tag_id")
+      .eq("post_id", post.id)
+      .then(({ data }) => {
+        if (data) setTagIds(data.map((t) => t.tag_id))
+      })
+      .catch(() => {})
+  }, [post])
   // Auto-populate author name from user profile for new posts
   useEffect(() => {
     if (post || authorName) return
@@ -113,6 +128,29 @@ export function PostEditor({ post }: PostEditorProps) {
       }
 
       if (saveError) throw saveError
+
+      // Save tags
+      if (post?.id) {
+        await supabase.from("post_tags").delete().eq("post_id", post.id)
+        if (tagIds.length > 0) {
+          await supabase.from("post_tags").insert(
+            tagIds.map((tag_id) => ({ post_id: post.id, tag_id }))
+          )
+        }
+      } else {
+        // For new posts, get the created ID and assign tags
+        const { data: newPosts } = await supabase
+          .from("posts")
+          .select("id")
+          .eq("slug", slug)
+          .order("created_at", { ascending: false })
+          .limit(1)
+        if (newPosts && newPosts.length > 0 && tagIds.length > 0) {
+          await supabase.from("post_tags").insert(
+            tagIds.map((tag_id) => ({ post_id: newPosts[0].id, tag_id }))
+          )
+        }
+      }
 
       router.push("/cms/posts")
       router.refresh()
@@ -241,6 +279,10 @@ export function PostEditor({ post }: PostEditorProps) {
               <Label htmlFor="eventDate">Datum (optional)</Label>
               <Input id="eventDate" type="date" value={eventDate} onChange={(e) => setEventDate(e.target.value)} />
               <p className="text-[10px] text-muted-foreground">Eigenes Datum fuer den Beitrag. Wird statt dem Erstellungsdatum angezeigt.</p>
+            </div>
+            <div className="grid gap-2 pt-2 border-t">
+              <Label>Tags</Label>
+              <TagSelector selectedTagIds={tagIds} onChange={setTagIds} />
             </div>
           </div>
 
