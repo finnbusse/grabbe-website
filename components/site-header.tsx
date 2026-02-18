@@ -5,6 +5,10 @@ import { usePathname } from "next/navigation"
 import { useState, useRef, useCallback, useEffect } from "react"
 import { Menu, X, ChevronDown } from "lucide-react"
 
+const DESKTOP_BREAKPOINT = 1024
+const SCROLL_TOP_OFFSET = 80
+const SCROLL_DELTA_THRESHOLD = 4
+
 export type NavItemData = {
   id: string
   label: string
@@ -55,7 +59,7 @@ export function SiteHeader({
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.innerWidth < 1024) {
+      if (window.innerWidth < DESKTOP_BREAKPOINT) {
         setHeaderHidden(false)
         lastScrollYRef.current = window.scrollY
         return
@@ -64,11 +68,11 @@ export function SiteHeader({
       const currentScrollY = window.scrollY
       const scrollDelta = currentScrollY - lastScrollYRef.current
 
-      if (currentScrollY < 80) {
+      if (currentScrollY < SCROLL_TOP_OFFSET) {
         setHeaderHidden(false)
-      } else if (scrollDelta > 4) {
+      } else if (scrollDelta > SCROLL_DELTA_THRESHOLD) {
         setHeaderHidden(true)
-      } else if (scrollDelta < -4) {
+      } else if (scrollDelta < -SCROLL_DELTA_THRESHOLD) {
         setHeaderHidden(false)
       }
 
@@ -76,12 +80,12 @@ export function SiteHeader({
     }
 
     const handleResize = () => {
-      if (window.innerWidth < 1024) setHeaderHidden(false)
+      if (window.innerWidth < DESKTOP_BREAKPOINT) setHeaderHidden(false)
     }
 
     lastScrollYRef.current = window.scrollY
     window.addEventListener("scroll", handleScroll, { passive: true })
-    window.addEventListener("resize", handleResize)
+    window.addEventListener("resize", handleResize, { passive: true })
 
     return () => {
       window.removeEventListener("scroll", handleScroll)
