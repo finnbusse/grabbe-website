@@ -1,12 +1,12 @@
 "use client"
 
-import { useState, useEffect, useCallback, useRef } from "react"
+import { useState, useEffect, useCallback, useRef, useMemo } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { UserPlus, Trash2, Shield, Mail, Pencil, X, Save, Loader2, Camera } from "lucide-react"
+import { UserPlus, Trash2, Shield, Mail, Pencil, X, Save, Loader2, Camera, Search, Users } from "lucide-react"
 
 interface UserProfile {
   user_id: string
@@ -21,6 +21,7 @@ interface UserEntry {
   email: string
   created_at: string
   last_sign_in_at: string | null
+  role: string | null
   profile: UserProfile | null
 }
 
@@ -85,6 +86,8 @@ export default function UsersPage() {
   const [editTitle, setEditTitle] = useState("")
   const [editSaving, setEditSaving] = useState(false)
   const [uploadingId, setUploadingId] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [deletingId, setDeletingId] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const loadUsers = useCallback(async () => {
@@ -98,6 +101,16 @@ export default function UsersPage() {
   }, [supabase])
 
   useEffect(() => { loadUsers() }, [loadUsers])
+
+  const filteredUsers = useMemo(() => {
+    if (!searchQuery.trim()) return users
+    const q = searchQuery.toLowerCase()
+    return users.filter((u) => {
+      const name = getDisplayName(u.profile, u.email).toLowerCase()
+      const email = u.email.toLowerCase()
+      return name.includes(q) || email.includes(q)
+    })
+  }, [users, searchQuery])
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault()
@@ -196,6 +209,22 @@ export default function UsersPage() {
         </Button>
       </div>
 
+      <div className="flex items-center justify-between gap-4 rounded-xl border border-border bg-card p-3">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Users className="h-4 w-4" />
+          <span className="font-medium">{users.length} Benutzer</span>
+        </div>
+        <div className="relative min-w-[220px]">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Name oder E-Mail suchen..."
+            className="pl-9"
+          />
+        </div>
+      </div>
+
       {message && (
         <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 text-sm text-primary">{message}</div>
       )}
@@ -241,7 +270,7 @@ export default function UsersPage() {
       )}
 
       <div className="grid gap-3">
-        {users.map((u) => (
+        {filteredUsers.map((u) => (
           <div key={u.id} className="rounded-xl border border-border bg-card p-4">
             {editingId === u.id ? (
               /* Edit mode */
@@ -302,6 +331,12 @@ export default function UsersPage() {
                       {u.id === currentUser && (
                         <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">Du</span>
                       )}
+                      {u.role && (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+                          <Shield className="h-2.5 w-2.5" />
+                          {u.role}
+                        </span>
+                      )}
                     </div>
                     <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                       <Mail className="h-3 w-3" />
@@ -310,6 +345,9 @@ export default function UsersPage() {
                     <p className="text-[11px] text-muted-foreground">
                       {"Erstellt: "}{new Date(u.created_at).toLocaleDateString("de-DE")}
                       {u.last_sign_in_at && (" | Letzter Login: " + new Date(u.last_sign_in_at).toLocaleDateString("de-DE"))}
+                      {!u.last_sign_in_at && (
+                        <span className="ml-1 text-amber-500">| Noch nie angemeldet</span>
+                      )}
                     </p>
                   </div>
                 </div>
@@ -319,12 +357,24 @@ export default function UsersPage() {
                   </Button>
                   {u.id !== currentUser && (
                     <Button variant="ghost" size="sm" className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                      disabled={deletingId === u.id}
                       onClick={async () => {
-                        if (!confirm("Diesen Benutzer wirklich loeschen?")) return
-                        await fetch("/api/users", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ userId: u.id }) })
-                        loadUsers()
+                        if (!confirm(`"${getDisplayName(u.profile, u.email)}" wirklich loeschen? Diese Aktion kann nicht rueckgaengig gemacht werden.`)) return
+                        setDeletingId(u.id)
+                        setMessage("")
+                        try {
+                          const res = await fetch("/api/users", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ userId: u.id }) })
+                          const data = await res.json()
+                          if (!res.ok) throw new Error(data.error || "Fehler beim Loeschen")
+                          setMessage("Benutzer erfolgreich geloescht.")
+                          loadUsers()
+                        } catch (err) {
+                          setMessage(err instanceof Error ? err.message : "Fehler beim Loeschen")
+                        } finally {
+                          setDeletingId(null)
+                        }
                       }}>
-                      <Trash2 className="h-4 w-4" />
+                      {deletingId === u.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
                     </Button>
                   )}
                 </div>
@@ -332,6 +382,9 @@ export default function UsersPage() {
             )}
           </div>
         ))}
+        {users.length > 0 && filteredUsers.length === 0 && (
+          <p className="py-8 text-center text-sm text-muted-foreground">Keine Benutzer fuer &quot;{searchQuery}&quot; gefunden.</p>
+        )}
         {users.length === 0 && (
           <p className="py-8 text-center text-sm text-muted-foreground">Noch keine weiteren Benutzer vorhanden.</p>
         )}
