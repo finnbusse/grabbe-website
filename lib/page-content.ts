@@ -214,6 +214,7 @@ export const PAGE_DEFAULTS = {
     page_label: 'Klassen 5 & 6',
     page_title: 'Erprobungsstufe',
     page_subtitle: 'Entdecke deine Talente! Bringe deine Ideen ein und mach sie sichtbar! Ich kann was - und es zaehlt!',
+    hero_image_url: '',
     card1_title: 'Deine Talente entdecken',
     card1_text: 'Du wirst zunehmend kreativer und selbststaendiger!',
     card2_title: 'Gemeinschaft bilden',
@@ -233,6 +234,7 @@ export const PAGE_DEFAULTS = {
     page_label: 'Unser besonderes Profil',
     page_title: 'Profilprojekte',
     page_subtitle: 'Waehle das Profilprojekt nach deinen Interessen! Gestalte frei - ohne Leistungsdruck! In Klasse 5 und 6 kannst du in einem der vier Profilprojekte neue Lernwege entdecken.',
+    hero_image_url: '',
     kunst_title: 'Kunstprojekt',
     kunst_p1: 'Das Fach Kunst ist durch selbstbestimmtes Handeln und anschauliches Denken gepraegt, was Lernen besonders nachhaltig macht und zum ganzheitlichen Erleben und Verstehen der Wirklichkeit fuehrt. Dies ist bedeutsam in Bezug auf die zunehmende Aesthetisierung und Virtualisierung der Lebenswelt. Durch die Staerkung der Ich-Identitaet ermoeglicht das Fach Kunst den Kindern, sich in der Welt zu behaupten und diese als gestaltbar und veraenderbar zu begreifen.',
     kunst_p2: 'Der Kunstunterricht am Grabbe-Gymnasium versteht sich so als bedeutsamer und hochwertiger Baustein im Aufbau zukunftsrelevanter Kompetenzen fuer alle Schueler und Schuelerinnen.',
@@ -259,6 +261,7 @@ export const PAGE_DEFAULTS = {
     page_label: 'Sekundarstufe II',
     page_title: 'Oberstufe',
     page_subtitle: 'Dein Start in der Oberstufe - Wir freuen uns ueber Ihr/euer Interesse an unserer Schule!',
+    hero_image_url: '',
     portal_title: 'Oberstufen-Portal',
     portal_text: 'Naehere Informationen ueber unsere Oberstufe finden sich unter dem Oberstufen-Portal, z.B. in der Broschuere, die unter der Rubrik "Laufbahnplanung" zur Verfuegung steht.',
     anmeldewoche_title: 'Anmeldewoche Oberstufe',
@@ -282,6 +285,7 @@ export const PAGE_DEFAULTS = {
     page_label: 'Herzlich willkommen',
     page_title: 'Anmeldung',
     page_subtitle: 'Wir freuen uns, dass Sie Ihr Kind bei uns am Grabbe anmelden wollen.',
+    hero_image_url: '',
     klasse5_title: 'Anmeldung Klasse 5',
     klasse5_subtitle: 'Schuljahr 2026/27',
     klasse5_text: 'Liebe Eltern und Erziehungsberechtigte, wir freuen uns, dass Sie Ihr Kind bei uns am Grabbe anmelden wollen. Alle weiteren Infos zur Erprobungsstufe (Konzept etc.) finden sich auf der Seite zur Erprobungsstufe.',
@@ -299,6 +303,7 @@ export const PAGE_DEFAULTS = {
     page_label: 'Schulleben',
     page_title: 'Faecher & Arbeitsgemeinschaften',
     page_subtitle: 'Viele Faecher warten auf dich! Am Nachmittag hast du bei uns die freie Wahl!',
+    hero_image_url: '',
     intro_text: 'Das Grabbe-Gymnasium wird zum Lebensort Ihrer Kinder. Ihre Kinder koennen sich in vielen verschiedenen Faechern mit engagierten Kolleg:innen bilden. Sie haben nach Englisch die Moeglichkeit, Franzoesisch oder Latein und spaeter Spanisch zu waehlen. Alle Naturwissenschaften und Informatik werden einzeln und auch verbunden, wie in der Natur, angeboten. Die Gesellschaftswissenschaften runden das immer wichtigere Thema rund um Nachhaltigkeit, Demokratiebildung und geschichtliche Verantwortung und mehr ab. Ganz besonders betonen wir die Bildung im Bereich Kunst, Musik und Sport und NaWi.',
     cat1_title: 'Sprachen, Kunst, Musik',
     cat1_desc: 'Nach Englisch waehlen Sie Franzoesisch oder Latein, spaeter Spanisch. Besonders betonen wir Kunst, Musik und Sport.',
@@ -315,6 +320,7 @@ export const PAGE_DEFAULTS = {
     page_label: 'Schulleben',
     page_title: 'Nachmittags am Grabbe',
     page_subtitle: '"Verlaesslich und flexibel" - Beate Bossmanns',
+    hero_image_url: '',
     text_p1: 'Nach Unterrichtsschluss bietet das Grabbe-Gymnasium mit einem breiten Spektrum an Nachmittagsaktivitaeten eine verlaessliche und flexibel gestaltbare Betreuungszeit bis 15:30 Uhr an. Neben unserer verlaesslichen Nachmittagsbetreuung mit offenen Betreuungszeiten in unseren modernen Betreuungsraeumen, die von engagierten Betreuungskraeften geleitet wird, kann Ihr Kind aus zahlreichen AG-Angeboten waehlen oder in der Hausaufgabenbetreuung unter der Anleitung unserer Schuelertutorinnen und -tutoren Hausaufgaben erledigen.',
     text_p2: 'Alle Angebote sind miteinander kombinierbar, sodass Sie die Nachmittagsgestaltung Ihres Kindes auf Ihre individuellen Betreuungswuensche anpassen koennen.',
     text_p3: 'Module der Hausaufgabenbetreuung und Arbeitsgemeinschaften werden fuer ein halbes Jahr gewaehlt. In der Mensa stehen zudem jeden Tag durch unseren Schulcaterer LKS - Pop & Corn sowohl ein ansprechendes Kioskangebot als auch ein reichhaltiges Mittagsessenangebot in Buffetform zur Verfuegung.',
@@ -335,6 +341,7 @@ export const PAGE_DEFAULTS = {
     page_label: 'Schulleben',
     page_title: 'Vernetzt in Detmold',
     page_subtitle: 'Wir bieten Ihren Kindern nicht nur in der Schule lebensnahe Erfahrungen, sondern auch mit unseren vertrauensvollen Partnern.',
+    hero_image_url: '',
     partners: 'Hochschule fuer Musik|Kultur,Landestheater Detmold|Kultur,Johanniter|Soziales,Stadtbibliothek Detmold|Bildung,Lippische Landesbibliothek|Bildung,Landesarchiv NRW|Bildung,Holocaust-Gedenkstaette Yad Vashem|Gedenken,McLean Highschool Washington|International,Wortmann KG|Wirtschaft,Weidmueller GmbH & Co KG|Wirtschaft,Peter-Glaesel-Schule Detmold|Bildung',
   },
 
@@ -343,6 +350,7 @@ export const PAGE_DEFAULTS = {
     page_label: 'Wer, Was, Wo?',
     page_title: 'Kontakt',
     page_subtitle: 'Kommunikation miteinander macht den Grabbe-Spirit aus.',
+    hero_image_url: '',
     address_name: 'Christian-Dietrich-Grabbe-Gymnasium',
     address_street: 'Kuester-Meyer-Platz 2',
     address_city: '32756 Detmold',
@@ -358,6 +366,7 @@ export const PAGE_DEFAULTS = {
   // Impressum
   'impressum': {
     page_title: 'Impressum',
+    hero_image_url: '',
     verantwortlich: 'Dr. Claus Hilbing und Oliver Sprenger',
     anschrift: 'Christian-Dietrich-Grabbe-Gymnasium, Kuester-Meyer-Platz 2, 32756 Detmold',
     kontakt_info: 'Telefon: 05231 - 99260, Telefax: 05231 - 992616, E-Mail: sekretariat@grabbe.nrw.schule',
@@ -368,15 +377,45 @@ export const PAGE_DEFAULTS = {
   // Datenschutz
   'datenschutz': {
     page_title: 'Datenschutz',
+    hero_image_url: '',
     intro_text: 'Der Schutz Ihrer persoenlichen Daten ist uns ein besonderes Anliegen. Wir verarbeiten Ihre Daten daher ausschliesslich auf Grundlage der gesetzlichen Bestimmungen (DSGVO, DSG-NRW, SchulG NRW). In diesen Datenschutzinformationen informieren wir Sie ueber die wichtigsten Aspekte der Datenverarbeitung im Rahmen unserer Website.',
     verantwortlicher: 'Christian-Dietrich-Grabbe-Gymnasium, Kuester-Meyer-Platz 2, 32756 Detmold, Telefon: 05231 - 99260, E-Mail: sekretariat@grabbe.nrw.schule',
     hosting_text: 'Diese Website wird bei Vercel Inc. gehostet. Die Server befinden sich in der EU. Beim Besuch unserer Website werden automatisch technisch notwendige Daten erhoben (IP-Adresse, Zeitpunkt des Zugriffs, abgerufene Seite). Diese Daten werden ausschliesslich zum Betrieb der Website und zur Sicherstellung der Systemsicherheit verarbeitet.',
+  },
+  // Aktuelles
+  'aktuelles': {
+    hero_image_url: '',
+  },
+
+  // Termine
+  'termine': {
+    hero_image_url: '',
+  },
+
+  // Downloads
+  'downloads': {
+    hero_image_url: '',
   },
 } as const
 
 // ============================================================================
 // Page Definitions for the CMS Editor
 // ============================================================================
+
+/** Reusable hero image section added to every editable sub-page */
+const HERO_IMAGE_SECTION: ContentSectionDefinition = {
+  id: 'hero',
+  title: 'Hero-Bild',
+  description: 'Bild das rechts oben im Seitenkopf angezeigt wird. Ohne Bild wird automatisch ein blauer Platzhalter generiert.',
+  fields: [
+    {
+      key: 'hero_image_url',
+      label: 'Hero-Bild',
+      type: 'image',
+      description: 'Empfohlene Groesse: 800x600 px oder groesser, Querformat.',
+    },
+  ],
+}
 
 export const EDITABLE_PAGES: PageDefinition[] = [
   {
@@ -681,6 +720,7 @@ export const EDITABLE_PAGES: PageDefinition[] = [
           { key: 'cta2_text', label: 'Button 2 Text', type: 'text' },
         ],
       },
+      HERO_IMAGE_SECTION,
     ],
     defaults: PAGE_DEFAULTS['erprobungsstufe'],
   },
@@ -742,6 +782,7 @@ export const EDITABLE_PAGES: PageDefinition[] = [
           { key: 'nawi_p4', label: 'Absatz 4', type: 'textarea' },
         ],
       },
+      HERO_IMAGE_SECTION,
     ],
     defaults: PAGE_DEFAULTS['profilprojekte'],
   },
@@ -812,6 +853,7 @@ export const EDITABLE_PAGES: PageDefinition[] = [
           { key: 'hospitationstage_text', label: 'Text', type: 'textarea' },
         ],
       },
+      HERO_IMAGE_SECTION,
     ],
     defaults: PAGE_DEFAULTS['oberstufe'],
   },
@@ -852,6 +894,7 @@ export const EDITABLE_PAGES: PageDefinition[] = [
           { key: 'oberstufe_hinweis', label: 'Hinweis', type: 'textarea' },
         ],
       },
+      HERO_IMAGE_SECTION,
     ],
     defaults: PAGE_DEFAULTS['anmeldung'],
   },
@@ -891,6 +934,7 @@ export const EDITABLE_PAGES: PageDefinition[] = [
           { key: 'cat4_desc', label: 'Kategorie 4: Beschreibung', type: 'textarea' },
         ],
       },
+      HERO_IMAGE_SECTION,
     ],
     defaults: PAGE_DEFAULTS['faecher-ags'],
   },
@@ -940,6 +984,7 @@ export const EDITABLE_PAGES: PageDefinition[] = [
           { key: 'combined_items', label: 'Eintraege (kommagetrennt)', type: 'textarea', description: 'Eintraege getrennt durch Komma eingeben.' },
         ],
       },
+      HERO_IMAGE_SECTION,
     ],
     defaults: PAGE_DEFAULTS['nachmittag'],
   },
@@ -965,6 +1010,7 @@ export const EDITABLE_PAGES: PageDefinition[] = [
           { key: 'partners', label: 'Partner (Name|Kategorie, kommagetrennt)', type: 'textarea', description: 'Format: Name|Kategorie getrennt durch Komma.' },
         ],
       },
+      HERO_IMAGE_SECTION,
     ],
     defaults: PAGE_DEFAULTS['netzwerk'],
   },
@@ -1011,6 +1057,7 @@ export const EDITABLE_PAGES: PageDefinition[] = [
           { key: 'contacts', label: 'Kontakte (Rolle|Name|Beschreibung, kommagetrennt)', type: 'textarea', description: 'Format: Rolle|Name|Beschreibung getrennt durch Komma.' },
         ],
       },
+      HERO_IMAGE_SECTION,
     ],
     defaults: PAGE_DEFAULTS['kontakt'],
   },
@@ -1032,6 +1079,7 @@ export const EDITABLE_PAGES: PageDefinition[] = [
           { key: 'aufsichtsbehoerde', label: 'Aufsichtsbehoerde', type: 'text' },
         ],
       },
+      HERO_IMAGE_SECTION,
     ],
     defaults: PAGE_DEFAULTS['impressum'],
   },
@@ -1051,7 +1099,33 @@ export const EDITABLE_PAGES: PageDefinition[] = [
           { key: 'hosting_text', label: 'Hosting', type: 'textarea' },
         ],
       },
+      HERO_IMAGE_SECTION,
     ],
     defaults: PAGE_DEFAULTS['datenschutz'],
+  },
+  // Aktuelles, Termine, Downloads — only need hero image
+  {
+    id: 'aktuelles',
+    title: 'Aktuelles',
+    description: 'Hero-Bild fuer die Aktuelles-Seite.',
+    route: '/aktuelles',
+    sections: [HERO_IMAGE_SECTION],
+    defaults: PAGE_DEFAULTS['aktuelles'],
+  },
+  {
+    id: 'termine',
+    title: 'Termine',
+    description: 'Hero-Bild fuer die Termine-Seite.',
+    route: '/termine',
+    sections: [HERO_IMAGE_SECTION],
+    defaults: PAGE_DEFAULTS['termine'],
+  },
+  {
+    id: 'downloads',
+    title: 'Downloads',
+    description: 'Hero-Bild fuer die Downloads-Seite.',
+    route: '/downloads',
+    sections: [HERO_IMAGE_SECTION],
+    defaults: PAGE_DEFAULTS['downloads'],
   },
 ]

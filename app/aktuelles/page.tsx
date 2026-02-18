@@ -1,5 +1,7 @@
 import { SiteLayout } from "@/components/site-layout"
+import { PageHero } from "@/components/page-hero"
 import { createClient } from "@/lib/supabase/server"
+import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
 import { CalendarDays, ArrowRight } from "lucide-react"
 import Link from "next/link"
 
@@ -9,7 +11,11 @@ export const metadata = {
 }
 
 export default async function AktuellesPage() {
-  const supabase = await createClient()
+  const [heroContent, supabase] = await Promise.all([
+    getPageContent('aktuelles', PAGE_DEFAULTS['aktuelles']),
+    createClient(),
+  ])
+  const heroImageUrl = (heroContent.hero_image_url as string) || undefined
   const { data: posts } = await supabase
     .from("posts")
     .select("*")
@@ -42,20 +48,12 @@ export default async function AktuellesPage() {
   return (
     <SiteLayout>
       <main>
-        {/* Header */}
-        <section className="border-b border-border bg-muted">
-          <div className="mx-auto max-w-7xl px-4 pb-12 pt-16 lg:px-8 lg:pb-16 lg:pt-24">
-            <p className="text-sm font-medium uppercase tracking-widest text-primary">
-              Neuigkeiten
-            </p>
-            <h1 className="mt-3 font-display text-4xl font-bold tracking-tight text-foreground md:text-5xl">
-              Aktuelles
-            </h1>
-            <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
-              Bleiben Sie informiert ueber Veranstaltungen, Projekte und Neuigkeiten am Grabbe-Gymnasium.
-            </p>
-          </div>
-        </section>
+        <PageHero
+          title="Aktuelles"
+          label="Neuigkeiten"
+          subtitle="Bleiben Sie informiert ueber Veranstaltungen, Projekte und Neuigkeiten am Grabbe-Gymnasium."
+          imageUrl={heroImageUrl}
+        />
 
         {/* Posts */}
         <section className="mx-auto max-w-7xl px-4 py-16 lg:px-8">

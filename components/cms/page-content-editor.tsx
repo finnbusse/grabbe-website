@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { ArrowLeft, Save, Loader2, RotateCcw, Eye, Check } from "lucide-react"
+import { ArrowLeft, Save, Loader2, RotateCcw, Eye, Check, X, ImageIcon } from "lucide-react"
 import Link from "next/link"
 import type { PageDefinition, ContentSectionDefinition } from "@/lib/page-content"
 
@@ -236,6 +236,12 @@ function SectionEditor({
                   placeholder={field.placeholder}
                   className="min-h-[100px] w-full resize-y rounded-lg border border-input bg-background px-3 py-2 text-sm leading-relaxed placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                 />
+              ) : field.type === "image" ? (
+                <ImageUploadField
+                  id={`field-${field.key}`}
+                  value={value}
+                  onChange={(url) => onChange(field.key, url)}
+                />
               ) : (
                 <Input
                   id={`field-${field.key}`}
@@ -249,6 +255,94 @@ function SectionEditor({
           )
         })}
       </div>
+    </div>
+  )
+}
+
+// ─── Image upload field ──────────────────────────────────────────────────────
+
+function ImageUploadField({
+  id,
+  value,
+  onChange,
+}: {
+  id: string
+  value: string
+  onChange: (url: string) => void
+}) {
+  const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState<string | null>(null)
+
+  async function handleFile(file: File) {
+    setUploading(true)
+    setUploadError(null)
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
+      const res = await fetch("/api/upload", { method: "POST", body: formData })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        setUploadError(err.error || "Upload fehlgeschlagen")
+        return
+      }
+      const data = await res.json()
+      onChange(data.url)
+    } catch {
+      setUploadError("Upload fehlgeschlagen")
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  return (
+    <div className="space-y-2" id={id}>
+      {uploadError && (
+        <p className="text-xs text-destructive">{uploadError}</p>
+      )}
+      {value ? (
+        <div className="relative w-full overflow-hidden rounded-xl border border-border">
+          {/* Preview */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={value} alt="Hero-Bild Vorschau" className="h-40 w-full object-cover" />
+          <button
+            type="button"
+            onClick={() => onChange("")}
+            className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+            title="Bild entfernen"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      ) : (
+        <label
+          className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-muted-foreground/25 p-6 text-center transition-colors hover:border-primary/50 hover:bg-primary/5"
+        >
+          <input
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f) }}
+          />
+          {uploading ? (
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          ) : (
+            <ImageIcon className="h-8 w-8 text-muted-foreground" />
+          )}
+          <p className="text-sm font-medium text-muted-foreground">
+            {uploading ? "Wird hochgeladen…" : "Bild hochladen"}
+          </p>
+          {!uploading && (
+            <p className="text-xs text-muted-foreground/70">Klicken oder Datei hierher ziehen</p>
+          )}
+        </label>
+      )}
+      {/* Also allow entering a URL directly */}
+      <Input
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder="oder Bild-URL direkt eingeben…"
+        className="text-xs font-mono"
+      />
     </div>
   )
 }

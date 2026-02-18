@@ -1,10 +1,10 @@
 import { SiteLayout } from "@/components/site-layout"
+import { PageHero } from "@/components/page-hero"
 import { MarkdownContent } from "@/components/markdown-content"
 import { createClient } from "@/lib/supabase/server"
 import { notFound } from "next/navigation"
 import { CalendarDays, ArrowLeft, User } from "lucide-react"
 import Link from "next/link"
-import Image from "next/image"
 import { Button } from "@/components/ui/button"
 
 export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -55,12 +55,14 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   return (
     <SiteLayout>
       <main>
-        <article className="mx-auto max-w-3xl px-4 py-16 lg:px-8 lg:py-24">
-          <h1 className="text-balance font-display text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-            {post.title}
-          </h1>
+        <PageHero
+          title={post.title}
+          label={post.category || "Aktuelles"}
+          imageUrl={post.image_url || undefined}
+        />
 
-          <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+        <article className="mx-auto max-w-3xl px-4 py-12 lg:px-8 lg:py-16">
+          <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
             <div className="flex items-center gap-1.5">
               <CalendarDays className="h-4 w-4" />
               {new Date(post.event_date || post.created_at).toLocaleDateString("de-DE", {
@@ -89,18 +91,6 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
               </span>
             )}
           </div>
-
-          {post.image_url && (
-            <div className="mt-8 overflow-hidden rounded-xl">
-              <Image
-                src={post.image_url}
-                alt={post.title}
-                width={800}
-                height={400}
-                className="w-full object-cover"
-              />
-            </div>
-          )}
 
           {post.excerpt && (
             <p className="mt-8 text-lg leading-relaxed text-muted-foreground font-medium border-l-4 border-primary pl-4">

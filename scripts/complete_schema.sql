@@ -23,7 +23,8 @@ CREATE TABLE IF NOT EXISTS public.pages (
   created_at TIMESTAMPTZ DEFAULT now(),
   updated_at TIMESTAMPTZ DEFAULT now(),
   is_system BOOLEAN DEFAULT false,
-  route_path TEXT
+  route_path TEXT,
+  hero_image_url TEXT
 );
 
 -- Create index for common queries

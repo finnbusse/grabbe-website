@@ -2,12 +2,12 @@
 
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
-import { ArrowLeft, Save, Eye, Loader2, Blocks, FileText } from "lucide-react"
+import { ArrowLeft, Save, Eye, Loader2, Blocks, FileText, ImageIcon, X } from "lucide-react"
 import { FileUploader, FileListItem } from "./file-uploader"
 import { BlockEditor, type ContentBlock } from "./block-editor"
 import Link from "next/link"
@@ -22,6 +22,7 @@ interface PageEditorProps {
     sort_order: number
     published: boolean
     route_path?: string | null
+    hero_image_url?: string | null
   }
 }
 
@@ -54,6 +55,9 @@ export function PageEditor({ page }: PageEditorProps) {
   const [routePath, setRoutePath] = useState(page?.route_path ?? "")
   const [sortOrder, setSortOrder] = useState(page?.sort_order ?? 0)
   const [published, setPublished] = useState(page?.published ?? true)
+  const [heroImageUrl, setHeroImageUrl] = useState(page?.hero_image_url ?? "")
+  const [heroUploading, setHeroUploading] = useState(false)
+  const heroInputRef = useRef<HTMLInputElement>(null)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([])
@@ -103,17 +107,31 @@ export function PageEditor({ page }: PageEditorProps) {
         title, slug, content: finalContent, section,
         sort_order: sortOrder, published,
         route_path: routePath || null,
+        hero_image_url: heroImageUrl || null,
         user_id: user.id,
         updated_at: new Date().toISOString(),
       }
 
+      let saveError: unknown = null
       if (page) {
         const { error: err } = await supabase.from("pages").update(payload).eq("id", page.id)
-        if (err) throw err
+        saveError = err
+        // Resilient: if hero_image_url column doesn't exist yet, retry without it
+        if (err && (err as { message?: string }).message?.includes("hero_image_url")) {
+          const { hero_image_url: _dropped, ...payloadWithout } = payload
+          const { error: err2 } = await supabase.from("pages").update(payloadWithout).eq("id", page.id)
+          saveError = err2
+        }
       } else {
         const { error: err } = await supabase.from("pages").insert(payload)
-        if (err) throw err
+        saveError = err
+        if (err && (err as { message?: string }).message?.includes("hero_image_url")) {
+          const { hero_image_url: _dropped, ...payloadWithout } = payload
+          const { error: err2 } = await supabase.from("pages").insert(payloadWithout)
+          saveError = err2
+        }
       }
+      if (saveError) throw saveError
       router.push("/cms/pages")
       router.refresh()
     } catch (err: unknown) {
@@ -234,6 +252,58 @@ export function PageEditor({ page }: PageEditorProps) {
         </div>
 
         <div className="space-y-6">
+          {/* Hero image panel */}
+          <div className="rounded-2xl border bg-card p-6 space-y-3">
+            <h3 className="font-display text-sm font-semibold">Hero-Bild</h3>
+            <p className="text-xs text-muted-foreground">Wird rechts oben im Seitenkopf angezeigt.</p>
+            {heroImageUrl ? (
+              <div className="relative overflow-hidden rounded-xl border border-border">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={heroImageUrl} alt="Hero-Vorschau" className="h-32 w-full object-cover" />
+                <button
+                  type="button"
+                  onClick={() => setHeroImageUrl("")}
+                  className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            ) : (
+              <label className="flex cursor-pointer flex-col items-center gap-2 rounded-xl border-2 border-dashed border-muted-foreground/25 p-5 text-center transition-colors hover:border-primary/50 hover:bg-primary/5">
+                <input
+                  ref={heroInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={async (e) => {
+                    const f = e.target.files?.[0]
+                    if (!f) return
+                    setHeroUploading(true)
+                    try {
+                      const fd = new FormData(); fd.append("file", f)
+                      const res = await fetch("/api/upload", { method: "POST", body: fd })
+                      const data = await res.json()
+                      if (res.ok) setHeroImageUrl(data.url)
+                      else setError(data.error || "Upload fehlgeschlagen")
+                    } finally { setHeroUploading(false) }
+                  }}
+                />
+                {heroUploading
+                  ? <Loader2 className="h-7 w-7 animate-spin text-primary" />
+                  : <ImageIcon className="h-7 w-7 text-muted-foreground" />}
+                <span className="text-xs font-medium text-muted-foreground">
+                  {heroUploading ? "Wird hochgeladen…" : "Bild hochladen"}
+                </span>
+              </label>
+            )}
+            <Input
+              value={heroImageUrl}
+              onChange={(e) => setHeroImageUrl(e.target.value)}
+              placeholder="oder Bild-URL eingeben…"
+              className="text-xs font-mono"
+            />
+          </div>
+
           <div className="rounded-2xl border bg-card p-6 space-y-4">
             <h3 className="font-display text-sm font-semibold">Einstellungen</h3>
             <div className="flex items-center justify-between">

@@ -1,4 +1,5 @@
 import { SiteLayout } from "@/components/site-layout"
+import { PageHero } from "@/components/page-hero"
 import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
 
 export const metadata = {
@@ -12,13 +13,7 @@ export default async function ImpressumPage() {
   return (
     <SiteLayout>
       <main>
-        <section className="border-b border-border bg-muted">
-          <div className="mx-auto max-w-7xl px-4 pb-12 pt-16 lg:px-8 lg:pb-16 lg:pt-24">
-            <h1 className="font-display text-4xl font-bold tracking-tight text-foreground">
-              {content.page_title}
-            </h1>
-          </div>
-        </section>
+        <PageHero title={content.page_title as string} imageUrl={(content.hero_image_url as string) || undefined} />
 
         <section className="mx-auto max-w-3xl px-4 py-16 lg:px-8">
           <div className="space-y-8">

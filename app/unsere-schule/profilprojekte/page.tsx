@@ -1,4 +1,5 @@
 import { SiteLayout } from "@/components/site-layout"
+import { PageHero } from "@/components/page-hero"
 import Image from "next/image"
 import { Palette, Music, Dumbbell, FlaskConical } from "lucide-react"
 import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
@@ -68,19 +69,12 @@ export default async function ProfilprojektePage() {
   return (
     <SiteLayout>
       <main>
-        <section className="border-b border-border bg-muted">
-          <div className="mx-auto max-w-7xl px-4 pb-12 pt-16 lg:px-8 lg:pb-16 lg:pt-24">
-            <p className="text-sm font-medium uppercase tracking-widest text-primary">
-              {content.page_label}
-            </p>
-            <h1 className="mt-3 font-display text-4xl font-bold tracking-tight text-foreground md:text-5xl">
-              {content.page_title}
-            </h1>
-            <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
-              {content.page_subtitle}
-            </p>
-          </div>
-        </section>
+        <PageHero
+          title={content.page_title as string}
+          label={content.page_label as string}
+          subtitle={content.page_subtitle as string}
+          imageUrl={(content.hero_image_url as string) || undefined}
+        />
 
         <section className="mx-auto max-w-7xl px-4 py-16 lg:px-8">
           <div className="space-y-24">
