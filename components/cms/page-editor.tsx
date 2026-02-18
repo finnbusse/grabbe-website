@@ -7,9 +7,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
-import { ArrowLeft, Save, Eye, Loader2, Blocks, FileText, ImageIcon, X } from "lucide-react"
+import { ArrowLeft, Save, Eye, EyeOff, Loader2, Blocks, FileText, ImageIcon, X, Monitor } from "lucide-react"
 import { FileUploader, FileListItem } from "./file-uploader"
-import { BlockEditor, type ContentBlock } from "./block-editor"
+import { BlockEditor, renderBlocks, type ContentBlock } from "./block-editor"
 import Link from "next/link"
 
 interface PageEditorProps {
@@ -61,6 +61,7 @@ export function PageEditor({ page }: PageEditorProps) {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([])
+  const [showPreview, setShowPreview] = useState(false)
 
   // Determine editor mode based on content format
   const existingBlocks = parseBlocks(content)
@@ -151,9 +152,17 @@ export function PageEditor({ page }: PageEditorProps) {
           <h1 className="font-display text-2xl font-bold">{page ? "Seite bearbeiten" : "Neue Seite"}</h1>
         </div>
         <div className="flex items-center gap-2">
+          <Button
+            variant={showPreview ? "default" : "outline"}
+            size="sm"
+            onClick={() => setShowPreview(!showPreview)}
+          >
+            {showPreview ? <EyeOff className="mr-1.5 h-3.5 w-3.5" /> : <Monitor className="mr-1.5 h-3.5 w-3.5" />}
+            {showPreview ? "Editor" : "Vorschau"}
+          </Button>
           {page && published && slug && (
             <Link href={routePath ? `${routePath}/${slug}` : `/seiten/${slug}`} target="_blank">
-              <Button variant="outline" size="sm"><Eye className="mr-1.5 h-3.5 w-3.5" />Vorschau</Button>
+              <Button variant="outline" size="sm"><Eye className="mr-1.5 h-3.5 w-3.5" />Live ansehen</Button>
             </Link>
           )}
           <Button onClick={handleSave} disabled={saving || !title || !slug}>
@@ -186,68 +195,102 @@ export function PageEditor({ page }: PageEditorProps) {
             </div>
           </div>
 
-          {/* Editor Mode Toggle */}
-          <div className="flex items-center gap-2 rounded-2xl border bg-card px-4 py-3">
-            <span className="text-sm text-muted-foreground mr-2">Bearbeitungsmodus:</span>
-            <Button
-              variant={editorMode === 'markdown' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => handleModeChange('markdown')}
-            >
-              <FileText className="mr-1.5 h-3.5 w-3.5" />
-              Markdown
-            </Button>
-            <Button
-              variant={editorMode === 'blocks' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => handleModeChange('blocks')}
-            >
-              <Blocks className="mr-1.5 h-3.5 w-3.5" />
-              Bausteine
-            </Button>
-          </div>
-
-          {editorMode === 'markdown' ? (
-            <>
-              <div className="rounded-2xl border bg-card p-6 space-y-3">
-                <Label htmlFor="content">Inhalt (Markdown)</Label>
-                <p className="text-xs text-muted-foreground">**fett**, *kursiv*, ## Ueberschrift, [Link](url), ![Bild](url)</p>
-                <textarea
-                  id="content"
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  placeholder="Seiteninhalt hier eingeben..."
-                  className="min-h-[400px] w-full resize-y rounded-lg border border-input bg-background px-4 py-3 text-sm leading-relaxed font-mono placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                />
+          {showPreview ? (
+            /* Live Preview Panel */
+            <div className="rounded-2xl border bg-card p-6 space-y-4">
+              <div className="flex items-center justify-between border-b border-border pb-3">
+                <div className="flex items-center gap-2">
+                  <Monitor className="h-4 w-4 text-primary" />
+                  <h3 className="font-display font-semibold text-sm">Vorschau</h3>
+                </div>
+                <span className="rounded-full bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-600">
+                  {published ? "Veroeffentlicht" : "Entwurf – nicht veroeffentlicht"}
+                </span>
               </div>
-
-              <div className="rounded-2xl border bg-card p-6 space-y-4">
-                <h3 className="font-display font-semibold">Dateien & Medien</h3>
-                <FileUploader
-                  label="Bild oder Dokument hochladen"
-                  onUpload={(file) => setAttachedFiles((prev) => [...prev, { url: file.url, name: file.filename, type: file.type }])}
-                />
-                {attachedFiles.length > 0 && (
-                  <div className="space-y-2">
-                    {attachedFiles.map((file, i) => (
-                      <FileListItem
-                        key={i} url={file.url} name={file.name} type={file.type}
-                        onInsert={() => insertIntoContent(file.type.startsWith("image/") ? `![${file.name}](${file.url})` : `[${file.name} herunterladen](${file.url})`)}
-                        onRemove={() => setAttachedFiles((prev) => prev.filter((_, j) => j !== i))}
-                      />
-                    ))}
+              {/* Preview content area */}
+              <div className="prose prose-sm max-w-none">
+                {heroImageUrl && (
+                  <div className="mb-6 overflow-hidden rounded-xl border border-border">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={heroImageUrl} alt="Hero" className="h-48 w-full object-cover" />
                   </div>
                 )}
+                {title && <h1 className="font-display text-2xl font-bold mb-4">{title}</h1>}
+                {editorMode === 'blocks' && blocks.length > 0 ? (
+                  <div>{renderBlocks(blocks)}</div>
+                ) : content ? (
+                  <div className="text-muted-foreground leading-relaxed whitespace-pre-line">{content}</div>
+                ) : (
+                  <p className="text-muted-foreground italic">Noch kein Inhalt vorhanden.</p>
+                )}
               </div>
-            </>
-          ) : (
-            <div className="rounded-2xl border bg-card p-6 space-y-4">
-              <div>
-                <h3 className="font-display font-semibold">Seiteninhalt</h3>
-                <p className="text-xs text-muted-foreground">Fuegen Sie Bausteine hinzu und bearbeiten Sie den Inhalt der Seite.</p>
-              </div>
-              <BlockEditor blocks={blocks} onChange={setBlocks} />
             </div>
+          ) : (
+            <>
+              {/* Editor Mode Toggle */}
+              <div className="flex items-center gap-2 rounded-2xl border bg-card px-4 py-3">
+                <span className="text-sm text-muted-foreground mr-2">Bearbeitungsmodus:</span>
+                <Button
+                  variant={editorMode === 'markdown' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => handleModeChange('markdown')}
+                >
+                  <FileText className="mr-1.5 h-3.5 w-3.5" />
+                  Markdown
+                </Button>
+                <Button
+                  variant={editorMode === 'blocks' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => handleModeChange('blocks')}
+                >
+                  <Blocks className="mr-1.5 h-3.5 w-3.5" />
+                  Bausteine
+                </Button>
+              </div>
+
+              {editorMode === 'markdown' ? (
+                <>
+                  <div className="rounded-2xl border bg-card p-6 space-y-3">
+                    <Label htmlFor="content">Inhalt (Markdown)</Label>
+                    <p className="text-xs text-muted-foreground">**fett**, *kursiv*, ## Ueberschrift, [Link](url), ![Bild](url)</p>
+                    <textarea
+                      id="content"
+                      value={content}
+                      onChange={(e) => setContent(e.target.value)}
+                      placeholder="Seiteninhalt hier eingeben..."
+                      className="min-h-[400px] w-full resize-y rounded-lg border border-input bg-background px-4 py-3 text-sm leading-relaxed font-mono placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                    />
+                  </div>
+
+                  <div className="rounded-2xl border bg-card p-6 space-y-4">
+                    <h3 className="font-display font-semibold">Dateien & Medien</h3>
+                    <FileUploader
+                      label="Bild oder Dokument hochladen"
+                      onUpload={(file) => setAttachedFiles((prev) => [...prev, { url: file.url, name: file.filename, type: file.type }])}
+                    />
+                    {attachedFiles.length > 0 && (
+                      <div className="space-y-2">
+                        {attachedFiles.map((file, i) => (
+                          <FileListItem
+                            key={i} url={file.url} name={file.name} type={file.type}
+                            onInsert={() => insertIntoContent(file.type.startsWith("image/") ? `![${file.name}](${file.url})` : `[${file.name} herunterladen](${file.url})`)}
+                            onRemove={() => setAttachedFiles((prev) => prev.filter((_, j) => j !== i))}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <div className="rounded-2xl border bg-card p-6 space-y-4">
+                  <div>
+                    <h3 className="font-display font-semibold">Seiteninhalt</h3>
+                    <p className="text-xs text-muted-foreground">Fuegen Sie Bausteine hinzu und bearbeiten Sie den Inhalt der Seite.</p>
+                  </div>
+                  <BlockEditor blocks={blocks} onChange={setBlocks} />
+                </div>
+              )}
+            </>
           )}
         </div>
 
@@ -342,13 +385,22 @@ export function PageEditor({ page }: PageEditorProps) {
 
           {editorMode === 'blocks' && (
             <div className="rounded-2xl border border-primary/20 bg-primary/5 p-6">
-              <h3 className="font-display text-sm font-semibold">Bausteine-Info</h3>
-              <ul className="mt-3 space-y-2 text-xs text-muted-foreground">
+              <h3 className="font-display text-sm font-semibold">Verfuegbare Bausteine</h3>
+              <ul className="mt-3 space-y-1.5 text-xs text-muted-foreground">
                 <li>• <strong>Textabschnitt:</strong> Ueberschrift + Absatz</li>
                 <li>• <strong>Karten:</strong> 2-4 Info-Karten nebeneinander</li>
                 <li>• <strong>FAQ:</strong> Aufklappbare Fragen & Antworten</li>
                 <li>• <strong>Galerie:</strong> Bilder-Raster</li>
                 <li>• <strong>Aufzaehlung:</strong> Punkteliste</li>
+                <li>• <strong>Hero / Banner:</strong> Grosser Banner mit Bild</li>
+                <li>• <strong>Zitat:</strong> Zitat mit Autor</li>
+                <li>• <strong>Trennlinie:</strong> Visueller Trenner</li>
+                <li>• <strong>Video:</strong> YouTube/Vimeo einbetten</li>
+                <li>• <strong>Call-to-Action:</strong> Handlungsaufruf mit Button</li>
+                <li>• <strong>Zwei Spalten:</strong> Zweispaltiges Layout</li>
+                <li>• <strong>Abstand:</strong> Vertikaler Abstand</li>
+                <li>• <strong>Akkordeon:</strong> Aufklappbare Abschnitte</li>
+                <li>• <strong>Tabelle:</strong> Zeilen und Spalten</li>
               </ul>
             </div>
           )}

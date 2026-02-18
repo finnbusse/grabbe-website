@@ -4,13 +4,14 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Plus, Trash2, GripVertical, ChevronDown, ChevronUp, CreditCard, ImageIcon, HelpCircle, Type, List } from "lucide-react"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Plus, Trash2, GripVertical, ChevronDown, ChevronUp, CreditCard, ImageIcon, HelpCircle, Type, List, Quote, Minus, Video, MousePointerClick, Columns, MoveVertical, ListCollapse, Table2 } from "lucide-react"
 
 // ============================================================================
 // Block Types
 // ============================================================================
 
-export type BlockType = 'text' | 'cards' | 'faq' | 'gallery' | 'list'
+export type BlockType = 'text' | 'cards' | 'faq' | 'gallery' | 'list' | 'hero' | 'quote' | 'divider' | 'video' | 'cta' | 'columns' | 'spacer' | 'accordion' | 'table'
 
 export interface ContentBlock {
   id: string
@@ -31,6 +32,15 @@ const BLOCK_OPTIONS: BlockOption[] = [
   { type: 'faq', icon: HelpCircle, label: 'FAQ / Aufklappbar', description: 'Aufklappbare Fragen und Antworten' },
   { type: 'gallery', icon: ImageIcon, label: 'Bildergalerie', description: 'Mehrere Bilder in einem Raster' },
   { type: 'list', icon: List, label: 'Aufzaehlung', description: 'Liste mit Aufzaehlungspunkten' },
+  { type: 'hero', icon: ImageIcon, label: 'Hero / Banner', description: 'Grosser Banner mit Ueberschrift und Bild' },
+  { type: 'quote', icon: Quote, label: 'Zitat', description: 'Zitat mit optionalem Autor' },
+  { type: 'divider', icon: Minus, label: 'Trennlinie', description: 'Visueller Trenner zwischen Abschnitten' },
+  { type: 'video', icon: Video, label: 'Video', description: 'YouTube/Vimeo Video einbetten' },
+  { type: 'cta', icon: MousePointerClick, label: 'Call-to-Action', description: 'Auffaelliger Handlungsaufruf mit Button' },
+  { type: 'columns', icon: Columns, label: 'Zwei Spalten', description: 'Zwei-Spalten-Layout mit Ueberschrift und Text' },
+  { type: 'spacer', icon: MoveVertical, label: 'Abstand', description: 'Vertikaler Abstand zwischen Abschnitten' },
+  { type: 'accordion', icon: ListCollapse, label: 'Akkordeon', description: 'Aufklappbare Abschnitte mit Titel und Inhalt' },
+  { type: 'table', icon: Table2, label: 'Tabelle', description: 'Einfache Tabelle mit Zeilen und Spalten' },
 ]
 
 // ============================================================================
@@ -66,6 +76,24 @@ function createDefaultBlock(type: BlockType): ContentBlock {
       return { id, type, data: { images: [{ url: '', alt: '' }] } }
     case 'list':
       return { id, type, data: { heading: '', items: [''] } }
+    case 'hero':
+      return { id, type, data: { heading: '', subheading: '', backgroundImage: '', ctaText: '', ctaUrl: '' } }
+    case 'quote':
+      return { id, type, data: { quote: '', author: '' } }
+    case 'divider':
+      return { id, type, data: {} }
+    case 'video':
+      return { id, type, data: { url: '', caption: '' } }
+    case 'cta':
+      return { id, type, data: { heading: '', text: '', buttonText: '', buttonUrl: '', style: 'light' } }
+    case 'columns':
+      return { id, type, data: { left: { heading: '', text: '' }, right: { heading: '', text: '' } } }
+    case 'spacer':
+      return { id, type, data: { size: 'medium' } }
+    case 'accordion':
+      return { id, type, data: { items: [{ title: '', content: '' }] } }
+    case 'table':
+      return { id, type, data: { rows: [['', ''], ['', '']] } }
   }
 }
 
@@ -198,6 +226,24 @@ function BlockContent({ block, onChange }: { block: ContentBlock; onChange: (dat
       return <GalleryBlockEditor data={block.data} onChange={onChange} />
     case 'list':
       return <ListBlockEditor data={block.data} onChange={onChange} />
+    case 'hero':
+      return <HeroBlockEditor data={block.data} onChange={onChange} />
+    case 'quote':
+      return <QuoteBlockEditor data={block.data} onChange={onChange} />
+    case 'divider':
+      return <DividerBlockEditor />
+    case 'video':
+      return <VideoBlockEditor data={block.data} onChange={onChange} />
+    case 'cta':
+      return <CtaBlockEditor data={block.data} onChange={onChange} />
+    case 'columns':
+      return <ColumnsBlockEditor data={block.data} onChange={onChange} />
+    case 'spacer':
+      return <SpacerBlockEditor data={block.data} onChange={onChange} />
+    case 'accordion':
+      return <AccordionBlockEditor data={block.data} onChange={onChange} />
+    case 'table':
+      return <TableBlockEditor data={block.data} onChange={onChange} />
     default:
       return <p className="text-sm text-muted-foreground">Unbekannter Block-Typ</p>
   }
@@ -435,8 +481,369 @@ function ListBlockEditor({ data, onChange }: { data: Record<string, unknown>; on
   )
 }
 
-// ============================================================================
-// Block Content Renderer (for the public-facing pages)
+function HeroBlockEditor({ data, onChange }: { data: Record<string, unknown>; onChange: (data: Record<string, unknown>) => void }) {
+  return (
+    <div className="space-y-3">
+      <div>
+        <Label className="text-xs">Ueberschrift</Label>
+        <Input
+          value={(data.heading as string) || ''}
+          onChange={(e) => onChange({ ...data, heading: e.target.value })}
+          placeholder="Hero-Ueberschrift..."
+          className="mt-1"
+        />
+      </div>
+      <div>
+        <Label className="text-xs">Unterueberschrift</Label>
+        <Input
+          value={(data.subheading as string) || ''}
+          onChange={(e) => onChange({ ...data, subheading: e.target.value })}
+          placeholder="Unterueberschrift..."
+          className="mt-1"
+        />
+      </div>
+      <div>
+        <Label className="text-xs">Hintergrundbild-URL</Label>
+        <Input
+          value={(data.backgroundImage as string) || ''}
+          onChange={(e) => onChange({ ...data, backgroundImage: e.target.value })}
+          placeholder="https://..."
+          className="mt-1 text-xs font-mono"
+        />
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <Label className="text-xs">Button-Text (optional)</Label>
+          <Input
+            value={(data.ctaText as string) || ''}
+            onChange={(e) => onChange({ ...data, ctaText: e.target.value })}
+            placeholder="Mehr erfahren"
+            className="mt-1"
+          />
+        </div>
+        <div>
+          <Label className="text-xs">Button-URL (optional)</Label>
+          <Input
+            value={(data.ctaUrl as string) || ''}
+            onChange={(e) => onChange({ ...data, ctaUrl: e.target.value })}
+            placeholder="https://..."
+            className="mt-1 text-xs font-mono"
+          />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function QuoteBlockEditor({ data, onChange }: { data: Record<string, unknown>; onChange: (data: Record<string, unknown>) => void }) {
+  return (
+    <div className="space-y-3">
+      <div>
+        <Label className="text-xs">Zitat</Label>
+        <textarea
+          value={(data.quote as string) || ''}
+          onChange={(e) => onChange({ ...data, quote: e.target.value })}
+          placeholder="Zitat eingeben..."
+          className="mt-1 min-h-[80px] w-full resize-y rounded-lg border border-input bg-background px-3 py-2 text-sm leading-relaxed placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+        />
+      </div>
+      <div>
+        <Label className="text-xs">Autor (optional)</Label>
+        <Input
+          value={(data.author as string) || ''}
+          onChange={(e) => onChange({ ...data, author: e.target.value })}
+          placeholder="Name des Autors..."
+          className="mt-1"
+        />
+      </div>
+    </div>
+  )
+}
+
+function DividerBlockEditor() {
+  return (
+    <div className="py-2">
+      <hr className="border-t border-border" />
+      <p className="mt-2 text-xs text-muted-foreground">Dieser Block zeigt eine horizontale Trennlinie an.</p>
+    </div>
+  )
+}
+
+function VideoBlockEditor({ data, onChange }: { data: Record<string, unknown>; onChange: (data: Record<string, unknown>) => void }) {
+  return (
+    <div className="space-y-3">
+      <div>
+        <Label className="text-xs">Video-URL (YouTube oder Vimeo)</Label>
+        <Input
+          value={(data.url as string) || ''}
+          onChange={(e) => onChange({ ...data, url: e.target.value })}
+          placeholder="https://www.youtube.com/watch?v=... oder https://vimeo.com/..."
+          className="mt-1 text-xs font-mono"
+        />
+      </div>
+      <div>
+        <Label className="text-xs">Bildunterschrift (optional)</Label>
+        <Input
+          value={(data.caption as string) || ''}
+          onChange={(e) => onChange({ ...data, caption: e.target.value })}
+          placeholder="Video-Beschreibung..."
+          className="mt-1"
+        />
+      </div>
+    </div>
+  )
+}
+
+function CtaBlockEditor({ data, onChange }: { data: Record<string, unknown>; onChange: (data: Record<string, unknown>) => void }) {
+  return (
+    <div className="space-y-3">
+      <div>
+        <Label className="text-xs">Ueberschrift</Label>
+        <Input
+          value={(data.heading as string) || ''}
+          onChange={(e) => onChange({ ...data, heading: e.target.value })}
+          placeholder="Handlungsaufruf-Ueberschrift..."
+          className="mt-1"
+        />
+      </div>
+      <div>
+        <Label className="text-xs">Text</Label>
+        <textarea
+          value={(data.text as string) || ''}
+          onChange={(e) => onChange({ ...data, text: e.target.value })}
+          placeholder="Beschreibungstext..."
+          className="mt-1 min-h-[60px] w-full resize-y rounded-lg border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+        />
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <Label className="text-xs">Button-Text</Label>
+          <Input
+            value={(data.buttonText as string) || ''}
+            onChange={(e) => onChange({ ...data, buttonText: e.target.value })}
+            placeholder="Jetzt starten"
+            className="mt-1"
+          />
+        </div>
+        <div>
+          <Label className="text-xs">Button-URL</Label>
+          <Input
+            value={(data.buttonUrl as string) || ''}
+            onChange={(e) => onChange({ ...data, buttonUrl: e.target.value })}
+            placeholder="https://..."
+            className="mt-1 text-xs font-mono"
+          />
+        </div>
+      </div>
+      <div>
+        <Label className="text-xs">Hintergrund-Stil</Label>
+        <Select
+          value={(data.style as string) || 'light'}
+          onValueChange={(value) => onChange({ ...data, style: value })}
+        >
+          <SelectTrigger className="mt-1">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="light">Hell</SelectItem>
+            <SelectItem value="dark">Dunkel</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+    </div>
+  )
+}
+
+function ColumnsBlockEditor({ data, onChange }: { data: Record<string, unknown>; onChange: (data: Record<string, unknown>) => void }) {
+  const left = (data.left as { heading: string; text: string }) || { heading: '', text: '' }
+  const right = (data.right as { heading: string; text: string }) || { heading: '', text: '' }
+
+  const updateColumn = (side: 'left' | 'right', field: string, value: string) => {
+    const col = side === 'left' ? left : right
+    onChange({ ...data, [side]: { ...col, [field]: value } })
+  }
+
+  return (
+    <div className="grid grid-cols-2 gap-4">
+      <div className="space-y-2 rounded-lg border bg-muted/30 p-3">
+        <Label className="text-xs font-medium">Linke Spalte</Label>
+        <Input
+          value={left.heading}
+          onChange={(e) => updateColumn('left', 'heading', e.target.value)}
+          placeholder="Ueberschrift..."
+          className="text-sm"
+        />
+        <textarea
+          value={left.text}
+          onChange={(e) => updateColumn('left', 'text', e.target.value)}
+          placeholder="Text..."
+          className="min-h-[60px] w-full resize-y rounded-lg border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+        />
+      </div>
+      <div className="space-y-2 rounded-lg border bg-muted/30 p-3">
+        <Label className="text-xs font-medium">Rechte Spalte</Label>
+        <Input
+          value={right.heading}
+          onChange={(e) => updateColumn('right', 'heading', e.target.value)}
+          placeholder="Ueberschrift..."
+          className="text-sm"
+        />
+        <textarea
+          value={right.text}
+          onChange={(e) => updateColumn('right', 'text', e.target.value)}
+          placeholder="Text..."
+          className="min-h-[60px] w-full resize-y rounded-lg border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+        />
+      </div>
+    </div>
+  )
+}
+
+function SpacerBlockEditor({ data, onChange }: { data: Record<string, unknown>; onChange: (data: Record<string, unknown>) => void }) {
+  return (
+    <div>
+      <Label className="text-xs">Abstandsgroesse</Label>
+      <Select
+        value={(data.size as string) || 'medium'}
+        onValueChange={(value) => onChange({ ...data, size: value })}
+      >
+        <SelectTrigger className="mt-1">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="small">Klein</SelectItem>
+          <SelectItem value="medium">Mittel</SelectItem>
+          <SelectItem value="large">Gross</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
+  )
+}
+
+function AccordionBlockEditor({ data, onChange }: { data: Record<string, unknown>; onChange: (data: Record<string, unknown>) => void }) {
+  const items = (data.items as Array<{ title: string; content: string }>) || []
+
+  const updateItem = (index: number, field: string, value: string) => {
+    const updated = [...items]
+    updated[index] = { ...updated[index], [field]: value }
+    onChange({ ...data, items: updated })
+  }
+
+  const addItem = () => {
+    onChange({ ...data, items: [...items, { title: '', content: '' }] })
+  }
+
+  const removeItem = (index: number) => {
+    onChange({ ...data, items: items.filter((_, i) => i !== index) })
+  }
+
+  return (
+    <div className="space-y-4">
+      {items.map((item, i) => (
+        <div key={i} className="rounded-lg border bg-muted/30 p-3 space-y-2">
+          <div className="flex items-center justify-between">
+            <Label className="text-xs font-medium">Abschnitt {i + 1}</Label>
+            {items.length > 1 && (
+              <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => removeItem(i)}>
+                <Trash2 className="h-3 w-3 text-muted-foreground" />
+              </Button>
+            )}
+          </div>
+          <Input
+            value={item.title}
+            onChange={(e) => updateItem(i, 'title', e.target.value)}
+            placeholder="Titel..."
+            className="text-sm"
+          />
+          <textarea
+            value={item.content}
+            onChange={(e) => updateItem(i, 'content', e.target.value)}
+            placeholder="Inhalt..."
+            className="min-h-[60px] w-full resize-y rounded-lg border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+          />
+        </div>
+      ))}
+      <Button variant="outline" size="sm" onClick={addItem}>
+        <Plus className="mr-1 h-3 w-3" /> Abschnitt hinzufuegen
+      </Button>
+    </div>
+  )
+}
+
+function TableBlockEditor({ data, onChange }: { data: Record<string, unknown>; onChange: (data: Record<string, unknown>) => void }) {
+  const rows = (data.rows as string[][]) || [['', ''], ['', '']]
+
+  const updateCell = (rowIndex: number, colIndex: number, value: string) => {
+    const updated = rows.map((row) => [...row])
+    updated[rowIndex][colIndex] = value
+    onChange({ ...data, rows: updated })
+  }
+
+  const addRow = () => {
+    const cols = rows[0]?.length || 2
+    onChange({ ...data, rows: [...rows, Array(cols).fill('')] })
+  }
+
+  const removeRow = (index: number) => {
+    if (rows.length <= 1) return
+    onChange({ ...data, rows: rows.filter((_, i) => i !== index) })
+  }
+
+  const addColumn = () => {
+    onChange({ ...data, rows: rows.map((row) => [...row, '']) })
+  }
+
+  const removeColumn = (colIndex: number) => {
+    if ((rows[0]?.length || 0) <= 1) return
+    onChange({ ...data, rows: rows.map((row) => row.filter((_, i) => i !== colIndex)) })
+  }
+
+  return (
+    <div className="space-y-3">
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <tbody>
+            {rows.map((row, ri) => (
+              <tr key={ri}>
+                {row.map((cell, ci) => (
+                  <td key={ci} className="p-1">
+                    <Input
+                      value={cell}
+                      onChange={(e) => updateCell(ri, ci, e.target.value)}
+                      placeholder={ri === 0 ? `Spalte ${ci + 1}` : ''}
+                      className={`text-xs ${ri === 0 ? 'font-medium' : ''}`}
+                    />
+                  </td>
+                ))}
+                <td className="p-1 w-8">
+                  {rows.length > 1 && (
+                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => removeRow(ri)}>
+                      <Trash2 className="h-3 w-3 text-muted-foreground" />
+                    </Button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="flex gap-2">
+        <Button variant="outline" size="sm" onClick={addRow}>
+          <Plus className="mr-1 h-3 w-3" /> Zeile
+        </Button>
+        <Button variant="outline" size="sm" onClick={addColumn}>
+          <Plus className="mr-1 h-3 w-3" /> Spalte
+        </Button>
+        {(rows[0]?.length || 0) > 1 && (
+          <Button variant="outline" size="sm" onClick={() => removeColumn((rows[0]?.length || 1) - 1)}>
+            <Trash2 className="mr-1 h-3 w-3" /> Spalte entfernen
+          </Button>
+        )}
+      </div>
+    </div>
+  )
+}
+
 // ============================================================================
 
 export function renderBlocks(blocks: ContentBlock[]): React.ReactNode {
@@ -513,6 +920,170 @@ function BlockRenderer({ block }: { block: ContentBlock }) {
               </li>
             ))}
           </ul>
+        </div>
+      )
+    }
+    case 'hero': {
+      const heading = block.data.heading as string
+      const subheading = block.data.subheading as string
+      const backgroundImage = block.data.backgroundImage as string
+      const ctaText = block.data.ctaText as string
+      const ctaUrl = block.data.ctaUrl as string
+      return (
+        <div
+          className="mb-8 rounded-2xl border border-border bg-card relative overflow-hidden"
+          style={backgroundImage ? { backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
+        >
+          {backgroundImage && <div className="absolute inset-0 bg-black/50" />}
+          <div className={`relative px-8 py-16 text-center ${backgroundImage ? 'text-white' : ''}`}>
+            {heading && <h2 className="font-display text-3xl font-bold mb-3">{heading}</h2>}
+            {subheading && <p className={`text-lg ${backgroundImage ? 'text-white/80' : 'text-muted-foreground'}`}>{subheading}</p>}
+            {ctaText && ctaUrl && (
+              <a href={ctaUrl} className="mt-6 inline-block rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors">
+                {ctaText}
+              </a>
+            )}
+          </div>
+        </div>
+      )
+    }
+    case 'quote': {
+      const quote = block.data.quote as string
+      const author = block.data.author as string
+      return (
+        <div className="mb-8">
+          <blockquote className="rounded-2xl border border-border bg-card px-8 py-6">
+            <p className="font-display text-lg italic text-card-foreground leading-relaxed">&ldquo;{quote}&rdquo;</p>
+            {author && <footer className="mt-3 text-sm text-muted-foreground">&mdash; {author}</footer>}
+          </blockquote>
+        </div>
+      )
+    }
+    case 'divider': {
+      return (
+        <div className="mb-8 flex items-center justify-center py-4">
+          <hr className="w-full border-t border-border" />
+        </div>
+      )
+    }
+    case 'video': {
+      const url = block.data.url as string
+      const caption = block.data.caption as string
+      let embedUrl = url
+      if (url) {
+        const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/)
+        if (ytMatch) {
+          embedUrl = `https://www.youtube.com/embed/${ytMatch[1]}`
+        } else {
+          const vimeoMatch = url.match(/vimeo\.com\/(\d+)/)
+          if (vimeoMatch) {
+            embedUrl = `https://player.vimeo.com/video/${vimeoMatch[1]}`
+          }
+        }
+      }
+      return (
+        <div className="mb-8">
+          {embedUrl && (
+            <div className="overflow-hidden rounded-2xl border border-border">
+              <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+                <iframe
+                  src={embedUrl}
+                  className="absolute inset-0 h-full w-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  title={caption || 'Video'}
+                />
+              </div>
+            </div>
+          )}
+          {caption && <p className="mt-3 text-center text-sm text-muted-foreground">{caption}</p>}
+        </div>
+      )
+    }
+    case 'cta': {
+      const heading = block.data.heading as string
+      const text = block.data.text as string
+      const buttonText = block.data.buttonText as string
+      const buttonUrl = block.data.buttonUrl as string
+      const style = (block.data.style as string) || 'light'
+      return (
+        <div className={`mb-8 rounded-2xl border border-border px-8 py-12 text-center ${style === 'dark' ? 'bg-foreground text-background' : 'bg-card text-card-foreground'}`}>
+          {heading && <h2 className="font-display text-2xl font-bold mb-3">{heading}</h2>}
+          {text && <p className={`text-sm leading-relaxed mb-6 ${style === 'dark' ? 'text-background/70' : 'text-muted-foreground'}`}>{text}</p>}
+          {buttonText && buttonUrl && (
+            <a href={buttonUrl} className="inline-block rounded-lg bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors">
+              {buttonText}
+            </a>
+          )}
+        </div>
+      )
+    }
+    case 'columns': {
+      const left = (block.data.left as { heading: string; text: string }) || { heading: '', text: '' }
+      const right = (block.data.right as { heading: string; text: string }) || { heading: '', text: '' }
+      return (
+        <div className="mb-8 grid gap-6 sm:grid-cols-2">
+          <div>
+            {left.heading && <h3 className="font-display text-lg font-semibold mb-2">{left.heading}</h3>}
+            {left.text && <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">{left.text}</p>}
+          </div>
+          <div>
+            {right.heading && <h3 className="font-display text-lg font-semibold mb-2">{right.heading}</h3>}
+            {right.text && <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">{right.text}</p>}
+          </div>
+        </div>
+      )
+    }
+    case 'spacer': {
+      const size = (block.data.size as string) || 'medium'
+      const paddingClass = size === 'small' ? 'py-4' : size === 'large' ? 'py-16' : 'py-8'
+      return <div className={`mb-8 ${paddingClass}`} />
+    }
+    case 'accordion': {
+      const items = (block.data.items as Array<{ title: string; content: string }>) || []
+      return (
+        <div className="mb-8 space-y-3">
+          {items.map((item, i) => (
+            <details key={i} className="group rounded-2xl border border-border bg-card">
+              <summary className="cursor-pointer px-6 py-4 font-display text-sm font-semibold text-card-foreground list-none flex items-center justify-between">
+                {item.title}
+                <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-open:rotate-180" />
+              </summary>
+              <div className="px-6 pb-4 text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
+                {item.content}
+              </div>
+            </details>
+          ))}
+        </div>
+      )
+    }
+    case 'table': {
+      const rows = (block.data.rows as string[][]) || []
+      if (rows.length === 0) return null
+      return (
+        <div className="mb-8 overflow-x-auto">
+          <table className="w-full rounded-2xl border border-border text-sm">
+            <thead>
+              <tr className="border-b border-border bg-muted/50">
+                {rows[0]?.map((cell, ci) => (
+                  <th key={ci} className="px-4 py-3 text-left font-display font-semibold text-card-foreground">
+                    {cell}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.slice(1).map((row, ri) => (
+                <tr key={ri} className="border-b border-border last:border-0">
+                  {row.map((cell, ci) => (
+                    <td key={ci} className="px-4 py-3 text-muted-foreground">
+                      {cell}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )
     }

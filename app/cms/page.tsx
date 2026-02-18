@@ -1,17 +1,70 @@
 import { createClient } from "@/lib/supabase/server"
-import { FileText, CalendarDays, BookOpen, Upload, Mail, GraduationCap, FileEdit, FolderTree } from "lucide-react"
+import { FileText, CalendarDays, BookOpen, Upload, Mail, GraduationCap, FileEdit, FolderTree, Clock } from "lucide-react"
 import Link from "next/link"
 
 export default async function CmsDashboardPage() {
   const supabase = await createClient()
-  const [postsRes, pagesRes, eventsRes, docsRes, msgsRes, anmRes] = await Promise.all([
+  const [postsRes, pagesRes, eventsRes, docsRes, msgsRes, anmRes, recentPostsRes, recentPagesRes, recentEventsRes] = await Promise.all([
     supabase.from("posts").select("id", { count: "exact", head: true }),
     supabase.from("pages").select("id", { count: "exact", head: true }),
     supabase.from("events").select("id", { count: "exact", head: true }),
     supabase.from("documents").select("id", { count: "exact", head: true }),
     supabase.from("contact_submissions").select("id", { count: "exact", head: true }).eq("read", false),
     supabase.from("anmeldung_submissions").select("id", { count: "exact", head: true }),
+    supabase.from("posts").select("*").order("updated_at", { ascending: false }).limit(5),
+    supabase.from("pages").select("*").order("updated_at", { ascending: false }).limit(5),
+    supabase.from("events").select("*").order("updated_at", { ascending: false }).limit(5),
   ])
+
+  type ActivityItem = {
+    id: string
+    title: string
+    type: "post" | "page" | "event"
+    published: boolean
+    date: string
+    href: string
+  }
+
+  const recentActivity: ActivityItem[] = [
+    ...(recentPostsRes.data ?? []).map((p) => ({
+      id: p.id,
+      title: p.title ?? "Ohne Titel",
+      type: "post" as const,
+      published: p.published ?? false,
+      date: p.updated_at ?? p.created_at ?? "",
+      href: `/cms/posts/${p.id}`,
+    })),
+    ...(recentPagesRes.data ?? []).map((p) => ({
+      id: p.id,
+      title: p.title ?? "Ohne Titel",
+      type: "page" as const,
+      published: p.published ?? false,
+      date: p.updated_at ?? p.created_at ?? "",
+      href: `/cms/pages/${p.id}`,
+    })),
+    ...(recentEventsRes.data ?? []).map((e) => ({
+      id: e.id,
+      title: e.title ?? "Ohne Titel",
+      type: "event" as const,
+      published: e.published ?? false,
+      date: e.updated_at ?? e.created_at ?? "",
+      href: `/cms/events/${e.id}`,
+    })),
+  ]
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 15)
+
+  const typeLabels: Record<ActivityItem["type"], { label: string; color: string }> = {
+    post: { label: "Beitrag", color: "bg-primary/10 text-primary" },
+    page: { label: "Seite", color: "bg-emerald-500/10 text-emerald-600" },
+    event: { label: "Termin", color: "bg-sky-500/10 text-sky-600" },
+  }
+
+  function formatDate(dateStr: string) {
+    if (!dateStr) return ""
+    const d = new Date(dateStr)
+    return d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" })
+  }
 
   const stats = [
     { icon: FileText, label: "Beitraege", count: postsRes.count ?? 0, href: "/cms/posts", color: "bg-primary/10 text-primary" },
@@ -95,6 +148,38 @@ export default async function CmsDashboardPage() {
             </Link>
           </div>
         </div>
+      </div>
+
+      <div className="mt-6 rounded-2xl border bg-card p-6">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600">
+            <Clock className="h-5 w-5" />
+          </div>
+          <div>
+            <h2 className="font-display text-lg font-semibold">Letzte Aktivitaeten</h2>
+            <p className="text-sm text-muted-foreground">Zuletzt erstellte oder bearbeitete Inhalte</p>
+          </div>
+        </div>
+        {recentActivity.length === 0 ? (
+          <p className="mt-4 text-sm text-muted-foreground">Noch keine Inhalte vorhanden.</p>
+        ) : (
+          <ul className="mt-4 divide-y">
+            {recentActivity.map((item) => (
+              <li key={`${item.type}-${item.id}`}>
+                <Link href={item.href} className="flex items-center gap-3 rounded-lg px-3 py-3 transition-colors hover:bg-muted">
+                  <span className={`inline-flex shrink-0 rounded-md px-2 py-0.5 text-xs font-medium ${typeLabels[item.type].color}`}>
+                    {typeLabels[item.type].label}
+                  </span>
+                  <span className="min-w-0 flex-1 truncate text-sm font-medium">{item.title}</span>
+                  <span className="shrink-0 text-xs text-muted-foreground">{formatDate(item.date)}</span>
+                  <span className={`shrink-0 inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${item.published ? "bg-emerald-500/10 text-emerald-600" : "bg-muted text-muted-foreground"}`}>
+                    {item.published ? "Publiziert" : "Entwurf"}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       <div className="mt-6 rounded-2xl border bg-card p-6">

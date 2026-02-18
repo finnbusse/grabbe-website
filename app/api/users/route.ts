@@ -7,38 +7,48 @@ export async function GET() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: "Nicht angemeldet" }, { status: 401 })
 
-  // Fetch all users from the profiles approach - we list via auth admin if available
-  // Fallback: list from contact_submissions authors or just show current user
-  // For a simple approach, we store user info in a lightweight query
-  const { data, error } = await supabase.rpc("get_all_users").select()
+  try {
+    const adminClient = createAdminClient()
+    const { data: listData, error: listError } = await adminClient.auth.admin.listUsers()
 
-  // Also fetch profiles for all users
-  const { data: profiles } = await supabase.from("user_profiles").select("*")
-  const profileMap = new Map(
-    (profiles || []).map((p: { user_id: string }) => [p.user_id, p])
-  )
+    if (listError) throw listError
 
-  if (error) {
-    // Fallback - just return current user
-    const currentProfile = profileMap.get(user.id)
+    // Fetch profiles for all users
+    const { data: profiles } = await supabase.from("user_profiles").select("*")
+    const profileMap = new Map(
+      (profiles || []).map((p: { user_id: string }) => [p.user_id, p])
+    )
+
+    const usersWithProfiles = (listData.users || []).map((u) => ({
+      id: u.id,
+      email: u.email || "",
+      created_at: u.created_at,
+      last_sign_in_at: u.last_sign_in_at || null,
+      role: u.role || null,
+      profile: profileMap.get(u.id) || null,
+    }))
+
+    return NextResponse.json({ users: usersWithProfiles })
+  } catch (err) {
+    // Fallback - return current user only
+    console.error("Failed to list users via admin API:", err)
+    const { data: profile } = await supabase
+      .from("user_profiles")
+      .select("*")
+      .eq("user_id", user.id)
+      .single()
+
     return NextResponse.json({
       users: [{
         id: user.id,
         email: user.email || "",
         created_at: user.created_at || new Date().toISOString(),
         last_sign_in_at: user.last_sign_in_at || null,
-        profile: currentProfile || null,
+        role: null,
+        profile: profile || null,
       }]
     })
   }
-
-  // Attach profiles to users
-  const usersWithProfiles = (data || []).map((u: { id: string }) => ({
-    ...u,
-    profile: profileMap.get(u.id) || null,
-  }))
-
-  return NextResponse.json({ users: usersWithProfiles })
 }
 
 export async function POST(request: Request) {
@@ -83,6 +93,30 @@ export async function DELETE(request: Request) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: "Nicht angemeldet" }, { status: 401 })
 
-  // Note: Deleting users requires admin API - return info message
-  return NextResponse.json({ message: "Benutzer-Loeschung erfordert Admin-Zugang. Bitte im Supabase-Dashboard deaktivieren." })
+  const body = await request.json()
+  const { userId } = body
+
+  if (!userId) {
+    return NextResponse.json({ error: "Benutzer-ID erforderlich" }, { status: 400 })
+  }
+
+  if (userId === user.id) {
+    return NextResponse.json({ error: "Der eigene Account kann nicht geloescht werden" }, { status: 400 })
+  }
+
+  try {
+    const adminClient = createAdminClient()
+
+    // Delete profile first
+    await adminClient.from("user_profiles").delete().eq("user_id", userId)
+
+    // Delete user from auth
+    const { error } = await adminClient.auth.admin.deleteUser(userId)
+    if (error) throw error
+
+    return NextResponse.json({ success: true })
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Fehler beim Loeschen"
+    return NextResponse.json({ error: message }, { status: 500 })
+  }
 }
