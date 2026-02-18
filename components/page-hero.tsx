@@ -89,7 +89,7 @@ export function PageHero({ title, label, subtitle, imageUrl }: PageHeroProps) {
               <div
                 className="absolute inset-0 rounded-lg"
                 style={{
-                  background: "linear-gradient(135deg, var(--primary) 0%, hsl(var(--primary) / 0.7) 50%, hsl(var(--primary) / 0.4) 100%)",
+                  background: "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.7) 50%, hsl(var(--primary) / 0.4) 100%)",
                 }}
               >
                 {/* ASCII texture */}

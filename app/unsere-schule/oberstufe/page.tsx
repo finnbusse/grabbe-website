@@ -22,8 +22,9 @@ export default async function OberstufePage() {
   const quicklinks = (content.quicklinks as string)
     .split(',')
     .map((link) => {
-      const [label, anchor] = link.split(':')
-      return { label: label?.trim(), anchor: anchor?.trim() }
+      const idx = link.indexOf(':')
+      if (idx === -1) return { label: '', anchor: '' }
+      return { label: link.slice(0, idx).trim(), anchor: link.slice(idx + 1).trim() }
     })
     .filter((l) => l.label && l.anchor)
 
