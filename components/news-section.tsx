@@ -12,6 +12,7 @@ interface Post {
   category: string | null
   image_url: string | null
   author_name: string | null
+  event_date?: string | null
   created_at: string
   author_profile?: {
     first_name?: string
@@ -71,7 +72,7 @@ export function NewsSection({ posts, content }: { posts: Post[]; content?: Recor
               <div className="flex flex-1 flex-col p-8">
                 <div className="flex items-center gap-3 text-xs text-muted-foreground">
                   <Calendar className="h-3 w-3" />
-                  <time>{new Date(featured.created_at).toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric" })}</time>
+                  <time>{new Date(featured.event_date || featured.created_at).toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric" })}</time>
                   {featured.category && (
                     <span className="rounded-full bg-primary/10 px-3 py-0.5 font-sub text-[10px] uppercase tracking-wider text-primary">{featured.category}</span>
                   )}
@@ -118,7 +119,7 @@ export function NewsSection({ posts, content }: { posts: Post[]; content?: Recor
                   )}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
-                      <time>{new Date(post.created_at).toLocaleDateString("de-DE", { day: "numeric", month: "short", year: "numeric" })}</time>
+                      <time>{new Date(post.event_date || post.created_at).toLocaleDateString("de-DE", { day: "numeric", month: "short", year: "numeric" })}</time>
                       {post.category && <span className="rounded-full bg-primary/10 px-2 py-0.5 font-sub text-[10px] uppercase tracking-wider text-primary">{post.category}</span>}
                       {(post.author_name || post.author_profile) && (
                         <span className="flex items-center gap-1">

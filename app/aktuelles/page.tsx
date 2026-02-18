@@ -87,7 +87,7 @@ export default async function AktuellesPage() {
                     <div className="flex items-center gap-3 text-xs text-muted-foreground">
                       <div className="flex items-center gap-1.5">
                         <CalendarDays className="h-3.5 w-3.5" />
-                        {new Date(post.created_at).toLocaleDateString("de-DE", {
+                        {new Date(post.event_date || post.created_at).toLocaleDateString("de-DE", {
                           day: "numeric",
                           month: "long",
                           year: "numeric",

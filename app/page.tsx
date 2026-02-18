@@ -24,7 +24,7 @@ export default async function HomePage() {
   const [postsRes, eventsRes, pageContents] = await Promise.all([
     supabase
       .from("posts")
-      .select("id, title, slug, excerpt, category, image_url, author_name, created_at, user_id")
+      .select("id, title, slug, excerpt, category, image_url, author_name, event_date, created_at, user_id")
       .eq("published", true)
       .order("created_at", { ascending: false })
       .limit(4),

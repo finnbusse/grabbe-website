@@ -42,6 +42,7 @@ export interface Post {
   image_url: string | null;
   author_name: string | null;
   user_id: string; // UUID, references auth.users
+  event_date: string | null; // date (YYYY-MM-DD), optional custom display date
   created_at: string; // timestamptz
   updated_at: string; // timestamptz
 }
