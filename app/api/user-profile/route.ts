@@ -96,9 +96,12 @@ export async function POST(request: NextRequest) {
       if (insertError) {
         if (insertError.message?.includes("avatar_url")) {
           // Try inserting without avatar_url
-          await supabase
+          const { error: fallbackInsertError } = await supabase
             .from("user_profiles")
             .insert({ user_id: targetUserId } as never)
+          if (fallbackInsertError) {
+            return NextResponse.json({ error: `Profil konnte nicht erstellt werden: ${fallbackInsertError.message}` }, { status: 500 })
+          }
           return NextResponse.json({ 
             avatar_url: blob.url, 
             warning: "Bitte fuehren Sie die Migration 'migration_add_avatar_url_column.sql' in Supabase aus und laden Sie den Schema-Cache neu." 
