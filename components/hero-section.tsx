@@ -52,6 +52,7 @@ export function HeroSection({ content }: { content?: Record<string, unknown> }) 
   const heroImageDarkUrl = (c.hero_image_dark_url as string) || '/images/hero-school-dark.jpg'
   const { resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
+  const activeHeroImageUrl = mounted && resolvedTheme === "dark" ? heroImageDarkUrl : heroImageUrl
 
   useEffect(() => {
     setMounted(true)
@@ -63,7 +64,7 @@ export function HeroSection({ content }: { content?: Record<string, unknown> }) 
       <div className="relative w-full overflow-hidden rounded-b-[1.5rem] sm:rounded-b-[2rem] md:rounded-b-[3rem] aspect-[4/3] sm:aspect-[16/9] lg:aspect-[21/9]">
         {/* The image -- NO dark overlays whatsoever */}
         <Image
-          src={mounted && resolvedTheme === "dark" ? heroImageDarkUrl : heroImageUrl}
+          src={activeHeroImageUrl}
           alt="Grabbe-Gymnasium Schulgebaeude"
           fill
           className="object-cover"
