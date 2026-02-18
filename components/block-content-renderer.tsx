@@ -83,7 +83,7 @@ async function TaggedBlockRenderer({ block }: { block: ContentBlock }) {
       )
     }
 
-    const monthNamesShort = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"]
+    const monthNamesShort = ["Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"]
 
     return (
       <div className="mb-8">
