@@ -342,13 +342,22 @@ export function PageEditor({ page }: PageEditorProps) {
 
           {editorMode === 'blocks' && (
             <div className="rounded-2xl border border-primary/20 bg-primary/5 p-6">
-              <h3 className="font-display text-sm font-semibold">Bausteine-Info</h3>
-              <ul className="mt-3 space-y-2 text-xs text-muted-foreground">
+              <h3 className="font-display text-sm font-semibold">Verfuegbare Bausteine</h3>
+              <ul className="mt-3 space-y-1.5 text-xs text-muted-foreground">
                 <li>• <strong>Textabschnitt:</strong> Ueberschrift + Absatz</li>
                 <li>• <strong>Karten:</strong> 2-4 Info-Karten nebeneinander</li>
                 <li>• <strong>FAQ:</strong> Aufklappbare Fragen & Antworten</li>
                 <li>• <strong>Galerie:</strong> Bilder-Raster</li>
                 <li>• <strong>Aufzaehlung:</strong> Punkteliste</li>
+                <li>• <strong>Hero / Banner:</strong> Grosser Banner mit Bild</li>
+                <li>• <strong>Zitat:</strong> Zitat mit Autor</li>
+                <li>• <strong>Trennlinie:</strong> Visueller Trenner</li>
+                <li>• <strong>Video:</strong> YouTube/Vimeo einbetten</li>
+                <li>• <strong>Call-to-Action:</strong> Handlungsaufruf mit Button</li>
+                <li>• <strong>Zwei Spalten:</strong> Zweispaltiges Layout</li>
+                <li>• <strong>Abstand:</strong> Vertikaler Abstand</li>
+                <li>• <strong>Akkordeon:</strong> Aufklappbare Abschnitte</li>
+                <li>• <strong>Tabelle:</strong> Zeilen und Spalten</li>
               </ul>
             </div>
           )}
