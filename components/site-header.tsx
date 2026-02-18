@@ -24,7 +24,7 @@ export function SiteHeader({
   const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
-  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const handleDropdownEnter = useCallback((itemId: string) => {
     if (closeTimeoutRef.current) {
