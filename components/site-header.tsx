@@ -101,7 +101,7 @@ export function SiteHeader({
   return (
     <>
       {/* School logo - absolute positioned, scrolls with page */}
-      <div className="absolute top-3 left-5 md:left-8 lg:top-4 lg:left-12 z-40">
+      <div className="absolute top-[4.5rem] lg:top-4 left-5 md:left-8 lg:left-12 z-40">
         <Link href="/">
           <img
             src="/images/grabbe-logo.svg"

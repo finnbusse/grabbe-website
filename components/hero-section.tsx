@@ -56,7 +56,10 @@ export function HeroSection({ content }: { content?: Record<string, unknown> }) 
   return (
     <section className="relative flex flex-col bg-background overflow-hidden">
       {/* Hero image -- full width, flush to top, only rounded at bottom */}
-      <div className="relative w-full overflow-hidden rounded-b-[1.5rem] sm:rounded-b-[2rem] md:rounded-b-[3rem] aspect-[4/3] sm:aspect-[16/9] lg:aspect-[21/9]">
+      {/* On mobile the explicit height fills almost the full viewport, leaving ~5.5rem (≈88 px)
+          for the scroll indicator below so both the rounded corners and "Entdecken" arrow
+          are visible without scrolling.  sm+ screens revert to the original aspect-ratio layout. */}
+      <div className="relative w-full overflow-hidden rounded-b-[1.5rem] sm:rounded-b-[2rem] md:rounded-b-[3rem] h-[calc(100svh-5.5rem)] sm:h-auto sm:aspect-[16/9] lg:aspect-[21/9]">
         {/* The image -- NO dark overlays whatsoever */}
         <Image
           src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1770907263880.png-LbbwTH3bV3iIeTlN24uWwemZuKXx6y.jpeg"
@@ -69,7 +72,7 @@ export function HeroSection({ content }: { content?: Record<string, unknown> }) 
 
         {/* Content overlay -- bottom left, text has its own shadow for readability, NO image darkening */}
         <div
-          className="absolute inset-0 z-10 flex flex-col justify-end p-4 sm:p-6 md:p-10 lg:p-14"
+          className="absolute inset-0 z-10 flex flex-col justify-end p-4 pb-8 sm:p-6 md:p-10 lg:p-14"
           style={{ opacity: mounted ? 1 : 0, transition: "opacity 0.5s ease" }}
         >
           {/* Headline */}
