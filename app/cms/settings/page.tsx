@@ -312,7 +312,10 @@ export default function SettingsPage() {
         <Field label="Website-URL" hint="Kanonische URL der Produktionsseite (z.B. https://grabbe-gymnasium.de). Wird auch aus Umgebungsvariablen gelesen.">
           {field(values, "seo_site_url", set, { placeholder: "https://grabbe-gymnasium.de" })}
         </Field>
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-3">
+          <Field label="Startseiten-Praefix" hint="Erster Teil des Startseitentitels, z.B. 'Start'">
+            {field(values, "seo_homepage_title_prefix", set, { placeholder: "Start" })}
+          </Field>
           <Field label="Titel-Trennzeichen" hint="Zeichen zwischen Seitenname und Schulname, z.B. ' / '">
             {field(values, "seo_title_separator", set, { placeholder: " / " })}
           </Field>
@@ -320,7 +323,13 @@ export default function SettingsPage() {
             {field(values, "seo_title_suffix", set, { placeholder: "Grabbe-Gymnasium" })}
           </Field>
         </div>
-        <Field label="Standard Meta-Beschreibung" hint="Wird verwendet, wenn eine Seite keine eigene Beschreibung hat (max. 160 Zeichen empfohlen).">
+        <Field label="Startseiten-Beschreibung" hint="Meta-Beschreibung speziell fuer die Startseite (max. 160 Zeichen empfohlen). Falls leer, wird die Standard-Beschreibung verwendet.">
+          {field(values, "seo_homepage_description", set, {
+            multiline: true,
+            placeholder: "Willkommen am Grabbe-Gymnasium Detmold ...",
+          })}
+        </Field>
+        <Field label="Standard Meta-Beschreibung" hint="Wird fuer Unterseiten verwendet, wenn keine eigene Beschreibung vorhanden ist (max. 160 Zeichen empfohlen).">
           {field(values, "seo_default_description", set, {
             multiline: true,
             placeholder: "Das Christian-Dietrich-Grabbe-Gymnasium in Detmold ...",

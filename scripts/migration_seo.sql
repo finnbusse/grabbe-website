@@ -88,3 +88,12 @@ ON CONFLICT (key) DO NOTHING;
 INSERT INTO public.site_settings (id, key, value, type, label, category)
 VALUES (gen_random_uuid(), 'seo_social_youtube', '', 'text', 'YouTube-URL', 'seo')
 ON CONFLICT (key) DO NOTHING;
+
+-- Homepage-specific SEO settings
+INSERT INTO public.site_settings (id, key, value, type, label, category)
+VALUES (gen_random_uuid(), 'seo_homepage_title_prefix', 'Start', 'text', 'Startseiten-Praefix', 'seo')
+ON CONFLICT (key) DO NOTHING;
+
+INSERT INTO public.site_settings (id, key, value, type, label, category)
+VALUES (gen_random_uuid(), 'seo_homepage_description', '', 'textarea', 'Startseiten-Beschreibung', 'seo')
+ON CONFLICT (key) DO NOTHING;
