@@ -79,7 +79,7 @@ export async function GET(request: NextRequest) {
           }
         : null,
     jsonLdTypes: getExpectedJsonLdTypes(path),
-    tips: generateTips(seo, postMatch, pageMatch, path),
+    tips: generateTips(seo, postMatch, pageMatch ?? null, path),
   }
 
   return NextResponse.json(report, {

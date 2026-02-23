@@ -162,7 +162,7 @@ export default function SettingsPage() {
       const supabase = createClient()
       const { data } = await supabase.from("site_settings").select("key, value")
       const map: Values = {}
-      data?.forEach((s) => { map[s.key] = s.value ?? "" })
+      ;(data as { key: string; value: string }[] | null)?.forEach((s) => { map[s.key] = s.value ?? "" })
       setValues(map)
       setInitial(map)
       setLoading(false)
@@ -177,11 +177,11 @@ export default function SettingsPage() {
   const ensureKey = async (supabase: ReturnType<typeof createClient>, key: string, value: string) => {
     const { data } = await supabase.from("site_settings").select("id").eq("key", key).maybeSingle()
     if (data) {
-      await supabase.from("site_settings").update({ value, updated_at: new Date().toISOString() }).eq("key", key)
+      await supabase.from("site_settings").update({ value, updated_at: new Date().toISOString() } as never).eq("key", key)
     } else {
       await supabase.from("site_settings").insert({
         key, value, type: "text", label: key, category: "seo",
-      })
+      } as never)
     }
   }
 
