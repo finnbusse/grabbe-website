@@ -78,7 +78,7 @@ middleware.ts                  ← Schliesst sitemap.xml/robots.txt von Rewrites
 1. `resolveBaseUrl()` liefert **immer** eine gueltige URL:
    - DB-Wert `seo_site_url` → `NEXT_PUBLIC_SITE_URL` → `VERCEL_PROJECT_PRODUCTION_URL` → `VERCEL_URL` → `localhost:3000`
 2. Root Layout setzt `metadataBase`, dadurch werden **alle relativen Canonicals automatisch absolut**
-3. Jede Seite exportiert nur `title` + relativen `canonical` – der Rest erbt vom Root Layout
+3. **Jede Seite** nutzt `generatePageMetadata()` als Single Source of Truth – diese Funktion erzeugt title, description, canonical, OG, Twitter und robots konsistent
 
 ---
 
@@ -92,7 +92,7 @@ Im CMS unter **Verwaltung → Einstellungen** befindet sich eine intuitive, nach
 |---------|--------|
 | **Allgemein** | Schulname, Logo |
 | **Kontakt & Adresse** | E-Mail, Telefon, Strasse, PLZ, Stadt, Land |
-| **Suchmaschinen (SEO)** | Website-URL, Titel-Trennzeichen, Titel-Suffix, Standard-Beschreibung, Standard OG-Bild |
+| **Suchmaschinen (SEO)** | Website-URL, Startseiten-Praefix, Titel-Trennzeichen, Titel-Suffix, Startseiten-Beschreibung, Standard-Beschreibung, Standard OG-Bild |
 | **Social Media** | Instagram, Facebook, YouTube |
 | **Erweitert** | Organisationsname (Schema.org), Info zu auto-generierten Dateien |
 
@@ -116,38 +116,42 @@ Alle Felder werden ueber die `site_settings`-Tabelle in der Datenbank gespeicher
 Das Root Layout definiert:
 ```tsx
 title: {
-  default: "Grabbe-Gymnasium Detmold",     // Startseite
+  default: "Start / Grabbe-Gymnasium",      // Startseite (konfigurierbar)
   template: "%s / Grabbe-Gymnasium",         // Alle Unterseiten
 }
 ```
 
+Der Startseiten-Titel wird aus `{homepageTitlePrefix}{titleSeparator}{titleSuffix}` zusammengesetzt. Der Praefix ("Start") ist in den Einstellungen aenderbar.
+
 | Seite | Tab-Titel |
 |-------|-----------|
-| Startseite | Grabbe-Gymnasium Detmold |
+| Startseite | Start / Grabbe-Gymnasium |
 | Aktuelles | Aktuelles / Grabbe-Gymnasium |
 | Beitrag X | Beitrag X / Grabbe-Gymnasium |
 | Impressum | Impressum / Grabbe-Gymnasium |
 
-Trennzeichen und Suffix sind in den Einstellungen aenderbar.
+Praefix, Trennzeichen und Suffix sind in den Einstellungen aenderbar.
 
 ---
 
 ## 6. Meta-Tags und Open Graph
 
-Jede Seite liefert automatisch:
+**Alle Seiten** verwenden die zentrale `generatePageMetadata()` Funktion. Dadurch wird sichergestellt, dass jede Seite vollstaendige und konsistente Meta-Tags liefert:
 
 ```html
 <title>Aktuelles / Grabbe-Gymnasium</title>
 <meta name="description" content="..." />
-<link rel="canonical" href="https://grabbe-gymnasium.de/aktuelles" />
+<link rel="canonical" href="https://grabbe.site/aktuelles" />
 <meta property="og:title" content="Aktuelles / Grabbe-Gymnasium" />
 <meta property="og:description" content="..." />
 <meta property="og:type" content="website" />
 <meta property="og:locale" content="de_DE" />
 <meta property="og:site_name" content="Grabbe-Gymnasium Detmold" />
-<meta property="og:url" content="https://grabbe-gymnasium.de/aktuelles" />
+<meta property="og:url" content="https://grabbe.site/aktuelles" />
 <meta property="og:image" content="..." />
 <meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Aktuelles / Grabbe-Gymnasium" />
+<meta name="twitter:description" content="..." />
 ```
 
 Bei Beitraegen zusaetzlich:
@@ -405,6 +409,7 @@ Die Migration `scripts/migration_seo.sql` fuegt hinzu:
 
 ### Neue Einstellungen (site_settings)
 - `seo_site_url`, `seo_title_separator`, `seo_title_suffix`
+- `seo_homepage_title_prefix`, `seo_homepage_description`
 - `seo_default_description`, `seo_og_image`
 - `seo_org_name`, `seo_org_logo`, `seo_org_email`, `seo_org_phone`
 - `seo_org_address_street`, `seo_org_address_city`, `seo_org_address_zip`, `seo_org_address_country`
