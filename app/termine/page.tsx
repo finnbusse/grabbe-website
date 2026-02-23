@@ -4,7 +4,10 @@ import { createClient } from "@/lib/supabase/server"
 import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
 import { CalendarDays, MapPin, Clock, Tag } from "lucide-react"
 import { generatePageMetadata } from "@/lib/seo"
+import type { EventListItem } from "@/lib/types/database.types"
 import type { Metadata } from "next"
+
+export const revalidate = 300
 
 export async function generateMetadata(): Promise<Metadata> {
   return generatePageMetadata({
@@ -33,10 +36,11 @@ export default async function TerminePage() {
   const heroImageUrl = (heroContent.hero_image_url as string) || undefined
   const { data: events } = await supabase
     .from("events")
-    .select("*")
+    .select("id, title, description, event_date, event_end_date, event_time, location, category")
     .eq("published", true)
     .gte("event_date", new Date().toISOString().split("T")[0])
     .order("event_date", { ascending: true })
+    .returns<EventListItem[]>()
 
   const items = events || []
 

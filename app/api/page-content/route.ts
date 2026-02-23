@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { revalidatePath, revalidateTag } from "next/cache"
 import { NextRequest, NextResponse } from "next/server"
 
 /**
@@ -72,6 +73,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
+    revalidateTag("page-content", "max")
+    revalidateTag("settings", "max")
+    revalidatePath("/", "layout")
     return NextResponse.json({ success: true })
   } catch (err) {
     const message = err instanceof Error ? err.message : "Fehler beim Speichern"

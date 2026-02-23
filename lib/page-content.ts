@@ -9,7 +9,8 @@
  * so pages always display correctly even without DB entries.
  */
 
-import { createClient } from '@/lib/supabase/server'
+import { createStaticClient } from '@/lib/supabase/static'
+import { unstable_cache } from 'next/cache'
 
 // ============================================================================
 // Types
@@ -55,17 +56,23 @@ export async function getPageContent<T extends Record<string, unknown>>(
   defaults: T
 ): Promise<T> {
   try {
-    const supabase = await createClient()
-    const { data, error } = await supabase
-      .from('site_settings')
-      .select('value')
-      .eq('key', `page_content:${pageId}`)
-      .single()
+    const stored = await unstable_cache(
+      async () => {
+        const supabase = createStaticClient()
+        const { data, error } = await supabase
+          .from('site_settings')
+          .select('value')
+          .eq('key', `page_content:${pageId}`)
+          .single()
 
-    if (error || !data?.value) return defaults
+        if (error || !data?.value) return null
+        return JSON.parse(data.value) as Record<string, unknown>
+      },
+      ['page-content', pageId],
+      { revalidate: 3600, tags: ['page-content', 'settings'] }
+    )()
 
-    const stored = JSON.parse(data.value)
-    // Deep merge: defaults provide structure, stored values override
+    if (!stored) return defaults
     return { ...defaults, ...stored }
   } catch {
     return defaults
@@ -83,13 +90,23 @@ export async function getMultiplePageContents(
   const result: Record<string, Record<string, unknown>> = {}
   
   try {
-    const supabase = await createClient()
-    const keys = pageIds.map(id => `page_content:${id}`)
-    
-    const { data, error } = await supabase
-      .from('site_settings')
-      .select('key, value')
-      .in('key', keys)
+    const cacheKey = [...pageIds].sort().join(',')
+    const rows = await unstable_cache(
+      async () => {
+        const supabase = createStaticClient()
+        const keys = pageIds.map(id => `page_content:${id}`)
+        
+        const { data, error } = await supabase
+          .from('site_settings')
+          .select('key, value')
+          .in('key', keys)
+
+        if (error || !data) return [] as Array<{ key: string; value: string }>
+        return data
+      },
+      ['page-contents-batch', cacheKey],
+      { revalidate: 3600, tags: ['page-content', 'settings'] }
+    )()
 
     // Start with all defaults
     for (const id of pageIds) {
@@ -97,15 +114,13 @@ export async function getMultiplePageContents(
     }
 
     // Override with stored values
-    if (!error && data) {
-      for (const row of data) {
-        const pageId = row.key.replace('page_content:', '')
-        try {
-          const stored = JSON.parse(row.value)
-          result[pageId] = { ...(defaultsMap[pageId] || {}), ...stored }
-        } catch {
-          // Invalid JSON, skip
-        }
+    for (const row of rows) {
+      const pageId = row.key.replace('page_content:', '')
+      try {
+        const stored = JSON.parse(row.value)
+        result[pageId] = { ...(defaultsMap[pageId] || {}), ...stored }
+      } catch {
+        // Invalid JSON, skip
       }
     }
   } catch {

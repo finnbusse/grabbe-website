@@ -52,7 +52,7 @@ async function TaggedBlockRenderer({ block }: { block: ContentBlock }) {
   const supabase = await createClient()
 
   // Get tag info for color
-  const { data: tag } = await supabase.from("tags").select("*").eq("id", tagId).single()
+  const { data: tag } = await supabase.from("tags").select("id, color").eq("id", tagId).single()
   const tagColor = tag?.color || "blue"
 
   if (block.type === 'tagged-events') {
@@ -67,7 +67,7 @@ async function TaggedBlockRenderer({ block }: { block: ContentBlock }) {
     }
     const today = new Date().toISOString().split("T")[0]
     const { data: events } = await supabase
-      .from("events").select("*")
+      .from("events").select("id, title, description, event_date, event_time, location")
       .in("id", eventTags.map((et) => et.event_id))
       .eq("published", true)
       .gte("event_date", today)
@@ -124,7 +124,7 @@ async function TaggedBlockRenderer({ block }: { block: ContentBlock }) {
       )
     }
     const { data: documents } = await supabase
-      .from("documents").select("*")
+      .from("documents").select("id, title, file_url, file_name")
       .in("id", docTags.map((dt) => dt.document_id))
       .eq("published", true)
       .order("created_at", { ascending: false })
@@ -176,7 +176,7 @@ async function TaggedBlockRenderer({ block }: { block: ContentBlock }) {
       )
     }
     const { data: posts } = await supabase
-      .from("posts").select("*")
+      .from("posts").select("id, title, slug, excerpt, event_date, created_at")
       .in("id", postTags.map((pt) => pt.post_id))
       .eq("published", true)
       .order("created_at", { ascending: false })
