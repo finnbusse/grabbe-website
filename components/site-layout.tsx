@@ -29,7 +29,7 @@ export async function SiteLayout({ children }: { children: React.ReactNode }) {
       href: "/schulleben",
       children: [
         { id: "nachmittag", label: "Nachmittag", href: "/schulleben/nachmittag" },
-        { id: "faecher", label: "Faecher & AGs", href: "/schulleben/faecher-ags" },
+        { id: "faecher", label: "Fächer & AGs", href: "/schulleben/faecher-ags" },
       ],
     },
     { id: "aktuelles", label: "Aktuelles", href: "/aktuelles" },

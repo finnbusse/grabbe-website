@@ -62,8 +62,8 @@ export function AnmeldungForm() {
         <CheckCircle2 className="mx-auto h-12 w-12 text-emerald-500" />
         <h3 className="mt-4 font-display text-xl font-semibold">Voranmeldung erhalten!</h3>
         <p className="mt-2 text-sm text-muted-foreground">
-          Vielen Dank fuer Ihre Voranmeldung. Wir werden uns in Kuerze bei Ihnen melden, um einen Termin
-          fuer die persoenliche Anmeldung zu vereinbaren. Bitte bringen Sie dann alle erforderlichen
+          Vielen Dank für Ihre Voranmeldung. Wir werden uns in Kürze bei Ihnen melden, um einen Termin
+          für die persönliche Anmeldung zu vereinbaren. Bitte bringen Sie dann alle erforderlichen
           Unterlagen mit.
         </p>
       </div>
@@ -87,7 +87,7 @@ export function AnmeldungForm() {
       )}
 
       <div className="space-y-2">
-        <Label>Anmeldung fuer</Label>
+        <Label>Anmeldung für</Label>
         <div className="flex gap-3">
           <button type="button" onClick={() => setAnmeldungType("klasse5")}
             className={`flex-1 rounded-lg border p-3 text-sm font-medium transition-colors ${anmeldungType === "klasse5" ? "border-primary bg-primary/10 text-primary" : "hover:bg-muted"}`}>
@@ -143,7 +143,7 @@ export function AnmeldungForm() {
             <Label>Wunsch-Profilprojekt</Label>
             <select value={profilprojekt} onChange={(e) => setProfilprojekt(e.target.value)}
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
-              <option value="">Bitte waehlen</option>
+              <option value="">Bitte wählen</option>
               <option value="kunst">Kunstprojekt</option>
               <option value="musik">Musikprojekt</option>
               <option value="sport">Sportprojekt</option>
@@ -164,8 +164,8 @@ export function AnmeldungForm() {
       </Button>
 
       <p className="text-xs text-muted-foreground text-center">
-        Diese Online-Voranmeldung ersetzt nicht die persoenliche Anmeldung vor Ort.
-        Wir melden uns bei Ihnen fuer einen Termin.
+        Diese Online-Voranmeldung ersetzt nicht die persönliche Anmeldung vor Ort.
+        Wir melden uns bei Ihnen für einen Termin.
       </p>
     </form>
   )

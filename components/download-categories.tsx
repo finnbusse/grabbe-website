@@ -17,9 +17,9 @@ const catLabels: Record<string, string> = {
   allgemein: "Allgemein",
   elternbriefe: "Elternbriefe",
   formulare: "Formulare",
-  lehrplaene: "Lehrplaene",
+  lehrplaene: "Lehrpläne",
   bilder: "Bilder & Medien",
-  praesentation: "Praesentationen",
+  praesentation: "Präsentationen",
 }
 
 function formatSize(bytes: number) {

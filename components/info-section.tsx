@@ -8,17 +8,17 @@ const quickLinks = [
   { icon: FileText, label: "Downloads", href: "/downloads" },
   { icon: CalendarDays, label: "Termine & Kalender", href: "/termine" },
   { icon: Clock, label: "Nachmittagsprogramm", href: "/schulleben/nachmittag" },
-  { icon: Utensils, label: "Uebermittag", href: "/schulleben/nachmittag" },
+  { icon: Utensils, label: "Übermittag", href: "/schulleben/nachmittag" },
   { icon: GraduationCap, label: "Oberstufen-Portal", href: "/unsere-schule/oberstufe" },
-  { icon: BookOpen, label: "Faecher & AGs", href: "/schulleben/faecher-ags" },
+  { icon: BookOpen, label: "Fächer & AGs", href: "/schulleben/faecher-ags" },
 ]
 
 export function InfoSection({ content }: { content?: Record<string, unknown> }) {
   const c = content || {}
   const leftLabel = (c.left_label as string) || 'Erprobungsstufe'
   const leftHeadline = (c.left_headline as string) || 'Dein Start am Grabbe'
-  const leftText1 = (c.left_text1 as string) || 'Die Jahrgaenge 5 und 6 bilden eine besondere paedagogische Einheit, die Erprobungsstufe. Waehrend dieser Zeit begleiten wir Ihre Kinder intensiv. Anknuepfend an die Lernerfahrungen in der Grundschule fuehren wir die Schueler:innen an die Unterrichtsmethoden und Lernangebote des Gymnasiums heran.'
-  const leftText2 = (c.left_text2 as string) || 'Die Klassenbildung erfolgt nach sozialen Kriterien und beruecksichtigt neben der Grundschulzugehoerigkeit auch die Wunschpartner:innen. Eine einwoechige Klassenfahrt zu Beginn der sechsten Klasse festigt die Klassengemeinschaft.'
+  const leftText1 = (c.left_text1 as string) || 'Die Jahrgänge 5 und 6 bilden eine besondere pädagogische Einheit, die Erprobungsstufe. Während dieser Zeit begleiten wir Ihre Kinder intensiv. Anknüpfend an die Lernerfahrungen in der Grundschule führen wir die Schüler:innen an die Unterrichtsmethoden und Lernangebote des Gymnasiums heran.'
+  const leftText2 = (c.left_text2 as string) || 'Die Klassenbildung erfolgt nach sozialen Kriterien und berücksichtigt neben der Grundschulzugehörigkeit auch die Wunschpartner:innen. Eine einwöchige Klassenfahrt zu Beginn der sechsten Klasse festigt die Klassengemeinschaft.'
   const leftQuote = (c.left_quote as string) || 'Ein Ort, an dem jedes Kind seinen Platz findet.'
   const leftLinkText = (c.left_link_text as string) || 'Mehr zur Erprobungsstufe'
   const rightLabel = (c.right_label as string) || 'Beliebte Themen'

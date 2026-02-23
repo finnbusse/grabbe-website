@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 const contentLinks = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/cms" },
   { icon: FileEdit, label: "Seiten-Editor", href: "/cms/seiten-editor" },
-  { icon: FileText, label: "Beitraege", href: "/cms/posts" },
+  { icon: FileText, label: "Beiträge", href: "/cms/posts" },
   { icon: BookOpen, label: "Eigene Seiten", href: "/cms/pages" },
   { icon: CalendarDays, label: "Termine", href: "/cms/events" },
   { icon: Upload, label: "Dokumente", href: "/cms/documents" },
@@ -79,7 +79,7 @@ export function CmsSidebar({ userEmail, userProfile, isOpen, onClose }: { userEm
           <button
             onClick={onClose}
             className="lg:hidden rounded-lg p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
-            aria-label="Menue schliessen"
+            aria-label="Menü schließen"
           >
             <X className="h-4 w-4" />
           </button>
@@ -89,7 +89,7 @@ export function CmsSidebar({ userEmail, userProfile, isOpen, onClose }: { userEm
       <nav className="flex-1 px-3 py-4" aria-label="CMS Navigation">
         {[
           { title: "Inhalte", items: contentLinks },
-          { title: "Eingaenge", items: inboxLinks },
+          { title: "Eingänge", items: inboxLinks },
           { title: "Verwaltung", items: adminLinks },
         ].map((section, idx) => (
           <div key={section.title} className={idx > 0 ? "mt-5" : ""}>

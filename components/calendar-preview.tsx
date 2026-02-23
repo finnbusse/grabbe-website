@@ -16,7 +16,7 @@ interface Event {
 export function CalendarPreview({ events, content }: { events: Event[]; content?: Record<string, unknown> }) {
   const c = content || {}
   const sLabel = (c.label as string) || 'Termine'
-  const sHeadline = (c.headline as string) || 'Naechste Veranstaltungen'
+  const sHeadline = (c.headline as string) || 'Nächste Veranstaltungen'
   const allLinkText = (c.all_link_text as string) || 'Alle Termine'
   const emptyText = (c.empty_text as string) || 'Aktuell sind keine Termine eingetragen.'
   const allButtonText = (c.all_button_text as string) || 'Alle Termine ansehen'

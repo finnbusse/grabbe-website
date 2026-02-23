@@ -41,7 +41,7 @@ export default async function CmsPostsPage() {
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-display text-3xl font-bold text-foreground">Beitraege</h1>
+          <h1 className="font-display text-3xl font-bold text-foreground">Beiträge</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Erstellen und verwalten Sie Neuigkeiten und Aktuelles.
           </p>
@@ -72,7 +72,7 @@ export default async function CmsPostsPage() {
                   {post.published ? (
                     <span className="flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs text-emerald-600">
                       <Eye className="h-3 w-3" />
-                      Veroeffentlicht
+                      Veröffentlicht
                     </span>
                   ) : (
                     <span className="flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
@@ -107,7 +107,7 @@ export default async function CmsPostsPage() {
           ))
         ) : (
           <div className="rounded-2xl border border-dashed border-border py-16 text-center">
-            <p className="text-muted-foreground">Noch keine Beitraege vorhanden.</p>
+            <p className="text-muted-foreground">Noch keine Beiträge vorhanden.</p>
             <Button asChild className="mt-4">
               <Link href="/cms/posts/new">
                 <Plus className="mr-2 h-4 w-4" />

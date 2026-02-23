@@ -163,7 +163,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
             <Button variant="outline" size="sm" asChild>
               <Link href="/aktuelles">
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                {"Zurueck zu Aktuelles"}
+                {"Zurück zu Aktuelles"}
               </Link>
             </Button>
           </div>

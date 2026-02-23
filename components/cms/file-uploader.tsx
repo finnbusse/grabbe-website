@@ -71,7 +71,7 @@ export function FileUploader({ onUpload, accept = "*/*", label = "Datei hochlade
           <p className="text-sm font-medium">{label}</p>
           <p className="text-xs text-muted-foreground">Drag & Drop oder klicken</p>
           <Button type="button" variant="outline" size="sm" onClick={() => inputRef.current?.click()}>
-            Datei auswaehlen
+            Datei auswählen
           </Button>
         </div>
       )}
@@ -99,7 +99,7 @@ export function FileListItem({ url, name, type, onRemove, onInsert }: FileListIt
       <div className="flex items-center gap-1 shrink-0">
         {onInsert && (
           <Button type="button" variant="ghost" size="sm" onClick={onInsert} className="text-xs">
-            Einfuegen
+            Einfügen
           </Button>
         )}
         {onRemove && (

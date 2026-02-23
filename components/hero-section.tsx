@@ -41,7 +41,7 @@ export function HeroSection({ content }: { content?: Record<string, unknown> }) 
   const headline1 = (c.headline1 as string) || 'Deine Talente.'
   const headline2 = (c.headline2 as string) || 'Deine Bühne.'
   const headline3 = (c.headline3 as string) || 'Dein Grabbe.'
-  const subtitle = (c.subtitle as string) || 'Wir foerdern Deine Talente und staerken Deine Persoenlichkeit.'
+  const subtitle = (c.subtitle as string) || 'Wir fördern Deine Talente und stärken Deine Persönlichkeit.'
   const cta1Text = (c.cta1_text as string) || 'Anmeldung Klasse 5'
   const cta1Link = (c.cta1_link as string) || '/unsere-schule/anmeldung'
   const cta2Text = (c.cta2_text as string) || 'Profilprojekte entdecken'
@@ -63,7 +63,7 @@ export function HeroSection({ content }: { content?: Record<string, unknown> }) 
         {/* The image -- NO dark overlays whatsoever */}
         <Image
           src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1770907263880.png-LbbwTH3bV3iIeTlN24uWwemZuKXx6y.jpeg"
-          alt="Grabbe-Gymnasium Schulgebaeude"
+          alt="Grabbe-Gymnasium Schulgebäude"
           fill
           className="object-cover"
           priority

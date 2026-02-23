@@ -12,7 +12,7 @@ const profiles = [
     slug: "kunst",
     image: "/images/profil-kunst.jpg",
     description:
-      "Der Kunstunterricht am Grabbe-Gymnasium versteht sich als bedeutsamer Baustein im Aufbau zukunftsrelevanter Kompetenzen. Im Projektkurs \"Werkstatt Kunst\" arbeiten die Schueler:innen ohne Notendruck projektbezogen.",
+      "Der Kunstunterricht am Grabbe-Gymnasium versteht sich als bedeutsamer Baustein im Aufbau zukunftsrelevanter Kompetenzen. Im Projektkurs \"Werkstatt Kunst\" arbeiten die Schüler:innen ohne Notendruck projektbezogen.",
     color: "from-blue-400 to-blue-600",
     tag: "KNS",
   },
@@ -22,7 +22,7 @@ const profiles = [
     slug: "musik",
     image: "/images/profil-musik.jpg",
     description:
-      "Im Musikprofil entdecken Schuelerinnen und Schueler ihre musikalischen Interessen, Kreativitaet und Begabungen - in Theorie und Praxis, individuell und im Miteinander. Teil des Schulversuchs \"NRW-Musikprofil-Schule\".",
+      "Im Musikprofil entdecken Schülerinnen und Schüler ihre musikalischen Interessen, Kreativität und Begabungen - in Theorie und Praxis, individuell und im Miteinander. Teil des Schulversuchs \"NRW-Musikprofil-Schule\".",
     color: "from-sky-400 to-sky-600",
     tag: "MSK",
   },
@@ -32,7 +32,7 @@ const profiles = [
     slug: "sport",
     image: "/images/profil-sport.jpg",
     description:
-      "Als eine der wenigen ausgewaehlten \"Partnerschulen des Sports\" in NRW bietet das Grabbe-Gymnasium allen jugendlichen Talenten die Chance, Schulausbildung mit optimaler Sportfoerderung zu verbinden.",
+      "Als eine der wenigen ausgewählten \"Partnerschulen des Sports\" in NRW bietet das Grabbe-Gymnasium allen jugendlichen Talenten die Chance, Schulausbildung mit optimaler Sportförderung zu verbinden.",
     color: "from-cyan-400 to-cyan-600",
     tag: "SPR",
   },
@@ -42,7 +42,7 @@ const profiles = [
     slug: "nawi",
     image: "/images/profil-nawi.jpg",
     description:
-      "Im Profilprojekt NaWi entdecken die Schueler:innen die spannende Welt der Naturwissenschaften. Mit Neugier und Forschergeist gehen sie Phaenomenen aus Biologie, Chemie, Physik und Informatik auf den Grund.",
+      "Im Profilprojekt NaWi entdecken die Schüler:innen die spannende Welt der Naturwissenschaften. Mit Neugier und Forschergeist gehen sie Phänomenen aus Biologie, Chemie, Physik und Informatik auf den Grund.",
     color: "from-indigo-400 to-indigo-600",
     tag: "NWI",
   },
@@ -51,8 +51,8 @@ const profiles = [
 export function ProfileSection({ content }: { content?: Record<string, unknown> }) {
   const c = content || {}
   const sectionLabel = (c.label as string) || '// Profilprojekte'
-  const sectionHeadline = (c.headline as string) || 'Waehle Dein Profil'
-  const sectionDescription = (c.description as string) || 'Gestalte frei - ohne Leistungsdruck! Die Profilprojekte in Kunst, Musik, Sport oder NaWi bieten dir die Moeglichkeit, in einer gemischten Gruppe neue Lernwege zu entdecken.'
+  const sectionHeadline = (c.headline as string) || 'Wähle Dein Profil'
+  const sectionDescription = (c.description as string) || 'Gestalte frei - ohne Leistungsdruck! Die Profilprojekte in Kunst, Musik, Sport oder NaWi bieten dir die Möglichkeit, in einer gemischten Gruppe neue Lernwege zu entdecken.'
 
   const dynamicProfiles = profiles.map((p, i) => ({
     ...p,

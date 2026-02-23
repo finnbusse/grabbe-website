@@ -27,23 +27,23 @@ interface BlockOption {
 }
 
 const BLOCK_OPTIONS: BlockOption[] = [
-  { type: 'text', icon: Type, label: 'Textabschnitt', description: 'Ueberschrift und Absatz' },
+  { type: 'text', icon: Type, label: 'Textabschnitt', description: 'Überschrift und Absatz' },
   { type: 'cards', icon: CreditCard, label: 'Karten', description: '2-4 Karten mit Titel und Text' },
   { type: 'faq', icon: HelpCircle, label: 'FAQ / Aufklappbar', description: 'Aufklappbare Fragen und Antworten' },
   { type: 'gallery', icon: ImageIcon, label: 'Bildergalerie', description: 'Mehrere Bilder in einem Raster' },
-  { type: 'list', icon: List, label: 'Aufzaehlung', description: 'Liste mit Aufzaehlungspunkten' },
-  { type: 'hero', icon: ImageIcon, label: 'Hero / Banner', description: 'Grosser Banner mit Ueberschrift und Bild' },
+  { type: 'list', icon: List, label: 'Aufzählung', description: 'Liste mit Aufzählungspunkten' },
+  { type: 'hero', icon: ImageIcon, label: 'Hero / Banner', description: 'Großer Banner mit Überschrift und Bild' },
   { type: 'quote', icon: Quote, label: 'Zitat', description: 'Zitat mit optionalem Autor' },
   { type: 'divider', icon: Minus, label: 'Trennlinie', description: 'Visueller Trenner zwischen Abschnitten' },
   { type: 'video', icon: Video, label: 'Video', description: 'YouTube/Vimeo Video einbetten' },
-  { type: 'cta', icon: MousePointerClick, label: 'Call-to-Action', description: 'Auffaelliger Handlungsaufruf mit Button' },
-  { type: 'columns', icon: Columns, label: 'Zwei Spalten', description: 'Zwei-Spalten-Layout mit Ueberschrift und Text' },
+  { type: 'cta', icon: MousePointerClick, label: 'Call-to-Action', description: 'Auffälliger Handlungsaufruf mit Button' },
+  { type: 'columns', icon: Columns, label: 'Zwei Spalten', description: 'Zwei-Spalten-Layout mit Überschrift und Text' },
   { type: 'spacer', icon: MoveVertical, label: 'Abstand', description: 'Vertikaler Abstand zwischen Abschnitten' },
   { type: 'accordion', icon: ListCollapse, label: 'Akkordeon', description: 'Aufklappbare Abschnitte mit Titel und Inhalt' },
   { type: 'table', icon: Table2, label: 'Tabelle', description: 'Einfache Tabelle mit Zeilen und Spalten' },
   { type: 'tagged-events', icon: CalendarDays, label: 'Termine (Tag)', description: 'Termine mit bestimmtem Tag anzeigen' },
   { type: 'tagged-downloads', icon: Download, label: 'Downloads (Tag)', description: 'Downloads mit bestimmtem Tag anzeigen' },
-  { type: 'tagged-posts', icon: Newspaper, label: 'Beitraege (Tag)', description: 'Beitraege mit bestimmtem Tag anzeigen' },
+  { type: 'tagged-posts', icon: Newspaper, label: 'Beiträge (Tag)', description: 'Beiträge mit bestimmtem Tag anzeigen' },
 ]
 
 // ============================================================================
@@ -102,7 +102,7 @@ function createDefaultBlock(type: BlockType): ContentBlock {
     case 'tagged-downloads':
       return { id, type, data: { tagId: '', heading: 'Downloads' } }
     case 'tagged-posts':
-      return { id, type, data: { tagId: '', heading: 'Beitraege', limit: 5 } }
+      return { id, type, data: { tagId: '', heading: 'Beiträge', limit: 5 } }
   }
 }
 
@@ -192,7 +192,7 @@ export function BlockEditor({ blocks, onChange }: BlockEditorProps) {
           onClick={() => setShowAddMenu(!showAddMenu)}
         >
           <Plus className="mr-2 h-4 w-4" />
-          Baustein hinzufuegen
+          Baustein hinzufügen
         </Button>
 
         {showAddMenu && (
@@ -266,11 +266,11 @@ function TextBlockEditor({ data, onChange }: { data: Record<string, unknown>; on
   return (
     <div className="space-y-3">
       <div>
-        <Label className="text-xs">Ueberschrift (optional)</Label>
+        <Label className="text-xs">Überschrift (optional)</Label>
         <Input
           value={(data.heading as string) || ''}
           onChange={(e) => onChange({ ...data, heading: e.target.value })}
-          placeholder="Ueberschrift..."
+          placeholder="Überschrift..."
           className="mt-1"
         />
       </div>
@@ -279,7 +279,7 @@ function TextBlockEditor({ data, onChange }: { data: Record<string, unknown>; on
         <textarea
           value={(data.text as string) || ''}
           onChange={(e) => onChange({ ...data, text: e.target.value })}
-          placeholder="Text eingeben... (Markdown wird unterstuetzt: **fett**, *kursiv*, [Link](url))"
+          placeholder="Text eingeben... (Markdown wird unterstützt: **fett**, *kursiv*, [Link](url))"
           className="mt-1 min-h-[100px] w-full resize-y rounded-lg border border-input bg-background px-3 py-2 text-sm leading-relaxed placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
         />
       </div>
@@ -333,7 +333,7 @@ function CardsBlockEditor({ data, onChange }: { data: Record<string, unknown>; o
       ))}
       {cards.length < 4 && (
         <Button variant="outline" size="sm" onClick={addCard}>
-          <Plus className="mr-1 h-3 w-3" /> Karte hinzufuegen
+          <Plus className="mr-1 h-3 w-3" /> Karte hinzufügen
         </Button>
       )}
     </div>
@@ -384,7 +384,7 @@ function FaqBlockEditor({ data, onChange }: { data: Record<string, unknown>; onC
         </div>
       ))}
       <Button variant="outline" size="sm" onClick={addItem}>
-        <Plus className="mr-1 h-3 w-3" /> Frage hinzufuegen
+        <Plus className="mr-1 h-3 w-3" /> Frage hinzufügen
       </Button>
     </div>
   )
@@ -434,7 +434,7 @@ function GalleryBlockEditor({ data, onChange }: { data: Record<string, unknown>;
         </div>
       ))}
       <Button variant="outline" size="sm" onClick={addImage}>
-        <Plus className="mr-1 h-3 w-3" /> Bild hinzufuegen
+        <Plus className="mr-1 h-3 w-3" /> Bild hinzufügen
       </Button>
     </div>
   )
@@ -461,11 +461,11 @@ function ListBlockEditor({ data, onChange }: { data: Record<string, unknown>; on
   return (
     <div className="space-y-3">
       <div>
-        <Label className="text-xs">Ueberschrift (optional)</Label>
+        <Label className="text-xs">Überschrift (optional)</Label>
         <Input
           value={heading}
           onChange={(e) => onChange({ ...data, heading: e.target.value })}
-          placeholder="Ueberschrift der Liste..."
+          placeholder="Überschrift der Liste..."
           className="mt-1"
         />
       </div>
@@ -488,7 +488,7 @@ function ListBlockEditor({ data, onChange }: { data: Record<string, unknown>; on
         ))}
       </div>
       <Button variant="outline" size="sm" onClick={addItem}>
-        <Plus className="mr-1 h-3 w-3" /> Punkt hinzufuegen
+        <Plus className="mr-1 h-3 w-3" /> Punkt hinzufügen
       </Button>
     </div>
   )
@@ -498,20 +498,20 @@ function HeroBlockEditor({ data, onChange }: { data: Record<string, unknown>; on
   return (
     <div className="space-y-3">
       <div>
-        <Label className="text-xs">Ueberschrift</Label>
+        <Label className="text-xs">Überschrift</Label>
         <Input
           value={(data.heading as string) || ''}
           onChange={(e) => onChange({ ...data, heading: e.target.value })}
-          placeholder="Hero-Ueberschrift..."
+          placeholder="Hero-Überschrift..."
           className="mt-1"
         />
       </div>
       <div>
-        <Label className="text-xs">Unterueberschrift</Label>
+        <Label className="text-xs">Unterüberschrift</Label>
         <Input
           value={(data.subheading as string) || ''}
           onChange={(e) => onChange({ ...data, subheading: e.target.value })}
-          placeholder="Unterueberschrift..."
+          placeholder="Unterüberschrift..."
           className="mt-1"
         />
       </div>
@@ -611,11 +611,11 @@ function CtaBlockEditor({ data, onChange }: { data: Record<string, unknown>; onC
   return (
     <div className="space-y-3">
       <div>
-        <Label className="text-xs">Ueberschrift</Label>
+        <Label className="text-xs">Überschrift</Label>
         <Input
           value={(data.heading as string) || ''}
           onChange={(e) => onChange({ ...data, heading: e.target.value })}
-          placeholder="Handlungsaufruf-Ueberschrift..."
+          placeholder="Handlungsaufruf-Überschrift..."
           className="mt-1"
         />
       </div>
@@ -683,7 +683,7 @@ function ColumnsBlockEditor({ data, onChange }: { data: Record<string, unknown>;
         <Input
           value={left.heading}
           onChange={(e) => updateColumn('left', 'heading', e.target.value)}
-          placeholder="Ueberschrift..."
+          placeholder="Überschrift..."
           className="text-sm"
         />
         <textarea
@@ -698,7 +698,7 @@ function ColumnsBlockEditor({ data, onChange }: { data: Record<string, unknown>;
         <Input
           value={right.heading}
           onChange={(e) => updateColumn('right', 'heading', e.target.value)}
-          placeholder="Ueberschrift..."
+          placeholder="Überschrift..."
           className="text-sm"
         />
         <textarea
@@ -715,7 +715,7 @@ function ColumnsBlockEditor({ data, onChange }: { data: Record<string, unknown>;
 function SpacerBlockEditor({ data, onChange }: { data: Record<string, unknown>; onChange: (data: Record<string, unknown>) => void }) {
   return (
     <div>
-      <Label className="text-xs">Abstandsgroesse</Label>
+      <Label className="text-xs">Abstandsgröße</Label>
       <Select
         value={(data.size as string) || 'medium'}
         onValueChange={(value) => onChange({ ...data, size: value })}
@@ -777,7 +777,7 @@ function AccordionBlockEditor({ data, onChange }: { data: Record<string, unknown
         </div>
       ))}
       <Button variant="outline" size="sm" onClick={addItem}>
-        <Plus className="mr-1 h-3 w-3" /> Abschnitt hinzufuegen
+        <Plus className="mr-1 h-3 w-3" /> Abschnitt hinzufügen
       </Button>
     </div>
   )
@@ -870,7 +870,7 @@ function TaggedContentBlockEditor({ type, data, onChange }: { type: string; data
   const typeLabels: Record<string, string> = {
     'tagged-events': 'Termine',
     'tagged-downloads': 'Downloads',
-    'tagged-posts': 'Beitraege',
+    'tagged-posts': 'Beiträge',
   }
 
   const selectedTag = tags.find((t) => t.id === data.tagId)
@@ -881,7 +881,7 @@ function TaggedContentBlockEditor({ type, data, onChange }: { type: string; data
         Zeigt {typeLabels[type] || 'Inhalte'} an, die mit einem bestimmten Tag versehen sind.
       </p>
       <div>
-        <Label className="text-xs">Ueberschrift</Label>
+        <Label className="text-xs">Überschrift</Label>
         <Input
           value={(data.heading as string) || ''}
           onChange={(e) => onChange({ ...data, heading: e.target.value })}
@@ -890,7 +890,7 @@ function TaggedContentBlockEditor({ type, data, onChange }: { type: string; data
         />
       </div>
       <div>
-        <Label className="text-xs">Tag auswaehlen</Label>
+        <Label className="text-xs">Tag auswählen</Label>
         {tags.length === 0 ? (
           <p className="mt-1 text-xs text-muted-foreground">
             Noch keine Tags vorhanden. <a href="/cms/tags" className="text-primary underline">Tags erstellen</a>
@@ -901,7 +901,7 @@ function TaggedContentBlockEditor({ type, data, onChange }: { type: string; data
             onChange={(e) => onChange({ ...data, tagId: e.target.value })}
             className="mt-1 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
           >
-            <option value="">— Tag waehlen —</option>
+            <option value="">— Tag wählen —</option>
             {tags.map((tag) => (
               <option key={tag.id} value={tag.id}>{tag.name}</option>
             ))}
@@ -923,7 +923,7 @@ function TaggedContentBlockEditor({ type, data, onChange }: { type: string; data
       )}
       {selectedTag && (
         <p className="text-xs text-muted-foreground">
-          Gewaehlter Tag: <strong>{selectedTag.name}</strong>
+          Gewählter Tag: <strong>{selectedTag.name}</strong>
         </p>
       )}
     </div>

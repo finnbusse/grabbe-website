@@ -9,7 +9,7 @@ import type { Metadata } from "next"
 export async function generateMetadata(): Promise<Metadata> {
   return generatePageMetadata({
     title: "Anmeldung",
-    description: "Informationen zur Anmeldung am Grabbe-Gymnasium Detmold fuer Klasse 5 und die Oberstufe.",
+    description: "Informationen zur Anmeldung am Grabbe-Gymnasium Detmold für Klasse 5 und die Oberstufe.",
     path: "/unsere-schule/anmeldung",
   })
 }

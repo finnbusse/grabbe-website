@@ -67,7 +67,7 @@ export default async function CmsDashboardPage() {
   }
 
   const stats = [
-    { icon: FileText, label: "Beitraege", count: postsRes.count ?? 0, href: "/cms/posts", color: "bg-primary/10 text-primary" },
+    { icon: FileText, label: "Beiträge", count: postsRes.count ?? 0, href: "/cms/posts", color: "bg-primary/10 text-primary" },
     { icon: BookOpen, label: "Seiten", count: pagesRes.count ?? 0, href: "/cms/pages", color: "bg-emerald-500/10 text-emerald-600" },
     { icon: CalendarDays, label: "Termine", count: eventsRes.count ?? 0, href: "/cms/events", color: "bg-sky-500/10 text-sky-600" },
     { icon: Upload, label: "Dokumente", count: docsRes.count ?? 0, href: "/cms/documents", color: "bg-violet-500/10 text-violet-600" },
@@ -113,7 +113,7 @@ export default async function CmsDashboardPage() {
 
         <div className="rounded-2xl border bg-card p-6">
           <h2 className="font-display text-lg font-semibold">Schnellstart</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Erstellen Sie neue Inhalte fuer die Website.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Erstellen Sie neue Inhalte für die Website.</p>
           <div className="mt-4 flex flex-wrap gap-3">
             <Link href="/cms/posts/new" className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors">
               Neuer Beitrag
@@ -185,10 +185,10 @@ export default async function CmsDashboardPage() {
       <div className="mt-6 rounded-2xl border bg-card p-6">
         <h2 className="font-display text-lg font-semibold">Tipps</h2>
         <ul className="mt-4 grid gap-2 text-sm text-muted-foreground sm:grid-cols-2">
-          <li className="flex gap-2"><span className="font-bold text-primary">1.</span> Beitraege verwenden Markdown: **fett**, *kursiv*, [Link](url)</li>
+          <li className="flex gap-2"><span className="font-bold text-primary">1.</span> Beiträge verwenden Markdown: **fett**, *kursiv*, [Link](url)</li>
           <li className="flex gap-2"><span className="font-bold text-primary">2.</span> Bilder/PDFs unter &quot;Dokumente&quot; hochladen, URL kopieren und einbinden</li>
-          <li className="flex gap-2"><span className="font-bold text-primary">3.</span> &quot;Auf Startseite&quot; bei Beitraegen fuer prominente Anzeige aktivieren</li>
-          <li className="flex gap-2"><span className="font-bold text-primary">4.</span> Unter &quot;Einstellungen&quot; alle Texte, Namen und SEO-Daten aendern</li>
+          <li className="flex gap-2"><span className="font-bold text-primary">3.</span> &quot;Auf Startseite&quot; bei Beiträgen für prominente Anzeige aktivieren</li>
+          <li className="flex gap-2"><span className="font-bold text-primary">4.</span> Unter &quot;Einstellungen&quot; alle Texte, Namen und SEO-Daten ändern</li>
         </ul>
       </div>
     </div>

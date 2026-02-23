@@ -127,7 +127,7 @@ export default function ProfilPage() {
     <div className="space-y-6">
       <div>
         <h1 className="font-display text-2xl font-bold text-foreground">Mein Profil</h1>
-        <p className="text-sm text-muted-foreground">Persoenliche Informationen und Profilbild verwalten</p>
+        <p className="text-sm text-muted-foreground">Persönliche Informationen und Profilbild verwalten</p>
       </div>
 
       {message && (
@@ -142,7 +142,7 @@ export default function ProfilPage() {
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">Profilbild</CardTitle>
-            <CardDescription>Wird bei Ihren Beitraegen angezeigt</CardDescription>
+            <CardDescription>Wird bei Ihren Beiträgen angezeigt</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-center gap-4">
             <div className="relative">
@@ -174,7 +174,7 @@ export default function ProfilPage() {
               />
             </div>
             <p className="text-xs text-center text-muted-foreground">
-              Klicken Sie auf das Kamera-Symbol, um ein neues Bild hochzuladen. Grosse Bilder werden automatisch komprimiert.
+              Klicken Sie auf das Kamera-Symbol, um ein neues Bild hochzuladen. Große Bilder werden automatisch komprimiert.
             </p>
           </CardContent>
         </Card>
@@ -182,8 +182,8 @@ export default function ProfilPage() {
         {/* Profile Info */}
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle className="text-lg">Persoenliche Informationen</CardTitle>
-            <CardDescription>Diese Daten werden als Autoreninfo bei Beitraegen angezeigt</CardDescription>
+            <CardTitle className="text-lg">Persönliche Informationen</CardTitle>
+            <CardDescription>Diese Daten werden als Autoreninfo bei Beiträgen angezeigt</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid gap-4">

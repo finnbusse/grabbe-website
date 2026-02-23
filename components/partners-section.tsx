@@ -3,17 +3,17 @@
 import { AnimateOnScroll } from "./animate-on-scroll"
 
 const partners = [
-  "Hochschule fuer Musik",
+  "Hochschule für Musik",
   "Landestheater Detmold",
   "Johanniter",
   "Stadtbibliothek Detmold",
   "Lippische Landesbibliothek",
   "Landesarchiv NRW",
-  "Holocaust-Gedenkstaette Yad Vashem",
+  "Holocaust-Gedenkstätte Yad Vashem",
   "McLean Highschool Washington",
   "Wortmann KG",
-  "Weidmueller GmbH & Co KG",
-  "Peter-Glaesel-Schule Detmold",
+  "Weidmüller GmbH & Co KG",
+  "Peter-Gläsel-Schule Detmold",
 ]
 
 function MarqueeRow({ items, reverse = false }: { items: string[]; reverse?: boolean }) {

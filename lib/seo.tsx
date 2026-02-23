@@ -95,12 +95,12 @@ export async function getSEOSettings(): Promise<SEOSettings> {
     defaultDescription:
       s.seo_default_description ||
       s.seo_description ||
-      "Das Christian-Dietrich-Grabbe-Gymnasium in Detmold – Wir foerdern Deine Talente und staerken Deine Persoenlichkeit.",
+      "Das Christian-Dietrich-Grabbe-Gymnasium in Detmold – Wir fördern Deine Talente und stärken Deine Persönlichkeit.",
     homepageDescription:
       s.seo_homepage_description ||
       s.seo_default_description ||
       s.seo_description ||
-      "Das Christian-Dietrich-Grabbe-Gymnasium in Detmold – Wir foerdern Deine Talente und staerken Deine Persoenlichkeit.",
+      "Das Christian-Dietrich-Grabbe-Gymnasium in Detmold – Wir fördern Deine Talente und stärken Deine Persönlichkeit.",
     ogImage: s.seo_og_image || "",
     orgName: s.seo_org_name || s.school_name || "Grabbe-Gymnasium Detmold",
     orgLogo: s.seo_org_logo || "",

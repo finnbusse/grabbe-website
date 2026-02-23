@@ -77,7 +77,7 @@ export default async function OberstufePage() {
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/></svg>
                     </div>
                     <div>
-                      <h3 className="font-display text-sm font-semibold text-card-foreground">Agentur fuer Arbeit</h3>
+                      <h3 className="font-display text-sm font-semibold text-card-foreground">Agentur für Arbeit</h3>
                       <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{content.beratung_arbeit}</p>
                     </div>
                   </div>
@@ -144,7 +144,7 @@ export default async function OberstufePage() {
             <div className="grid gap-20 lg:grid-cols-2">
               {/* Klausuren */}
               <div>
-                <p className="font-sub text-[11px] uppercase tracking-[0.3em] text-primary">Pruefungen</p>
+                <p className="font-sub text-[11px] uppercase tracking-[0.3em] text-primary">Prüfungen</p>
                 <h2 className="mt-3 font-display text-4xl md:text-5xl tracking-tight text-foreground">
                   {content.klausuren_title}
                 </h2>
@@ -159,10 +159,10 @@ export default async function OberstufePage() {
                   </div>
                 </div>
 
-                {/* Dummy download buttons for Klausurplaene */}
+                {/* Dummy download buttons for Klausurpläne */}
                 <div className="mt-6 space-y-2">
-                  <h3 className="font-display text-sm font-semibold text-foreground">Klausurplaene</h3>
-                  {['Klausurplan EF_2', 'Klausurplan Q1_2', 'Klausurregelungen ab dem 2. Halbjahr 2025/26', 'Uebersicht Anzahl und Laenge der Klausuren'].map((label) => (
+                  <h3 className="font-display text-sm font-semibold text-foreground">Klausurpläne</h3>
+                  {['Klausurplan EF_2', 'Klausurplan Q1_2', 'Klausurregelungen ab dem 2. Halbjahr 2025/26', 'Übersicht Anzahl und Länge der Klausuren'].map((label) => (
                     <button
                       key={label}
                       className="flex w-full items-center gap-3 rounded-xl border border-border/60 bg-card/80 backdrop-blur-sm px-4 py-3 text-sm transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/[0.06] group"
@@ -248,7 +248,7 @@ export default async function OberstufePage() {
                 {/* Dummy download buttons for Laufbahn docs */}
                 <div className="mt-6 space-y-2">
                   <h3 className="font-display text-sm font-semibold text-foreground">Dokumente</h3>
-                  {['Anleitung zur Schuelerversion von LuPO', 'Broschuere: Die gymnasiale Oberstufe', 'Merkblaetter des Bildungsministeriums'].map((label) => (
+                  {['Anleitung zur Schülerversion von LuPO', 'Broschüre: Die gymnasiale Oberstufe', 'Merkblätter des Bildungsministeriums'].map((label) => (
                     <button
                       key={label}
                       className="flex w-full items-center gap-3 rounded-xl border border-border/60 bg-card/80 backdrop-blur-sm px-4 py-3 text-sm transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/[0.06] group"
@@ -413,7 +413,7 @@ export default async function OberstufePage() {
               <div className="grid gap-8 lg:grid-cols-2">
                 {(content.events_tag_id as string) && (
                   <div className="rounded-2xl border border-border/60 bg-card/80 backdrop-blur-sm p-8">
-                    <TaggedSection type="events" tagId={content.events_tag_id as string} heading="Naechste Termine" limit={5} />
+                    <TaggedSection type="events" tagId={content.events_tag_id as string} heading="Nächste Termine" limit={5} />
                   </div>
                 )}
                 {(content.news_tag_id as string) && (

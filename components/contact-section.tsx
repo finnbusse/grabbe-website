@@ -6,7 +6,7 @@ import { ContactSectionClient } from "./contact-section-client"
 export async function ContactSection() {
   const s = await getSettings()
 
-  const address = s.school_address || "Kuester-Meyer-Platz 2, 32756 Detmold"
+  const address = s.school_address || "Küster-Meyer-Platz 2, 32756 Detmold"
   const phone = s.school_phone || "05231 - 99260"
   const fax = s.school_fax || "05231 - 992616"
   const email = s.school_email || "sekretariat@grabbe.nrw.schule"

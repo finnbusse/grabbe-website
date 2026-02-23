@@ -55,7 +55,7 @@ interface CategoryDef {
 
 const SYSTEM_ROUTES: { path: string; label: string; category?: string; subcategory?: string }[] = [
   { path: "/", label: "Startseite" },
-  { path: "/aktuelles", label: "Aktuelles (Beitraege)" },
+  { path: "/aktuelles", label: "Aktuelles (Beiträge)" },
   { path: "/termine", label: "Termine" },
   { path: "/downloads", label: "Downloads" },
   { path: "/kontakt", label: "Kontakt" },
@@ -63,7 +63,7 @@ const SYSTEM_ROUTES: { path: string; label: string; category?: string; subcatego
   { path: "/unsere-schule/profilprojekte", label: "Profilprojekte", category: "unsere-schule" },
   { path: "/unsere-schule/oberstufe", label: "Oberstufe", category: "unsere-schule" },
   { path: "/unsere-schule/anmeldung", label: "Anmeldung", category: "unsere-schule" },
-  { path: "/schulleben/faecher-ags", label: "Faecher & AGs", category: "schulleben" },
+  { path: "/schulleben/faecher-ags", label: "Fächer & AGs", category: "schulleben" },
   { path: "/schulleben/nachmittag", label: "Nachmittags am Grabbe", category: "schulleben" },
   { path: "/schulleben/netzwerk", label: "Netzwerk & Partner", category: "schulleben" },
   { path: "/impressum", label: "Impressum" },
@@ -248,7 +248,7 @@ export default function SeitenstrukturPage() {
     const catPath = `/${id}`
     const pagesInCategory = pages.filter(p => p.route_path?.startsWith(catPath))
     if (pagesInCategory.length > 0) {
-      setMessage({ type: "error", text: "✗ Kategorie enthaelt noch Seiten. Bitte verschieben Sie diese zuerst." })
+      setMessage({ type: "error", text: "✗ Kategorie enthält noch Seiten. Bitte verschieben Sie diese zuerst." })
       return
     }
 
@@ -354,8 +354,8 @@ export default function SeitenstrukturPage() {
             <p className="mt-1 text-sm text-muted-foreground">
               Erstellen Sie Kategorien (z.B. &quot;unsere-schule&quot;), um Ihre Seiten zu organisieren.
               Kategorien werden zu URL-Pfaden: hostname.de/kategorie/seitenname.
-              Feste Systemseiten (<Lock className="inline h-3 w-3" />) koennen nicht verschoben werden.
-              Eigene Seiten koennen Sie frei in Kategorien einordnen.
+              Feste Systemseiten (<Lock className="inline h-3 w-3" />) können nicht verschoben werden.
+              Eigene Seiten können Sie frei in Kategorien einordnen.
             </p>
           </div>
         </div>
@@ -609,7 +609,7 @@ function CategoryNode({
                 </Button>
               )}
               {!isSystemCategory && !hasContent && (
-                <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive" onClick={() => deleteCategory(category.id, parentId)} title="Loeschen">
+                <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive" onClick={() => deleteCategory(category.id, parentId)} title="Löschen">
                   <Trash2 className="h-3.5 w-3.5" />
                 </Button>
               )}

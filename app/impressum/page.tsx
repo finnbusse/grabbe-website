@@ -41,13 +41,13 @@ export default async function ImpressumPage() {
               </p>
             </div>
             <div>
-              <h2 className="font-display text-xl font-semibold text-foreground">Schultraeger</h2>
+              <h2 className="font-display text-xl font-semibold text-foreground">Schulträger</h2>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                 {content.schultraeger}
               </p>
             </div>
             <div>
-              <h2 className="font-display text-xl font-semibold text-foreground">Aufsichtsbehoerde</h2>
+              <h2 className="font-display text-xl font-semibold text-foreground">Aufsichtsbehörde</h2>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                 {content.aufsichtsbehoerde}
               </p>

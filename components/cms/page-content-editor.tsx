@@ -134,7 +134,7 @@ export function PageContentEditor({ page }: PageContentEditorProps) {
           )}
           <Button variant="outline" size="sm" onClick={handleResetAll}>
             <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
-            Alles zuruecksetzen
+            Alles zurücksetzen
           </Button>
           <Button onClick={handleSave} disabled={saving}>
             {saving ? (
@@ -157,7 +157,7 @@ export function PageContentEditor({ page }: PageContentEditorProps) {
 
       {saved && (
         <div className="mt-4 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-700">
-          Aenderungen gespeichert! Die Seite wird beim naechsten Laden aktualisiert.
+          Änderungen gespeichert! Die Seite wird beim nächsten Laden aktualisiert.
         </div>
       )}
 
@@ -218,7 +218,7 @@ function SectionEditor({
                   <button
                     onClick={() => onReset(field.key)}
                     className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-                    title="Auf Standard zuruecksetzen"
+                    title="Auf Standard zurücksetzen"
                   >
                     <RotateCcw className="h-3 w-3 inline mr-1" />
                     Standard

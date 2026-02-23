@@ -6,13 +6,13 @@ import { Button } from "@/components/ui/button"
 
 export const TAG_COLORS: Record<string, { bg: string; text: string; border: string; label: string }> = {
   blue:    { bg: "bg-blue-100",    text: "text-blue-700",    border: "border-blue-200",    label: "Blau" },
-  green:   { bg: "bg-emerald-100", text: "text-emerald-700", border: "border-emerald-200", label: "Gruen" },
+  green:   { bg: "bg-emerald-100", text: "text-emerald-700", border: "border-emerald-200", label: "Grün" },
   red:     { bg: "bg-rose-100",    text: "text-rose-700",    border: "border-rose-200",    label: "Rot" },
   yellow:  { bg: "bg-amber-100",   text: "text-amber-700",   border: "border-amber-200",   label: "Gelb" },
   purple:  { bg: "bg-violet-100",  text: "text-violet-700",  border: "border-violet-200",  label: "Lila" },
   pink:    { bg: "bg-pink-100",    text: "text-pink-700",    border: "border-pink-200",    label: "Rosa" },
   orange:  { bg: "bg-orange-100",  text: "text-orange-700",  border: "border-orange-200",  label: "Orange" },
-  teal:    { bg: "bg-teal-100",    text: "text-teal-700",    border: "border-teal-200",    label: "Tuerkis" },
+  teal:    { bg: "bg-teal-100",    text: "text-teal-700",    border: "border-teal-200",    label: "Türkis" },
   gray:    { bg: "bg-gray-100",    text: "text-gray-700",    border: "border-gray-200",    label: "Grau" },
 }
 
@@ -107,7 +107,7 @@ export function TagSelector({ selectedTagIds, onChange }: TagSelectorProps) {
           disabled={availableTags.length === 0}
         >
           <Plus className="h-3 w-3" />
-          Tag hinzufuegen
+          Tag hinzufügen
         </Button>
         {showDropdown && availableTags.length > 0 && (
           <div className="absolute top-full left-0 z-20 mt-1 max-h-48 min-w-[200px] overflow-y-auto rounded-lg border bg-popover p-1 shadow-md">

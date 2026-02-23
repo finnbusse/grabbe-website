@@ -8,13 +8,13 @@ import type { Metadata } from "next"
 
 export async function generateMetadata(): Promise<Metadata> {
   return generatePageMetadata({
-    title: "Faecher & Arbeitsgemeinschaften",
-    description: "Faecher und Arbeitsgemeinschaften am Grabbe-Gymnasium Detmold.",
+    title: "Fächer & Arbeitsgemeinschaften",
+    description: "Fächer und Arbeitsgemeinschaften am Grabbe-Gymnasium Detmold.",
     path: "/schulleben/faecher-ags",
   })
 }
 
-export default async function FaecherAGsPage() {
+export default async function FächerAGsPage() {
   const content = await getPageContent('faecher-ags', PAGE_DEFAULTS['faecher-ags'])
 
   const categories = [
@@ -54,7 +54,7 @@ export default async function FaecherAGsPage() {
           imageUrl={(content.hero_image_url as string) || undefined}
         />
 
-        {/* ═══ Faecher & AGs Overview (blue mesh bg) ═══ */}
+        {/* ═══ Fächer & AGs Overview (blue mesh bg) ═══ */}
         <section className="relative py-28 lg:py-36 bg-mesh-blue">
           <div className="mx-auto max-w-6xl px-4 lg:px-8">
             <div className="grid gap-16 lg:grid-cols-2 lg:items-start">
@@ -95,7 +95,7 @@ export default async function FaecherAGsPage() {
 
             <div className="mt-16 grid gap-6 sm:grid-cols-3">
               {[
-                { icon: BookOpen, label: "Lehrplaene", href: "#" },
+                { icon: BookOpen, label: "Lehrpläne", href: "#" },
                 { icon: Calendar, label: "Stundentafel", href: "#" },
                 { icon: Monitor, label: "Unterrichtsportal", href: "#" },
               ].map((link) => (

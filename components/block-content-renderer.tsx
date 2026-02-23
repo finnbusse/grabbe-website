@@ -44,7 +44,7 @@ async function TaggedBlockRenderer({ block }: { block: ContentBlock }) {
   if (!tagId) {
     return (
       <div className="mb-12 rounded-2xl border border-dashed border-border/60 p-8 text-center text-sm text-muted-foreground">
-        Kein Tag ausgewaehlt
+        Kein Tag ausgewählt
       </div>
     )
   }
@@ -171,7 +171,7 @@ async function TaggedBlockRenderer({ block }: { block: ContentBlock }) {
       return (
         <div className="mb-12">
           {heading && <h2 className="font-display text-xl text-foreground mb-4">{heading}</h2>}
-          <p className="text-sm text-muted-foreground">Keine Beitraege mit diesem Tag vorhanden.</p>
+          <p className="text-sm text-muted-foreground">Keine Beiträge mit diesem Tag vorhanden.</p>
         </div>
       )
     }
@@ -186,7 +186,7 @@ async function TaggedBlockRenderer({ block }: { block: ContentBlock }) {
       return (
         <div className="mb-12">
           {heading && <h2 className="font-display text-xl text-foreground mb-4">{heading}</h2>}
-          <p className="text-sm text-muted-foreground">Keine Beitraege vorhanden.</p>
+          <p className="text-sm text-muted-foreground">Keine Beiträge vorhanden.</p>
         </div>
       )
     }

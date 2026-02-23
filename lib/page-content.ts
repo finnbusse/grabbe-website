@@ -128,7 +128,7 @@ export const PAGE_DEFAULTS = {
     headline1: 'Deine Talente.',
     headline2: 'Deine Bühne.',
     headline3: 'Dein Grabbe.',
-    subtitle: 'Wir foerdern Deine Talente und staerken Deine Persoenlichkeit.',
+    subtitle: 'Wir fördern Deine Talente und stärken Deine Persönlichkeit.',
     cta1_text: 'Anmeldung Klasse 5',
     cta1_link: '/unsere-schule/anmeldung',
     cta2_text: 'Profilprojekte entdecken',
@@ -138,38 +138,38 @@ export const PAGE_DEFAULTS = {
   'homepage-welcome': {
     label: 'Herzlich willkommen',
     headline: 'Entdecke das Grabbe',
-    text: 'Liebe Freund:innen des Grabbe-Gymnasiums, die es sind und werden wollen. Mit neuem Schwung in innovativer Kraft entwickeln wir unsere Schule fuer Dich weiter. Das Grabbe-Gymnasium ist ein Ort des Lernens, der Begegnung und der persoenlichen Entfaltung im Herzen von Detmold.',
-    card1_title: 'Talente foerdern',
-    card1_text: 'Wir foerdern Deine Talente und staerken Deine Persoenlichkeit. Am Grabbe kannst Du Dich in den Profilprojekten Kunst, Musik, Sport und NaWi frei entfalten.',
+    text: 'Liebe Freund:innen des Grabbe-Gymnasiums, die es sind und werden wollen. Mit neuem Schwung in innovativer Kraft entwickeln wir unsere Schule für Dich weiter. Das Grabbe-Gymnasium ist ein Ort des Lernens, der Begegnung und der persönlichen Entfaltung im Herzen von Detmold.',
+    card1_title: 'Talente fördern',
+    card1_text: 'Wir fördern Deine Talente und stärken Deine Persönlichkeit. Am Grabbe kannst Du Dich in den Profilprojekten Kunst, Musik, Sport und NaWi frei entfalten.',
     card2_title: 'Gemeinschaft leben',
-    card2_text: 'Wir wuenschen uns glueckliche Schueler:innen in einer guten Gemeinschaft - mit Deinen Freund:innen. Durch gemeinsame Projekte und Klassenfahrten staerken wir den Zusammenhalt.',
+    card2_text: 'Wir wünschen uns glückliche Schüler:innen in einer guten Gemeinschaft - mit Deinen Freund:innen. Durch gemeinsame Projekte und Klassenfahrten stärken wir den Zusammenhalt.',
     card3_title: 'Zukunft gestalten',
-    card3_text: 'Wir gestalten Deine Zukunft mit Dir. Mit modernen Lernmethoden, digitaler Ausstattung und individueller Foerderung bereiten wir Dich optimal auf Studium und Beruf vor.',
-    card4_title: 'Verantwortung uebernehmen',
-    card4_text: 'Als UNESCO-Projektschule in Nordrhein-Westfalen setzen wir uns fuer Nachhaltigkeit, Toleranz und interkulturelles Lernen ein. Engagement ist bei uns gelebter Alltag.',
+    card3_text: 'Wir gestalten Deine Zukunft mit Dir. Mit modernen Lernmethoden, digitaler Ausstattung und individueller Förderung bereiten wir Dich optimal auf Studium und Beruf vor.',
+    card4_title: 'Verantwortung übernehmen',
+    card4_text: 'Als UNESCO-Projektschule in Nordrhein-Westfalen setzen wir uns für Nachhaltigkeit, Toleranz und interkulturelles Lernen ein. Engagement ist bei uns gelebter Alltag.',
   },
   'homepage-profiles': {
     label: '// Profilprojekte',
-    headline: 'Waehle Dein Profil',
-    description: 'Gestalte frei - ohne Leistungsdruck! Die Profilprojekte in Kunst, Musik, Sport oder NaWi bieten dir die Moeglichkeit, in einer gemischten Gruppe neue Lernwege zu entdecken.',
+    headline: 'Wähle Dein Profil',
+    description: 'Gestalte frei - ohne Leistungsdruck! Die Profilprojekte in Kunst, Musik, Sport oder NaWi bieten dir die Möglichkeit, in einer gemischten Gruppe neue Lernwege zu entdecken.',
     profile1_title: 'Kunstprojekt',
     profile1_tag: 'KNS',
-    profile1_description: 'Der Kunstunterricht am Grabbe-Gymnasium versteht sich als bedeutsamer Baustein im Aufbau zukunftsrelevanter Kompetenzen. Im Projektkurs "Werkstatt Kunst" arbeiten die Schueler:innen ohne Notendruck projektbezogen.',
+    profile1_description: 'Der Kunstunterricht am Grabbe-Gymnasium versteht sich als bedeutsamer Baustein im Aufbau zukunftsrelevanter Kompetenzen. Im Projektkurs "Werkstatt Kunst" arbeiten die Schüler:innen ohne Notendruck projektbezogen.',
     profile2_title: 'Musikprojekt',
     profile2_tag: 'MSK',
-    profile2_description: 'Im Musikprofil entdecken Schuelerinnen und Schueler ihre musikalischen Interessen, Kreativitaet und Begabungen - in Theorie und Praxis, individuell und im Miteinander. Teil des Schulversuchs "NRW-Musikprofil-Schule".',
+    profile2_description: 'Im Musikprofil entdecken Schülerinnen und Schüler ihre musikalischen Interessen, Kreativität und Begabungen - in Theorie und Praxis, individuell und im Miteinander. Teil des Schulversuchs "NRW-Musikprofil-Schule".',
     profile3_title: 'Sportprojekt',
     profile3_tag: 'SPR',
-    profile3_description: 'Als eine der wenigen ausgewaehlten "Partnerschulen des Sports" in NRW bietet das Grabbe-Gymnasium allen jugendlichen Talenten die Chance, Schulausbildung mit optimaler Sportfoerderung zu verbinden.',
+    profile3_description: 'Als eine der wenigen ausgewählten "Partnerschulen des Sports" in NRW bietet das Grabbe-Gymnasium allen jugendlichen Talenten die Chance, Schulausbildung mit optimaler Sportförderung zu verbinden.',
     profile4_title: 'NaWi-Projekt',
     profile4_tag: 'NWI',
-    profile4_description: 'Im Profilprojekt NaWi entdecken die Schueler:innen die spannende Welt der Naturwissenschaften. Mit Neugier und Forschergeist gehen sie Phaenomenen aus Biologie, Chemie, Physik und Informatik auf den Grund.',
+    profile4_description: 'Im Profilprojekt NaWi entdecken die Schüler:innen die spannende Welt der Naturwissenschaften. Mit Neugier und Forschergeist gehen sie Phänomenen aus Biologie, Chemie, Physik und Informatik auf den Grund.',
   },
   'homepage-info': {
     left_label: 'Erprobungsstufe',
     left_headline: 'Dein Start am Grabbe',
-    left_text1: 'Die Jahrgaenge 5 und 6 bilden eine besondere paedagogische Einheit, die Erprobungsstufe. Waehrend dieser Zeit begleiten wir Ihre Kinder intensiv. Anknuepfend an die Lernerfahrungen in der Grundschule fuehren wir die Schueler:innen an die Unterrichtsmethoden und Lernangebote des Gymnasiums heran.',
-    left_text2: 'Die Klassenbildung erfolgt nach sozialen Kriterien und beruecksichtigt neben der Grundschulzugehoerigkeit auch die Wunschpartner:innen. Eine einwoechige Klassenfahrt zu Beginn der sechsten Klasse festigt die Klassengemeinschaft.',
+    left_text1: 'Die Jahrgänge 5 und 6 bilden eine besondere pädagogische Einheit, die Erprobungsstufe. Während dieser Zeit begleiten wir Ihre Kinder intensiv. Anknüpfend an die Lernerfahrungen in der Grundschule führen wir die Schüler:innen an die Unterrichtsmethoden und Lernangebote des Gymnasiums heran.',
+    left_text2: 'Die Klassenbildung erfolgt nach sozialen Kriterien und berücksichtigt neben der Grundschulzugehörigkeit auch die Wunschpartner:innen. Eine einwöchige Klassenfahrt zu Beginn der sechsten Klasse festigt die Klassengemeinschaft.',
     left_quote: 'Ein Ort, an dem jedes Kind seinen Platz findet.',
     left_link_text: 'Mehr zur Erprobungsstufe',
     right_label: 'Beliebte Themen',
@@ -177,14 +177,14 @@ export const PAGE_DEFAULTS = {
   },
   'homepage-nachmittag': {
     label: 'Nachmittags am Grabbe',
-    headline: 'Verlaesslich und flexibel',
+    headline: 'Verlässlich und flexibel',
     attribution: 'Beate Bossmanns',
-    text: 'Nach Unterrichtsschluss bietet das Grabbe-Gymnasium mit einem breiten Spektrum an Nachmittagsaktivitaeten eine verlaessliche und flexibel gestaltbare Betreuungszeit bis 15:30 Uhr an. Neben unserer verlaesslichen Nachmittagsbetreuung mit offenen Betreuungszeiten kann Ihr Kind aus zahlreichen AG-Angeboten waehlen oder in der Hausaufgabenbetreuung unter Anleitung unserer Schuelertutorinnen und -tutoren Hausaufgaben erledigen.',
+    text: 'Nach Unterrichtsschluss bietet das Grabbe-Gymnasium mit einem breiten Spektrum an Nachmittagsaktivitäten eine verlässliche und flexibel gestaltbare Betreuungszeit bis 15:30 Uhr an. Neben unserer verlässlichen Nachmittagsbetreuung mit offenen Betreuungszeiten kann Ihr Kind aus zahlreichen AG-Angeboten wählen oder in der Hausaufgabenbetreuung unter Anleitung unserer Schülertutorinnen und -tutoren Hausaufgaben erledigen.',
     features_title: 'Betreuungsangebote',
-    feature1: 'Offene Betreuungszeiten in modernen Raeumen',
+    feature1: 'Offene Betreuungszeiten in modernen Räumen',
     feature2: 'Zahlreiche AG-Angebote am Nachmittag',
-    feature3: 'Hausaufgabenbetreuung durch Schuelertutoren',
-    feature4: 'Module fuer ein halbes Jahr waehlbar',
+    feature3: 'Hausaufgabenbetreuung durch Schülertutoren',
+    feature4: 'Module für ein halbes Jahr wählbar',
     feature5: 'Mensa mit Kioskangebot und Mittagessen (LKS)',
     link_text: 'Weitere Informationen',
   },
@@ -192,18 +192,18 @@ export const PAGE_DEFAULTS = {
     label: 'Vernetzt in Detmold',
     headline: 'Unsere Partner',
     description: 'Wir bieten Ihren Kindern nicht nur in der Schule lebensnahe Erfahrungen, sondern auch mit unseren vertrauensvollen Partnern.',
-    partners: 'Hochschule fuer Musik, Landestheater Detmold, Johanniter, Stadtbibliothek Detmold, Lippische Landesbibliothek, Landesarchiv NRW, Holocaust-Gedenkstaette Yad Vashem, McLean Highschool Washington, Wortmann KG, Weidmueller GmbH & Co KG, Peter-Glaesel-Schule Detmold',
+    partners: 'Hochschule für Musik, Landestheater Detmold, Johanniter, Stadtbibliothek Detmold, Lippische Landesbibliothek, Landesarchiv NRW, Holocaust-Gedenkstätte Yad Vashem, McLean Highschool Washington, Wortmann KG, Weidmüller GmbH & Co KG, Peter-Gläsel-Schule Detmold',
   },
   'homepage-news': {
     label: 'Aktuelles',
     headline: 'Neuigkeiten vom Grabbe',
-    all_link_text: 'Alle Beitraege',
+    all_link_text: 'Alle Beiträge',
     read_more_text: 'Weiterlesen',
-    all_button_text: 'Alle Beitraege ansehen',
+    all_button_text: 'Alle Beiträge ansehen',
   },
   'homepage-calendar': {
     label: 'Termine',
-    headline: 'Naechste Veranstaltungen',
+    headline: 'Nächste Veranstaltungen',
     all_link_text: 'Alle Termine',
     empty_text: 'Aktuell sind keine Termine eingetragen.',
     all_button_text: 'Alle Termine ansehen',
@@ -213,18 +213,18 @@ export const PAGE_DEFAULTS = {
   'erprobungsstufe': {
     page_label: 'Klassen 5 & 6',
     page_title: 'Erprobungsstufe',
-    page_subtitle: 'Entdecke deine Talente! Bringe deine Ideen ein und mach sie sichtbar! Ich kann was - und es zaehlt!',
+    page_subtitle: 'Entdecke deine Talente! Bringe deine Ideen ein und mach sie sichtbar! Ich kann was - und es zählt!',
     hero_image_url: '',
     card1_title: 'Deine Talente entdecken',
-    card1_text: 'Du wirst zunehmend kreativer und selbststaendiger!',
+    card1_text: 'Du wirst zunehmend kreativer und selbstständiger!',
     card2_title: 'Gemeinschaft bilden',
     card2_text: 'Wir beteiligen Dich an immer mehr Entscheidungen!',
-    card3_title: 'Persoenlichkeit staerken',
-    card3_text: 'Du kannst was - und es zaehlt!',
-    content_p1: 'Die Jahrgaenge 5 und 6 bilden eine besondere paedagogische Einheit, die Erprobungsstufe. Waehrend dieser Zeit, die fuer Schueler:innen mit dem Uebergang von der Grundschule zum Gymnasium viele Veraenderungen mit sich bringt, begleiten wir Ihre Kinder intensiv. Anknuepfend an die Lernerfahrungen in der Grundschule fuehren wir die Schueler:innen an die Unterrichtsmethoden und Lernangebote des Gymnasiums heran.',
-    content_p2: 'Das besondere Profil des Grabbe mit den Profilprojekten in Kunst, Musik, Sport oder NaWi bietet den Schueler:innen die Moeglichkeit, frei waehlbar in einem der vier Profilprojekte fuer ein Jahr in einer gemischten Gruppe neue Lernwege zu entdecken. Moderner, vom Leistungsdruck befreiter und die unterschiedlichen Talente und Neigungen der Schueler:innen foerdernder Projektunterricht steht dabei im Mittelpunkt.',
-    content_p3: 'Die Klassenbildung erfolgt dabei nach sozialen Kriterien und beruecksichtigt dabei neben der Grundschulzugehoerigkeit auch die Wunschpartner:innen.',
-    content_p4: 'Wir laden Sie vor den Sommerferien zu einem Begruessungsnachmittag ein, an dem Ihre Kinder ihre neuen Mitschueler:innen sowie ihr Klassenleitungsteam und ihren Klassenraum kennenlernen. Die ersten Unterrichtstage zum Kennenlernen gestaltet das Klassenleitungsteam mit einem paedagogischen Programm und auch in der Klassenleitungsstunde liegt der Schwerpunkt auf dem sozialen Lernen. Eine einwoechige Klassenfahrt zu Beginn der sechsten Klasse festigt weiterhin die Klassengemeinschaft.',
+    card3_title: 'Persönlichkeit stärken',
+    card3_text: 'Du kannst was - und es zählt!',
+    content_p1: 'Die Jahrgänge 5 und 6 bilden eine besondere pädagogische Einheit, die Erprobungsstufe. Während dieser Zeit, die für Schüler:innen mit dem Übergang von der Grundschule zum Gymnasium viele Veränderungen mit sich bringt, begleiten wir Ihre Kinder intensiv. Anknüpfend an die Lernerfahrungen in der Grundschule führen wir die Schüler:innen an die Unterrichtsmethoden und Lernangebote des Gymnasiums heran.',
+    content_p2: 'Das besondere Profil des Grabbe mit den Profilprojekten in Kunst, Musik, Sport oder NaWi bietet den Schüler:innen die Möglichkeit, frei wählbar in einem der vier Profilprojekte für ein Jahr in einer gemischten Gruppe neue Lernwege zu entdecken. Moderner, vom Leistungsdruck befreiter und die unterschiedlichen Talente und Neigungen der Schüler:innen fördernder Projektunterricht steht dabei im Mittelpunkt.',
+    content_p3: 'Die Klassenbildung erfolgt dabei nach sozialen Kriterien und berücksichtigt dabei neben der Grundschulzugehörigkeit auch die Wunschpartner:innen.',
+    content_p4: 'Wir laden Sie vor den Sommerferien zu einem Begrüßungsnachmittag ein, an dem Ihre Kinder ihre neuen Mitschüler:innen sowie ihr Klassenleitungsteam und ihren Klassenraum kennenlernen. Die ersten Unterrichtstage zum Kennenlernen gestaltet das Klassenleitungsteam mit einem pädagogischen Programm und auch in der Klassenleitungsstunde liegt der Schwerpunkt auf dem sozialen Lernen. Eine einwöchige Klassenfahrt zu Beginn der sechsten Klasse festigt weiterhin die Klassengemeinschaft.',
     cta1_text: 'Profilprojekte entdecken',
     cta2_text: 'Zur Anmeldung',
   },
@@ -233,27 +233,27 @@ export const PAGE_DEFAULTS = {
   'profilprojekte': {
     page_label: 'Unser besonderes Profil',
     page_title: 'Profilprojekte',
-    page_subtitle: 'Waehle das Profilprojekt nach deinen Interessen! Gestalte frei - ohne Leistungsdruck! In Klasse 5 und 6 kannst du in einem der vier Profilprojekte neue Lernwege entdecken.',
+    page_subtitle: 'Wähle das Profilprojekt nach deinen Interessen! Gestalte frei - ohne Leistungsdruck! In Klasse 5 und 6 kannst du in einem der vier Profilprojekte neue Lernwege entdecken.',
     hero_image_url: '',
     kunst_title: 'Kunstprojekt',
-    kunst_p1: 'Das Fach Kunst ist durch selbstbestimmtes Handeln und anschauliches Denken gepraegt, was Lernen besonders nachhaltig macht und zum ganzheitlichen Erleben und Verstehen der Wirklichkeit fuehrt. Dies ist bedeutsam in Bezug auf die zunehmende Aesthetisierung und Virtualisierung der Lebenswelt. Durch die Staerkung der Ich-Identitaet ermoeglicht das Fach Kunst den Kindern, sich in der Welt zu behaupten und diese als gestaltbar und veraenderbar zu begreifen.',
-    kunst_p2: 'Der Kunstunterricht am Grabbe-Gymnasium versteht sich so als bedeutsamer und hochwertiger Baustein im Aufbau zukunftsrelevanter Kompetenzen fuer alle Schueler und Schuelerinnen.',
-    kunst_p3: 'Neben den fuer alle Gymnasien obligatorischen Wochenstunden im Fach Kunst wird in den Klassen 5 und 6 ein Projektkurs "Werkstatt Kunst - Unsere Welt mit den Augen von Kuenstlerinnen und Kuenstlern" zusaetzlich verankert. Dies bietet weiteren Freiraum, in dem die Schuelerinnen und Schueler ohne Notendruck projektbezogen arbeiten koennen.',
-    kunst_p4: 'Dem Profilprojekt liegt ein ganzheitliches und erfahrungsbezogenes Konzept zugrunde, in dem in besonderer Weise der kuenstlerische Prozess im Mittelpunkt steht. Ein Anliegen des Kurses ist u.a. die Sensibilisierung und Schaerfung der Wahrnehmung, die Auseinandersetzung mit der eigenen Lebenswelt und der Aufbau kuenstlerischen Ausdrucks.',
+    kunst_p1: 'Das Fach Kunst ist durch selbstbestimmtes Handeln und anschauliches Denken geprägt, was Lernen besonders nachhaltig macht und zum ganzheitlichen Erleben und Verstehen der Wirklichkeit führt. Dies ist bedeutsam in Bezug auf die zunehmende Ästhetisierung und Virtualisierung der Lebenswelt. Durch die Stärkung der Ich-Identität ermöglicht das Fach Kunst den Kindern, sich in der Welt zu behaupten und diese als gestaltbar und veränderbar zu begreifen.',
+    kunst_p2: 'Der Kunstunterricht am Grabbe-Gymnasium versteht sich so als bedeutsamer und hochwertiger Baustein im Aufbau zukunftsrelevanter Kompetenzen für alle Schüler und Schülerinnen.',
+    kunst_p3: 'Neben den für alle Gymnasien obligatorischen Wochenstunden im Fach Kunst wird in den Klassen 5 und 6 ein Projektkurs "Werkstatt Kunst - Unsere Welt mit den Augen von Künstlerinnen und Künstlern" zusätzlich verankert. Dies bietet weiteren Freiraum, in dem die Schülerinnen und Schüler ohne Notendruck projektbezogen arbeiten können.',
+    kunst_p4: 'Dem Profilprojekt liegt ein ganzheitliches und erfahrungsbezogenes Konzept zugrunde, in dem in besonderer Weise der künstlerische Prozess im Mittelpunkt steht. Ein Anliegen des Kurses ist u.a. die Sensibilisierung und Schärfung der Wahrnehmung, die Auseinandersetzung mit der eigenen Lebenswelt und der Aufbau künstlerischen Ausdrucks.',
     musik_title: 'Musikprojekt',
-    musik_p1: 'Im Musikprofil entdecken Schuelerinnen und Schueler ihre musikalischen Interessen, Kreativitaet und Begabungen - in Theorie und Praxis, individuell und im Miteinander. Der Musikunterricht bildet dabei das kontinuierliche Rueckgrat ihrer musikalischen Bildung.',
-    musik_p2: 'Ergaenzend zum Musikunterricht wird im Musikprofil Instrumentalunterricht in Kooperation mit externen Instrumentallehrkraeften angeboten. Im zweiten Halbjahr des Jahrgangs 5 wird die instrumentale Praxis im Profilorchester intensiviert und vertieft.',
-    musik_p3: 'Im Musikprojekt arbeiten die Schuelerinnen und Schueler praxisorientiert in unterschiedlichen Vorhaben: Instrument & Stimme (Jg. 5.1), Profilorchester (Jg. 5.2, woechentlich), Klang & Szene (Jg. 6).',
-    musik_p4: 'Darueber hinaus bieten die AG-Angebote vielfaeltige Moeglichkeiten Musik aktiv zu leben. Die Ensembles arbeiten jahrgangsuebergreifend und foerdern Begabungen nachhaltig und individuell. Das Profilfach Musik ist Teil des Schulversuchs "NRW-Musikprofil-Schule".',
+    musik_p1: 'Im Musikprofil entdecken Schülerinnen und Schüler ihre musikalischen Interessen, Kreativität und Begabungen - in Theorie und Praxis, individuell und im Miteinander. Der Musikunterricht bildet dabei das kontinuierliche Rückgrat ihrer musikalischen Bildung.',
+    musik_p2: 'Ergänzend zum Musikunterricht wird im Musikprofil Instrumentalunterricht in Kooperation mit externen Instrumentallehrkräften angeboten. Im zweiten Halbjahr des Jahrgangs 5 wird die instrumentale Praxis im Profilorchester intensiviert und vertieft.',
+    musik_p3: 'Im Musikprojekt arbeiten die Schülerinnen und Schüler praxisorientiert in unterschiedlichen Vorhaben: Instrument & Stimme (Jg. 5.1), Profilorchester (Jg. 5.2, wöchentlich), Klang & Szene (Jg. 6).',
+    musik_p4: 'Darüber hinaus bieten die AG-Angebote vielfältige Möglichkeiten Musik aktiv zu leben. Die Ensembles arbeiten jahrgangsübergreifend und fördern Begabungen nachhaltig und individuell. Das Profilfach Musik ist Teil des Schulversuchs "NRW-Musikprofil-Schule".',
     sport_title: 'Sportprojekt',
-    sport_p1: 'Als eine der wenigen ausgewaehlten "Partnerschulen des Sports" in NRW zeichnet sich das Grabbe-Gymnasium durch ein besonders sportfreundliches Klima aus und bietet allen jugendlichen Talenten die Chance, eine fundierte Schulausbildung mit einer optimalen Sportfoerderung zu verbinden.',
-    sport_p2: 'Diese Foerderung erfolgt u.a. durch frei waehlbare Sport-Projektkurse, vielfaeltige Sport-AGs in den Sportarten Kunstturnen, Fussball, Leichtathletik und Volleyball und die besondere Unterstuetzung von leistungssport-orientierten Schuelerinnen und Schuelern.',
-    sport_p3: 'Regelmaessig nehmen Schulmannschaften des Grabbe-Gymnasiums erfolgreich an Schulwettkaempfen teil. Basierend auf einer engen Zusammenarbeit von Schule, Verein, Eltern und Schuelerinnen und Schuelern werden darueber hinaus individuelle Loesungen fuer Kaderathleten gefunden, sodass sportliche Begabungen in besonderer Form gefoerdert werden.',
+    sport_p1: 'Als eine der wenigen ausgewählten "Partnerschulen des Sports" in NRW zeichnet sich das Grabbe-Gymnasium durch ein besonders sportfreundliches Klima aus und bietet allen jugendlichen Talenten die Chance, eine fundierte Schulausbildung mit einer optimalen Sportförderung zu verbinden.',
+    sport_p2: 'Diese Förderung erfolgt u.a. durch frei wählbare Sport-Projektkurse, vielfältige Sport-AGs in den Sportarten Kunstturnen, Fussball, Leichtathletik und Volleyball und die besondere Unterstützung von leistungssport-orientierten Schülerinnen und Schülern.',
+    sport_p3: 'Regelmäßig nehmen Schulmannschaften des Grabbe-Gymnasiums erfolgreich an Schulwettkämpfen teil. Basierend auf einer engen Zusammenarbeit von Schule, Verein, Eltern und Schülerinnen und Schülern werden darüber hinaus individuelle Lösungen für Kaderathleten gefunden, sodass sportliche Begabungen in besonderer Form gefördert werden.',
     nawi_title: 'NaWi-Projekt',
-    nawi_p1: 'Im Profilprojekt NaWi entdecken die Schuelerinnen und Schueler der Klassen 5 und 6 die spannende Welt der Naturwissenschaften. Mit Neugier und Forschergeist gehen sie Phaenomenen aus Biologie, Chemie, Physik und Informatik auf den Grund - immer mit dem Ziel, durch eigenes Beobachten, Experimentieren und Nachdenken Zusammenhaenge in der Natur und Technik zu verstehen.',
-    nawi_p2: 'Im Mittelpunkt steht das selbststaendige und entdeckende Lernen. Die Kinder lernen, Fragen zu stellen, eigene Ideen zu entwickeln, Versuche zu planen und ihre Ergebnisse zu praesentieren. So erwerben sie nicht nur naturwissenschaftliches Wissen, sondern auch wichtige Faehigkeiten wie Teamarbeit, Genauigkeit und Ausdauer.',
-    nawi_p3: 'Die Themen orientieren sich an der Lebenswelt der Kinder und wechseln mit den Jahreszeiten. Ob beim Erkunden der Sinne, beim Beobachten von Pflanzen und Tieren, beim Experimentieren mit Wasser und Energie oder beim Untersuchen von Wetterphaenomenen - ueberall steht das eigene Erleben und Ausprobieren im Vordergrund. Digitale Messgeraete und Sensoren helfen dabei, Daten zu erfassen und wissenschaftlich auszuwerten.',
-    nawi_p4: 'Ergaenzt wird das Profilprojekt durch Wettbewerbe und Exkursionen, die Einblicke in die Anwendung naturwissenschaftlicher Erkenntnisse geben und die Freude am Forschen vertiefen. Dass die Naturwissenschaften an unserer Schule einen besonderen Stellenwert haben, zeigt die wiederholte Auszeichnung durch die Initiative "MINT Zukunft Schaffen!". Als MINT-freundliche Schule legen wir grossen Wert darauf, Begeisterung fuer Mathematik, Informatik, Naturwissenschaften und Technik zu wecken und zu foerdern.',
+    nawi_p1: 'Im Profilprojekt NaWi entdecken die Schülerinnen und Schüler der Klassen 5 und 6 die spannende Welt der Naturwissenschaften. Mit Neugier und Forschergeist gehen sie Phänomenen aus Biologie, Chemie, Physik und Informatik auf den Grund - immer mit dem Ziel, durch eigenes Beobachten, Experimentieren und Nachdenken Zusammenhänge in der Natur und Technik zu verstehen.',
+    nawi_p2: 'Im Mittelpunkt steht das selbstständige und entdeckende Lernen. Die Kinder lernen, Fragen zu stellen, eigene Ideen zu entwickeln, Versuche zu planen und ihre Ergebnisse zu präsentieren. So erwerben sie nicht nur naturwissenschaftliches Wissen, sondern auch wichtige Fähigkeiten wie Teamarbeit, Genauigkeit und Ausdauer.',
+    nawi_p3: 'Die Themen orientieren sich an der Lebenswelt der Kinder und wechseln mit den Jahreszeiten. Ob beim Erkunden der Sinne, beim Beobachten von Pflanzen und Tieren, beim Experimentieren mit Wasser und Energie oder beim Untersuchen von Wetterphänomenen - überall steht das eigene Erleben und Ausprobieren im Vordergrund. Digitale Messgeräte und Sensoren helfen dabei, Daten zu erfassen und wissenschaftlich auszuwerten.',
+    nawi_p4: 'Ergänzt wird das Profilprojekt durch Wettbewerbe und Exkursionen, die Einblicke in die Anwendung naturwissenschaftlicher Erkenntnisse geben und die Freude am Forschen vertiefen. Dass die Naturwissenschaften an unserer Schule einen besonderen Stellenwert haben, zeigt die wiederholte Auszeichnung durch die Initiative "MINT Zukunft Schaffen!". Als MINT-freundliche Schule legen wir grossen Wert darauf, Begeisterung für Mathematik, Informatik, Naturwissenschaften und Technik zu wecken und zu fördern.',
   },
 
   // Oberstufe
@@ -264,68 +264,68 @@ export const PAGE_DEFAULTS = {
     hero_image_url: '',
 
     // Quick access links (comma-separated label:anchor pairs)
-    quicklinks: 'Formulare:#antraege,Klausurplaene:#klausuren,Beratung:#beratung,Fehlzeiten:#fehlzeiten,Laufbahn:#laufbahn,Facharbeit:#facharbeit',
+    quicklinks: 'Formulare:#antraege,Klausurpläne:#klausuren,Beratung:#beratung,Fehlzeiten:#fehlzeiten,Laufbahn:#laufbahn,Facharbeit:#facharbeit',
 
     // Overview section
     overview_title: 'Die gymnasiale Oberstufe',
-    overview_text: 'Die Regeldauer der gymnasialen Oberstufe betraegt drei Jahre. In der Einfuehrungsphase werden die Schuelerinnen und Schueler mit den inhaltlichen und methodischen Anforderungen der Oberstufe vertraut gemacht. Der Unterricht findet nicht mehr im Klassenverband statt, sondern in Grundkursen. Diese sind in der Regel dreistuendig, in der neu einsetzenden Fremdsprache vierstuendig. Auf der Grundlage der Vorgaben der APO-GOSt koennen Faecher und Schwerpunkte nach individuellen Staerken und Neigungen gewaehlt werden.',
-    overview_quali: 'Zu Beginn der Qualifikationsphase werden aus den bisher belegten Kursen zwei als Leistungskurse ausgewaehlt, die jeweils fuenfstuendig unterrichtet werden. Die zweiaehrige Qualifikationsphase baut auf den in der Einfuehrungsphase erworbenen Grundlagen auf und bereitet auf die Abiturpruefung vor. Die im Laufe der Qualifikationsphase erbrachten Leistungen gehen bereits als Block I in die Abiturendnote ein.',
-    overview_stunden: 'Im Laufe der Oberstufe sind insgesamt 102 Wochenstunden zu belegen, davon 34 in der Einfuehrungsphase. Die Kernunterrichtszeit endet mit der 9. Stunde, in Ausnahmefaellen liegen Kurse aber auch am spaeteren Nachmittag.',
-    overview_stammgruppen: 'Zur Erleichterung des Uebergangs in die Oberstufe wird am Grabbe-Gymnasium der Unterricht in den in der Regel von allen belegten Faechern Deutsch, Mathematik, Englisch und Sport in der Einfuehrungsphase noch in Stammgruppen erteilt, sodass die Schuelerinnen und Schueler in diesen Faechern immer mit derselben Lerngruppe Unterricht haben.',
-    overview_realschule: 'Traditionell liegt uns besonders die Foerderung von Schuelerinnen und Schuelern aus der Realschule am Herzen, die ihre Schullaufbahn in der gymnasialen Oberstufe fortsetzen moechten. Diesen bieten wir individuelle Hospitationsangebote und Beratungstermine an. Vertiefungskurse in Deutsch, Mathematik und Englisch in der Einfuehrungsphase bieten allen Schuelerinnen und Schuelern die Moeglichkeit, Defizite in diesen fuer den Erfolg in der Oberstufe zentralen Faechern aufzuarbeiten.',
-    overview_kooperation: 'Aufgrund der guten Kooperation mit den beiden anderen Detmolder Gymnasien koennen wir unseren Schuelerinnen und Schuelern in der Oberstufe ein breites Leistungskurs-Angebot machen, darunter Kunst, Musik und Sport als Besonderheiten unseres Schulprofils. Im Bereich der Fremdsprachen bieten wir zur Zeit Latein, Spanisch und Franzoesisch als neu einsetzende Fremdsprachen an, Englisch, Franzoesisch und Latein als fortgefuehrte Fremdsprachen.',
-    overview_abschluesse: 'Neben der Allgemeinen Hochschulreife koennen die Schuelerinnen und Schueler in der Oberstufe auch den schulischen Teil der Fachhochschulreife erwerben. Schuelerinnen und Schueler, die Latein gewaehlt haben, koennen zusaetzlich das Latinum erwerben.',
-    overview_extras: 'Darueber hinaus bereitet die Oberstufe durch gezielte Foerderung des wissenschaftspropedeutischen Arbeitens, z.B. im Rahmen der Facharbeitsvorbereitung, und ein vielfaeltiges Angebot an Berufsorientierungsmassnahmen auf das Leben nach der Schule vor. Im Bereich unserer Profilfaecher koennen die Schuelerinnen und Schueler aus einem breiten Angebot an AGs und instrumental- und vokalpraktischen Kursen auswaehlen.',
+    overview_text: 'Die Regeldauer der gymnasialen Oberstufe beträgt drei Jahre. In der Einführungsphase werden die Schülerinnen und Schüler mit den inhaltlichen und methodischen Anforderungen der Oberstufe vertraut gemacht. Der Unterricht findet nicht mehr im Klassenverband statt, sondern in Grundkursen. Diese sind in der Regel dreistündig, in der neu einsetzenden Fremdsprache vierstündig. Auf der Grundlage der Vorgaben der APO-GOSt können Fächer und Schwerpunkte nach individuellen Stärken und Neigungen gewählt werden.',
+    overview_quali: 'Zu Beginn der Qualifikationsphase werden aus den bisher belegten Kursen zwei als Leistungskurse ausgewählt, die jeweils fünfstündig unterrichtet werden. Die zweijährige Qualifikationsphase baut auf den in der Einführungsphase erworbenen Grundlagen auf und bereitet auf die Abiturprüfung vor. Die im Laufe der Qualifikationsphase erbrachten Leistungen gehen bereits als Block I in die Abiturendnote ein.',
+    overview_stunden: 'Im Laufe der Oberstufe sind insgesamt 102 Wochenstunden zu belegen, davon 34 in der Einführungsphase. Die Kernunterrichtszeit endet mit der 9. Stunde, in Ausnahmefällen liegen Kurse aber auch am späteren Nachmittag.',
+    overview_stammgruppen: 'Zur Erleichterung des Übergangs in die Oberstufe wird am Grabbe-Gymnasium der Unterricht in den in der Regel von allen belegten Fächern Deutsch, Mathematik, Englisch und Sport in der Einführungsphase noch in Stammgruppen erteilt, sodass die Schülerinnen und Schüler in diesen Fächern immer mit derselben Lerngruppe Unterricht haben.',
+    overview_realschule: 'Traditionell liegt uns besonders die Förderung von Schülerinnen und Schülern aus der Realschule am Herzen, die ihre Schullaufbahn in der gymnasialen Oberstufe fortsetzen möchten. Diesen bieten wir individuelle Hospitationsangebote und Beratungstermine an. Vertiefungskurse in Deutsch, Mathematik und Englisch in der Einführungsphase bieten allen Schülerinnen und Schülern die Möglichkeit, Defizite in diesen für den Erfolg in der Oberstufe zentralen Fächern aufzuarbeiten.',
+    overview_kooperation: 'Aufgrund der guten Kooperation mit den beiden anderen Detmolder Gymnasien können wir unseren Schülerinnen und Schülern in der Oberstufe ein breites Leistungskurs-Angebot machen, darunter Kunst, Musik und Sport als Besonderheiten unseres Schulprofils. Im Bereich der Fremdsprachen bieten wir zur Zeit Latein, Spanisch und Französisch als neu einsetzende Fremdsprachen an, Englisch, Französisch und Latein als fortgeführte Fremdsprachen.',
+    overview_abschlüsse: 'Neben der Allgemeinen Hochschulreife können die Schülerinnen und Schüler in der Oberstufe auch den schulischen Teil der Fachhochschulreife erwerben. Schülerinnen und Schüler, die Latein gewählt haben, können zusätzlich das Latinum erwerben.',
+    overview_extras: 'Darüber hinaus bereitet die Oberstufe durch gezielte Förderung des wissenschaftspropädeutischen Arbeitens, z.B. im Rahmen der Facharbeitsvorbereitung, und ein vielfältiges Angebot an Berufsorientierungsmaßnahmen auf das Leben nach der Schule vor. Im Bereich unserer Profilfächer können die Schülerinnen und Schüler aus einem breiten Angebot an AGs und instrumental- und vokalpraktischen Kursen auswählen.',
 
-    // Antraege section
-    antraege_title: 'Antraege & Formulare',
-    antraege_buecher: 'Wer den Termin zur Buecherausgabe verpasst oder ein Schulbuch verloren hat, kann sich direkt an Herrn Rieche wenden. Dieser ist auch fuer die Erstellung der Schuelerausweise zustaendig.',
-    antraege_wlan: 'Schuelerinnen und Schueler, die einen WLAN-Zugang bekommen moechten, koennen diesen bei Frau Knueppel beantragen, indem sie das Antragsformular herunterladen und ausgefuellt im Lehrerzimmer abgeben.',
-    antraege_tablet: 'Wer sein privates Tablet im Unterricht nutzen moechte, kann dies durch Abgabe des unterschriebenen Tablet-Knigges beantragen.',
-    antraege_office: 'Alle Lehrenden und Lernenden unserer Schule haben die Moeglichkeit, Office 365 zu nutzen; dafuer ist kein gesonderter Antrag erforderlich. Die Anmeldedaten von IServ verwenden. Tipp: Bei Anmeldung direkt bei Office den Nutzerinnennamen in der Form mit ...@grabbe-dt.de waehlen.',
+    // Anträge section
+    antraege_title: 'Anträge & Formulare',
+    antraege_buecher: 'Wer den Termin zur Bücherausgabe verpasst oder ein Schulbuch verloren hat, kann sich direkt an Herrn Rieche wenden. Dieser ist auch für die Erstellung der Schülerausweise zuständig.',
+    antraege_wlan: 'Schülerinnen und Schüler, die einen WLAN-Zugang bekommen möchten, können diesen bei Frau Knueppel beantragen, indem sie das Antragsformular herunterladen und ausgefüllt im Lehrerzimmer abgeben.',
+    antraege_tablet: 'Wer sein privates Tablet im Unterricht nutzen möchte, kann dies durch Abgabe des unterschriebenen Tablet-Knigges beantragen.',
+    antraege_office: 'Alle Lehrenden und Lernenden unserer Schule haben die Möglichkeit, Office 365 zu nutzen; dafür ist kein gesonderter Antrag erforderlich. Die Anmeldedaten von IServ verwenden. Tipp: Bei Anmeldung direkt bei Office den Nutzerinnennamen in der Form mit ...@grabbe-dt.de wählen.',
     // Tag IDs for modular tagged content blocks (configured in CMS)
     antraege_downloads_tag_id: '',
 
     // Beratung section
     beratung_title: 'Beratungsangebote',
-    beratung_text: 'Grundlage fuer die Laufbahnberatung sind die Vorgaben der APO-GOSt, deren zentrale Inhalte in der Broschuere zur Gymnasialen Oberstufe zusammengefasst dargestellt werden.',
+    beratung_text: 'Grundlage für die Laufbahnberatung sind die Vorgaben der APO-GOSt, deren zentrale Inhalte in der Broschüre zur Gymnasialen Oberstufe zusammengefasst dargestellt werden.',
     beratung_team: 'EF: Frau Knueppel (j.knueppel@grabbe.nrw.schule) & Frau Wormuth (f.wormuth@grabbe.nrw.schule)\nQ1: Frau Mannebach (b.mannebach@grabbe.nrw.schule) & Frau Seidel (s.seidel@grabbe.nrw.schule)\nKoordination: Frau Mannebach (b.mannebach@grabbe.nrw.schule)',
-    beratung_additional: 'Die Stufenleiterinnen und Stufenleiter sind auch Ansprechpartner bei persoenlichen Problemen; darueber hinaus koennt ihr die Beratungsangebote des Beratungsteams (Frau Moebus und Frau Bossmanns) nutzen. Frau Bossmanns und Frau Holste-Doerksen bieten auch Lerncoaching oder Hilfe beim Umgang mit Pruefungsangst und anderen Lernproblemen an.',
-    beratung_arbeit: 'Zusaetzliche Beratung zu den Themen Ausbildung und Studium bietet Frau Roedding von der Agentur fuer Arbeit an, die regelmaessig eine Sprechstunde am Grabbe abhaelt. (Terminreservierung durch Eintrag in die Liste im BO-Ordner bei IServ.)',
+    beratung_additional: 'Die Stufenleiterinnen und Stufenleiter sind auch Ansprechpartner bei persönlichen Problemen; darüber hinaus könnt ihr die Beratungsangebote des Beratungsteams (Frau Moebus und Frau Bossmanns) nutzen. Frau Bossmanns und Frau Holste-Doerksen bieten auch Lerncoaching oder Hilfe beim Umgang mit Prüfungsangst und anderen Lernproblemen an.',
+    beratung_arbeit: 'Zusätzliche Beratung zu den Themen Ausbildung und Studium bietet Frau Roedding von der Agentur für Arbeit an, die regelmäßig eine Sprechstunde am Grabbe abhält. (Terminreservierung durch Eintrag in die Liste im BO-Ordner bei IServ.)',
 
     // Unterrichtsausfall section
     ausfall_title: 'Verfahren bei Unterrichtsausfall',
-    ausfall_text: 'Die Schuelerinnen und Schueler haben die Pflicht, sich ueber Aufgaben und Inhalt der eigenverantwortlichen Lernzeit zu informieren, und bearbeiten das bereitgestellte Material gewissenhaft und vollstaendig. Diese Leistung fliesst in die sonstige Mitarbeitsnote ein, da sie eine Unterrichtseinheit ersetzt.',
-    ausfall_vorhersehbar: 'Liegt eine vorhersehbare Abwesenheit der Lehrperson vor, bekommen die Schuelerinnen und Schueler in der Regel in der Stunde zuvor Aufgaben und Materialien, an denen sie in den ausfallenden Stunden arbeiten koennen.',
-    ausfall_unvorhersehbar: 'Liegt eine unvorhersehbare Abwesenheit der Lehrperson vor, so stellt diese in der Regel ueber ein im Kurs vereinbartes digitales Distributionsverfahren Material zur Verfuegung (z.B. per E-Mail, ueber das Aufgabenmodul oder den Kursordner auf IServ). Wenn die Lehrperson keine Aufgaben zur Bearbeitung vorgesehen hat, nutzen die Schuelerinnen und Schueler die Lernzeit eigenverantwortlich. Auf dem Vertretungsplan erscheint dann ein entsprechender Vermerk (EVA fuer "eigenverantwortliches Arbeiten").',
+    ausfall_text: 'Die Schülerinnen und Schüler haben die Pflicht, sich über Aufgaben und Inhalt der eigenverantwortlichen Lernzeit zu informieren, und bearbeiten das bereitgestellte Material gewissenhaft und vollständig. Diese Leistung fließt in die sonstige Mitarbeitsnote ein, da sie eine Unterrichtseinheit ersetzt.',
+    ausfall_vorhersehbar: 'Liegt eine vorhersehbare Abwesenheit der Lehrperson vor, bekommen die Schülerinnen und Schüler in der Regel in der Stunde zuvor Aufgaben und Materialien, an denen sie in den ausfallenden Stunden arbeiten können.',
+    ausfall_unvorhersehbar: 'Liegt eine unvorhersehbare Abwesenheit der Lehrperson vor, so stellt diese in der Regel über ein im Kurs vereinbartes digitales Distributionsverfahren Material zur Verfügung (z.B. per E-Mail, über das Aufgabenmodul oder den Kursordner auf IServ). Wenn die Lehrperson keine Aufgaben zur Bearbeitung vorgesehen hat, nutzen die Schülerinnen und Schüler die Lernzeit eigenverantwortlich. Auf dem Vertretungsplan erscheint dann ein entsprechender Vermerk (EVA für "eigenverantwortliches Arbeiten").',
 
     // Vertretungsplan
     vertretung_title: 'Vertretungsplan',
-    vertretung_text: 'Der Vertretungsplan steht ueber WebUntis zur Verfuegung. Antrag (siehe unter Antraege oder im Dateimanager) ausfuellen und abgeben, dann App (Untis Mobile) herunterladen. Alternativ: Info-Displays im Neubau-Foyer oder im Altbau benutzen!',
+    vertretung_text: 'Der Vertretungsplan steht über WebUntis zur Verfügung. Antrag (siehe unter Anträge oder im Dateimanager) ausfüllen und abgeben, dann App (Untis Mobile) herunterladen. Alternativ: Info-Displays im Neubau-Foyer oder im Altbau benutzen!',
 
     // Laufbahnplanung
     laufbahn_title: 'Laufbahnplanung',
-    laufbahn_text: 'Weitere Informationen z.B. zum Zentralabitur oder einzelnen Faechern sind auch auf den Seiten des Ministeriums zugaenglich.',
+    laufbahn_text: 'Weitere Informationen z.B. zum Zentralabitur oder einzelnen Fächern sind auch auf den Seiten des Ministeriums zugänglich.',
     laufbahn_links: 'Bildungsportal NRW|https://www.schulministerium.nrw.de,FAQ zur Oberstufe|https://www.schulministerium.nrw.de/themen/schulsystem/schulformen/gymnasium/gymnasiale-oberstufe,Standardsicherung NRW|https://www.standardsicherung.schulministerium.nrw.de',
     laufbahn_downloads_tag_id: '',
 
     // Klausuren
     klausuren_title: 'Klausuren',
-    klausuren_text: 'Die Klausurplaene werden hier jeweils zu Beginn des Halbjahres veroeffentlicht und im Kasten im Neubaufoyer ausgehaengt. Bitte meldet euch umgehend, falls fuer euch trotz sorgfaeltiger Pruefung versehentlich mehr als drei Klausuren pro Woche angesetzt sind oder es andere Terminschwierigkeiten gibt.',
-    klausuren_nachschreiben: 'Schuelerinnen und Schueler, die eine Klausur aus von ihnen zu vertretenden Gruenden versaeumen (z.B. Termin falsch notiert, verschlafen usw.), haben keinen Anspruch auf eine Nachschreibklausur; fuer alle anderen finden jeweils gegen Ende eines Quartals Nachschreibtermine statt.',
+    klausuren_text: 'Die Klausurpläne werden hier jeweils zu Beginn des Halbjahres veröffentlicht und im Kasten im Neubaufoyer ausgehängt. Bitte meldet euch umgehend, falls für euch trotz sorgfältiger Prüfung versehentlich mehr als drei Klausuren pro Woche angesetzt sind oder es andere Terminschwierigkeiten gibt.',
+    klausuren_nachschreiben: 'Schülerinnen und Schüler, die eine Klausur aus von ihnen zu vertretenden Gründen versäumen (z.B. Termin falsch notiert, verschlafen usw.), haben keinen Anspruch auf eine Nachschreibklausur; für alle anderen finden jeweils gegen Ende eines Quartals Nachschreibtermine statt.',
     klausuren_downloads_tag_id: '',
 
     // Fehlzeiten
     fehlzeiten_title: 'Fehlzeiten und Beurlaubungen',
-    fehlzeiten_text: 'Das Schulgesetz sieht vor, dass die Schule unverzueglich zu benachrichtigen ist, wenn Schueler:innen durch Krankheit oder aus anderen nicht vorhersehbaren Gruenden verhindert sind, die Schule zu besuchen. Wie in der Sekundarstufe I erfolgt diese Benachrichtigung zunaechst durch die Erziehungsberechtigten ueber deren WebUntis-Zugang. Volljaehrige Schueler:innen koennen die Eintragung selbst vornehmen.',
-    fehlzeiten_entschuldigung: 'Die Erziehungsberechtigten bzw. die volljaehrigen Schueler:innen sind laut Schulgesetz ebenfalls verpflichtet, den Grund fuer das Schulversaeumnis schriftlich mitzuteilen. Dies geschieht ueber das Entschuldigungsformular. Das Entschuldigungsformular muss unmittelbar nach der Rueckkehr in den Unterricht, spaetestens jedoch eine Woche nach dem letzten Krankheitstag, in Papierform bei der Stufenleitung eingereicht werden.',
-    fehlzeiten_beurlaubung: 'Bei allen im Voraus absehbaren Terminen (z.B. nicht akut bedingte Arztbesuche, Fahrpruefung) ist rechtzeitig ein Antrag auf Beurlaubung vom Unterricht zu stellen. Fuer Tage, an denen Klausuren oder andere Pruefungen angesetzt sind, kann eine Beurlaubung nur in begruendeten Ausnahmefaellen gewaehrt werden.',
-    fehlzeiten_hinweis: 'Fehlzeiten, fuer die nicht innerhalb einer Woche nach Rueckkehr in den Unterricht eine Entschuldigung vorgelegt worden ist, gelten als unentschuldigt und koennen als nicht erbrachte Leistungen in die Notengebung einfliessen. Schuelerinnen und Schueler sind verpflichtet, den versaeumten Stoff selbststaendig nachzuarbeiten.',
+    fehlzeiten_text: 'Das Schulgesetz sieht vor, dass die Schule unverzüglich zu benachrichtigen ist, wenn Schüler:innen durch Krankheit oder aus anderen nicht vorhersehbaren Gründen verhindert sind, die Schule zu besuchen. Wie in der Sekundarstufe I erfolgt diese Benachrichtigung zunächst durch die Erziehungsberechtigten über deren WebUntis-Zugang. Volljährige Schüler:innen können die Eintragung selbst vornehmen.',
+    fehlzeiten_entschuldigung: 'Die Erziehungsberechtigten bzw. die volljährigen Schüler:innen sind laut Schulgesetz ebenfalls verpflichtet, den Grund für das Schulversäumnis schriftlich mitzuteilen. Dies geschieht über das Entschuldigungsformular. Das Entschuldigungsformular muss unmittelbar nach der Rückkehr in den Unterricht, spätestens jedoch eine Woche nach dem letzten Krankheitstag, in Papierform bei der Stufenleitung eingereicht werden.',
+    fehlzeiten_beurlaubung: 'Bei allen im Voraus absehbaren Terminen (z.B. nicht akut bedingte Arztbesuche, Fahrprüfung) ist rechtzeitig ein Antrag auf Beurlaubung vom Unterricht zu stellen. Für Tage, an denen Klausuren oder andere Prüfungen angesetzt sind, kann eine Beurlaubung nur in begründeten Ausnahmefällen gewährt werden.',
+    fehlzeiten_hinweis: 'Fehlzeiten, für die nicht innerhalb einer Woche nach Rückkehr in den Unterricht eine Entschuldigung vorgelegt worden ist, gelten als unentschuldigt und können als nicht erbrachte Leistungen in die Notengebung einfließen. Schülerinnen und Schüler sind verpflichtet, den versäumten Stoff selbstständig nachzuarbeiten.',
     fehlzeiten_downloads_tag_id: '',
 
     // Facharbeit
     facharbeit_title: 'Facharbeit',
-    facharbeit_text: 'Alle Informationen zur Facharbeit finden sich hier. Bitte beachtet den Terminplan fuer das aktuelle Schuljahr und die Handreichung zur Facharbeit.',
+    facharbeit_text: 'Alle Informationen zur Facharbeit finden sich hier. Bitte beachtet den Terminplan für das aktuelle Schuljahr und die Handreichung zur Facharbeit.',
     facharbeit_downloads_tag_id: '',
 
     // Berufsorientierung
@@ -335,12 +335,12 @@ export const PAGE_DEFAULTS = {
 
     // Studium & Stipendien
     stipendien_title: 'Studium & Stipendien',
-    stipendien_text: 'Die Bewerbungskriterien ergeben sich oft aus dem Charakter der Stiftungen, z.B. wird haeufig neben guten schulischen Leistungen auch gesellschaftliches oder politisches Engagement erwartet. Einige Angebote richten sich auch an Auszubildende oder sind auf bestimmte Personengruppen beschraenkt.',
+    stipendien_text: 'Die Bewerbungskriterien ergeben sich oft aus dem Charakter der Stiftungen, z.B. wird häufig neben guten schulischen Leistungen auch gesellschaftliches oder politisches Engagement erwartet. Einige Angebote richten sich auch an Auszubildende oder sind auf bestimmte Personengruppen beschränkt.',
     stipendien_links: 'Studieren ab 15 (Uni Bielefeld)|https://www.uni-bielefeld.de/studium/studienangebot/studieren-ab-15/,Studifinder|https://www.studifinder.de,Stipendienfinder des DAAD|https://www.daad.de/de/studieren-und-forschen-in-deutschland/stipendien-finden/,Studienstiftung des Deutschen Volkes|https://www.studienstiftung.de,Deutschlandstipendium|https://www.deutschlandstipendium.de,Mystipendium|https://www.mystipendium.de',
 
     // Abitur
     abitur_title: 'Informationen zum Abitur',
-    abitur_text: 'Im Schuljahr 2025/26 gibt es aufgrund des Wechsels vom G8- zum G9-System keine Abiturpruefungen am Grabbe.',
+    abitur_text: 'Im Schuljahr 2025/26 gibt es aufgrund des Wechsels vom G8- zum G9-System keine Abiturprüfungen am Grabbe.',
 
     // Tagged content block IDs (CMS-configurable)
     events_tag_id: '',
@@ -356,49 +356,49 @@ export const PAGE_DEFAULTS = {
     klasse5_title: 'Anmeldung Klasse 5',
     klasse5_subtitle: 'Schuljahr 2026/27',
     klasse5_text: 'Liebe Eltern und Erziehungsberechtigte, wir freuen uns, dass Sie Ihr Kind bei uns am Grabbe anmelden wollen. Alle weiteren Infos zur Erprobungsstufe (Konzept etc.) finden sich auf der Seite zur Erprobungsstufe.',
-    klasse5_checklist: 'Anmeldeformular (Unterschrift BEIDER Erziehungsberechtigten),Einwilligung Datenverarbeitung,Kopie der Geburtsurkunde,Das letzte Zeugnis,Nachweis ueber erfolgte Masernimpfung',
+    klasse5_checklist: 'Anmeldeformular (Unterschrift BEIDER Erziehungsberechtigten),Einwilligung Datenverarbeitung,Kopie der Geburtsurkunde,Das letzte Zeugnis,Nachweis über erfolgte Masernimpfung',
     oberstufe_title: 'Anmeldung Oberstufe',
-    oberstufe_subtitle: 'Einfuehrungsphase',
-    oberstufe_text1: 'Wir freuen uns ueber Ihr/euer Interesse an unserer Schule! Die Anmeldewoche fuer die Oberstufe findet vom 23. bis 27.02.2026 statt. Die Terminvergabe erfolgt unter Tel. 05231 992617 oder per Mail an b.mannebach@grabbe.nrw.schule.',
-    oberstufe_text2: 'Gerne koennen Interessent:innen sich auch im Vorfeld der Anmeldewoche persoenlich oder telefonisch beraten lassen oder ein bis zwei Tage bei uns hospitieren.',
+    oberstufe_subtitle: 'Einführungsphase',
+    oberstufe_text1: 'Wir freuen uns über Ihr/euer Interesse an unserer Schule! Die Anmeldewoche für die Oberstufe findet vom 23. bis 27.02.2026 statt. Die Terminvergabe erfolgt unter Tel. 05231 992617 oder per Mail an b.mannebach@grabbe.nrw.schule.',
+    oberstufe_text2: 'Gerne können Interessent:innen sich auch im Vorfeld der Anmeldewoche persönlich oder telefonisch beraten lassen oder ein bis zwei Tage bei uns hospitieren.',
     oberstufe_checklist: 'Anmeldeformular (Unterschrift BEIDER Erziehungsberechtigten),Einwilligung Datenverarbeitung,Antrag auf Busfahrkarte,Kopie der Geburtsurkunde,Letztes Zeugnis,Nachweis Masernimpfung',
-    oberstufe_hinweis: 'Voraussetzung fuer die Aufnahme in die Sekundarstufe II ist die Berechtigung zum Besuch der gymnasialen Oberstufe, die am Gymnasium durch die Versetzung am Ende der Jahrgangsstufe 10 oder an anderen Schulformen durch den Erwerb des Mittleren Schulabschlusses mit Q-Vermerk erworben wird.',
+    oberstufe_hinweis: 'Voraussetzung für die Aufnahme in die Sekundarstufe II ist die Berechtigung zum Besuch der gymnasialen Oberstufe, die am Gymnasium durch die Versetzung am Ende der Jahrgangsstufe 10 oder an anderen Schulformen durch den Erwerb des Mittleren Schulabschlusses mit Q-Vermerk erworben wird.',
   },
 
-  // Faecher & AGs
+  // Fächer & AGs
   'faecher-ags': {
     page_label: 'Schulleben',
-    page_title: 'Faecher & Arbeitsgemeinschaften',
-    page_subtitle: 'Viele Faecher warten auf dich! Am Nachmittag hast du bei uns die freie Wahl!',
+    page_title: 'Fächer & Arbeitsgemeinschaften',
+    page_subtitle: 'Viele Fächer warten auf dich! Am Nachmittag hast du bei uns die freie Wahl!',
     hero_image_url: '',
-    intro_text: 'Das Grabbe-Gymnasium wird zum Lebensort Ihrer Kinder. Ihre Kinder koennen sich in vielen verschiedenen Faechern mit engagierten Kolleg:innen bilden. Sie haben nach Englisch die Moeglichkeit, Franzoesisch oder Latein und spaeter Spanisch zu waehlen. Alle Naturwissenschaften und Informatik werden einzeln und auch verbunden, wie in der Natur, angeboten. Die Gesellschaftswissenschaften runden das immer wichtigere Thema rund um Nachhaltigkeit, Demokratiebildung und geschichtliche Verantwortung und mehr ab. Ganz besonders betonen wir die Bildung im Bereich Kunst, Musik und Sport und NaWi.',
+    intro_text: 'Das Grabbe-Gymnasium wird zum Lebensort Ihrer Kinder. Ihre Kinder können sich in vielen verschiedenen Fächern mit engagierten Kolleg:innen bilden. Sie haben nach Englisch die Möglichkeit, Französisch oder Latein und später Spanisch zu wählen. Alle Naturwissenschaften und Informatik werden einzeln und auch verbunden, wie in der Natur, angeboten. Die Gesellschaftswissenschaften runden das immer wichtigere Thema rund um Nachhaltigkeit, Demokratiebildung und geschichtliche Verantwortung und mehr ab. Ganz besonders betonen wir die Bildung im Bereich Kunst, Musik und Sport und NaWi.',
     cat1_title: 'Sprachen, Kunst, Musik',
-    cat1_desc: 'Nach Englisch waehlen Sie Franzoesisch oder Latein, spaeter Spanisch. Besonders betonen wir Kunst, Musik und Sport.',
+    cat1_desc: 'Nach Englisch wählen Sie Französisch oder Latein, später Spanisch. Besonders betonen wir Kunst, Musik und Sport.',
     cat2_title: 'MINT',
     cat2_desc: 'Alle Naturwissenschaften und Informatik werden einzeln und verbunden angeboten. MINT-freundliche Schule!',
     cat3_title: 'Gesellschaft',
     cat3_desc: 'Nachhaltigkeit, Demokratiebildung und geschichtliche Verantwortung runden das Angebot ab.',
-    cat4_title: 'Weitere Faecher',
-    cat4_desc: 'Ein breites Spektrum an weiteren Faechern mit engagierten Kolleg:innen erwartet dich.',
+    cat4_title: 'Weitere Fächer',
+    cat4_desc: 'Ein breites Spektrum an weiteren Fächern mit engagierten Kolleg:innen erwartet dich.',
   },
 
   // Nachmittag
   'nachmittag': {
     page_label: 'Schulleben',
     page_title: 'Nachmittags am Grabbe',
-    page_subtitle: '"Verlaesslich und flexibel" - Beate Bossmanns',
+    page_subtitle: '"Verlässlich und flexibel" - Beate Bossmanns',
     hero_image_url: '',
-    text_p1: 'Nach Unterrichtsschluss bietet das Grabbe-Gymnasium mit einem breiten Spektrum an Nachmittagsaktivitaeten eine verlaessliche und flexibel gestaltbare Betreuungszeit bis 15:30 Uhr an. Neben unserer verlaesslichen Nachmittagsbetreuung mit offenen Betreuungszeiten in unseren modernen Betreuungsraeumen, die von engagierten Betreuungskraeften geleitet wird, kann Ihr Kind aus zahlreichen AG-Angeboten waehlen oder in der Hausaufgabenbetreuung unter der Anleitung unserer Schuelertutorinnen und -tutoren Hausaufgaben erledigen.',
-    text_p2: 'Alle Angebote sind miteinander kombinierbar, sodass Sie die Nachmittagsgestaltung Ihres Kindes auf Ihre individuellen Betreuungswuensche anpassen koennen.',
-    text_p3: 'Module der Hausaufgabenbetreuung und Arbeitsgemeinschaften werden fuer ein halbes Jahr gewaehlt. In der Mensa stehen zudem jeden Tag durch unseren Schulcaterer LKS - Pop & Corn sowohl ein ansprechendes Kioskangebot als auch ein reichhaltiges Mittagsessenangebot in Buffetform zur Verfuegung.',
+    text_p1: 'Nach Unterrichtsschluss bietet das Grabbe-Gymnasium mit einem breiten Spektrum an Nachmittagsaktivitäten eine verlässliche und flexibel gestaltbare Betreuungszeit bis 15:30 Uhr an. Neben unserer verlässlichen Nachmittagsbetreuung mit offenen Betreuungszeiten in unseren modernen Betreuungsräumen, die von engagierten Betreuungskräften geleitet wird, kann Ihr Kind aus zahlreichen AG-Angeboten wählen oder in der Hausaufgabenbetreuung unter der Anleitung unserer Schülertutorinnen und -tutoren Hausaufgaben erledigen.',
+    text_p2: 'Alle Angebote sind miteinander kombinierbar, sodass Sie die Nachmittagsgestaltung Ihres Kindes auf Ihre individuellen Betreuungswünsche anpassen können.',
+    text_p3: 'Module der Hausaufgabenbetreuung und Arbeitsgemeinschaften werden für ein halbes Jahr gewählt. In der Mensa stehen zudem jeden Tag durch unseren Schulcaterer LKS - Pop & Corn sowohl ein ansprechendes Kioskangebot als auch ein reichhaltiges Mittagsessenangebot in Buffetform zur Verfügung.',
     card1_title: 'Betreuungszeiten',
-    card1_text: 'Verlaessliche Betreuung bis 15:30 Uhr mit offenen Zeiten in modernen Raeumen.',
+    card1_text: 'Verlässliche Betreuung bis 15:30 Uhr mit offenen Zeiten in modernen Räumen.',
     card2_title: 'Arbeitsgemeinschaften',
-    card2_text: 'Zahlreiche AG-Angebote fuer ein halbes Jahr waehlbar.',
+    card2_text: 'Zahlreiche AG-Angebote für ein halbes Jahr wählbar.',
     card3_title: 'Hausaufgabenbetreuung',
-    card3_text: 'Unter Anleitung von Schuelertutorinnen und -tutoren.',
+    card3_text: 'Unter Anleitung von Schülertutorinnen und -tutoren.',
     card4_title: 'Mensa & Kiosk',
-    card4_text: 'Taeglich Mittagessen in Buffetform und Kioskangebot durch LKS.',
+    card4_text: 'Täglich Mittagessen in Buffetform und Kioskangebot durch LKS.',
     combined_title: 'Alle Angebote kombinierbar',
     combined_items: 'Offene Betreuungszeiten,AG-Angebote,Hausaufgabenbetreuung,Mittagessen',
   },
@@ -409,7 +409,7 @@ export const PAGE_DEFAULTS = {
     page_title: 'Vernetzt in Detmold',
     page_subtitle: 'Wir bieten Ihren Kindern nicht nur in der Schule lebensnahe Erfahrungen, sondern auch mit unseren vertrauensvollen Partnern.',
     hero_image_url: '',
-    partners: 'Hochschule fuer Musik|Kultur,Landestheater Detmold|Kultur,Johanniter|Soziales,Stadtbibliothek Detmold|Bildung,Lippische Landesbibliothek|Bildung,Landesarchiv NRW|Bildung,Holocaust-Gedenkstaette Yad Vashem|Gedenken,McLean Highschool Washington|International,Wortmann KG|Wirtschaft,Weidmueller GmbH & Co KG|Wirtschaft,Peter-Glaesel-Schule Detmold|Bildung',
+    partners: 'Hochschule für Musik|Kultur,Landestheater Detmold|Kultur,Johanniter|Soziales,Stadtbibliothek Detmold|Bildung,Lippische Landesbibliothek|Bildung,Landesarchiv NRW|Bildung,Holocaust-Gedenkstätte Yad Vashem|Gedenken,McLean Highschool Washington|International,Wortmann KG|Wirtschaft,Weidmüller GmbH & Co KG|Wirtschaft,Peter-Gläsel-Schule Detmold|Bildung',
   },
 
   // Kontakt
@@ -419,15 +419,15 @@ export const PAGE_DEFAULTS = {
     page_subtitle: 'Kommunikation miteinander macht den Grabbe-Spirit aus.',
     hero_image_url: '',
     address_name: 'Christian-Dietrich-Grabbe-Gymnasium',
-    address_street: 'Kuester-Meyer-Platz 2',
+    address_street: 'Küster-Meyer-Platz 2',
     address_city: '32756 Detmold',
     phone: '05231 - 99260',
     fax: '05231 - 992616',
     email: 'sekretariat@grabbe.nrw.schule',
-    travel_info: 'Du bist in hoechstens 30 min bei uns',
+    travel_info: 'Du bist in höchstens 30 min bei uns',
     steuergruppe_title: 'Steuergruppe Schulentwicklung',
     steuergruppe_text: 'Herr Beckmann, Frau Bossmanns, Frau Knueppel, Herr Wessel mit Herrn Dr. Hilbing',
-    contacts: 'Schulleitung|Dr. Claus Hilbing|Personal- und Organisationsentwicklung, Unterrichtsverteilung,Staendige Vertretung (komm.)|Tanja Brentrup-Lappe|Haushaltsmittel, Schulgebaeude und Schulanlagen,Erprobungsstufe (Kl. 5-6)|Herr Hecker|Koordination der Erprobungsstufe,Mittelstufe (Kl. 7-10)|Dr. Chee|Koordination der Mittelstufe,Oberstufe|Frau Mannebach|Koordination der gymnasialen Oberstufe,Verwaltung|Herr Schilling|Koordination der Verwaltung',
+    contacts: 'Schulleitung|Dr. Claus Hilbing|Personal- und Organisationsentwicklung, Unterrichtsverteilung,Ständige Vertretung (komm.)|Tanja Brentrup-Lappe|Haushaltsmittel, Schulgebäude und Schulanlagen,Erprobungsstufe (Kl. 5-6)|Herr Hecker|Koordination der Erprobungsstufe,Mittelstufe (Kl. 7-10)|Dr. Chee|Koordination der Mittelstufe,Oberstufe|Frau Mannebach|Koordination der gymnasialen Oberstufe,Verwaltung|Herr Schilling|Koordination der Verwaltung',
   },
 
   // Impressum
@@ -435,7 +435,7 @@ export const PAGE_DEFAULTS = {
     page_title: 'Impressum',
     hero_image_url: '',
     verantwortlich: 'Dr. Claus Hilbing und Oliver Sprenger',
-    anschrift: 'Christian-Dietrich-Grabbe-Gymnasium, Kuester-Meyer-Platz 2, 32756 Detmold',
+    anschrift: 'Christian-Dietrich-Grabbe-Gymnasium, Küster-Meyer-Platz 2, 32756 Detmold',
     kontakt_info: 'Telefon: 05231 - 99260, Telefax: 05231 - 992616, E-Mail: sekretariat@grabbe.nrw.schule',
     schultraeger: 'Stadt Detmold',
     aufsichtsbehoerde: 'Bezirksregierung Detmold',
@@ -445,8 +445,8 @@ export const PAGE_DEFAULTS = {
   'datenschutz': {
     page_title: 'Datenschutz',
     hero_image_url: '',
-    intro_text: 'Der Schutz Ihrer persoenlichen Daten ist uns ein besonderes Anliegen. Wir verarbeiten Ihre Daten daher ausschliesslich auf Grundlage der gesetzlichen Bestimmungen (DSGVO, DSG-NRW, SchulG NRW). In diesen Datenschutzinformationen informieren wir Sie ueber die wichtigsten Aspekte der Datenverarbeitung im Rahmen unserer Website.',
-    verantwortlicher: 'Christian-Dietrich-Grabbe-Gymnasium, Kuester-Meyer-Platz 2, 32756 Detmold, Telefon: 05231 - 99260, E-Mail: sekretariat@grabbe.nrw.schule',
+    intro_text: 'Der Schutz Ihrer persönlichen Daten ist uns ein besonderes Anliegen. Wir verarbeiten Ihre Daten daher ausschliesslich auf Grundlage der gesetzlichen Bestimmungen (DSGVO, DSG-NRW, SchulG NRW). In diesen Datenschutzinformationen informieren wir Sie über die wichtigsten Aspekte der Datenverarbeitung im Rahmen unserer Website.',
+    verantwortlicher: 'Christian-Dietrich-Grabbe-Gymnasium, Küster-Meyer-Platz 2, 32756 Detmold, Telefon: 05231 - 99260, E-Mail: sekretariat@grabbe.nrw.schule',
     hosting_text: 'Diese Website wird bei Vercel Inc. gehostet. Die Server befinden sich in der EU. Beim Besuch unserer Website werden automatisch technisch notwendige Daten erhoben (IP-Adresse, Zeitpunkt des Zugriffs, abgerufene Seite). Diese Daten werden ausschliesslich zum Betrieb der Website und zur Sicherstellung der Systemsicherheit verarbeitet.',
   },
   // Aktuelles
@@ -479,7 +479,7 @@ const HERO_IMAGE_SECTION: ContentSectionDefinition = {
       key: 'hero_image_url',
       label: 'Hero-Bild',
       type: 'image',
-      description: 'Empfohlene Groesse: 800x600 px oder groesser, Querformat.',
+      description: 'Empfohlene Größe: 800x600 px oder größer, Querformat.',
     },
   ],
 }
@@ -488,18 +488,18 @@ export const EDITABLE_PAGES: PageDefinition[] = [
   {
     id: 'homepage-hero',
     title: 'Startseite: Hero-Bereich',
-    description: 'Der grosse Banner-Bereich ganz oben auf der Startseite mit Ueberschriften und Buttons.',
+    description: 'Der grosse Banner-Bereich ganz oben auf der Startseite mit Überschriften und Buttons.',
     route: '/',
     sections: [
       {
         id: 'headlines',
-        title: 'Ueberschriften',
+        title: 'Überschriften',
         description: 'Die drei grossen Zeilen im Hero-Bereich',
         fields: [
           { key: 'headline1', label: 'Zeile 1', type: 'text', placeholder: 'z.B. Deine Talente.' },
           { key: 'headline2', label: 'Zeile 2', type: 'text', placeholder: 'z.B. Deine Bühne.' },
           { key: 'headline3', label: 'Zeile 3 (hervorgehoben)', type: 'text', placeholder: 'z.B. Dein Grabbe.' },
-          { key: 'subtitle', label: 'Untertitel', type: 'text', placeholder: 'z.B. Wir foerdern Deine Talente...' },
+          { key: 'subtitle', label: 'Untertitel', type: 'text', placeholder: 'z.B. Wir fördern Deine Talente...' },
         ],
       },
       {
@@ -525,10 +525,10 @@ export const EDITABLE_PAGES: PageDefinition[] = [
     sections: [
       {
         id: 'header',
-        title: 'Ueberschrift & Text',
+        title: 'Überschrift & Text',
         fields: [
           { key: 'label', label: 'Kategorie-Label', type: 'text', placeholder: 'z.B. Herzlich willkommen' },
-          { key: 'headline', label: 'Ueberschrift', type: 'text', placeholder: 'z.B. Entdecke das Grabbe' },
+          { key: 'headline', label: 'Überschrift', type: 'text', placeholder: 'z.B. Entdecke das Grabbe' },
           { key: 'text', label: 'Einleitungstext', type: 'textarea' },
         ],
       },
@@ -575,10 +575,10 @@ export const EDITABLE_PAGES: PageDefinition[] = [
     sections: [
       {
         id: 'header',
-        title: 'Ueberschrift & Text',
+        title: 'Überschrift & Text',
         fields: [
           { key: 'label', label: 'Kategorie-Label', type: 'text' },
-          { key: 'headline', label: 'Ueberschrift', type: 'text' },
+          { key: 'headline', label: 'Überschrift', type: 'text' },
           { key: 'description', label: 'Beschreibung', type: 'textarea' },
         ],
       },
@@ -587,7 +587,7 @@ export const EDITABLE_PAGES: PageDefinition[] = [
         title: 'Profil: Kunst',
         fields: [
           { key: 'profile1_title', label: 'Titel', type: 'text' },
-          { key: 'profile1_tag', label: 'Kuerzel (3 Buchstaben)', type: 'text' },
+          { key: 'profile1_tag', label: 'Kürzel (3 Buchstaben)', type: 'text' },
           { key: 'profile1_description', label: 'Beschreibung', type: 'textarea' },
         ],
       },
@@ -596,7 +596,7 @@ export const EDITABLE_PAGES: PageDefinition[] = [
         title: 'Profil: Musik',
         fields: [
           { key: 'profile2_title', label: 'Titel', type: 'text' },
-          { key: 'profile2_tag', label: 'Kuerzel (3 Buchstaben)', type: 'text' },
+          { key: 'profile2_tag', label: 'Kürzel (3 Buchstaben)', type: 'text' },
           { key: 'profile2_description', label: 'Beschreibung', type: 'textarea' },
         ],
       },
@@ -605,7 +605,7 @@ export const EDITABLE_PAGES: PageDefinition[] = [
         title: 'Profil: Sport',
         fields: [
           { key: 'profile3_title', label: 'Titel', type: 'text' },
-          { key: 'profile3_tag', label: 'Kuerzel (3 Buchstaben)', type: 'text' },
+          { key: 'profile3_tag', label: 'Kürzel (3 Buchstaben)', type: 'text' },
           { key: 'profile3_description', label: 'Beschreibung', type: 'textarea' },
         ],
       },
@@ -614,7 +614,7 @@ export const EDITABLE_PAGES: PageDefinition[] = [
         title: 'Profil: NaWi',
         fields: [
           { key: 'profile4_title', label: 'Titel', type: 'text' },
-          { key: 'profile4_tag', label: 'Kuerzel (3 Buchstaben)', type: 'text' },
+          { key: 'profile4_tag', label: 'Kürzel (3 Buchstaben)', type: 'text' },
           { key: 'profile4_description', label: 'Beschreibung', type: 'textarea' },
         ],
       },
@@ -632,7 +632,7 @@ export const EDITABLE_PAGES: PageDefinition[] = [
         title: 'Linke Seite: Erprobungsstufe',
         fields: [
           { key: 'left_label', label: 'Label', type: 'text' },
-          { key: 'left_headline', label: 'Ueberschrift', type: 'text' },
+          { key: 'left_headline', label: 'Überschrift', type: 'text' },
           { key: 'left_text1', label: 'Absatz 1', type: 'textarea' },
           { key: 'left_text2', label: 'Absatz 2', type: 'textarea' },
           { key: 'left_quote', label: 'Zitat', type: 'text' },
@@ -644,7 +644,7 @@ export const EDITABLE_PAGES: PageDefinition[] = [
         title: 'Rechte Seite: Schnellzugriff',
         fields: [
           { key: 'right_label', label: 'Label', type: 'text' },
-          { key: 'right_headline', label: 'Ueberschrift', type: 'text' },
+          { key: 'right_headline', label: 'Überschrift', type: 'text' },
         ],
       },
     ],
@@ -658,10 +658,10 @@ export const EDITABLE_PAGES: PageDefinition[] = [
     sections: [
       {
         id: 'header',
-        title: 'Ueberschrift',
+        title: 'Überschrift',
         fields: [
           { key: 'label', label: 'Label', type: 'text' },
-          { key: 'headline', label: 'Ueberschrift (Zitat)', type: 'text' },
+          { key: 'headline', label: 'Überschrift (Zitat)', type: 'text' },
           { key: 'attribution', label: 'Zitat-Quelle', type: 'text' },
           { key: 'text', label: 'Beschreibungstext', type: 'textarea' },
         ],
@@ -693,7 +693,7 @@ export const EDITABLE_PAGES: PageDefinition[] = [
         title: 'Inhalt',
         fields: [
           { key: 'label', label: 'Label', type: 'text' },
-          { key: 'headline', label: 'Ueberschrift', type: 'text' },
+          { key: 'headline', label: 'Überschrift', type: 'text' },
           { key: 'description', label: 'Beschreibung', type: 'textarea' },
           { key: 'partners', label: 'Partner (kommagetrennt)', type: 'textarea', description: 'Geben Sie die Partner-Namen getrennt durch Komma ein.' },
         ],
@@ -712,8 +712,8 @@ export const EDITABLE_PAGES: PageDefinition[] = [
         title: 'Texte',
         fields: [
           { key: 'label', label: 'Label', type: 'text' },
-          { key: 'headline', label: 'Ueberschrift', type: 'text' },
-          { key: 'all_link_text', label: '"Alle Beitraege" Link-Text', type: 'text' },
+          { key: 'headline', label: 'Überschrift', type: 'text' },
+          { key: 'all_link_text', label: '"Alle Beiträge" Link-Text', type: 'text' },
           { key: 'read_more_text', label: '"Weiterlesen" Text', type: 'text' },
           { key: 'all_button_text', label: 'Button-Text unten', type: 'text' },
         ],
@@ -732,7 +732,7 @@ export const EDITABLE_PAGES: PageDefinition[] = [
         title: 'Texte',
         fields: [
           { key: 'label', label: 'Label', type: 'text' },
-          { key: 'headline', label: 'Ueberschrift', type: 'text' },
+          { key: 'headline', label: 'Überschrift', type: 'text' },
           { key: 'all_link_text', label: '"Alle Termine" Link-Text', type: 'text' },
           { key: 'empty_text', label: 'Text wenn keine Termine', type: 'text' },
           { key: 'all_button_text', label: 'Button-Text unten', type: 'text' },
@@ -771,7 +771,7 @@ export const EDITABLE_PAGES: PageDefinition[] = [
       {
         id: 'content',
         title: 'Inhalt',
-        description: 'Die Textabsaetze auf der Seite',
+        description: 'Die Textabsätze auf der Seite',
         fields: [
           { key: 'content_p1', label: 'Absatz 1', type: 'textarea' },
           { key: 'content_p2', label: 'Absatz 2', type: 'textarea' },
@@ -871,9 +871,9 @@ export const EDITABLE_PAGES: PageDefinition[] = [
       {
         id: 'quicklinks',
         title: 'Schnellzugriff',
-        description: 'Links fuer den Schnellzugriff oben rechts auf der Seite. Format: Anzeigename:#anker (kommagetrennt)',
+        description: 'Links für den Schnellzugriff oben rechts auf der Seite. Format: Anzeigename:#anker (kommagetrennt)',
         fields: [
-          { key: 'quicklinks', label: 'Schnellzugriff-Links', type: 'textarea', description: 'Format: Anzeigename:#anker,Anzeigename2:#anker2 — Anker muessen zu Abschnitts-IDs auf der Seite passen.' },
+          { key: 'quicklinks', label: 'Schnellzugriff-Links', type: 'textarea', description: 'Format: Anzeigename:#anker,Anzeigename2:#anker2 — Anker müssen zu Abschnitts-IDs auf der Seite passen.' },
         ],
       },
       {
@@ -882,27 +882,27 @@ export const EDITABLE_PAGES: PageDefinition[] = [
         description: 'Allgemeine Informationen zur Oberstufe',
         fields: [
           { key: 'overview_title', label: 'Titel', type: 'text' },
-          { key: 'overview_text', label: 'Einfuehrungstext', type: 'textarea' },
+          { key: 'overview_text', label: 'Einführungstext', type: 'textarea' },
           { key: 'overview_quali', label: 'Qualifikationsphase', type: 'textarea' },
           { key: 'overview_stunden', label: 'Wochenstunden', type: 'textarea' },
           { key: 'overview_stammgruppen', label: 'Stammgruppen', type: 'textarea' },
           { key: 'overview_realschule', label: 'Realschule/Vertiefungskurse', type: 'textarea' },
           { key: 'overview_kooperation', label: 'Kooperation/Leistungskurse', type: 'textarea' },
-          { key: 'overview_abschluesse', label: 'Abschluesse', type: 'textarea' },
+          { key: 'overview_abschlüsse', label: 'Abschlüsse', type: 'textarea' },
           { key: 'overview_extras', label: 'Weitere Angebote', type: 'textarea' },
         ],
       },
       {
         id: 'antraege',
-        title: 'Antraege & Formulare',
-        description: 'Informationen zu Buecher, Ausweisen, WLAN, Tablets und Office 365',
+        title: 'Anträge & Formulare',
+        description: 'Informationen zu Bücher, Ausweisen, WLAN, Tablets und Office 365',
         fields: [
           { key: 'antraege_title', label: 'Titel', type: 'text' },
-          { key: 'antraege_buecher', label: 'Buecher & Ausweise', type: 'textarea' },
+          { key: 'antraege_buecher', label: 'Bücher & Ausweise', type: 'textarea' },
           { key: 'antraege_wlan', label: 'WLAN-Zugang', type: 'textarea' },
           { key: 'antraege_tablet', label: 'Tablet-Nutzung', type: 'textarea' },
           { key: 'antraege_office', label: 'Office 365', type: 'textarea' },
-          { key: 'antraege_downloads_tag_id', label: 'Downloads-Tag (fuer Formulare)', type: 'text', description: 'Tag-ID eingeben, um verknuepfte Dokumente automatisch anzuzeigen. Tag-IDs findest du unter CMS > Tags.' },
+          { key: 'antraege_downloads_tag_id', label: 'Downloads-Tag (für Formulare)', type: 'text', description: 'Tag-ID eingeben, um verknüpfte Dokumente automatisch anzuzeigen. Tag-IDs findest du unter CMS > Tags.' },
         ],
       },
       {
@@ -910,10 +910,10 @@ export const EDITABLE_PAGES: PageDefinition[] = [
         title: 'Beratungsangebote',
         fields: [
           { key: 'beratung_title', label: 'Titel', type: 'text' },
-          { key: 'beratung_text', label: 'Einfuehrungstext', type: 'textarea' },
+          { key: 'beratung_text', label: 'Einführungstext', type: 'textarea' },
           { key: 'beratung_team', label: 'Oberstufenteam (Zeilenumbruch = neue Zeile)', type: 'textarea' },
           { key: 'beratung_additional', label: 'Weitere Beratung', type: 'textarea' },
-          { key: 'beratung_arbeit', label: 'Agentur fuer Arbeit', type: 'textarea' },
+          { key: 'beratung_arbeit', label: 'Agentur für Arbeit', type: 'textarea' },
         ],
       },
       {
@@ -941,7 +941,7 @@ export const EDITABLE_PAGES: PageDefinition[] = [
           { key: 'laufbahn_title', label: 'Titel', type: 'text' },
           { key: 'laufbahn_text', label: 'Text', type: 'textarea' },
           { key: 'laufbahn_links', label: 'Externe Links (Format: Name|URL, kommagetrennt)', type: 'textarea' },
-          { key: 'laufbahn_downloads_tag_id', label: 'Downloads-Tag (fuer Laufbahn-Dokumente)', type: 'text', description: 'Tag-ID eingeben, um verknuepfte Dokumente automatisch anzuzeigen.' },
+          { key: 'laufbahn_downloads_tag_id', label: 'Downloads-Tag (für Laufbahn-Dokumente)', type: 'text', description: 'Tag-ID eingeben, um verknüpfte Dokumente automatisch anzuzeigen.' },
         ],
       },
       {
@@ -951,7 +951,7 @@ export const EDITABLE_PAGES: PageDefinition[] = [
           { key: 'klausuren_title', label: 'Titel', type: 'text' },
           { key: 'klausuren_text', label: 'Text', type: 'textarea' },
           { key: 'klausuren_nachschreiben', label: 'Nachschreiben', type: 'textarea' },
-          { key: 'klausuren_downloads_tag_id', label: 'Downloads-Tag (fuer Klausurplaene)', type: 'text', description: 'Tag-ID eingeben, um verknuepfte Dokumente automatisch anzuzeigen.' },
+          { key: 'klausuren_downloads_tag_id', label: 'Downloads-Tag (für Klausurpläne)', type: 'text', description: 'Tag-ID eingeben, um verknüpfte Dokumente automatisch anzuzeigen.' },
         ],
       },
       {
@@ -963,7 +963,7 @@ export const EDITABLE_PAGES: PageDefinition[] = [
           { key: 'fehlzeiten_entschuldigung', label: 'Entschuldigung', type: 'textarea' },
           { key: 'fehlzeiten_beurlaubung', label: 'Beurlaubung', type: 'textarea' },
           { key: 'fehlzeiten_hinweis', label: 'Wichtige Hinweise', type: 'textarea' },
-          { key: 'fehlzeiten_downloads_tag_id', label: 'Downloads-Tag (fuer Formulare)', type: 'text', description: 'Tag-ID eingeben, um verknuepfte Dokumente automatisch anzuzeigen.' },
+          { key: 'fehlzeiten_downloads_tag_id', label: 'Downloads-Tag (für Formulare)', type: 'text', description: 'Tag-ID eingeben, um verknüpfte Dokumente automatisch anzuzeigen.' },
         ],
       },
       {
@@ -972,7 +972,7 @@ export const EDITABLE_PAGES: PageDefinition[] = [
         fields: [
           { key: 'facharbeit_title', label: 'Titel', type: 'text' },
           { key: 'facharbeit_text', label: 'Text', type: 'textarea' },
-          { key: 'facharbeit_downloads_tag_id', label: 'Downloads-Tag (fuer Facharbeit-Dokumente)', type: 'text', description: 'Tag-ID eingeben, um verknuepfte Dokumente automatisch anzuzeigen.' },
+          { key: 'facharbeit_downloads_tag_id', label: 'Downloads-Tag (für Facharbeit-Dokumente)', type: 'text', description: 'Tag-ID eingeben, um verknüpfte Dokumente automatisch anzuzeigen.' },
         ],
       },
       {
@@ -1004,10 +1004,10 @@ export const EDITABLE_PAGES: PageDefinition[] = [
       {
         id: 'tagged-content',
         title: 'Dynamische Inhalte (Tags)',
-        description: 'Hier koennen Tags ausgewaehlt werden, um Termine, News und Downloads automatisch auf der Oberstufenseite anzuzeigen. Tag-IDs findest du unter CMS > Tags.',
+        description: 'Hier können Tags ausgewählt werden, um Termine, News und Downloads automatisch auf der Oberstufenseite anzuzeigen. Tag-IDs findest du unter CMS > Tags.',
         fields: [
-          { key: 'events_tag_id', label: 'Tag fuer Oberstufen-Termine', type: 'text', description: 'Tag-ID fuer Termine, die auf der Oberstufenseite angezeigt werden sollen.' },
-          { key: 'news_tag_id', label: 'Tag fuer Oberstufen-News', type: 'text', description: 'Tag-ID fuer Beitraege/News, die auf der Oberstufenseite angezeigt werden sollen.' },
+          { key: 'events_tag_id', label: 'Tag für Oberstufen-Termine', type: 'text', description: 'Tag-ID für Termine, die auf der Oberstufenseite angezeigt werden sollen.' },
+          { key: 'news_tag_id', label: 'Tag für Oberstufen-News', type: 'text', description: 'Tag-ID für Beiträge/News, die auf der Oberstufenseite angezeigt werden sollen.' },
         ],
       },
       HERO_IMAGE_SECTION,
@@ -1017,7 +1017,7 @@ export const EDITABLE_PAGES: PageDefinition[] = [
   {
     id: 'anmeldung',
     title: 'Anmeldung',
-    description: 'Die Seite "Unsere Schule > Anmeldung" mit Informationen zur Anmeldung fuer Klasse 5 und Oberstufe.',
+    description: 'Die Seite "Unsere Schule > Anmeldung" mit Informationen zur Anmeldung für Klasse 5 und Oberstufe.',
     route: '/unsere-schule/anmeldung',
     sections: [
       {
@@ -1036,7 +1036,7 @@ export const EDITABLE_PAGES: PageDefinition[] = [
           { key: 'klasse5_title', label: 'Titel', type: 'text' },
           { key: 'klasse5_subtitle', label: 'Untertitel', type: 'text' },
           { key: 'klasse5_text', label: 'Text', type: 'textarea' },
-          { key: 'klasse5_checklist', label: 'Checkliste (kommagetrennt)', type: 'textarea', description: 'Eintraege getrennt durch Komma eingeben.' },
+          { key: 'klasse5_checklist', label: 'Checkliste (kommagetrennt)', type: 'textarea', description: 'Einträge getrennt durch Komma eingeben.' },
         ],
       },
       {
@@ -1047,7 +1047,7 @@ export const EDITABLE_PAGES: PageDefinition[] = [
           { key: 'oberstufe_subtitle', label: 'Untertitel', type: 'text' },
           { key: 'oberstufe_text1', label: 'Text 1', type: 'textarea' },
           { key: 'oberstufe_text2', label: 'Text 2', type: 'textarea' },
-          { key: 'oberstufe_checklist', label: 'Checkliste (kommagetrennt)', type: 'textarea', description: 'Eintraege getrennt durch Komma eingeben.' },
+          { key: 'oberstufe_checklist', label: 'Checkliste (kommagetrennt)', type: 'textarea', description: 'Einträge getrennt durch Komma eingeben.' },
           { key: 'oberstufe_hinweis', label: 'Hinweis', type: 'textarea' },
         ],
       },
@@ -1057,8 +1057,8 @@ export const EDITABLE_PAGES: PageDefinition[] = [
   },
   {
     id: 'faecher-ags',
-    title: 'Faecher & Arbeitsgemeinschaften',
-    description: 'Die Seite "Schulleben > Faecher & AGs" mit Faecheruebersicht und Kategorien.',
+    title: 'Fächer & Arbeitsgemeinschaften',
+    description: 'Die Seite "Schulleben > Fächer & AGs" mit Fächerübersicht und Kategorien.',
     route: '/schulleben/faecher-ags',
     sections: [
       {
@@ -1138,7 +1138,7 @@ export const EDITABLE_PAGES: PageDefinition[] = [
         title: 'Kombinierbare Angebote',
         fields: [
           { key: 'combined_title', label: 'Titel', type: 'text' },
-          { key: 'combined_items', label: 'Eintraege (kommagetrennt)', type: 'textarea', description: 'Eintraege getrennt durch Komma eingeben.' },
+          { key: 'combined_items', label: 'Einträge (kommagetrennt)', type: 'textarea', description: 'Einträge getrennt durch Komma eingeben.' },
         ],
       },
       HERO_IMAGE_SECTION,
@@ -1232,8 +1232,8 @@ export const EDITABLE_PAGES: PageDefinition[] = [
           { key: 'verantwortlich', label: 'Verantwortlich', type: 'textarea' },
           { key: 'anschrift', label: 'Anschrift', type: 'textarea' },
           { key: 'kontakt_info', label: 'Kontakt', type: 'textarea' },
-          { key: 'schultraeger', label: 'Schultraeger', type: 'text' },
-          { key: 'aufsichtsbehoerde', label: 'Aufsichtsbehoerde', type: 'text' },
+          { key: 'schultraeger', label: 'Schulträger', type: 'text' },
+          { key: 'aufsichtsbehoerde', label: 'Aufsichtsbehörde', type: 'text' },
         ],
       },
       HERO_IMAGE_SECTION,
@@ -1243,7 +1243,7 @@ export const EDITABLE_PAGES: PageDefinition[] = [
   {
     id: 'datenschutz',
     title: 'Datenschutz',
-    description: 'Die Datenschutzerklaerung der Schule.',
+    description: 'Die Datenschutzerklärung der Schule.',
     route: '/datenschutz',
     sections: [
       {
@@ -1264,7 +1264,7 @@ export const EDITABLE_PAGES: PageDefinition[] = [
   {
     id: 'aktuelles',
     title: 'Aktuelles',
-    description: 'Hero-Bild fuer die Aktuelles-Seite.',
+    description: 'Hero-Bild für die Aktuelles-Seite.',
     route: '/aktuelles',
     sections: [HERO_IMAGE_SECTION],
     defaults: PAGE_DEFAULTS['aktuelles'],
@@ -1272,7 +1272,7 @@ export const EDITABLE_PAGES: PageDefinition[] = [
   {
     id: 'termine',
     title: 'Termine',
-    description: 'Hero-Bild fuer die Termine-Seite.',
+    description: 'Hero-Bild für die Termine-Seite.',
     route: '/termine',
     sections: [HERO_IMAGE_SECTION],
     defaults: PAGE_DEFAULTS['termine'],
@@ -1280,7 +1280,7 @@ export const EDITABLE_PAGES: PageDefinition[] = [
   {
     id: 'downloads',
     title: 'Downloads',
-    description: 'Hero-Bild fuer die Downloads-Seite.',
+    description: 'Hero-Bild für die Downloads-Seite.',
     route: '/downloads',
     sections: [HERO_IMAGE_SECTION],
     defaults: PAGE_DEFAULTS['downloads'],

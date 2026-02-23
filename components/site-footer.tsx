@@ -16,7 +16,7 @@ export function SiteFooter({
   const fullName =
     settings.school_name_full || "Christian-Dietrich-Grabbe-Gymnasium Detmold"
   const address =
-    settings.school_address || "Kuester-Meyer-Platz 2, 32756 Detmold"
+    settings.school_address || "Küster-Meyer-Platz 2, 32756 Detmold"
   const phone = settings.school_phone || "05231 - 99260"
   const email = settings.school_email || "sekretariat@grabbe.nrw.schule"
   const year = new Date().getFullYear()
@@ -43,7 +43,7 @@ export function SiteFooter({
             </div>
             <p className="mt-3 max-w-sm text-sm leading-relaxed text-primary-foreground/50">
               {settings.school_description ||
-                "Wir foerdern Deine Talente und staerken Deine Persoenlichkeit."}
+                "Wir fördern Deine Talente und stärken Deine Persönlichkeit."}
             </p>
           </div>
           <p className="font-sub text-[10px] uppercase tracking-[0.3em] text-primary-foreground/30">
@@ -132,7 +132,7 @@ export function SiteFooter({
             </h3>
             <blockquote className="mt-5">
               <p className="font-display text-xl italic text-primary-foreground/70 leading-relaxed">
-                {'"'}Deine Talente. Deine Buehne. Dein Grabbe.{'"'}
+                {'"'}Deine Talente. Deine Bühne. Dein Grabbe.{'"'}
               </p>
             </blockquote>
           </div>

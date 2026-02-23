@@ -6,23 +6,23 @@ import { AnimateOnScroll } from "./animate-on-scroll"
 const values = [
   {
     icon: Sparkles,
-    title: "Talente foerdern",
-    text: "Wir foerdern Deine Talente und staerken Deine Persoenlichkeit. Am Grabbe kannst Du Dich in den Profilprojekten Kunst, Musik, Sport und NaWi frei entfalten.",
+    title: "Talente fördern",
+    text: "Wir fördern Deine Talente und stärken Deine Persönlichkeit. Am Grabbe kannst Du Dich in den Profilprojekten Kunst, Musik, Sport und NaWi frei entfalten.",
   },
   {
     icon: Users,
     title: "Gemeinschaft leben",
-    text: "Wir wuenschen uns glueckliche Schueler:innen in einer guten Gemeinschaft - mit Deinen Freund:innen. Durch gemeinsame Projekte und Klassenfahrten staerken wir den Zusammenhalt.",
+    text: "Wir wünschen uns glückliche Schüler:innen in einer guten Gemeinschaft - mit Deinen Freund:innen. Durch gemeinsame Projekte und Klassenfahrten stärken wir den Zusammenhalt.",
   },
   {
     icon: BookOpen,
     title: "Zukunft gestalten",
-    text: "Wir gestalten Deine Zukunft mit Dir. Mit modernen Lernmethoden, digitaler Ausstattung und individueller Foerderung bereiten wir Dich optimal auf Studium und Beruf vor.",
+    text: "Wir gestalten Deine Zukunft mit Dir. Mit modernen Lernmethoden, digitaler Ausstattung und individueller Förderung bereiten wir Dich optimal auf Studium und Beruf vor.",
   },
   {
     icon: Heart,
-    title: "Verantwortung uebernehmen",
-    text: "Als UNESCO-Projektschule in Nordrhein-Westfalen setzen wir uns fuer Nachhaltigkeit, Toleranz und interkulturelles Lernen ein. Engagement ist bei uns gelebter Alltag.",
+    title: "Verantwortung übernehmen",
+    text: "Als UNESCO-Projektschule in Nordrhein-Westfalen setzen wir uns für Nachhaltigkeit, Toleranz und interkulturelles Lernen ein. Engagement ist bei uns gelebter Alltag.",
   },
 ]
 
@@ -30,7 +30,7 @@ export function WelcomeSection({ content }: { content?: Record<string, unknown> 
   const c = content || {}
   const label = (c.label as string) || 'Herzlich willkommen'
   const headline = (c.headline as string) || 'Entdecke das Grabbe'
-  const text = (c.text as string) || 'Liebe Freund:innen des Grabbe-Gymnasiums, die es sind und werden wollen. Mit neuem Schwung in innovativer Kraft entwickeln wir unsere Schule fuer Dich weiter. Das Grabbe-Gymnasium ist ein Ort des Lernens, der Begegnung und der persoenlichen Entfaltung im Herzen von Detmold.'
+  const text = (c.text as string) || 'Liebe Freund:innen des Grabbe-Gymnasiums, die es sind und werden wollen. Mit neuem Schwung in innovativer Kraft entwickeln wir unsere Schule für Dich weiter. Das Grabbe-Gymnasium ist ein Ort des Lernens, der Begegnung und der persönlichen Entfaltung im Herzen von Detmold.'
 
   const dynamicValues = [
     {

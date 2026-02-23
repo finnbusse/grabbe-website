@@ -9,12 +9,12 @@ import type { Metadata } from "next"
 export async function generateMetadata(): Promise<Metadata> {
   return generatePageMetadata({
     title: "Termine",
-    description: "Alle Termine und Veranstaltungen des Grabbe-Gymnasiums Detmold im Ueberblick.",
+    description: "Alle Termine und Veranstaltungen des Grabbe-Gymnasiums Detmold im Überblick.",
     path: "/termine",
   })
 }
 
-const monthNames = ["Januar", "Februar", "Maerz", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"]
+const monthNames = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"]
 const monthNamesShort = ["Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"]
 
 const categoryColors: Record<string, string> = {
@@ -55,7 +55,7 @@ export default async function TerminePage() {
         <PageHero
           title="Termine"
           label="Schulkalender"
-          subtitle="Alle kommenden Termine, Veranstaltungen und wichtigen Daten im Ueberblick."
+          subtitle="Alle kommenden Termine, Veranstaltungen und wichtigen Daten im Überblick."
           imageUrl={heroImageUrl}
         />
 
@@ -68,7 +68,7 @@ export default async function TerminePage() {
                 Termine
               </h2>
               <p className="mt-6 text-base leading-relaxed text-muted-foreground max-w-xl mx-auto">
-                Alle kommenden Veranstaltungen, Pruefungen und wichtigen Daten auf einen Blick.
+                Alle kommenden Veranstaltungen, Prüfungen und wichtigen Daten auf einen Blick.
               </p>
             </div>
 
@@ -79,7 +79,7 @@ export default async function TerminePage() {
                 </div>
                 <h3 className="font-display text-xl text-foreground">Keine Termine</h3>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground max-w-md mx-auto">
-                  Aktuell sind keine kommenden Termine eingetragen. Schauen Sie spaeter wieder vorbei.
+                  Aktuell sind keine kommenden Termine eingetragen. Schauen Sie später wieder vorbei.
                 </p>
               </div>
             ) : (

@@ -44,7 +44,7 @@ export function ContactForm() {
       <div className="rounded-2xl border bg-card p-8 text-center">
         <CheckCircle2 className="mx-auto h-12 w-12 text-emerald-500" />
         <h3 className="mt-4 font-display text-xl font-semibold">Vielen Dank!</h3>
-        <p className="mt-2 text-sm text-muted-foreground">Ihre Nachricht wurde erfolgreich gesendet. Wir werden uns so schnell wie moeglich bei Ihnen melden.</p>
+        <p className="mt-2 text-sm text-muted-foreground">Ihre Nachricht wurde erfolgreich gesendet. Wir werden uns so schnell wie möglich bei Ihnen melden.</p>
       </div>
     )
   }

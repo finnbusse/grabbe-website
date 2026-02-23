@@ -26,7 +26,7 @@ export function MessagesInbox({ initialMessages }: { initialMessages: Message[] 
   }
 
   async function handleDelete(id: string) {
-    if (!confirm("Nachricht wirklich loeschen?")) return
+    if (!confirm("Nachricht wirklich löschen?")) return
     const supabase = createClient()
     await supabase.from("contact_submissions").delete().eq("id", id)
     setMessages(messages.filter((m) => m.id !== id))
@@ -72,7 +72,7 @@ export function MessagesInbox({ initialMessages }: { initialMessages: Message[] 
                       <Button variant="outline" size="sm">Antworten</Button>
                     </a>
                     <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive" onClick={() => handleDelete(msg.id)}>
-                      <Trash2 className="mr-1.5 h-3.5 w-3.5" />Loeschen
+                      <Trash2 className="mr-1.5 h-3.5 w-3.5" />Löschen
                     </Button>
                   </div>
                 </div>

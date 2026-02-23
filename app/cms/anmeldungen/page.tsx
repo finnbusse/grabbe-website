@@ -43,7 +43,7 @@ export default function AnmeldungenPage() {
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Anmeldung wirklich loeschen?")) return
+    if (!confirm("Anmeldung wirklich löschen?")) return
     const supabase = createClient()
     await supabase.from("anmeldung_submissions").delete().eq("id", id)
     setItems(prev => prev.filter(i => i.id !== id))

@@ -57,7 +57,7 @@ export default async function AktuellesPage() {
         <PageHero
           title="Aktuelles"
           label="Neuigkeiten"
-          subtitle="Bleiben Sie informiert ueber Veranstaltungen, Projekte und Neuigkeiten am Grabbe-Gymnasium."
+          subtitle="Bleiben Sie informiert über Veranstaltungen, Projekte und Neuigkeiten am Grabbe-Gymnasium."
           imageUrl={heroImageUrl}
         />
         <Breadcrumbs items={[{ name: "Aktuelles", href: "/aktuelles" }]} />
@@ -122,10 +122,10 @@ export default async function AktuellesPage() {
             <div className="rounded-2xl border border-dashed border-border py-20 text-center">
               <CalendarDays className="mx-auto h-10 w-10 text-muted-foreground/40" />
               <h2 className="mt-4 font-display text-xl font-semibold text-foreground">
-                Noch keine Beitraege
+                Noch keine Beiträge
               </h2>
               <p className="mt-2 text-sm text-muted-foreground">
-                Neue Beitraege werden hier angezeigt, sobald sie im CMS veroeffentlicht werden.
+                Neue Beiträge werden hier angezeigt, sobald sie im CMS veröffentlicht werden.
               </p>
             </div>
           )}

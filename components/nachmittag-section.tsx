@@ -7,15 +7,15 @@ import { AnimateOnScroll } from "./animate-on-scroll"
 export function NachmittagSection({ content }: { content?: Record<string, unknown> }) {
   const c = content || {}
   const sLabel = (c.label as string) || 'Nachmittags am Grabbe'
-  const sHeadline = (c.headline as string) || 'Verlaesslich und flexibel'
+  const sHeadline = (c.headline as string) || 'Verlässlich und flexibel'
   const sAttribution = (c.attribution as string) || 'Beate Bossmanns'
-  const sText = (c.text as string) || 'Nach Unterrichtsschluss bietet das Grabbe-Gymnasium mit einem breiten Spektrum an Nachmittagsaktivitaeten eine verlaessliche und flexibel gestaltbare Betreuungszeit bis 15:30 Uhr an. Neben unserer verlaesslichen Nachmittagsbetreuung mit offenen Betreuungszeiten kann Ihr Kind aus zahlreichen AG-Angeboten waehlen oder in der Hausaufgabenbetreuung unter Anleitung unserer Schuelertutorinnen und -tutoren Hausaufgaben erledigen.'
+  const sText = (c.text as string) || 'Nach Unterrichtsschluss bietet das Grabbe-Gymnasium mit einem breiten Spektrum an Nachmittagsaktivitäten eine verlässliche und flexibel gestaltbare Betreuungszeit bis 15:30 Uhr an. Neben unserer verlässlichen Nachmittagsbetreuung mit offenen Betreuungszeiten kann Ihr Kind aus zahlreichen AG-Angeboten wählen oder in der Hausaufgabenbetreuung unter Anleitung unserer Schülertutorinnen und -tutoren Hausaufgaben erledigen.'
   const featuresTitle = (c.features_title as string) || 'Betreuungsangebote'
   const features = [
-    (c.feature1 as string) || 'Offene Betreuungszeiten in modernen Raeumen',
+    (c.feature1 as string) || 'Offene Betreuungszeiten in modernen Räumen',
     (c.feature2 as string) || 'Zahlreiche AG-Angebote am Nachmittag',
-    (c.feature3 as string) || 'Hausaufgabenbetreuung durch Schuelertutoren',
-    (c.feature4 as string) || 'Module fuer ein halbes Jahr waehlbar',
+    (c.feature3 as string) || 'Hausaufgabenbetreuung durch Schülertutoren',
+    (c.feature4 as string) || 'Module für ein halbes Jahr wählbar',
     (c.feature5 as string) || 'Mensa mit Kioskangebot und Mittagessen (LKS)',
   ]
   const linkText = (c.link_text as string) || 'Weitere Informationen'

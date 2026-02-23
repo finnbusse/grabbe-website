@@ -7,7 +7,7 @@ import type { Metadata } from "next"
 export async function generateMetadata(): Promise<Metadata> {
   return generatePageMetadata({
     title: "Datenschutz",
-    description: "Datenschutzerklaerung des Grabbe-Gymnasium Detmold.",
+    description: "Datenschutzerklärung des Grabbe-Gymnasium Detmold.",
     path: "/datenschutz",
   })
 }
@@ -23,7 +23,7 @@ export default async function DatenschutzPage() {
         <section className="mx-auto max-w-3xl px-4 py-16 lg:px-8">
           <div className="space-y-8">
             <div>
-              <h2 className="font-display text-xl font-semibold text-foreground">Datenschutzerklaerung</h2>
+              <h2 className="font-display text-xl font-semibold text-foreground">Datenschutzerklärung</h2>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                 {content.intro_text}
               </p>

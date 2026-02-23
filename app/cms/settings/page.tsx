@@ -244,7 +244,7 @@ export default function SettingsPage() {
           {msg && <span className="text-sm font-medium text-green-600">{msg}</span>}
           {isDirty && !msg && (
             <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-700">
-              Ungespeicherte Aenderungen
+              Ungespeicherte Änderungen
             </span>
           )}
           <Button onClick={handleSave} disabled={saving || !isDirty}>
@@ -288,7 +288,7 @@ export default function SettingsPage() {
           </Field>
         </div>
         <Field label="Strasse">
-          {field(values, "seo_org_address_street", set, { placeholder: "Kuesterstr. 2" })}
+          {field(values, "seo_org_address_street", set, { placeholder: "Küsterstr. 2" })}
         </Field>
         <div className="grid gap-4 sm:grid-cols-3">
           <Field label="PLZ">
@@ -313,7 +313,7 @@ export default function SettingsPage() {
           {field(values, "seo_site_url", set, { placeholder: "https://grabbe.site" })}
         </Field>
         <div className="grid gap-4 sm:grid-cols-3">
-          <Field label="Startseiten-Praefix" hint="Erster Teil des Startseitentitels, z.B. 'Start'">
+          <Field label="Startseiten-Präfix" hint="Erster Teil des Startseitentitels, z.B. 'Start'">
             {field(values, "seo_homepage_title_prefix", set, { placeholder: "Start" })}
           </Field>
           <Field label="Titel-Trennzeichen" hint="Zeichen zwischen Seitenname und Schulname, z.B. ' / '">
@@ -323,13 +323,13 @@ export default function SettingsPage() {
             {field(values, "seo_title_suffix", set, { placeholder: "Grabbe-Gymnasium" })}
           </Field>
         </div>
-        <Field label="Startseiten-Beschreibung" hint="Meta-Beschreibung speziell fuer die Startseite (max. 160 Zeichen empfohlen). Falls leer, wird die Standard-Beschreibung verwendet.">
+        <Field label="Startseiten-Beschreibung" hint="Meta-Beschreibung speziell für die Startseite (max. 160 Zeichen empfohlen). Falls leer, wird die Standard-Beschreibung verwendet.">
           {field(values, "seo_homepage_description", set, {
             multiline: true,
             placeholder: "Willkommen am Grabbe-Gymnasium Detmold ...",
           })}
         </Field>
-        <Field label="Standard Meta-Beschreibung" hint="Wird fuer Unterseiten verwendet, wenn keine eigene Beschreibung vorhanden ist (max. 160 Zeichen empfohlen).">
+        <Field label="Standard Meta-Beschreibung" hint="Wird für Unterseiten verwendet, wenn keine eigene Beschreibung vorhanden ist (max. 160 Zeichen empfohlen).">
           {field(values, "seo_default_description", set, {
             multiline: true,
             placeholder: "Das Christian-Dietrich-Grabbe-Gymnasium in Detmold ...",
@@ -337,7 +337,7 @@ export default function SettingsPage() {
         </Field>
         <ImageField
           label="Standard OG-Bild"
-          hint="Vorschaubild fuer Social-Media, wenn kein seitenspezifisches Bild vorhanden ist (1200 x 630 px empfohlen)."
+          hint="Vorschaubild für Social-Media, wenn kein seitenspezifisches Bild vorhanden ist (1200 x 630 px empfohlen)."
           value={values.seo_og_image ?? ""}
           onChange={(v) => set("seo_og_image", v)}
           uploading={uploadingKey === "seo_og_image"}
@@ -375,7 +375,7 @@ export default function SettingsPage() {
         <div className="rounded-xl border border-border bg-muted/30 px-4 py-3">
           <p className="text-sm font-medium text-card-foreground">Automatisch generiert</p>
           <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
-            <li className="flex items-center gap-2"><Globe className="h-3.5 w-3.5" /> <code className="rounded bg-muted px-1.5 py-0.5 text-xs">/sitemap.xml</code> – Alle veroeffentlichten Seiten &amp; Beitraege</li>
+            <li className="flex items-center gap-2"><Globe className="h-3.5 w-3.5" /> <code className="rounded bg-muted px-1.5 py-0.5 text-xs">/sitemap.xml</code> – Alle veröffentlichten Seiten &amp; Beiträge</li>
             <li className="flex items-center gap-2"><FileText className="h-3.5 w-3.5" /> <code className="rounded bg-muted px-1.5 py-0.5 text-xs">/robots.txt</code> – CMS, Auth und API werden blockiert</li>
             <li className="flex items-center gap-2"><Hash className="h-3.5 w-3.5" /> JSON-LD Organisation &amp; WebSite auf jeder Seite</li>
             <li className="flex items-center gap-2"><ImageIcon className="h-3.5 w-3.5" /> Preview-Deployments werden automatisch auf <code className="rounded bg-muted px-1.5 py-0.5 text-xs">noindex</code> gesetzt</li>

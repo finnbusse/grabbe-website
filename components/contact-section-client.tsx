@@ -36,7 +36,7 @@ export function ContactSectionClient({
                 So finden <span className="italic text-primary">Sie uns</span>
               </h2>
               <p className="mt-5 text-base text-muted-foreground leading-relaxed">
-                Du bist in hoechstens 30 Minuten bei uns - mit Bahn, Bus, Fahrrad oder zu Fuss.
+                Du bist in höchstens 30 Minuten bei uns - mit Bahn, Bus, Fahrrad oder zu Fuss.
               </p>
 
               <div className="mt-10 space-y-6">

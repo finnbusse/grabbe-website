@@ -116,7 +116,7 @@ export function DocumentsManager({ initialDocuments }: { initialDocuments: Doc[]
   }
 
   async function handleDelete(id: string, fileUrl: string) {
-    if (!confirm("Dokument wirklich loeschen?")) return
+    if (!confirm("Dokument wirklich löschen?")) return
     const supabase = createClient()
     await supabase.from("documents").delete().eq("id", id)
     try { await fetch("/api/upload/delete", { method: "DELETE", body: JSON.stringify({ url: fileUrl }) }) } catch {}
@@ -138,7 +138,7 @@ export function DocumentsManager({ initialDocuments }: { initialDocuments: Doc[]
   return (
     <div>
       <h1 className="font-display text-2xl font-bold">Dokumente & Medien</h1>
-      <p className="mt-1 text-sm text-muted-foreground">Laden Sie Dateien hoch und kopieren Sie die URL, um sie auf Seiten und Beitraegen einzubinden.</p>
+      <p className="mt-1 text-sm text-muted-foreground">Laden Sie Dateien hoch und kopieren Sie die URL, um sie auf Seiten und Beiträgen einzubinden.</p>
 
       <div className="mt-6 rounded-2xl border bg-card p-6 space-y-4">
         <h3 className="font-display font-semibold">Neues Dokument hochladen</h3>
@@ -154,9 +154,9 @@ export function DocumentsManager({ initialDocuments }: { initialDocuments: Doc[]
               <option value="allgemein">Allgemein</option>
               <option value="elternbriefe">Elternbriefe</option>
               <option value="formulare">Formulare</option>
-              <option value="lehrplaene">Lehrplaene</option>
+              <option value="lehrplaene">Lehrpläne</option>
               <option value="bilder">Bilder</option>
-              <option value="praesentation">Praesentationen</option>
+              <option value="praesentation">Präsentationen</option>
             </select>
           </div>
         </div>
@@ -207,11 +207,11 @@ export function DocumentsManager({ initialDocuments }: { initialDocuments: Doc[]
                     {copiedId === doc.id ? <Check className="h-3.5 w-3.5 text-green-600" /> : <Copy className="h-3.5 w-3.5" />}
                   </Button>
                   <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
-                    <Button variant="ghost" size="icon" className="h-8 w-8" title="Oeffnen">
+                    <Button variant="ghost" size="icon" className="h-8 w-8" title="Öffnen">
                       <ExternalLink className="h-3.5 w-3.5" />
                     </Button>
                   </a>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => handleDelete(doc.id, doc.file_url)} title="Loeschen">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => handleDelete(doc.id, doc.file_url)} title="Löschen">
                     <Trash2 className="h-3.5 w-3.5" />
                   </Button>
                 </div>

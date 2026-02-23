@@ -87,10 +87,10 @@ export default async function ProfilprojektePage() {
             <div className="mx-auto max-w-2xl text-center">
               <p className="font-sub text-[11px] uppercase tracking-[0.3em] text-primary">// Profilprojekte</p>
               <h2 className="mt-3 font-display text-4xl md:text-5xl tracking-tight text-foreground">
-                Waehle Dein Profil
+                Wähle Dein Profil
               </h2>
               <p className="mt-6 text-base leading-relaxed text-muted-foreground max-w-xl mx-auto">
-                Am Grabbe-Gymnasium kannst Du Dich in einem von vier Profilprojekten entfalten. Jedes Profil bietet einzigartige Moeglichkeiten, Deine Staerken zu entdecken und weiterzuentwickeln.
+                Am Grabbe-Gymnasium kannst Du Dich in einem von vier Profilprojekten entfalten. Jedes Profil bietet einzigartige Möglichkeiten, Deine Stärken zu entdecken und weiterzuentwickeln.
               </p>
             </div>
           </div>

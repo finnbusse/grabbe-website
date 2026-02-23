@@ -107,13 +107,13 @@ function generateTips(
 ): string[] {
   const tips: string[] = []
   if (!seo.ogImage) tips.push("Kein Standard-OG-Bild gesetzt – empfohlen unter Einstellungen > SEO.")
-  if (!seo.orgLogo) tips.push("Kein Organisations-Logo gesetzt – wird fuer Schema.org benoetigt.")
+  if (!seo.orgLogo) tips.push("Kein Organisations-Logo gesetzt – wird für Schema.org benötigt.")
   if (seo.isPreview) tips.push("Preview-Environment erkannt – Seite wird mit noindex ausgeliefert.")
-  if (post && !post.published) tips.push("Beitrag ist nicht veroeffentlicht und wird nicht in der Sitemap erscheinen.")
+  if (post && !post.published) tips.push("Beitrag ist nicht veröffentlicht und wird nicht in der Sitemap erscheinen.")
   if (post && !post.meta_description && !post.excerpt) tips.push("Beitrag hat weder Meta-Beschreibung noch Kurztext – Fallback wird verwendet.")
-  if (page && !page.published) tips.push("Seite ist nicht veroeffentlicht.")
+  if (page && !page.published) tips.push("Seite ist nicht veröffentlicht.")
   if (!post && !page && path !== "/" && !path.startsWith("/cms") && !path.startsWith("/auth")) {
-    tips.push("Kein dynamischer Inhalt fuer diesen Pfad gefunden – moeglicherweise eine statische Seite.")
+    tips.push("Kein dynamischer Inhalt für diesen Pfad gefunden – möglicherweise eine statische Seite.")
   }
   return tips
 }

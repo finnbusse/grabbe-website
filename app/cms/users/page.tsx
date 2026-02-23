@@ -130,7 +130,7 @@ export default function UsersPage() {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || "Fehler beim Erstellen")
-      setMessage("Benutzer erfolgreich erstellt. Der Nutzer erhaelt ggf. eine Bestaetigungsmail.")
+      setMessage("Benutzer erfolgreich erstellt. Der Nutzer erhält ggf. eine Bestätigungsmail.")
       setNewEmail("")
       setNewPassword("")
       setNewFirstName("")
@@ -201,7 +201,7 @@ export default function UsersPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-display text-2xl font-bold text-foreground">Benutzerverwaltung</h1>
-          <p className="text-sm text-muted-foreground">Lehrer-Accounts fuer das CMS erstellen und verwalten</p>
+          <p className="text-sm text-muted-foreground">Lehrer-Accounts für das CMS erstellen und verwalten</p>
         </div>
         <Button onClick={() => setShowForm(!showForm)} className="gap-2">
           <UserPlus className="h-4 w-4" />
@@ -359,17 +359,17 @@ export default function UsersPage() {
                     <Button variant="ghost" size="sm" className="text-destructive hover:bg-destructive/10 hover:text-destructive"
                       disabled={deletingId === u.id}
                       onClick={async () => {
-                        if (!confirm(`"${getDisplayName(u.profile, u.email)}" wirklich loeschen? Diese Aktion kann nicht rueckgaengig gemacht werden.`)) return
+                        if (!confirm(`"${getDisplayName(u.profile, u.email)}" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.`)) return
                         setDeletingId(u.id)
                         setMessage("")
                         try {
                           const res = await fetch("/api/users", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ userId: u.id }) })
                           const data = await res.json()
-                          if (!res.ok) throw new Error(data.error || "Fehler beim Loeschen")
-                          setMessage("Benutzer erfolgreich geloescht.")
+                          if (!res.ok) throw new Error(data.error || "Fehler beim Löschen")
+                          setMessage("Benutzer erfolgreich gelöscht.")
                           loadUsers()
                         } catch (err) {
-                          setMessage(err instanceof Error ? err.message : "Fehler beim Loeschen")
+                          setMessage(err instanceof Error ? err.message : "Fehler beim Löschen")
                         } finally {
                           setDeletingId(null)
                         }
@@ -383,7 +383,7 @@ export default function UsersPage() {
           </div>
         ))}
         {users.length > 0 && filteredUsers.length === 0 && (
-          <p className="py-8 text-center text-sm text-muted-foreground">Keine Benutzer fuer &quot;{searchQuery}&quot; gefunden.</p>
+          <p className="py-8 text-center text-sm text-muted-foreground">Keine Benutzer für &quot;{searchQuery}&quot; gefunden.</p>
         )}
         {users.length === 0 && (
           <p className="py-8 text-center text-sm text-muted-foreground">Noch keine weiteren Benutzer vorhanden.</p>

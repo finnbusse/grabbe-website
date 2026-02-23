@@ -20,7 +20,7 @@ export function DeletePostButton({ postId }: { postId: string }) {
     return (
       <div className="flex items-center gap-1">
         <Button variant="destructive" size="sm" onClick={handleDelete}>
-          Ja, loeschen
+          Ja, löschen
         </Button>
         <Button variant="ghost" size="sm" onClick={() => setConfirming(false)}>
           Abbrechen
@@ -35,7 +35,7 @@ export function DeletePostButton({ postId }: { postId: string }) {
       size="icon"
       className="h-8 w-8 text-muted-foreground hover:text-destructive"
       onClick={() => setConfirming(true)}
-      aria-label="Beitrag loeschen"
+      aria-label="Beitrag löschen"
     >
       <Trash2 className="h-4 w-4" />
     </Button>

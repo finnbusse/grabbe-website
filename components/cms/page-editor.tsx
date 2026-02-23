@@ -196,7 +196,7 @@ export function PageEditor({ page }: PageEditorProps) {
                 <Input id="slug" value={slug} onChange={(e) => setSlug(e.target.value)} placeholder="url-pfad" className="font-mono text-sm" />
               </div>
               <p className="text-xs text-muted-foreground">
-                Vollstaendige URL: {routePath ? `${routePath}/${slug}` : `/seiten/${slug}`}
+                Vollständige URL: {routePath ? `${routePath}/${slug}` : `/seiten/${slug}`}
               </p>
             </div>
           </div>
@@ -210,7 +210,7 @@ export function PageEditor({ page }: PageEditorProps) {
                   <h3 className="font-display font-semibold text-sm">Vorschau</h3>
                 </div>
                 <span className="rounded-full bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-600">
-                  {published ? "Veroeffentlicht" : "Entwurf – nicht veroeffentlicht"}
+                  {published ? "Veröffentlicht" : "Entwurf – nicht veröffentlicht"}
                 </span>
               </div>
               {/* Preview content area */}
@@ -258,7 +258,7 @@ export function PageEditor({ page }: PageEditorProps) {
                 <>
                   <div className="rounded-2xl border bg-card p-6 space-y-3">
                     <Label htmlFor="content">Inhalt (Markdown)</Label>
-                    <p className="text-xs text-muted-foreground">**fett**, *kursiv*, ## Ueberschrift, [Link](url), ![Bild](url)</p>
+                    <p className="text-xs text-muted-foreground">**fett**, *kursiv*, ## Überschrift, [Link](url), ![Bild](url)</p>
                     <textarea
                       id="content"
                       value={content}
@@ -356,7 +356,7 @@ export function PageEditor({ page }: PageEditorProps) {
           <div className="rounded-2xl border bg-card p-6 space-y-4">
             <h3 className="font-display text-sm font-semibold">Einstellungen</h3>
             <div className="flex items-center justify-between">
-              <Label htmlFor="pub">Veroeffentlicht</Label>
+              <Label htmlFor="pub">Veröffentlicht</Label>
               <Switch id="pub" checked={published} onCheckedChange={setPublished} />
             </div>
             <div className="grid gap-2">
@@ -379,7 +379,7 @@ export function PageEditor({ page }: PageEditorProps) {
                 className="font-mono text-xs"
               />
               <p className="text-[10px] text-muted-foreground">
-                z.B. /unsere-schule oder /schulleben. Leer lassen fuer /seiten/.
+                z.B. /unsere-schule oder /schulleben. Leer lassen für /seiten/.
                 Pfad kann in der Seitenstruktur verwaltet werden.
               </p>
             </div>
@@ -393,12 +393,12 @@ export function PageEditor({ page }: PageEditorProps) {
             <div className="rounded-2xl border border-primary/20 bg-primary/5 p-6">
               <h3 className="font-display text-sm font-semibold">Verfuegbare Bausteine</h3>
               <ul className="mt-3 space-y-1.5 text-xs text-muted-foreground">
-                <li>• <strong>Textabschnitt:</strong> Ueberschrift + Absatz</li>
+                <li>• <strong>Textabschnitt:</strong> Überschrift + Absatz</li>
                 <li>• <strong>Karten:</strong> 2-4 Info-Karten nebeneinander</li>
                 <li>• <strong>FAQ:</strong> Aufklappbare Fragen & Antworten</li>
                 <li>• <strong>Galerie:</strong> Bilder-Raster</li>
-                <li>• <strong>Aufzaehlung:</strong> Punkteliste</li>
-                <li>• <strong>Hero / Banner:</strong> Grosser Banner mit Bild</li>
+                <li>• <strong>Aufzählung:</strong> Punkteliste</li>
+                <li>• <strong>Hero / Banner:</strong> Großer Banner mit Bild</li>
                 <li>• <strong>Zitat:</strong> Zitat mit Autor</li>
                 <li>• <strong>Trennlinie:</strong> Visueller Trenner</li>
                 <li>• <strong>Video:</strong> YouTube/Vimeo einbetten</li>
@@ -413,14 +413,14 @@ export function PageEditor({ page }: PageEditorProps) {
 
           <div className="rounded-2xl border bg-card p-6 space-y-4">
             <h3 className="font-display text-sm font-semibold">SEO (optional)</h3>
-            <p className="text-[10px] text-muted-foreground">Falls leer, wird der Seitentitel automatisch fuer Suchmaschinen verwendet.</p>
+            <p className="text-[10px] text-muted-foreground">Falls leer, wird der Seitentitel automatisch für Suchmaschinen verwendet.</p>
             <div className="grid gap-2">
               <Label htmlFor="metaDesc">Meta-Beschreibung</Label>
               <textarea
                 id="metaDesc"
                 value={metaDescription}
                 onChange={(e) => setMetaDescription(e.target.value)}
-                placeholder="Eigene Beschreibung fuer Suchmaschinen (empfohlen: max. 160 Zeichen)..."
+                placeholder="Eigene Beschreibung für Suchmaschinen (empfohlen: max. 160 Zeichen)..."
                 maxLength={320}
                 rows={3}
                 className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none"
@@ -440,7 +440,7 @@ export function PageEditor({ page }: PageEditorProps) {
                 placeholder="URL zum OG-Bild (optional)"
                 className="font-mono text-xs"
               />
-              <p className="text-[10px] text-muted-foreground">Eigenes Vorschaubild fuer Social Media. Falls leer, wird das Standard-OG-Bild verwendet.</p>
+              <p className="text-[10px] text-muted-foreground">Eigenes Vorschaubild für Social Media. Falls leer, wird das Standard-OG-Bild verwendet.</p>
             </div>
           </div>
         </div>

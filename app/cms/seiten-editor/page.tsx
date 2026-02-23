@@ -31,8 +31,8 @@ export default function SeitenEditorPage() {
           <div>
             <p className="text-sm font-medium text-foreground">So funktioniert der Seiten-Editor</p>
             <p className="mt-1 text-sm text-muted-foreground">
-              Jede Seite hat vordefinierte Textfelder, die Sie frei bearbeiten koennen. Das Design und Layout der Seite
-              bleibt dabei immer gleich - Sie koennen also nichts kaputt machen! Aenderungen werden beim naechsten
+              Jede Seite hat vordefinierte Textfelder, die Sie frei bearbeiten können. Das Design und Layout der Seite
+              bleibt dabei immer gleich - Sie können also nichts kaputt machen! Änderungen werden beim nächsten
               Seitenaufruf sichtbar.
             </p>
           </div>
@@ -114,9 +114,9 @@ export default function SeitenEditorPage() {
           <div>
             <h2 className="font-display text-lg font-semibold">Eigene Seiten</h2>
             <p className="text-sm text-muted-foreground">
-              Fuer komplett neue Seiten mit eigenem Inhalt nutzen Sie den{" "}
+              Für komplett neue Seiten mit eigenem Inhalt nutzen Sie den{" "}
               <Link href="/cms/pages" className="text-primary hover:underline">Seiten-Bereich</Link> im CMS.
-              Dort koennen Sie mit Bausteinen wie Karten, Galerien und FAQ-Bereichen eigene Seiten erstellen.
+              Dort können Sie mit Bausteinen wie Karten, Galerien und FAQ-Bereichen eigene Seiten erstellen.
             </p>
           </div>
         </div>

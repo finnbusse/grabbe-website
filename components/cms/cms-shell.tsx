@@ -46,7 +46,7 @@ export function CmsShell({ children, userEmail, userProfile }: CmsShellProps) {
             variant="ghost"
             size="icon"
             onClick={() => setSidebarOpen(true)}
-            aria-label="Menue oeffnen"
+            aria-label="Menü öffnen"
           >
             <Menu className="h-5 w-5" />
           </Button>

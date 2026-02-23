@@ -92,7 +92,7 @@ export default async function ErprobungsstufePage() {
             <div className="mx-auto max-w-2xl text-center">
               <p className="font-sub text-[11px] uppercase tracking-[0.3em] text-primary">Im Detail</p>
               <h2 className="mt-3 font-display text-4xl md:text-5xl tracking-tight text-foreground">
-                So begleiten wir den Uebergang
+                So begleiten wir den Übergang
               </h2>
             </div>
 
@@ -120,7 +120,7 @@ export default async function ErprobungsstufePage() {
                 </div>
                 <h3 className="font-display text-xl text-foreground">Profilprojekte</h3>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                  Entdecke die vielfaeltigen Profilprojekte, die unsere Erprobungsstufe besonders machen.
+                  Entdecke die vielfältigen Profilprojekte, die unsere Erprobungsstufe besonders machen.
                 </p>
                 <Link
                   href="/unsere-schule/profilprojekte"

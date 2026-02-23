@@ -26,6 +26,6 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error("Delete error:", error)
-    return NextResponse.json({ error: "Loeschen fehlgeschlagen" }, { status: 500 })
+    return NextResponse.json({ error: "Löschen fehlgeschlagen" }, { status: 500 })
   }
 }

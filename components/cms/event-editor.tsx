@@ -207,7 +207,7 @@ export function EventEditor({ event }: EventEditorProps) {
                 >
                   <option value="termin">Schultermin</option>
                   <option value="ferien">Ferien</option>
-                  <option value="pruefung">Pruefung / Klausur</option>
+                  <option value="pruefung">Prüfung / Klausur</option>
                   <option value="veranstaltung">Veranstaltung</option>
                   <option value="elternabend">Elternabend</option>
                   <option value="projekttag">Projekttag</option>
@@ -241,7 +241,7 @@ export function EventEditor({ event }: EventEditorProps) {
                 onChange={(e) => setPublished(e.target.checked)}
                 className="h-4 w-4 rounded border-input"
               />
-              <span className="text-sm text-card-foreground">Termin veroeffentlichen</span>
+              <span className="text-sm text-card-foreground">Termin veröffentlichen</span>
             </label>
             <div className="grid gap-2 pt-2 border-t">
               <Label>Tags</Label>

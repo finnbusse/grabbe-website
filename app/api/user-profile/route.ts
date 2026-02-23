@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
         if (updateError.message?.includes("avatar_url")) {
           return NextResponse.json({ 
             avatar_url: blob.url, 
-            warning: "Bitte fuehren Sie die Migration 'migration_add_avatar_url_column.sql' in Supabase aus und laden Sie den Schema-Cache neu." 
+            warning: "Bitte führen Sie die Migration 'migration_add_avatar_url_column.sql' in Supabase aus und laden Sie den Schema-Cache neu." 
           })
         }
         return NextResponse.json({ error: `Profil konnte nicht aktualisiert werden: ${updateError.message}` }, { status: 500 })
@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
           }
           return NextResponse.json({ 
             avatar_url: blob.url, 
-            warning: "Bitte fuehren Sie die Migration 'migration_add_avatar_url_column.sql' in Supabase aus und laden Sie den Schema-Cache neu." 
+            warning: "Bitte führen Sie die Migration 'migration_add_avatar_url_column.sql' in Supabase aus und laden Sie den Schema-Cache neu." 
           })
         }
         return NextResponse.json({ error: `Profil konnte nicht erstellt werden: ${insertError.message}` }, { status: 500 })

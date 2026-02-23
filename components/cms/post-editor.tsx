@@ -209,25 +209,25 @@ export function PostEditor({ post }: PostEditorProps) {
             </div>
             <div className="grid gap-2">
               <Label htmlFor="excerpt">Kurztext (Vorschau)</Label>
-              <Input id="excerpt" value={excerpt} onChange={(e) => setExcerpt(e.target.value)} placeholder="Kurze Zusammenfassung fuer die Uebersicht..." />
+              <Input id="excerpt" value={excerpt} onChange={(e) => setExcerpt(e.target.value)} placeholder="Kurze Zusammenfassung für die Übersicht..." />
             </div>
           </div>
 
           <div className="rounded-2xl border bg-card p-6 space-y-3">
             <Label htmlFor="content">Inhalt (Markdown)</Label>
-            <p className="text-xs text-muted-foreground">**fett**, *kursiv*, ## Ueberschrift, [Linktext](url), ![Bild](url) &mdash; Dateien unten hochladen und per Klick einfuegen.</p>
+            <p className="text-xs text-muted-foreground">**fett**, *kursiv*, ## Überschrift, [Linktext](url), ![Bild](url) &mdash; Dateien unten hochladen und per Klick einfügen.</p>
             <textarea
               id="content"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder={"Beitragsinhalt hier eingeben...\n\nAbsaetze mit Leerzeilen trennen.\nBilder und Dokumente unten hochladen und einfuegen."}
+              placeholder={"Beitragsinhalt hier eingeben...\n\nAbsätze mit Leerzeilen trennen.\nBilder und Dokumente unten hochladen und einfügen."}
               className="min-h-[400px] w-full resize-y rounded-lg border border-input bg-background px-4 py-3 text-sm leading-relaxed font-mono placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             />
           </div>
 
           <div className="rounded-2xl border bg-card p-6 space-y-4">
             <h3 className="font-display font-semibold">Dateien & Medien</h3>
-            <p className="text-xs text-muted-foreground">Laden Sie Bilder oder PDFs hoch. Klicken Sie &quot;Einfuegen&quot;, um einen Link im Beitragsinhalt zu platzieren.</p>
+            <p className="text-xs text-muted-foreground">Laden Sie Bilder oder PDFs hoch. Klicken Sie &quot;Einfügen&quot;, um einen Link im Beitragsinhalt zu platzieren.</p>
             <FileUploader
               label="Bild oder Dokument hochladen"
               onUpload={(file) => setAttachedFiles((prev) => [...prev, { url: file.url, name: file.filename, type: file.type }])}
@@ -259,7 +259,7 @@ export function PostEditor({ post }: PostEditorProps) {
           <div className="rounded-2xl border bg-card p-6 space-y-4">
             <h3 className="font-display text-sm font-semibold">Einstellungen</h3>
             <div className="flex items-center justify-between">
-              <Label htmlFor="pub">Veroeffentlicht</Label>
+              <Label htmlFor="pub">Veröffentlicht</Label>
               <Switch id="pub" checked={published} onCheckedChange={setPublished} />
             </div>
             <div className="flex items-center justify-between">
@@ -284,7 +284,7 @@ export function PostEditor({ post }: PostEditorProps) {
             <div className="grid gap-2">
               <Label htmlFor="eventDate">Datum (optional)</Label>
               <Input id="eventDate" type="date" value={eventDate} onChange={(e) => setEventDate(e.target.value)} />
-              <p className="text-[10px] text-muted-foreground">Eigenes Datum fuer den Beitrag. Wird statt dem Erstellungsdatum angezeigt.</p>
+              <p className="text-[10px] text-muted-foreground">Eigenes Datum für den Beitrag. Wird statt dem Erstellungsdatum angezeigt.</p>
             </div>
             <div className="grid gap-2 pt-2 border-t">
               <Label>Tags</Label>
@@ -306,14 +306,14 @@ export function PostEditor({ post }: PostEditorProps) {
 
           <div className="rounded-2xl border bg-card p-6 space-y-4">
             <h3 className="font-display text-sm font-semibold">SEO (optional)</h3>
-            <p className="text-[10px] text-muted-foreground">Falls leer, werden Titel und Kurztext automatisch fuer Suchmaschinen verwendet.</p>
+            <p className="text-[10px] text-muted-foreground">Falls leer, werden Titel und Kurztext automatisch für Suchmaschinen verwendet.</p>
             <div className="grid gap-2">
               <Label htmlFor="metaDesc">Meta-Beschreibung</Label>
               <textarea
                 id="metaDesc"
                 value={metaDescription}
                 onChange={(e) => setMetaDescription(e.target.value)}
-                placeholder="Eigene Beschreibung fuer Suchmaschinen (empfohlen: max. 160 Zeichen)..."
+                placeholder="Eigene Beschreibung für Suchmaschinen (empfohlen: max. 160 Zeichen)..."
                 maxLength={320}
                 rows={3}
                 className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none"
@@ -333,7 +333,7 @@ export function PostEditor({ post }: PostEditorProps) {
                 </div>
               ) : (
                 <>
-                  <p className="text-[10px] text-muted-foreground">Eigenes Vorschaubild fuer Social Media. Falls leer, wird das Beitragsbild verwendet.</p>
+                  <p className="text-[10px] text-muted-foreground">Eigenes Vorschaubild für Social Media. Falls leer, wird das Beitragsbild verwendet.</p>
                   <FileUploader accept="image/*" label="OG-Bild hochladen" onUpload={(file) => setSeoOgImage(file.url)} />
                 </>
               )}

@@ -111,7 +111,7 @@ export default function LoginPage() {
         </Card>
         <p className="mt-4 text-center text-xs text-muted-foreground">
           <Link href="/" className="hover:text-foreground hover:underline">
-            Zurueck zur Website
+            Zurück zur Website
           </Link>
         </p>
       </div>

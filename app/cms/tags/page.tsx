@@ -78,13 +78,13 @@ export default function TagsPage() {
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Tag wirklich loeschen? Er wird von allen zugeordneten Inhalten entfernt.")) return
+    if (!confirm("Tag wirklich löschen? Er wird von allen zugeordneten Inhalten entfernt.")) return
     setError(null)
     try {
       await fetch(`/api/tags?id=${id}`, { method: "DELETE" })
       await loadTags()
     } catch {
-      setError("Fehler beim Loeschen")
+      setError("Fehler beim Löschen")
     }
   }
 
@@ -100,7 +100,7 @@ export default function TagsPage() {
         <div>
           <h1 className="font-display text-3xl font-bold text-foreground">Tags</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Erstellen Sie Tags, um Beitraege, Termine und Dokumente thematisch zu organisieren.
+            Erstellen Sie Tags, um Beiträge, Termine und Dokumente thematisch zu organisieren.
           </p>
         </div>
       </div>
@@ -217,7 +217,7 @@ export default function TagsPage() {
                         <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => startEdit(tag)} title="Bearbeiten">
                           <Pencil className="h-3.5 w-3.5" />
                         </Button>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => handleDelete(tag.id)} title="Loeschen">
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => handleDelete(tag.id)} title="Löschen">
                           <Trash2 className="h-3.5 w-3.5" />
                         </Button>
                       </div>

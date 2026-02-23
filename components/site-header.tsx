@@ -228,7 +228,7 @@ export function SiteHeader({
         <button
           className="flex h-9 w-9 items-center justify-center rounded-full text-foreground/80 hover:bg-white/20 hover:text-foreground transition-all duration-200 lg:hidden"
           onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label={mobileOpen ? "Navigation schliessen" : "Navigation oeffnen"}
+          aria-label={mobileOpen ? "Navigation schließen" : "Navigation öffnen"}
         >
           {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
         </button>

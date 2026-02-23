@@ -26,9 +26,9 @@ export function NewsSection({ posts, content }: { posts: Post[]; content?: Recor
   const c = content || {}
   const sLabel = (c.label as string) || 'Aktuelles'
   const sHeadline = (c.headline as string) || 'Neuigkeiten vom Grabbe'
-  const allLinkText = (c.all_link_text as string) || 'Alle Beitraege'
+  const allLinkText = (c.all_link_text as string) || 'Alle Beiträge'
   const readMoreText = (c.read_more_text as string) || 'Weiterlesen'
-  const allButtonText = (c.all_button_text as string) || 'Alle Beitraege ansehen'
+  const allButtonText = (c.all_button_text as string) || 'Alle Beiträge ansehen'
 
   if (posts.length === 0) return null
 

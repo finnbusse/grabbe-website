@@ -133,7 +133,7 @@ export async function TaggedSection({ type, tagId, heading, limit = 10 }: Tagged
       return heading ? (
         <div>
           <h3 className="font-display text-sm font-semibold mb-2">{heading}</h3>
-          <p className="text-xs text-muted-foreground">Keine Beitraege vorhanden.</p>
+          <p className="text-xs text-muted-foreground">Keine Beiträge vorhanden.</p>
         </div>
       ) : null
     }
@@ -148,7 +148,7 @@ export async function TaggedSection({ type, tagId, heading, limit = 10 }: Tagged
       return heading ? (
         <div>
           <h3 className="font-display text-sm font-semibold mb-2">{heading}</h3>
-          <p className="text-xs text-muted-foreground">Keine Beitraege vorhanden.</p>
+          <p className="text-xs text-muted-foreground">Keine Beiträge vorhanden.</p>
         </div>
       ) : null
     }

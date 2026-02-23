@@ -101,7 +101,7 @@ export async function DELETE(request: Request) {
   }
 
   if (userId === user.id) {
-    return NextResponse.json({ error: "Der eigene Account kann nicht geloescht werden" }, { status: 400 })
+    return NextResponse.json({ error: "Der eigene Account kann nicht gelöscht werden" }, { status: 400 })
   }
 
   try {
@@ -116,7 +116,7 @@ export async function DELETE(request: Request) {
 
     return NextResponse.json({ success: true })
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Fehler beim Loeschen"
+    const message = err instanceof Error ? err.message : "Fehler beim Löschen"
     return NextResponse.json({ error: message }, { status: 500 })
   }
 }
