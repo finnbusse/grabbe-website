@@ -3,10 +3,15 @@ import { PageHero } from "@/components/page-hero"
 import Image from "next/image"
 import { Palette, Music, Dumbbell, FlaskConical } from "lucide-react"
 import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
+import { generatePageMetadata } from "@/lib/seo"
+import type { Metadata } from "next"
 
-export const metadata = {
-  title: "Profilprojekte - Grabbe-Gymnasium Detmold",
-  description: "Die Profilprojekte in Kunst, Musik, Sport und NaWi am Grabbe-Gymnasium Detmold.",
+export async function generateMetadata(): Promise<Metadata> {
+  return generatePageMetadata({
+    title: "Profilprojekte",
+    description: "Die Profilprojekte in Kunst, Musik, Sport und NaWi am Grabbe-Gymnasium Detmold.",
+    path: "/unsere-schule/profilprojekte",
+  })
 }
 
 export default async function ProfilprojektePage() {

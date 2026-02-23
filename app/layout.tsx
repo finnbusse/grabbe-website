@@ -4,7 +4,12 @@ import { GeistMono } from "geist/font/mono"
 import { GeistPixelSquare } from "geist/font/pixel"
 import { Instrument_Serif, Josefin_Sans } from "next/font/google"
 import { SpeedInsights } from "@vercel/speed-insights/next"
-import { getSettings } from "@/lib/settings"
+import {
+  getSEOSettings,
+  generateOrganizationJsonLd,
+  generateWebSiteJsonLd,
+  JsonLd,
+} from "@/lib/seo"
 import "./globals.css"
 
 const _instrumentSerif = Instrument_Serif({
@@ -20,28 +25,46 @@ const _josefinSans = Josefin_Sans({
 })
 
 export async function generateMetadata(): Promise<Metadata> {
-  const s = await getSettings()
-  const title = s.seo_title || "Grabbe-Gymnasium Detmold"
-  const description = s.seo_description || "Das Christian-Dietrich-Grabbe-Gymnasium in Detmold - Wir foerdern Deine Talente und staerken Deine Persoenlichkeit."
+  const seo = await getSEOSettings()
+  const homepageTitle = `${seo.homepageTitlePrefix}${seo.titleSeparator}${seo.titleSuffix}`
+  const description = seo.homepageDescription
+
   return {
     title: {
-      default: title,
-      template: `%s | ${s.school_name || "Grabbe-Gymnasium"}`,
+      default: homepageTitle,
+      template: `%s${seo.titleSeparator}${seo.titleSuffix}`,
     },
     description,
+    metadataBase: new URL(seo.siteUrl),
+    alternates: { canonical: "/" },
     openGraph: {
-      title,
+      title: homepageTitle,
       description,
       type: "website",
       locale: "de_DE",
-      ...(s.seo_og_image ? { images: [{ url: s.seo_og_image, width: 1200, height: 630 }] } : {}),
+      siteName: seo.siteName,
+      url: seo.siteUrl,
+      ...(seo.ogImage ? { images: [{ url: seo.ogImage, width: 1200, height: 630, alt: seo.siteName }] } : {}),
     },
     twitter: {
-      card: "summary_large_image",
-      title,
+      card: seo.ogImage ? "summary_large_image" : "summary",
+      title: homepageTitle,
       description,
+      ...(seo.ogImage ? { images: [seo.ogImage] } : {}),
     },
-    generator: "v0.app",
+    robots: seo.isPreview
+      ? { index: false, follow: false }
+      : {
+          index: true,
+          follow: true,
+          googleBot: {
+            index: true,
+            follow: true,
+            "max-video-preview": -1,
+            "max-image-preview": "large",
+            "max-snippet": -1,
+          },
+        },
   }
 }
 
@@ -51,14 +74,20 @@ export const viewport: Viewport = {
   initialScale: 1,
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const seo = await getSEOSettings()
+  const orgJsonLd = generateOrganizationJsonLd(seo)
+  const siteJsonLd = generateWebSiteJsonLd(seo)
+
   return (
     <html lang="de" className={`${GeistSans.variable} ${GeistMono.variable} ${GeistPixelSquare.variable} ${_instrumentSerif.variable} ${_josefinSans.variable}`}>
       <body className="font-sans antialiased">
+        <JsonLd data={orgJsonLd} />
+        <JsonLd data={siteJsonLd} />
         {children}
         <SpeedInsights />
       </body>

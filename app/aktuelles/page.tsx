@@ -1,13 +1,19 @@
 import { SiteLayout } from "@/components/site-layout"
 import { PageHero } from "@/components/page-hero"
+import { Breadcrumbs } from "@/components/breadcrumbs"
 import { createClient } from "@/lib/supabase/server"
 import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
 import { CalendarDays, ArrowRight } from "lucide-react"
 import Link from "next/link"
+import { generatePageMetadata } from "@/lib/seo"
+import type { Metadata } from "next"
 
-export const metadata = {
-  title: "Aktuelles - Grabbe-Gymnasium Detmold",
-  description: "Neuigkeiten und aktuelle Meldungen vom Grabbe-Gymnasium Detmold.",
+export async function generateMetadata(): Promise<Metadata> {
+  return generatePageMetadata({
+    title: "Aktuelles",
+    description: "Neuigkeiten und aktuelle Meldungen vom Grabbe-Gymnasium Detmold.",
+    path: "/aktuelles",
+  })
 }
 
 export default async function AktuellesPage() {
@@ -54,6 +60,7 @@ export default async function AktuellesPage() {
           subtitle="Bleiben Sie informiert ueber Veranstaltungen, Projekte und Neuigkeiten am Grabbe-Gymnasium."
           imageUrl={heroImageUrl}
         />
+        <Breadcrumbs items={[{ name: "Aktuelles", href: "/aktuelles" }]} />
 
         {/* Posts */}
         <section className="mx-auto max-w-7xl px-4 py-16 lg:px-8">

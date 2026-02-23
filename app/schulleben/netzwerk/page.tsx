@@ -2,10 +2,15 @@ import { SiteLayout } from "@/components/site-layout"
 import { PageHero } from "@/components/page-hero"
 import { Handshake } from "lucide-react"
 import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
+import { generatePageMetadata } from "@/lib/seo"
+import type { Metadata } from "next"
 
-export const metadata = {
-  title: "Netzwerk & Partner - Grabbe-Gymnasium Detmold",
-  description: "Unsere Kooperationspartner und Vernetzung in Detmold.",
+export async function generateMetadata(): Promise<Metadata> {
+  return generatePageMetadata({
+    title: "Netzwerk & Partner",
+    description: "Unsere Kooperationspartner und Vernetzung in Detmold.",
+    path: "/schulleben/netzwerk",
+  })
 }
 
 export default async function NetzwerkPage() {

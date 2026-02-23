@@ -26,6 +26,8 @@ export interface Page {
   is_system: boolean; // Default: false
   route_path: string | null;
   hero_image_url: string | null;
+  meta_description: string | null;
+  seo_og_image: string | null;
 }
 
 /**
@@ -44,6 +46,8 @@ export interface Post {
   author_name: string | null;
   user_id: string; // UUID, references auth.users
   event_date: string | null; // date (YYYY-MM-DD), optional custom display date
+  meta_description: string | null;
+  seo_og_image: string | null;
   created_at: string; // timestamptz
   updated_at: string; // timestamptz
 }

@@ -3,10 +3,15 @@ import { PageHero } from "@/components/page-hero"
 import { createClient } from "@/lib/supabase/server"
 import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
 import { CalendarDays, MapPin, Clock, Tag } from "lucide-react"
+import { generatePageMetadata } from "@/lib/seo"
+import type { Metadata } from "next"
 
-export const metadata = {
-  title: "Termine - Grabbe-Gymnasium Detmold",
-  description: "Alle Termine und Veranstaltungen des Grabbe-Gymnasiums Detmold im Ueberblick.",
+export async function generateMetadata(): Promise<Metadata> {
+  return generatePageMetadata({
+    title: "Termine",
+    description: "Alle Termine und Veranstaltungen des Grabbe-Gymnasiums Detmold im Ueberblick.",
+    path: "/termine",
+  })
 }
 
 const monthNames = ["Januar", "Februar", "Maerz", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"]

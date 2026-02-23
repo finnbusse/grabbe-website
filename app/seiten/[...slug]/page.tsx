@@ -1,10 +1,12 @@
 import { createClient } from "@/lib/supabase/server"
 import { SiteLayout } from "@/components/site-layout"
 import { PageHero } from "@/components/page-hero"
+import { Breadcrumbs } from "@/components/breadcrumbs"
 import { MarkdownContent } from "@/components/markdown-content"
 import { BlockContentRenderer } from "@/components/block-content-renderer"
 import { notFound } from "next/navigation"
 import type { Metadata } from "next"
+import { generatePageMetadata } from "@/lib/seo"
 
 interface Props {
   params: Promise<{ slug: string[] }>
@@ -64,7 +66,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const page = await resolvePage(slug)
   if (!page) return {}
-  return { title: `${page.title} - Grabbe-Gymnasium` }
+  const routePrefix = page.route_path || ""
+  const canonicalPath = routePrefix
+    ? `${routePrefix}/${page.slug}`
+    : `/seiten/${page.slug}`
+  return generatePageMetadata({
+    title: page.title,
+    description: page.meta_description || undefined,
+    ogImage: page.seo_og_image || undefined,
+    path: canonicalPath,
+  })
 }
 
 function isBlockContent(content: string): boolean {
@@ -84,6 +95,8 @@ export default async function DynamicPage({ params }: Props) {
   if (!page) notFound()
 
   const useBlocks = isBlockContent(page.content)
+  const routePrefix = page.route_path || ""
+  const fullPath = routePrefix ? `${routePrefix}/${page.slug}` : `/seiten/${page.slug}`
 
   return (
     <SiteLayout>
@@ -93,6 +106,7 @@ export default async function DynamicPage({ params }: Props) {
           label={page.section || undefined}
           imageUrl={page.hero_image_url || undefined}
         />
+        <Breadcrumbs items={[{ name: page.title, href: fullPath }]} />
 
         <section className="mx-auto max-w-6xl px-4 py-28 lg:py-36 lg:px-8">
           {useBlocks ? (

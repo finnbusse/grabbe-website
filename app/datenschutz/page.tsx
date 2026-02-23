@@ -1,10 +1,15 @@
 import { SiteLayout } from "@/components/site-layout"
 import { PageHero } from "@/components/page-hero"
 import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
+import { generatePageMetadata } from "@/lib/seo"
+import type { Metadata } from "next"
 
-export const metadata = {
-  title: "Datenschutz - Grabbe-Gymnasium Detmold",
-  description: "Datenschutzerklaerung des Grabbe-Gymnasium Detmold.",
+export async function generateMetadata(): Promise<Metadata> {
+  return generatePageMetadata({
+    title: "Datenschutz",
+    description: "Datenschutzerklaerung des Grabbe-Gymnasium Detmold.",
+    path: "/datenschutz",
+  })
 }
 
 export default async function DatenschutzPage() {

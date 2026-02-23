@@ -25,6 +25,8 @@ interface PostEditorProps {
     image_url: string | null
     author_name: string | null
     event_date?: string | null
+    meta_description?: string | null
+    seo_og_image?: string | null
   }
 }
 
@@ -46,6 +48,8 @@ export function PostEditor({ post }: PostEditorProps) {
   const [imageUrl, setImageUrl] = useState(post?.image_url ?? "")
   const [authorName, setAuthorName] = useState(post?.author_name ?? "")
   const [eventDate, setEventDate] = useState(post?.event_date ?? "")
+  const [metaDescription, setMetaDescription] = useState(post?.meta_description ?? "")
+  const [seoOgImage, setSeoOgImage] = useState(post?.seo_og_image ?? "")
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([])
@@ -106,6 +110,8 @@ export function PostEditor({ post }: PostEditorProps) {
         author_name: authorName || user.email?.split("@")[0] || "Redaktion",
         user_id: user.id,
         updated_at: new Date().toISOString(),
+        meta_description: metaDescription || null,
+        seo_og_image: seoOgImage || null,
       }
 
       const payloadWithDate = { ...basePayload, event_date: eventDate || null }
@@ -296,6 +302,42 @@ export function PostEditor({ post }: PostEditorProps) {
             ) : (
               <FileUploader accept="image/*" label="Beitragsbild hochladen" onUpload={(file) => setImageUrl(file.url)} />
             )}
+          </div>
+
+          <div className="rounded-2xl border bg-card p-6 space-y-4">
+            <h3 className="font-display text-sm font-semibold">SEO (optional)</h3>
+            <p className="text-[10px] text-muted-foreground">Falls leer, werden Titel und Kurztext automatisch fuer Suchmaschinen verwendet.</p>
+            <div className="grid gap-2">
+              <Label htmlFor="metaDesc">Meta-Beschreibung</Label>
+              <textarea
+                id="metaDesc"
+                value={metaDescription}
+                onChange={(e) => setMetaDescription(e.target.value)}
+                placeholder="Eigene Beschreibung fuer Suchmaschinen (empfohlen: max. 160 Zeichen)..."
+                maxLength={320}
+                rows={3}
+                className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none"
+              />
+              {metaDescription && (
+                <span className={`text-[10px] ${metaDescription.length > 160 ? "text-amber-600" : "text-muted-foreground"}`}>
+                  {metaDescription.length}/160 Zeichen
+                </span>
+              )}
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="seoOgImg">Social-Media Bild (OG-Image)</Label>
+              {seoOgImage ? (
+                <div className="space-y-2">
+                  <img src={seoOgImage} alt="OG-Bild" className="w-full rounded-lg object-cover aspect-video" />
+                  <Button variant="outline" size="sm" className="w-full" onClick={() => setSeoOgImage("")}>Bild entfernen</Button>
+                </div>
+              ) : (
+                <>
+                  <p className="text-[10px] text-muted-foreground">Eigenes Vorschaubild fuer Social Media. Falls leer, wird das Beitragsbild verwendet.</p>
+                  <FileUploader accept="image/*" label="OG-Bild hochladen" onUpload={(file) => setSeoOgImage(file.url)} />
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>

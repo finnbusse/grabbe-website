@@ -1,11 +1,48 @@
 import { SiteLayout } from "@/components/site-layout"
 import { PageHero } from "@/components/page-hero"
+import { Breadcrumbs } from "@/components/breadcrumbs"
 import { MarkdownContent } from "@/components/markdown-content"
 import { createClient } from "@/lib/supabase/server"
 import { notFound } from "next/navigation"
 import { CalendarDays, ArrowLeft, User } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import type { Metadata } from "next"
+import {
+  generatePageMetadata,
+  getSEOSettings,
+  generateArticleJsonLd,
+  JsonLd,
+} from "@/lib/seo"
+
+async function getPost(slug: string) {
+  const supabase = await createClient()
+  const { data: post } = await supabase
+    .from("posts")
+    .select("*")
+    .eq("slug", slug)
+    .eq("published", true)
+    .single()
+  return post
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params
+  const post = await getPost(slug)
+  if (!post) return {}
+
+  return generatePageMetadata({
+    title: post.title,
+    description: post.meta_description || post.excerpt || undefined,
+    ogImage: post.seo_og_image || post.image_url || undefined,
+    path: `/aktuelles/${post.slug}`,
+    type: "article",
+    publishedTime: post.created_at,
+    modifiedTime: post.updated_at,
+    author: post.author_name || undefined,
+    section: post.category || undefined,
+  })
+}
 
 export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
@@ -52,14 +89,34 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     ? (authorProfile.first_name?.charAt(0) || "") + (authorProfile.last_name?.charAt(0) || "")
     : authorDisplayName?.charAt(0)?.toUpperCase() || ""
 
+  // JSON-LD structured data
+  const seo = await getSEOSettings()
+  const postUrl = `${seo.siteUrl}/aktuelles/${slug}`
+  const articleJsonLd = generateArticleJsonLd({
+    seo,
+    title: post.title,
+    description: post.meta_description || post.excerpt || "",
+    url: postUrl,
+    imageUrl: post.seo_og_image || post.image_url || undefined,
+    publishedTime: post.created_at,
+    modifiedTime: post.updated_at,
+    authorName: authorDisplayName || undefined,
+    section: post.category || undefined,
+  })
+
   return (
     <SiteLayout>
       <main>
+        <JsonLd data={articleJsonLd} />
         <PageHero
           title={post.title}
           label={post.category || "Aktuelles"}
           imageUrl={post.image_url || undefined}
         />
+        <Breadcrumbs items={[
+          { name: "Aktuelles", href: "/aktuelles" },
+          { name: post.title, href: `/aktuelles/${slug}` },
+        ]} />
 
         <article className="mx-auto max-w-3xl px-4 py-12 lg:px-8 lg:py-16">
           <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
