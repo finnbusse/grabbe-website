@@ -22,6 +22,7 @@ export async function generateStaticParams() {
     .select("slug, route_path")
     .eq("published", true)
     .like("route_path", "/schulleben%")
+    .returns<Array<{ slug: string; route_path: string | null }>>()
   return (data ?? []).map((page) => {
     const segments = page.route_path
       ? page.route_path.replace(/^\/schulleben\/?/, '').split('/').filter(Boolean)

@@ -21,6 +21,7 @@ export async function generateStaticParams() {
     .from("pages")
     .select("slug, route_path")
     .eq("published", true)
+    .returns<Array<{ slug: string; route_path: string | null }>>()
   return (data ?? []).map((page) => {
     const prefix = page.route_path ? page.route_path.replace(/^\//, '').split('/') : []
     return { slug: [...prefix, page.slug] }

@@ -24,6 +24,7 @@ export async function generateStaticParams() {
     .from("posts")
     .select("slug")
     .eq("published", true)
+    .returns<Array<{ slug: string }>>()
   return (data ?? []).map((post) => ({ slug: post.slug }))
 }
 
