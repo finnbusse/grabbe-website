@@ -94,7 +94,7 @@ export function SiteFooter({
               <li className="flex items-center gap-3">
                 <Phone className="h-4 w-4 shrink-0 text-primary-foreground/30" />
                 <a
-                  href={`tel:${phone.replace(/[^\d+]/g, "")}`}
+                  href={`tel:${phone.replace(/[\s\-()]/g, "")}`}
                   className="text-sm text-primary-foreground/60 hover:text-[hsl(200,90%,80%)] transition-colors"
                 >
                   {phone}

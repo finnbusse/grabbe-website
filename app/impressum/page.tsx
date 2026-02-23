@@ -31,10 +31,6 @@ export default async function ImpressumPage() {
     settings.school_email ? `E-Mail: ${settings.school_email}` : "",
   ].filter(Boolean)
   const kontaktInfo = kontaktParts.length > 0 ? kontaktParts.join(", ") : (content.kontakt_info as string)
-  const verantwortlich =
-    settings.schulleitung_1 && settings.schulleitung_2
-      ? `${settings.schulleitung_1} und ${settings.schulleitung_2}`
-      : settings.schulleitung_1 || settings.schulleitung_2 || (content.verantwortlich as string)
 
   return (
     <SiteLayout>
@@ -46,7 +42,7 @@ export default async function ImpressumPage() {
             <div>
               <h2 className="font-display text-xl font-semibold text-foreground">Verantwortlich</h2>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                {verantwortlich}
+                {content.verantwortlich}
               </p>
             </div>
             <div>
