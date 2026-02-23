@@ -23,6 +23,8 @@ interface PageEditorProps {
     published: boolean
     route_path?: string | null
     hero_image_url?: string | null
+    meta_description?: string | null
+    seo_og_image?: string | null
   }
 }
 
@@ -56,6 +58,8 @@ export function PageEditor({ page }: PageEditorProps) {
   const [sortOrder, setSortOrder] = useState(page?.sort_order ?? 0)
   const [published, setPublished] = useState(page?.published ?? true)
   const [heroImageUrl, setHeroImageUrl] = useState(page?.hero_image_url ?? "")
+  const [metaDescription, setMetaDescription] = useState(page?.meta_description ?? "")
+  const [seoOgImage, setSeoOgImage] = useState(page?.seo_og_image ?? "")
   const [heroUploading, setHeroUploading] = useState(false)
   const heroInputRef = useRef<HTMLInputElement>(null)
   const [saving, setSaving] = useState(false)
@@ -109,6 +113,8 @@ export function PageEditor({ page }: PageEditorProps) {
         sort_order: sortOrder, published,
         route_path: routePath || null,
         hero_image_url: heroImageUrl || null,
+        meta_description: metaDescription || null,
+        seo_og_image: seoOgImage || null,
         user_id: user.id,
         updated_at: new Date().toISOString(),
       }
@@ -404,6 +410,39 @@ export function PageEditor({ page }: PageEditorProps) {
               </ul>
             </div>
           )}
+
+          <div className="rounded-2xl border bg-card p-6 space-y-4">
+            <h3 className="font-display text-sm font-semibold">SEO (optional)</h3>
+            <p className="text-[10px] text-muted-foreground">Falls leer, wird der Seitentitel automatisch fuer Suchmaschinen verwendet.</p>
+            <div className="grid gap-2">
+              <Label htmlFor="metaDesc">Meta-Beschreibung</Label>
+              <textarea
+                id="metaDesc"
+                value={metaDescription}
+                onChange={(e) => setMetaDescription(e.target.value)}
+                placeholder="Eigene Beschreibung fuer Suchmaschinen (max. 160 Zeichen)..."
+                maxLength={320}
+                rows={3}
+                className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none"
+              />
+              {metaDescription && (
+                <span className={`text-[10px] ${metaDescription.length > 160 ? "text-amber-600" : "text-muted-foreground"}`}>
+                  {metaDescription.length}/160 Zeichen
+                </span>
+              )}
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="seoOgImg">Social-Media Bild</Label>
+              <Input
+                id="seoOgImg"
+                value={seoOgImage}
+                onChange={(e) => setSeoOgImage(e.target.value)}
+                placeholder="URL zum OG-Bild (optional)"
+                className="font-mono text-xs"
+              />
+              <p className="text-[10px] text-muted-foreground">Eigenes Vorschaubild fuer Social Media. Falls leer, wird das Standard-OG-Bild verwendet.</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
