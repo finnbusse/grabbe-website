@@ -6,6 +6,7 @@ import { MarkdownContent } from "@/components/markdown-content"
 import { BlockContentRenderer } from "@/components/block-content-renderer"
 import { notFound } from "next/navigation"
 import type { Metadata } from "next"
+import { generatePageMetadata } from "@/lib/seo"
 
 interface Props {
   params: Promise<{ slug: string[] }>
@@ -69,11 +70,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const canonicalPath = routePrefix
     ? `${routePrefix}/${page.slug}`
     : `/seiten/${page.slug}`
-  return {
+  return generatePageMetadata({
     title: page.title,
-    ...(page.meta_description ? { description: page.meta_description } : {}),
-    alternates: { canonical: canonicalPath },
-  }
+    description: page.meta_description || undefined,
+    ogImage: page.seo_og_image || undefined,
+    path: canonicalPath,
+  })
 }
 
 function isBlockContent(content: string): boolean {

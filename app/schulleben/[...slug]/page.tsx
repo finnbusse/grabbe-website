@@ -6,6 +6,7 @@ import { MarkdownContent } from "@/components/markdown-content"
 import { BlockContentRenderer } from "@/components/block-content-renderer"
 import { notFound } from "next/navigation"
 import type { Metadata } from "next"
+import { generatePageMetadata } from "@/lib/seo"
 
 interface Props {
   params: Promise<{ slug: string[] }>
@@ -17,11 +18,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const routePath = "/schulleben" + (slug.length > 1 ? "/" + slug.slice(0, -1).join("/") : "")
   const page = await resolveCustomPage(pageSlug, routePath)
   if (!page) return {}
-  return {
+  return generatePageMetadata({
     title: page.title,
-    ...(page.meta_description ? { description: page.meta_description } : {}),
-    alternates: { canonical: `/schulleben/${slug.join("/")}` },
-  }
+    description: page.meta_description || undefined,
+    ogImage: page.seo_og_image || undefined,
+    path: `/schulleben/${slug.join("/")}`,
+  })
 }
 
 function isBlockContent(content: string): boolean {
