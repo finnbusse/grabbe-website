@@ -221,7 +221,7 @@ Disallow: /auth/
 Disallow: /api/
 Disallow: /protected/
 
-Sitemap: https://grabbe-gymnasium.de/sitemap.xml
+Sitemap: https://grabbe.site/sitemap.xml
 ```
 
 **Preview/Staging:**
@@ -301,7 +301,7 @@ Gibt zurueck:
 
 ## 15. Go-live Checklist
 
-- [ ] `seo_site_url` in Einstellungen auf die Produktions-URL setzen (z.B. `https://grabbe-gymnasium.de`)
+- [ ] `seo_site_url` in Einstellungen auf die Produktions-URL setzen (z.B. `https://grabbe.site`)
 - [ ] Logo hochladen (Einstellungen > Allgemein)
 - [ ] Standard OG-Bild hochladen (1200 x 630 px)
 - [ ] Kontaktdaten pruefen (E-Mail, Telefon, Adresse)
@@ -358,13 +358,13 @@ Gibt zurueck:
 ### 5. Lokale Pruefung
 ```bash
 # Sitemap pruefen
-curl https://grabbe-gymnasium.de/sitemap.xml
+curl https://grabbe.site/sitemap.xml
 
 # robots.txt pruefen
-curl https://grabbe-gymnasium.de/robots.txt
+curl https://grabbe.site/robots.txt
 
 # SEO QA API
-curl "https://grabbe-gymnasium.de/api/seo-check?url=/aktuelles"
+curl "https://grabbe.site/api/seo-check?url=/aktuelles"
 ```
 
 ---

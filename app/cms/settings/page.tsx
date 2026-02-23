@@ -309,8 +309,8 @@ export default function SettingsPage() {
         title="Suchmaschinen (SEO)"
         description="Meta-Informationen, die Suchmaschinen und Social-Media-Plattformen angezeigt bekommen."
       >
-        <Field label="Website-URL" hint="Kanonische URL der Produktionsseite (z.B. https://grabbe-gymnasium.de). Wird auch aus Umgebungsvariablen gelesen.">
-          {field(values, "seo_site_url", set, { placeholder: "https://grabbe-gymnasium.de" })}
+        <Field label="Website-URL" hint="Kanonische URL der Produktionsseite (z.B. https://grabbe.site). Wird auch aus Umgebungsvariablen gelesen.">
+          {field(values, "seo_site_url", set, { placeholder: "https://grabbe.site" })}
         </Field>
         <div className="grid gap-4 sm:grid-cols-3">
           <Field label="Startseiten-Praefix" hint="Erster Teil des Startseitentitels, z.B. 'Start'">
