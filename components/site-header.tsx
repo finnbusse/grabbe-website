@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { useState, useRef, useCallback, useEffect } from "react"
 import { Menu, X, ChevronDown } from "lucide-react"
 
@@ -26,14 +26,13 @@ export function SiteHeader({
   logoUrl?: string
 }) {
   const pathname = usePathname()
+  const router = useRouter()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const [headerHidden, setHeaderHidden] = useState(false)
   const lastScrollYRef = useRef(0)
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const navRef = useRef<HTMLElement>(null)
-  // Records the pointer type from onPointerDown so onClick can check it reliably
-  const lastPointerTypeRef = useRef<string>("")
 
   const handleDropdownEnter = useCallback((itemId: string) => {
     if (closeTimeoutRef.current) {
@@ -157,8 +156,8 @@ export function SiteHeader({
               <div
                 key={item.id}
                 className="relative"
-                onMouseEnter={() => { lastPointerTypeRef.current = "mouse"; handleDropdownEnter(item.id) }}
-                onMouseLeave={() => { if (lastPointerTypeRef.current !== "touch") handleDropdownLeave() }}
+                onMouseEnter={() => handleDropdownEnter(item.id)}
+                onMouseLeave={handleDropdownLeave}
               >
                 <Link
                   href={item.href}
@@ -167,13 +166,14 @@ export function SiteHeader({
                       ? "text-foreground bg-white/30"
                       : "text-foreground/80 hover:text-foreground hover:bg-white/25"
                   }`}
-                  onPointerDown={(e) => { lastPointerTypeRef.current = e.pointerType }}
-                  onClick={(e) => {
-                    // On touch: first tap opens dropdown (no navigation).
-                    // Second tap (dropdown already open) navigates normally.
-                    if (lastPointerTypeRef.current === "touch" && openDropdown !== item.id) {
-                      e.preventDefault()
+                  onTouchEnd={(e) => {
+                    // preventDefault() cancels all subsequent synthetic mouse events
+                    // (mouseenter, mouseleave, mousedown, click) so hover state is not disturbed.
+                    e.preventDefault()
+                    if (openDropdown !== item.id) {
                       handleDropdownEnter(item.id)
+                    } else {
+                      router.push(item.href)
                     }
                   }}
                 >
