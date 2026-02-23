@@ -273,6 +273,19 @@ export type TagUpdate = Partial<Omit<Tag, 'id' | 'created_at'>>;
 export type UserProfileUpdate = Partial<Omit<UserProfile, 'id' | 'created_at'>>;
 
 // ============================================================================
+// List-view types (narrow projections for card/list views without large blobs)
+// ============================================================================
+
+/** Post fields fetched for card/list views (excludes `content`) */
+export type PostListItem = Omit<Post, 'content'>
+
+/** Event fields fetched for card/list views */
+export type EventListItem = Pick<Event, 'id' | 'title' | 'description' | 'event_date' | 'event_end_date' | 'event_time' | 'location' | 'category'>
+
+/** Document fields fetched for card/list views */
+export type DocumentListItem = Pick<Document, 'id' | 'title' | 'file_url' | 'file_name' | 'file_size' | 'file_type' | 'category'>
+
+// ============================================================================
 // Database Schema Type (for Supabase client)
 // ============================================================================
 

@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { revalidateTag } from "next/cache"
 import { NextRequest, NextResponse } from "next/server"
 
 export async function GET() {
@@ -37,6 +38,9 @@ export async function POST(request: NextRequest) {
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
+  revalidateTag("posts", "max")
+  revalidateTag("events", "max")
+  revalidateTag("documents", "max")
   return NextResponse.json(data)
 }
 
@@ -64,6 +68,9 @@ export async function PUT(request: NextRequest) {
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
+  revalidateTag("posts", "max")
+  revalidateTag("events", "max")
+  revalidateTag("documents", "max")
   return NextResponse.json(data)
 }
 
@@ -84,5 +91,8 @@ export async function DELETE(request: NextRequest) {
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
+  revalidateTag("posts", "max")
+  revalidateTag("events", "max")
+  revalidateTag("documents", "max")
   return NextResponse.json({ success: true })
 }

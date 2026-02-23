@@ -31,7 +31,7 @@ export async function TaggedSection({ type, tagId, heading, limit = 10 }: Tagged
     }
     const today = new Date().toISOString().split("T")[0]
     const { data: events } = await supabase
-      .from("events").select("*")
+      .from("events").select("id, title, description, event_date, event_time, location")
       .in("id", eventTags.map((et) => et.event_id))
       .eq("published", true)
       .gte("event_date", today)
@@ -88,7 +88,7 @@ export async function TaggedSection({ type, tagId, heading, limit = 10 }: Tagged
       ) : null
     }
     const { data: documents } = await supabase
-      .from("documents").select("*")
+      .from("documents").select("id, title, file_url, file_name")
       .in("id", docTags.map((dt) => dt.document_id))
       .eq("published", true)
       .order("created_at", { ascending: false })
@@ -138,7 +138,7 @@ export async function TaggedSection({ type, tagId, heading, limit = 10 }: Tagged
       ) : null
     }
     const { data: posts } = await supabase
-      .from("posts").select("*")
+      .from("posts").select("id, title, slug, excerpt")
       .in("id", postTags.map((pt) => pt.post_id))
       .eq("published", true)
       .order("created_at", { ascending: false })

@@ -1,4 +1,5 @@
 import { del } from "@vercel/blob"
+import { revalidatePath, revalidateTag } from "next/cache"
 import { type NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 
@@ -23,6 +24,8 @@ export async function DELETE(request: NextRequest) {
       await supabase.from("documents").delete().eq("id", id)
     }
 
+    revalidateTag("documents", "max")
+    revalidatePath("/downloads")
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error("Delete error:", error)

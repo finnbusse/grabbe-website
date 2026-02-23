@@ -11,6 +11,8 @@ import { PartnersSection } from "@/components/partners-section"
 import { createClient } from "@/lib/supabase/server"
 import { PAGE_DEFAULTS, getMultiplePageContents } from "@/lib/page-content"
 
+export const revalidate = 300
+
 export default async function HomePage() {
   const supabase = await createClient()
 

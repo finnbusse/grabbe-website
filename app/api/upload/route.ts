@@ -1,4 +1,5 @@
 import { put } from "@vercel/blob"
+import { revalidatePath, revalidateTag } from "next/cache"
 import { type NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 
@@ -57,6 +58,8 @@ export async function POST(request: NextRequest) {
         category: docCategory || "allgemein",
         user_id: user.id,
       })
+      revalidateTag("documents", "max")
+      revalidatePath("/downloads")
     }
 
     return NextResponse.json({
@@ -65,20 +68,21 @@ export async function POST(request: NextRequest) {
       size: file.size,
       type: file.type,
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Upload error:", error)
     
     // Provide specific error messages
     let errorMessage = "Upload fehlgeschlagen"
-    if (error.message?.includes("BLOB_READ_WRITE_TOKEN")) {
+    const errMsg = error instanceof Error ? error.message : ""
+    if (errMsg.includes("BLOB_READ_WRITE_TOKEN")) {
       errorMessage = "Vercel Blob Storage Token fehlt oder ist ungültig"
-    } else if (error.message) {
-      errorMessage = error.message
+    } else if (errMsg) {
+      errorMessage = errMsg
     }
     
     return NextResponse.json({ 
       error: errorMessage,
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      details: process.env.NODE_ENV === 'development' ? errMsg : undefined
     }, { status: 500 })
   }
 }

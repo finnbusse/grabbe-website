@@ -5,6 +5,8 @@ import { getSettings } from "@/lib/settings"
 import { generatePageMetadata } from "@/lib/seo"
 import type { Metadata } from "next"
 
+export const revalidate = 3600
+
 export async function generateMetadata(): Promise<Metadata> {
   return generatePageMetadata({
     title: "Impressum",
