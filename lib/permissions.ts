@@ -11,7 +11,8 @@ import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { redirect } from "next/navigation"
 
-// Re-export everything from the shared (client-safe) module
+// Re-export everything from the shared (client-safe) module so that
+// server components can import from either module.
 export {
   type ContentPermission,
   type DocumentPermission,
@@ -32,16 +33,9 @@ export {
   isAdminOrSchulleitung,
 } from "@/lib/permissions-shared"
 
-import {
-  type CmsPermissions,
-  type CmsRole,
-  type UserPagePermission,
-  type PermissionCheck,
-  EMPTY_PERMISSIONS,
-  mergePermissions,
-  coercePermissions,
-  checkPermission,
-} from "@/lib/permissions-shared"
+// Local imports for use in functions below
+import type { CmsPermissions, CmsRole, UserPagePermission, PermissionCheck } from "@/lib/permissions-shared"
+import { EMPTY_PERMISSIONS, mergePermissions, coercePermissions, checkPermission } from "@/lib/permissions-shared"
 
 // ============================================================================
 // Fetch user permissions (merges all assigned roles)
