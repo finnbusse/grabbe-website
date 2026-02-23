@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { revalidatePath } from "next/cache"
 import { NextResponse, type NextRequest } from "next/server"
 
 export async function GET() {
@@ -21,22 +22,41 @@ export async function PUT(request: NextRequest) {
   const body = await request.json()
 
   if (Array.isArray(body)) {
-    // Bulk update
-    for (const item of body) {
-      await supabase
-        .from("site_settings")
-        .update({ value: item.value, updated_at: new Date().toISOString() })
-        .eq("key", item.key)
-    }
+    const rows = body.map((item) => ({
+      key: item.key,
+      value: item.value ?? "",
+      type: item.type ?? "text",
+      label: item.label ?? item.key,
+      category: item.category ?? "allgemein",
+      updated_at: new Date().toISOString(),
+    }))
+    const { error } = await supabase
+      .from("site_settings")
+      .upsert(rows, { onConflict: "key" })
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+    revalidatePath("/", "layout")
+    revalidatePath("/kontakt")
+    revalidatePath("/impressum")
     return NextResponse.json({ success: true })
   }
 
-  const { key, value } = body
+  const { key, value, type, label, category } = body
   const { error } = await supabase
     .from("site_settings")
-    .update({ value, updated_at: new Date().toISOString() })
-    .eq("key", key)
+    .upsert({
+      key,
+      value: value ?? "",
+      type: type ?? "text",
+      label: label ?? key,
+      category: category ?? "allgemein",
+      updated_at: new Date().toISOString(),
+    }, { onConflict: "key" })
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+  revalidatePath("/", "layout")
+  revalidatePath("/kontakt")
+  revalidatePath("/impressum")
   return NextResponse.json({ success: true })
 }
 
@@ -56,5 +76,9 @@ export async function POST(request: NextRequest) {
     category: category ?? "allgemein",
   })
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+  revalidatePath("/", "layout")
+  revalidatePath("/kontakt")
+  revalidatePath("/impressum")
   return NextResponse.json({ success: true })
 }

@@ -173,29 +173,29 @@ export default function SettingsPage() {
     setValues((prev) => ({ ...prev, [key]: value }))
   }, [])
 
-  // Ensure a setting key exists (upsert)
-  const ensureKey = async (supabase: ReturnType<typeof createClient>, key: string, value: string) => {
-    const { data } = await supabase.from("site_settings").select("id").eq("key", key).maybeSingle()
-    if (data) {
-      await supabase.from("site_settings").update({ value, updated_at: new Date().toISOString() } as never).eq("key", key)
-    } else {
-      await supabase.from("site_settings").insert({
-        key, value, type: "text", label: key, category: "seo",
-      } as never)
-    }
-  }
-
   const handleSave = async () => {
     setSaving(true)
-    const supabase = createClient()
-    const keys = Object.keys(values).filter((k) => values[k] !== initial[k])
-    for (const key of keys) {
-      await ensureKey(supabase, key, values[key])
+    setMsg("")
+    try {
+      const keys = Object.keys(values).filter((k) => values[k] !== initial[k])
+      const payload = keys.map((key) => ({ key, value: values[key] ?? "" }))
+      const res = await fetch("/api/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => null)
+        throw new Error(err?.error || "Speichern fehlgeschlagen")
+      }
+      setInitial({ ...values })
+      setMsg("Gespeichert! Änderungen sind sofort live.")
+    } catch (error) {
+      setMsg(error instanceof Error ? error.message : "Speichern fehlgeschlagen")
+    } finally {
+      setSaving(false)
+      setTimeout(() => setMsg(""), 4000)
     }
-    setInitial({ ...values })
-    setMsg("Gespeichert!")
-    setSaving(false)
-    setTimeout(() => setMsg(""), 3000)
   }
 
   const handleImageUpload = (key: string) => {
@@ -241,7 +241,11 @@ export default function SettingsPage() {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          {msg && <span className="text-sm font-medium text-green-600">{msg}</span>}
+          {msg && (
+            <span className={`text-sm font-medium ${msg.startsWith("Gespeichert") ? "text-green-600" : "text-red-600"}`}>
+              {msg}
+            </span>
+          )}
           {isDirty && !msg && (
             <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-700">
               Ungespeicherte Änderungen
