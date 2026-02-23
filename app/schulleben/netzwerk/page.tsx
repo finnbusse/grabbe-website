@@ -4,8 +4,9 @@ import { Handshake } from "lucide-react"
 import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
 
 export const metadata = {
-  title: "Netzwerk & Partner - Grabbe-Gymnasium Detmold",
+  title: "Netzwerk & Partner",
   description: "Unsere Kooperationspartner und Vernetzung in Detmold.",
+  alternates: { canonical: "/schulleben/netzwerk" },
 }
 
 export default async function NetzwerkPage() {

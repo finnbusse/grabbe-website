@@ -5,8 +5,9 @@ import Link from "next/link"
 import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
 
 export const metadata = {
-  title: "Anmeldung - Grabbe-Gymnasium Detmold",
+  title: "Anmeldung",
   description: "Informationen zur Anmeldung am Grabbe-Gymnasium Detmold fuer Klasse 5 und die Oberstufe.",
+  alternates: { canonical: "/unsere-schule/anmeldung" },
 }
 
 export default async function AnmeldungPage() {

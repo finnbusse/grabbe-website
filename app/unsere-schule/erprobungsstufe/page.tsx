@@ -4,8 +4,9 @@ import Link from "next/link"
 import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
 
 export const metadata = {
-  title: "Erprobungsstufe - Grabbe-Gymnasium Detmold",
+  title: "Erprobungsstufe",
   description: "Informationen zur Erprobungsstufe (Klassen 5 und 6) am Grabbe-Gymnasium Detmold.",
+  alternates: { canonical: "/unsere-schule/erprobungsstufe" },
 }
 
 export default async function ErprobungsstufePage() {

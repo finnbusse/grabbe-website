@@ -5,8 +5,9 @@ import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
 import { CalendarDays, MapPin, Clock, Tag } from "lucide-react"
 
 export const metadata = {
-  title: "Termine - Grabbe-Gymnasium Detmold",
+  title: "Termine",
   description: "Alle Termine und Veranstaltungen des Grabbe-Gymnasiums Detmold im Ueberblick.",
+  alternates: { canonical: "/termine" },
 }
 
 const monthNames = ["Januar", "Februar", "Maerz", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"]

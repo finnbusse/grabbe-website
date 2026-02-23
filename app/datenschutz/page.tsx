@@ -3,8 +3,9 @@ import { PageHero } from "@/components/page-hero"
 import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
 
 export const metadata = {
-  title: "Datenschutz - Grabbe-Gymnasium Detmold",
+  title: "Datenschutz",
   description: "Datenschutzerklaerung des Grabbe-Gymnasium Detmold.",
+  alternates: { canonical: "/datenschutz" },
 }
 
 export default async function DatenschutzPage() {

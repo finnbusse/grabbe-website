@@ -4,8 +4,9 @@ import { Clock, Users, BookOpen, Utensils } from "lucide-react"
 import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
 
 export const metadata = {
-  title: "Nachmittags am Grabbe - Grabbe-Gymnasium Detmold",
+  title: "Nachmittags am Grabbe",
   description: "Nachmittagsbetreuung und Arbeitsgemeinschaften am Grabbe-Gymnasium Detmold.",
+  alternates: { canonical: "/schulleben/nachmittag" },
 }
 
 export default async function NachmittagPage() {

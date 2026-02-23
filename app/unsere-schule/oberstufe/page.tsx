@@ -6,8 +6,9 @@ import { OberstufeSections } from "@/components/oberstufe-sections"
 import Link from "next/link"
 
 export const metadata = {
-  title: "Oberstufe - Grabbe-Gymnasium Detmold",
+  title: "Oberstufe",
   description: "Informationen zur gymnasialen Oberstufe am Grabbe-Gymnasium Detmold.",
+  alternates: { canonical: "/unsere-schule/oberstufe" },
 }
 
 export default async function OberstufePage() {

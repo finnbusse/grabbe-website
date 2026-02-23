@@ -6,8 +6,9 @@ import { Download, FileText, ImageIcon, ExternalLink } from "lucide-react"
 import { DownloadCategories } from "@/components/download-categories"
 
 export const metadata = {
-  title: "Downloads - Grabbe-Gymnasium Detmold",
+  title: "Downloads",
   description: "Dokumente, Formulare und Materialien zum Herunterladen.",
+  alternates: { canonical: "/downloads" },
 }
 
 export default async function DownloadsPage() {

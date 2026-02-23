@@ -5,8 +5,9 @@ import { Mail, Phone, MapPin, Clock } from "lucide-react"
 import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
 
 export const metadata = {
-  title: "Kontakt - Grabbe-Gymnasium Detmold",
+  title: "Kontakt",
   description: "Kontaktinformationen und Ansprechpartner:innen am Grabbe-Gymnasium Detmold.",
+  alternates: { canonical: "/kontakt" },
 }
 
 export default async function KontaktPage() {

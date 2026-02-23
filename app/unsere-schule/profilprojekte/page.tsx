@@ -5,8 +5,9 @@ import { Palette, Music, Dumbbell, FlaskConical } from "lucide-react"
 import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
 
 export const metadata = {
-  title: "Profilprojekte - Grabbe-Gymnasium Detmold",
+  title: "Profilprojekte",
   description: "Die Profilprojekte in Kunst, Musik, Sport und NaWi am Grabbe-Gymnasium Detmold.",
+  alternates: { canonical: "/unsere-schule/profilprojekte" },
 }
 
 export default async function ProfilprojektePage() {

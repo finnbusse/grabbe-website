@@ -3,8 +3,9 @@ import { PageHero } from "@/components/page-hero"
 import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
 
 export const metadata = {
-  title: "Impressum - Grabbe-Gymnasium Detmold",
+  title: "Impressum",
   description: "Impressum des Grabbe-Gymnasium Detmold.",
+  alternates: { canonical: "/impressum" },
 }
 
 export default async function ImpressumPage() {

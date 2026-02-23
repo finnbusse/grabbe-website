@@ -5,8 +5,9 @@ import Link from "next/link"
 import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
 
 export const metadata = {
-  title: "Faecher & Arbeitsgemeinschaften - Grabbe-Gymnasium Detmold",
+  title: "Faecher & Arbeitsgemeinschaften",
   description: "Faecher und Arbeitsgemeinschaften am Grabbe-Gymnasium Detmold.",
+  alternates: { canonical: "/schulleben/faecher-ags" },
 }
 
 export default async function FaecherAGsPage() {

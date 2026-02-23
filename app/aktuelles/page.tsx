@@ -6,8 +6,9 @@ import { CalendarDays, ArrowRight } from "lucide-react"
 import Link from "next/link"
 
 export const metadata = {
-  title: "Aktuelles - Grabbe-Gymnasium Detmold",
+  title: "Aktuelles",
   description: "Neuigkeiten und aktuelle Meldungen vom Grabbe-Gymnasium Detmold.",
+  alternates: { canonical: "/aktuelles" },
 }
 
 export default async function AktuellesPage() {

@@ -64,7 +64,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const page = await resolvePage(slug)
   if (!page) return {}
-  return { title: `${page.title} - Grabbe-Gymnasium` }
+  const routePrefix = page.route_path || ""
+  const canonicalPath = routePrefix
+    ? `${routePrefix}/${page.slug}`
+    : `/seiten/${page.slug}`
+  return {
+    title: page.title,
+    ...(page.meta_description ? { description: page.meta_description } : {}),
+    alternates: { canonical: canonicalPath },
+  }
 }
 
 function isBlockContent(content: string): boolean {
