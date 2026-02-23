@@ -4,11 +4,15 @@ import { createClient } from "@/lib/supabase/server"
 import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
 import { Download, FileText, ImageIcon, ExternalLink } from "lucide-react"
 import { DownloadCategories } from "@/components/download-categories"
+import { generatePageMetadata } from "@/lib/seo"
+import type { Metadata } from "next"
 
-export const metadata = {
-  title: "Downloads",
-  description: "Dokumente, Formulare und Materialien zum Herunterladen.",
-  alternates: { canonical: "/downloads" },
+export async function generateMetadata(): Promise<Metadata> {
+  return generatePageMetadata({
+    title: "Downloads",
+    description: "Dokumente, Formulare und Materialien zum Herunterladen.",
+    path: "/downloads",
+  })
 }
 
 export default async function DownloadsPage() {

@@ -1,11 +1,15 @@
 import { SiteLayout } from "@/components/site-layout"
 import { PageHero } from "@/components/page-hero"
 import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
+import { generatePageMetadata } from "@/lib/seo"
+import type { Metadata } from "next"
 
-export const metadata = {
-  title: "Impressum",
-  description: "Impressum des Grabbe-Gymnasium Detmold.",
-  alternates: { canonical: "/impressum" },
+export async function generateMetadata(): Promise<Metadata> {
+  return generatePageMetadata({
+    title: "Impressum",
+    description: "Impressum des Grabbe-Gymnasium Detmold.",
+    path: "/impressum",
+  })
 }
 
 export default async function ImpressumPage() {

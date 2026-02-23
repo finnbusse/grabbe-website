@@ -2,11 +2,15 @@ import { SiteLayout } from "@/components/site-layout"
 import { PageHero } from "@/components/page-hero"
 import { Clock, Users, BookOpen, Utensils } from "lucide-react"
 import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
+import { generatePageMetadata } from "@/lib/seo"
+import type { Metadata } from "next"
 
-export const metadata = {
-  title: "Nachmittags am Grabbe",
-  description: "Nachmittagsbetreuung und Arbeitsgemeinschaften am Grabbe-Gymnasium Detmold.",
-  alternates: { canonical: "/schulleben/nachmittag" },
+export async function generateMetadata(): Promise<Metadata> {
+  return generatePageMetadata({
+    title: "Nachmittags am Grabbe",
+    description: "Nachmittagsbetreuung und Arbeitsgemeinschaften am Grabbe-Gymnasium Detmold.",
+    path: "/schulleben/nachmittag",
+  })
 }
 
 export default async function NachmittagPage() {

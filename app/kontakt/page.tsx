@@ -3,11 +3,15 @@ import { PageHero } from "@/components/page-hero"
 import { ContactForm } from "@/components/contact-form"
 import { Mail, Phone, MapPin, Clock } from "lucide-react"
 import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
+import { generatePageMetadata } from "@/lib/seo"
+import type { Metadata } from "next"
 
-export const metadata = {
-  title: "Kontakt",
-  description: "Kontaktinformationen und Ansprechpartner:innen am Grabbe-Gymnasium Detmold.",
-  alternates: { canonical: "/kontakt" },
+export async function generateMetadata(): Promise<Metadata> {
+  return generatePageMetadata({
+    title: "Kontakt",
+    description: "Kontaktinformationen und Ansprechpartner:innen am Grabbe-Gymnasium Detmold.",
+    path: "/kontakt",
+  })
 }
 
 export default async function KontaktPage() {

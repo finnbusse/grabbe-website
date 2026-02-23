@@ -4,11 +4,15 @@ import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
 import { TaggedSection } from "@/components/tagged-section"
 import { OberstufeSections } from "@/components/oberstufe-sections"
 import Link from "next/link"
+import { generatePageMetadata } from "@/lib/seo"
+import type { Metadata } from "next"
 
-export const metadata = {
-  title: "Oberstufe",
-  description: "Informationen zur gymnasialen Oberstufe am Grabbe-Gymnasium Detmold.",
-  alternates: { canonical: "/unsere-schule/oberstufe" },
+export async function generateMetadata(): Promise<Metadata> {
+  return generatePageMetadata({
+    title: "Oberstufe",
+    description: "Informationen zur gymnasialen Oberstufe am Grabbe-Gymnasium Detmold.",
+    path: "/unsere-schule/oberstufe",
+  })
 }
 
 export default async function OberstufePage() {

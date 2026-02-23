@@ -3,11 +3,15 @@ import { PageHero } from "@/components/page-hero"
 import { Languages, FlaskConical, Globe, BookOpen, Calendar, Monitor } from "lucide-react"
 import Link from "next/link"
 import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
+import { generatePageMetadata } from "@/lib/seo"
+import type { Metadata } from "next"
 
-export const metadata = {
-  title: "Faecher & Arbeitsgemeinschaften",
-  description: "Faecher und Arbeitsgemeinschaften am Grabbe-Gymnasium Detmold.",
-  alternates: { canonical: "/schulleben/faecher-ags" },
+export async function generateMetadata(): Promise<Metadata> {
+  return generatePageMetadata({
+    title: "Faecher & Arbeitsgemeinschaften",
+    description: "Faecher und Arbeitsgemeinschaften am Grabbe-Gymnasium Detmold.",
+    path: "/schulleben/faecher-ags",
+  })
 }
 
 export default async function FaecherAGsPage() {

@@ -5,11 +5,15 @@ import { createClient } from "@/lib/supabase/server"
 import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
 import { CalendarDays, ArrowRight } from "lucide-react"
 import Link from "next/link"
+import { generatePageMetadata } from "@/lib/seo"
+import type { Metadata } from "next"
 
-export const metadata = {
-  title: "Aktuelles",
-  description: "Neuigkeiten und aktuelle Meldungen vom Grabbe-Gymnasium Detmold.",
-  alternates: { canonical: "/aktuelles" },
+export async function generateMetadata(): Promise<Metadata> {
+  return generatePageMetadata({
+    title: "Aktuelles",
+    description: "Neuigkeiten und aktuelle Meldungen vom Grabbe-Gymnasium Detmold.",
+    path: "/aktuelles",
+  })
 }
 
 export default async function AktuellesPage() {

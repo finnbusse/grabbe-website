@@ -2,11 +2,15 @@ import { SiteLayout } from "@/components/site-layout"
 import { PageHero } from "@/components/page-hero"
 import Link from "next/link"
 import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
+import { generatePageMetadata } from "@/lib/seo"
+import type { Metadata } from "next"
 
-export const metadata = {
-  title: "Erprobungsstufe",
-  description: "Informationen zur Erprobungsstufe (Klassen 5 und 6) am Grabbe-Gymnasium Detmold.",
-  alternates: { canonical: "/unsere-schule/erprobungsstufe" },
+export async function generateMetadata(): Promise<Metadata> {
+  return generatePageMetadata({
+    title: "Erprobungsstufe",
+    description: "Informationen zur Erprobungsstufe (Klassen 5 und 6) am Grabbe-Gymnasium Detmold.",
+    path: "/unsere-schule/erprobungsstufe",
+  })
 }
 
 export default async function ErprobungsstufePage() {

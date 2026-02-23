@@ -3,11 +3,15 @@ import { PageHero } from "@/components/page-hero"
 import { AnmeldungForm } from "@/components/anmeldung-form"
 import Link from "next/link"
 import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
+import { generatePageMetadata } from "@/lib/seo"
+import type { Metadata } from "next"
 
-export const metadata = {
-  title: "Anmeldung",
-  description: "Informationen zur Anmeldung am Grabbe-Gymnasium Detmold fuer Klasse 5 und die Oberstufe.",
-  alternates: { canonical: "/unsere-schule/anmeldung" },
+export async function generateMetadata(): Promise<Metadata> {
+  return generatePageMetadata({
+    title: "Anmeldung",
+    description: "Informationen zur Anmeldung am Grabbe-Gymnasium Detmold fuer Klasse 5 und die Oberstufe.",
+    path: "/unsere-schule/anmeldung",
+  })
 }
 
 export default async function AnmeldungPage() {
