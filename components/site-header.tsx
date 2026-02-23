@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { useState, useRef, useCallback, useEffect } from "react"
 import { Menu, X, ChevronDown } from "lucide-react"
 
@@ -26,11 +26,13 @@ export function SiteHeader({
   logoUrl?: string
 }) {
   const pathname = usePathname()
+  const router = useRouter()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const [headerHidden, setHeaderHidden] = useState(false)
   const lastScrollYRef = useRef(0)
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const navRef = useRef<HTMLElement>(null)
 
   const handleDropdownEnter = useCallback((itemId: string) => {
     if (closeTimeoutRef.current) {
@@ -49,6 +51,21 @@ export function SiteHeader({
   useEffect(() => {
     return () => {
       if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current)
+    }
+  }, [])
+
+  // Close dropdown when touching outside the desktop nav (tablet touch support)
+  useEffect(() => {
+    const handleOutside = (e: MouseEvent | TouchEvent) => {
+      if (navRef.current && !navRef.current.contains(e.target as Node)) {
+        setOpenDropdown(null)
+      }
+    }
+    document.addEventListener("touchstart", handleOutside, { passive: true })
+    document.addEventListener("mousedown", handleOutside)
+    return () => {
+      document.removeEventListener("touchstart", handleOutside)
+      document.removeEventListener("mousedown", handleOutside)
     }
   }, [])
 
@@ -131,7 +148,7 @@ export function SiteHeader({
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden items-center gap-0.5 lg:flex flex-1 justify-center" aria-label="Hauptnavigation">
+        <nav ref={navRef} className="hidden items-center gap-0.5 lg:flex flex-1 justify-center" aria-label="Hauptnavigation">
           {navItems
             .filter(item => item.href !== "/")
             .map((item) =>
@@ -149,6 +166,16 @@ export function SiteHeader({
                       ? "text-foreground bg-white/30"
                       : "text-foreground/80 hover:text-foreground hover:bg-white/25"
                   }`}
+                  onTouchEnd={(e) => {
+                    // preventDefault() cancels all subsequent synthetic mouse events
+                    // (mouseenter, mouseleave, mousedown, click) so hover state is not disturbed.
+                    e.preventDefault()
+                    if (openDropdown !== item.id) {
+                      handleDropdownEnter(item.id)
+                    } else {
+                      router.push(item.href)
+                    }
+                  }}
                 >
                   {item.label}
                   <ChevronDown
