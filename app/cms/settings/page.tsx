@@ -291,7 +291,7 @@ export default function SettingsPage() {
         title="Kontakt & Adresse"
         description="Zentrale Kontaktdaten der Website. Diese Werte werden auf Kontaktseite, im Impressum, im Footer und als SEO-Fallback verwendet."
       >
-        <Field label="Adresse (eine Zeile)" hint="Beispiel: Küster-Meyer-Platz 2, 32756 Detmold.">
+        <Field label="Adresse (eine Zeile)" hint="Wird in Kontaktseite, Impressum und Footer ausgegeben.">
           {field(values, "school_address", set, { placeholder: "Küster-Meyer-Platz 2, 32756 Detmold" })}
         </Field>
         <div className="grid gap-4 sm:grid-cols-2">

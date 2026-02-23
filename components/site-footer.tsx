@@ -15,11 +15,11 @@ export function SiteFooter({
   const name = settings.school_name || "Grabbe-Gymnasium"
   const fullName =
     settings.school_name_full || settings.seo_org_name || "Christian-Dietrich-Grabbe-Gymnasium Detmold"
+  const seoZipCity = [settings.seo_org_address_zip, settings.seo_org_address_city].filter(Boolean).join(" ")
+  const seoAddress = [settings.seo_org_address_street, seoZipCity].filter(Boolean).join(", ")
   const address =
     settings.school_address ||
-    [settings.seo_org_address_street, settings.seo_org_address_zip, settings.seo_org_address_city]
-      .filter(Boolean)
-      .join(", ") ||
+    seoAddress ||
     "Küster-Meyer-Platz 2, 32756 Detmold"
   const phone = settings.school_phone || settings.seo_org_phone || "05231 - 99260"
   const email = settings.school_email || settings.seo_org_email || "sekretariat@grabbe.nrw.schule"
@@ -94,7 +94,7 @@ export function SiteFooter({
               <li className="flex items-center gap-3">
                 <Phone className="h-4 w-4 shrink-0 text-primary-foreground/30" />
                 <a
-                  href={`tel:${phone.replace(/[\s\-()]/g, "")}`}
+                  href={`tel:${phone.replace(/[\s()-]/g, "")}`}
                   className="text-sm text-primary-foreground/60 hover:text-[hsl(200,90%,80%)] transition-colors"
                 >
                   {phone}

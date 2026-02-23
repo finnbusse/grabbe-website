@@ -20,11 +20,10 @@ export default async function ImpressumPage() {
   ])
   const schoolName = settings.school_name_full || settings.school_name
   const schoolAddress = settings.school_address
-  const anschrift = schoolAddress
-    ? schoolName
-      ? `${schoolName}, ${schoolAddress}`
-      : schoolAddress
-    : (content.anschrift as string)
+  let anschrift = content.anschrift as string
+  if (schoolAddress) {
+    anschrift = schoolName ? `${schoolName}, ${schoolAddress}` : schoolAddress
+  }
   const kontaktParts = [
     settings.school_phone ? `Telefon: ${settings.school_phone}` : "",
     settings.school_fax ? `Telefax: ${settings.school_fax}` : "",

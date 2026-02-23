@@ -22,14 +22,8 @@ export default async function KontaktPage() {
   ])
 
   const schoolAddress = (settings.school_address || "").trim()
-  const [addressStreetFromSettings, ...addressRest] = schoolAddress.split(",")
-  const hasAddressCityPart = addressRest.length > 0 && addressRest.join(",").trim().length > 0
-  const addressStreet = schoolAddress ? addressStreetFromSettings.trim() : (content.address_street as string)
-  const addressCity = schoolAddress
-    ? hasAddressCityPart
-      ? addressRest.join(",").trim()
-      : settings.school_city || (content.address_city as string)
-    : (content.address_city as string)
+  const addressStreet = schoolAddress || (content.address_street as string)
+  const addressCity = settings.school_city || (content.address_city as string)
   const phone = settings.school_phone || (content.phone as string)
   const fax = settings.school_fax || (content.fax as string)
   const email = settings.school_email || (content.email as string)
@@ -86,7 +80,7 @@ export default async function KontaktPage() {
                       <div className="text-sm">
                         <p className="text-muted-foreground">
                           Telefon:{" "}
-                          <a href={`tel:${phone.replace(/[\s\-()]/g, "")}`} className="text-foreground hover:text-primary transition-colors">
+                          <a href={`tel:${phone.replace(/[\s()-]/g, "")}`} className="text-foreground hover:text-primary transition-colors">
                             {phone}
                           </a>
                         </p>
