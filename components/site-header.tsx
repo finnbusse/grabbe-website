@@ -157,8 +157,8 @@ export function SiteHeader({
               <div
                 key={item.id}
                 className="relative"
-                onMouseEnter={() => handleDropdownEnter(item.id)}
-                onMouseLeave={handleDropdownLeave}
+                onMouseEnter={() => { lastPointerTypeRef.current = "mouse"; handleDropdownEnter(item.id) }}
+                onMouseLeave={() => { if (lastPointerTypeRef.current !== "touch") handleDropdownLeave() }}
               >
                 <Link
                   href={item.href}
