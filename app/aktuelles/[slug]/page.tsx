@@ -3,6 +3,7 @@ import { PageHero } from "@/components/page-hero"
 import { Breadcrumbs } from "@/components/breadcrumbs"
 import { MarkdownContent } from "@/components/markdown-content"
 import { createClient } from "@/lib/supabase/server"
+import { createStaticClient } from "@/lib/supabase/static"
 import { notFound } from "next/navigation"
 import { CalendarDays, ArrowLeft, User } from "lucide-react"
 import Link from "next/link"
@@ -14,6 +15,17 @@ import {
   generateArticleJsonLd,
   JsonLd,
 } from "@/lib/seo"
+
+export const revalidate = 300
+
+export async function generateStaticParams() {
+  const supabase = createStaticClient()
+  const { data } = await supabase
+    .from("posts")
+    .select("slug")
+    .eq("published", true)
+  return (data ?? []).map((post) => ({ slug: post.slug }))
+}
 
 async function getPost(slug: string) {
   const supabase = await createClient()

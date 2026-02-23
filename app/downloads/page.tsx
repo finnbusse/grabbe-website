@@ -8,6 +8,8 @@ import { generatePageMetadata } from "@/lib/seo"
 import type { Document } from "@/lib/types/database.types"
 import type { Metadata } from "next"
 
+export const revalidate = 300
+
 export async function generateMetadata(): Promise<Metadata> {
   return generatePageMetadata({
     title: "Downloads",

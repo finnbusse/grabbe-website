@@ -9,6 +9,8 @@ import Link from "next/link"
 import { generatePageMetadata } from "@/lib/seo"
 import type { Metadata } from "next"
 
+export const revalidate = 300
+
 export async function generateMetadata(): Promise<Metadata> {
   return generatePageMetadata({
     title: "Aktuelles",

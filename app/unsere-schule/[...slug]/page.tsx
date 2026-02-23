@@ -1,4 +1,5 @@
 import { resolveCustomPage } from "@/lib/resolve-page"
+import { createStaticClient } from "@/lib/supabase/static"
 import { SiteLayout } from "@/components/site-layout"
 import { PageHero } from "@/components/page-hero"
 import { Breadcrumbs } from "@/components/breadcrumbs"
@@ -8,8 +9,25 @@ import { notFound } from "next/navigation"
 import type { Metadata } from "next"
 import { generatePageMetadata } from "@/lib/seo"
 
+export const revalidate = 3600
+
 interface Props {
   params: Promise<{ slug: string[] }>
+}
+
+export async function generateStaticParams() {
+  const supabase = createStaticClient()
+  const { data } = await supabase
+    .from("pages")
+    .select("slug, route_path")
+    .eq("published", true)
+    .like("route_path", "/unsere-schule%")
+  return (data ?? []).map((page) => {
+    const segments = page.route_path
+      ? page.route_path.replace(/^\/unsere-schule\/?/, '').split('/').filter(Boolean)
+      : []
+    return { slug: [...segments, page.slug] }
+  })
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

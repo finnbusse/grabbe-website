@@ -1,5 +1,5 @@
 import { put } from "@vercel/blob"
-import { revalidateTag } from "next/cache"
+import { revalidatePath, revalidateTag } from "next/cache"
 import { type NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 
@@ -58,7 +58,8 @@ export async function POST(request: NextRequest) {
         category: docCategory || "allgemein",
         user_id: user.id,
       })
-      revalidateTag("documents")
+      revalidateTag("documents", "max")
+      revalidatePath("/downloads")
     }
 
     return NextResponse.json({

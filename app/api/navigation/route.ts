@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
-import { revalidateTag } from "next/cache"
+import { revalidatePath, revalidateTag } from "next/cache"
 import { NextResponse, type NextRequest } from "next/server"
 
 export async function GET(request: NextRequest) {
@@ -29,7 +29,8 @@ export async function POST(request: NextRequest) {
     .select()
     .single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  revalidateTag("navigation")
+  revalidateTag("navigation", "max")
+  revalidatePath("/", "layout")
   return NextResponse.json(data)
 }
 
@@ -48,7 +49,8 @@ export async function PUT(request: NextRequest) {
     .update(updates)
     .eq("id", id)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  revalidateTag("navigation")
+  revalidateTag("navigation", "max")
+  revalidatePath("/", "layout")
   return NextResponse.json({ success: true })
 }
 
@@ -65,6 +67,7 @@ export async function DELETE(request: NextRequest) {
     .delete()
     .eq("id", id)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  revalidateTag("navigation")
+  revalidateTag("navigation", "max")
+  revalidatePath("/", "layout")
   return NextResponse.json({ success: true })
 }
