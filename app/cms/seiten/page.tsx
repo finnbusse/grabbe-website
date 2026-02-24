@@ -14,7 +14,7 @@ export default async function SeitenPage() {
   const [pagesResult, structResult] = await Promise.all([
     supabase
       .from("pages")
-      .select("id, title, slug, published, route_path, section")
+      .select("id, title, slug, published, route_path, section, is_index")
       .order("sort_order", { ascending: true }),
     supabase
       .from("site_settings")
@@ -75,6 +75,7 @@ export default async function SeitenPage() {
     published: boolean
     route_path: string | null
     section: string | null
+    is_index: boolean | null
   }>) || []).map((p) => ({
     id: p.id,
     title: p.title,
@@ -82,6 +83,7 @@ export default async function SeitenPage() {
     type: "custom" as const,
     published: p.published,
     routePath: p.route_path,
+    isIndex: p.is_index === true,
   }))
 
   return (

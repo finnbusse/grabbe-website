@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
   FolderOpen, FileText, Plus, Trash2, Save, Loader2, ChevronRight, ChevronDown,
-  Globe, Lock, GripVertical, Pencil, Check, X, FolderPlus, ExternalLink, MoveRight,
+  Globe, Lock, GripVertical, Pencil, Check, X, FolderPlus, ExternalLink, MoveRight, Home,
 } from "lucide-react"
 import Link from "next/link"
 
@@ -33,6 +33,7 @@ interface SitePage {
   route_path: string | null
   published: boolean
   is_system: boolean
+  is_index: boolean
   sort_order: number
 }
 
@@ -130,7 +131,7 @@ export default function SeitenstrukturPage() {
       // Load all custom pages
       const { data: pagesData } = await supabase
         .from("pages")
-        .select("id, title, slug, route_path, published, is_system, sort_order")
+        .select("id, title, slug, route_path, published, is_system, is_index, sort_order")
         .order("sort_order")
 
       if (pagesData) {
@@ -558,6 +559,11 @@ function CategoryNode({
   const isSystemCategory = category.id === "unsere-schule" || category.id === "schulleben"
   const hasContent = systemPages.length > 0 || customPages.length > 0 || category.children.length > 0
 
+  // Detect index page for this category
+  const indexPage = pages.find(
+    (p) => p.is_index && p.route_path === `/${category.id}`
+  )
+
   return (
     <div className={`rounded-2xl border bg-card ${level > 0 ? "ml-6 border-border/60" : ""}`}>
       {/* Category Header */}
@@ -600,6 +606,22 @@ function CategoryNode({
         <div className="ml-auto flex items-center gap-1">
           {!isEditing && (
             <>
+              {/* Hauptseite link */}
+              {indexPage ? (
+                <Link href={`/cms/seiten/${indexPage.id}/bearbeiten`}>
+                  <Button size="sm" variant="ghost" className="h-7 gap-1 text-xs text-primary" title="Hauptseite bearbeiten">
+                    <Home className="h-3.5 w-3.5" />
+                    <span className="hidden sm:inline">Hauptseite</span>
+                  </Button>
+                </Link>
+              ) : (
+                <Link href={`/cms/pages/new?route_path=/${category.id}&is_index=true`}>
+                  <Button size="sm" variant="ghost" className="h-7 gap-1 text-xs text-muted-foreground hover:text-primary" title="Hauptseite erstellen">
+                    <Home className="h-3.5 w-3.5" />
+                    <span className="hidden sm:inline">+ Hauptseite</span>
+                  </Button>
+                </Link>
+              )}
               <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => { setEditLabel(category.label); setEditingCategory(category.id) }} title="Umbenennen">
                 <Pencil className="h-3.5 w-3.5" />
               </Button>

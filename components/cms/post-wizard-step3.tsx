@@ -59,14 +59,13 @@ export function PostWizardStep3() {
         const supabase = createClient()
         const { data } = await supabase
           .from("site_settings")
-          .select("value")
-          .eq("key", "seo_defaults")
-          .single()
+          .select("key, value")
+          .in("key", ["seo_title_separator", "seo_title_suffix"])
         if (data) {
-          const row = data as unknown as { value: string }
-          const parsed = JSON.parse(row.value)
-          if (parsed.separator) setSeoSeparator(parsed.separator)
-          if (parsed.suffix) setSeoSuffix(parsed.suffix)
+          for (const row of data as Array<{ key: string; value: string }>) {
+            if (row.key === "seo_title_separator" && row.value) setSeoSeparator(row.value)
+            if (row.key === "seo_title_suffix" && row.value) setSeoSuffix(row.value)
+          }
         }
       } catch {
         // use defaults

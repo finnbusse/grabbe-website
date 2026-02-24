@@ -19,6 +19,7 @@ export interface PageTreeItem {
   type: "static" | "custom"
   published?: boolean
   routePath?: string | null
+  isIndex?: boolean
 }
 
 export interface CategoryDef {
@@ -144,10 +145,16 @@ function PageRow({ item }: { item: PageTreeItem }) {
 
   return (
     <div className="group flex items-center gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-muted/50">
-      <FileText className="h-4 w-4 shrink-0 text-muted-foreground" />
+      {item.isIndex ? (
+        <Home className="h-4 w-4 shrink-0 text-primary" />
+      ) : (
+        <FileText className="h-4 w-4 shrink-0 text-muted-foreground" />
+      )}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-card-foreground truncate">{item.title}</span>
+          <span className={`text-sm font-medium text-card-foreground truncate ${item.isIndex ? "font-semibold" : ""}`}>
+            {item.isIndex ? "Hauptseite" : item.title}
+          </span>
           {isStatic && <Lock className="h-3 w-3 text-muted-foreground/50" />}
           <StatusBadge published={item.published} />
         </div>
