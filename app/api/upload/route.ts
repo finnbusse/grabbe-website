@@ -1,7 +1,110 @@
-import { put } from "@vercel/blob"
+import { list, put } from "@vercel/blob"
 import { revalidatePath, revalidateTag } from "next/cache"
 import { type NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
+
+const SUPPORTED_IMAGE_EXTENSIONS = ["jpg", "jpeg", "png", "gif", "webp", "svg", "avif"]
+
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const typeFilter = searchParams.get("type") // e.g. "image"
+    const cursor = searchParams.get("cursor") || undefined
+    const limitParam = searchParams.get("limit")
+    const limit = limitParam ? Math.min(parseInt(limitParam, 10) || 50, 100) : 50
+    const filenameFilter = searchParams.get("filename")
+    const sizeFilter = searchParams.get("size")
+
+    // Try documents table first (unified media library)
+    const supabase = await createClient()
+
+    // Deduplication check: if filename and size provided, return matching documents
+    if (filenameFilter && sizeFilter) {
+      const { data: dupes } = await supabase
+        .from("documents")
+        .select("id, title, file_url, file_name, file_size, file_type, created_at")
+        .eq("file_name", filenameFilter)
+        .eq("file_size", parseInt(sizeFilter, 10))
+        .limit(1)
+      const typedDupes = (dupes || []) as Array<{
+        id: string; title: string; file_url: string; file_name: string
+        file_size: number; file_type: string | null; created_at: string
+      }>
+      return NextResponse.json({
+        duplicates: typedDupes.map((d) => ({
+          id: d.id, url: d.file_url, title: d.title,
+          filename: d.file_name, size: d.file_size,
+        })),
+      })
+    }
+
+    let query = supabase
+      .from("documents")
+      .select("id, title, file_url, file_name, file_size, file_type, created_at")
+      .order("created_at", { ascending: false })
+      .limit(limit)
+
+    if (typeFilter === "image") {
+      query = query.like("file_type", "image/%")
+    }
+
+    const { data: docs, error: docsError } = await query
+
+    if (!docsError && docs && docs.length > 0) {
+      const typedDocs = docs as Array<{
+        id: string
+        title: string
+        file_url: string
+        file_name: string
+        file_size: number
+        file_type: string | null
+        created_at: string
+      }>
+      return NextResponse.json({
+        blobs: typedDocs.map((d) => ({
+          id: d.id,
+          url: d.file_url,
+          pathname: d.file_name || d.title,
+          size: d.file_size,
+          uploadedAt: d.created_at,
+        })),
+        cursor: undefined,
+        hasMore: false,
+      })
+    }
+
+    // Fallback to Vercel Blob storage if documents table is empty or unavailable
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      return NextResponse.json({ blobs: [] })
+    }
+
+    const result = await list({
+      prefix: "schulwebsite/",
+      limit,
+      cursor,
+    })
+
+    // Filter to images only for the media library
+    const imageBlobs = result.blobs.filter((blob) => {
+      const ext = blob.pathname.split(".").pop()?.toLowerCase() || ""
+      return SUPPORTED_IMAGE_EXTENSIONS.includes(ext)
+    })
+
+    return NextResponse.json({
+      blobs: imageBlobs.map((b) => ({
+        url: b.url,
+        pathname: b.pathname,
+        size: b.size,
+        uploadedAt: b.uploadedAt,
+      })),
+      cursor: result.cursor,
+      hasMore: result.hasMore,
+    })
+  } catch (error: unknown) {
+    console.error("Blob list error:", error)
+    return NextResponse.json({ blobs: [], error: "Mediathek konnte nicht geladen werden" })
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -44,29 +147,29 @@ export async function POST(request: NextRequest) {
       access: "public",
     })
 
-    // Also save to documents table
+    // Always create a document record for every uploaded file
     const docTitle = formData.get("title") as string
     const docCategory = formData.get("category") as string
 
-    if (docTitle) {
-      await supabase.from("documents").insert({
-        title: docTitle || file.name,
-        file_url: blob.url,
-        file_name: file.name,
-        file_size: file.size,
-        file_type: file.type,
-        category: docCategory || "allgemein",
-        user_id: user.id,
-      })
-      revalidateTag("documents", "max")
-      revalidatePath("/downloads")
-    }
+    const { data: insertedDoc } = await supabase.from("documents").insert({
+      title: docTitle || file.name,
+      file_url: blob.url,
+      file_name: file.name,
+      file_size: file.size,
+      file_type: file.type,
+      category: docCategory || "allgemein",
+      user_id: user.id,
+    } as never).select("id").single()
+    revalidateTag("documents", "max")
+
+    const docId = (insertedDoc as unknown as { id: string } | null)?.id
 
     return NextResponse.json({
       url: blob.url,
       filename: file.name,
       size: file.size,
       type: file.type,
+      documentId: docId || null,
     })
   } catch (error: unknown) {
     console.error("Upload error:", error)

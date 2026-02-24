@@ -71,6 +71,7 @@ export default async function SchullebenDynamicPage({ params }: Props) {
         <PageHero
           title={page.title}
           label={page.section || undefined}
+          subtitle={page.hero_subtitle || undefined}
           imageUrl={page.hero_image_url || undefined}
         />
         <Breadcrumbs items={[

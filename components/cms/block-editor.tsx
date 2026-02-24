@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { ImagePicker } from "@/components/cms/image-picker"
 import { Plus, Trash2, GripVertical, ChevronDown, ChevronUp, CreditCard, ImageIcon, HelpCircle, Type, List, Quote, Minus, Video, MousePointerClick, Columns, MoveVertical, ListCollapse, Table2, CalendarDays, Download, Newspaper } from "lucide-react"
 
 // ============================================================================
@@ -409,15 +410,14 @@ function GalleryBlockEditor({ data, onChange }: { data: Record<string, unknown>;
 
   return (
     <div className="space-y-3">
-      <p className="text-xs text-muted-foreground">Laden Sie Bilder unter &quot;Dokumente&quot; hoch und fuegen Sie die URL hier ein.</p>
+      <p className="text-xs text-muted-foreground">Wählen Sie Bilder aus der Mediathek oder laden Sie neue hoch.</p>
       {images.map((img, i) => (
         <div key={i} className="flex gap-2 items-start">
           <div className="flex-1 space-y-1">
-            <Input
-              value={img.url}
-              onChange={(e) => updateImage(i, 'url', e.target.value)}
-              placeholder="Bild-URL (https://...)"
-              className="text-xs font-mono"
+            <ImagePicker
+              value={img.url || null}
+              onChange={(url) => updateImage(i, 'url', url || '')}
+              aspectRatio="free"
             />
             <Input
               value={img.alt}
@@ -516,13 +516,14 @@ function HeroBlockEditor({ data, onChange }: { data: Record<string, unknown>; on
         />
       </div>
       <div>
-        <Label className="text-xs">Hintergrundbild-URL</Label>
-        <Input
-          value={(data.backgroundImage as string) || ''}
-          onChange={(e) => onChange({ ...data, backgroundImage: e.target.value })}
-          placeholder="https://..."
-          className="mt-1 text-xs font-mono"
-        />
+        <Label className="text-xs">Hintergrundbild</Label>
+        <div className="mt-1">
+          <ImagePicker
+            value={(data.backgroundImage as string) || null}
+            onChange={(url) => onChange({ ...data, backgroundImage: url || '' })}
+            aspectRatio="16/9"
+          />
+        </div>
       </div>
       <div className="grid grid-cols-2 gap-3">
         <div>

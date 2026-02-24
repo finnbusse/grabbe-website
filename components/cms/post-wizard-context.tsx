@@ -1,20 +1,21 @@
 "use client"
 
-import { createContext, useContext, useReducer, useCallback, useEffect, useRef, type ReactNode } from "react"
+import { createContext, useContext, useReducer, useEffect, useRef, type ReactNode } from "react"
 import type { ContentBlock } from "./block-editor"
 
 // ============================================================================
 // Types
 // ============================================================================
 
-export interface PageWizardState {
+export interface PostWizardState {
   // Step 1
   title: string
   slug: string
-  heroImageUrl: string | null
-  heroSubtitle: string
+  category: string
+  excerpt: string
+  coverImageUrl: string | null
+  publishDate: string
   tagIds: string[]
-  routePath: string
 
   // Step 2
   contentMode: "blocks" | "markdown"
@@ -29,17 +30,19 @@ export interface PageWizardState {
   // Meta
   currentStep: 1 | 2 | 3
   isSaving: boolean
-  savedPageId: string | null
+  isPublished: boolean
+  postId: string | null
   lastAutoSaved: string | null
 }
 
-export type WizardAction =
+export type PostWizardAction =
   | { type: "SET_TITLE"; payload: string }
   | { type: "SET_SLUG"; payload: string }
-  | { type: "SET_HERO_IMAGE"; payload: string | null }
-  | { type: "SET_HERO_SUBTITLE"; payload: string }
+  | { type: "SET_CATEGORY"; payload: string }
+  | { type: "SET_EXCERPT"; payload: string }
+  | { type: "SET_COVER_IMAGE"; payload: string | null }
+  | { type: "SET_PUBLISH_DATE"; payload: string }
   | { type: "SET_TAG_IDS"; payload: string[] }
-  | { type: "SET_ROUTE_PATH"; payload: string }
   | { type: "SET_CONTENT_MODE"; payload: "blocks" | "markdown" }
   | { type: "SET_BLOCKS"; payload: ContentBlock[] }
   | { type: "SET_MARKDOWN"; payload: string }
@@ -48,21 +51,23 @@ export type WizardAction =
   | { type: "SET_OG_IMAGE"; payload: string | null }
   | { type: "SET_STEP"; payload: 1 | 2 | 3 }
   | { type: "SET_SAVING"; payload: boolean }
-  | { type: "SET_SAVED_PAGE_ID"; payload: string | null }
+  | { type: "SET_IS_PUBLISHED"; payload: boolean }
+  | { type: "SET_POST_ID"; payload: string | null }
   | { type: "SET_LAST_AUTO_SAVED"; payload: string | null }
-  | { type: "RESTORE_STATE"; payload: Partial<PageWizardState> }
+  | { type: "RESTORE_STATE"; payload: Partial<PostWizardState> }
 
 // ============================================================================
 // Initial state
 // ============================================================================
 
-const initialState: PageWizardState = {
+const initialState: PostWizardState = {
   title: "",
   slug: "",
-  heroImageUrl: null,
-  heroSubtitle: "",
+  category: "",
+  excerpt: "",
+  coverImageUrl: null,
+  publishDate: new Date().toISOString().split("T")[0],
   tagIds: [],
-  routePath: "",
   contentMode: "blocks",
   blocks: [],
   markdownContent: "",
@@ -71,7 +76,8 @@ const initialState: PageWizardState = {
   ogImageUrl: null,
   currentStep: 1,
   isSaving: false,
-  savedPageId: null,
+  isPublished: false,
+  postId: null,
   lastAutoSaved: null,
 }
 
@@ -79,20 +85,22 @@ const initialState: PageWizardState = {
 // Reducer
 // ============================================================================
 
-function wizardReducer(state: PageWizardState, action: WizardAction): PageWizardState {
+function wizardReducer(state: PostWizardState, action: PostWizardAction): PostWizardState {
   switch (action.type) {
     case "SET_TITLE":
       return { ...state, title: action.payload }
     case "SET_SLUG":
       return { ...state, slug: action.payload }
-    case "SET_HERO_IMAGE":
-      return { ...state, heroImageUrl: action.payload }
-    case "SET_HERO_SUBTITLE":
-      return { ...state, heroSubtitle: action.payload }
+    case "SET_CATEGORY":
+      return { ...state, category: action.payload }
+    case "SET_EXCERPT":
+      return { ...state, excerpt: action.payload }
+    case "SET_COVER_IMAGE":
+      return { ...state, coverImageUrl: action.payload }
+    case "SET_PUBLISH_DATE":
+      return { ...state, publishDate: action.payload }
     case "SET_TAG_IDS":
       return { ...state, tagIds: action.payload }
-    case "SET_ROUTE_PATH":
-      return { ...state, routePath: action.payload }
     case "SET_CONTENT_MODE":
       return { ...state, contentMode: action.payload }
     case "SET_BLOCKS":
@@ -109,8 +117,10 @@ function wizardReducer(state: PageWizardState, action: WizardAction): PageWizard
       return { ...state, currentStep: action.payload }
     case "SET_SAVING":
       return { ...state, isSaving: action.payload }
-    case "SET_SAVED_PAGE_ID":
-      return { ...state, savedPageId: action.payload }
+    case "SET_IS_PUBLISHED":
+      return { ...state, isPublished: action.payload }
+    case "SET_POST_ID":
+      return { ...state, postId: action.payload }
     case "SET_LAST_AUTO_SAVED":
       return { ...state, lastAutoSaved: action.payload }
     case "RESTORE_STATE":
@@ -124,64 +134,82 @@ function wizardReducer(state: PageWizardState, action: WizardAction): PageWizard
 // Context
 // ============================================================================
 
-interface PageWizardContextValue {
-  state: PageWizardState
-  dispatch: React.Dispatch<WizardAction>
+interface PostWizardContextValue {
+  state: PostWizardState
+  dispatch: React.Dispatch<PostWizardAction>
 }
 
-const PageWizardContext = createContext<PageWizardContextValue | null>(null)
+const PostWizardContext = createContext<PostWizardContextValue | null>(null)
 
-const STORAGE_KEY = "page-wizard-draft"
+const STORAGE_KEY = "cms-post-wizard-draft"
 
-export function PageWizardProvider({ children }: { children: ReactNode }) {
+interface PostWizardProviderProps {
+  children: ReactNode
+  initialState?: Partial<PostWizardState>
+}
+
+export function PostWizardProvider({ children, initialState: initialOverrides }: PostWizardProviderProps) {
   const [state, dispatch] = useReducer(wizardReducer, initialState)
   const initialized = useRef(false)
 
-  // Restore from localStorage on mount
+  // Restore from props (edit mode) or localStorage on mount
   useEffect(() => {
     if (initialized.current) return
     initialized.current = true
+
+    if (initialOverrides) {
+      dispatch({ type: "RESTORE_STATE", payload: { ...initialOverrides, isSaving: false } })
+      return
+    }
+
     try {
       const saved = localStorage.getItem(STORAGE_KEY)
       if (saved) {
         const parsed = JSON.parse(saved)
-        dispatch({ type: "RESTORE_STATE", payload: { ...parsed, isSaving: false, currentStep: parsed.currentStep || 1 } })
+        dispatch({
+          type: "RESTORE_STATE",
+          payload: { ...parsed, isSaving: false, currentStep: parsed.currentStep || 1 },
+        })
       }
     } catch {
       // ignore parse errors
     }
-  }, [])
+  }, [initialOverrides])
 
-  // Auto-save to localStorage every 30 seconds
+  // Auto-save to localStorage every 30s (only for new posts)
   useEffect(() => {
+    if (initialOverrides) return // skip auto-save in edit mode
     const interval = setInterval(() => {
       if (state.title || state.markdownContent || state.blocks.length > 0) {
         try {
-          const toSave = { ...state, isSaving: false, savedPageId: null }
+          const toSave = { ...state, isSaving: false, postId: null }
           localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave))
-          dispatch({ type: "SET_LAST_AUTO_SAVED", payload: new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }) })
+          dispatch({
+            type: "SET_LAST_AUTO_SAVED",
+            payload: new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }),
+          })
         } catch {
           // storage full or unavailable
         }
       }
     }, 30000)
     return () => clearInterval(interval)
-  }, [state])
+  }, [state, initialOverrides])
 
   return (
-    <PageWizardContext.Provider value={{ state, dispatch }}>
+    <PostWizardContext.Provider value={{ state, dispatch }}>
       {children}
-    </PageWizardContext.Provider>
+    </PostWizardContext.Provider>
   )
 }
 
-export function usePageWizard() {
-  const ctx = useContext(PageWizardContext)
-  if (!ctx) throw new Error("usePageWizard must be used within PageWizardProvider")
+export function usePostWizard() {
+  const ctx = useContext(PostWizardContext)
+  if (!ctx) throw new Error("usePostWizard must be used within PostWizardProvider")
   return ctx
 }
 
-export function clearWizardStorage() {
+export function clearPostWizardStorage() {
   try {
     localStorage.removeItem(STORAGE_KEY)
   } catch {
@@ -200,10 +228,4 @@ export function generateSlug(text: string): string {
     .replace(/\s+/g, "-")
     .replace(/-+/g, "-")
     .trim()
-}
-
-export function buildFullUrl(routePath: string, slug: string): string {
-  if (routePath) return `grabbe.site${routePath}/${slug || "..."}`
-  if (slug) return `grabbe.site/seiten/${slug}`
-  return "grabbe.site/..."
 }

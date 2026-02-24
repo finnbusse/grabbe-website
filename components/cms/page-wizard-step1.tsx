@@ -1,12 +1,13 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { usePageWizard, generateSlug, buildFullUrl } from "./page-wizard-context"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { TagSelector } from "./tag-selector"
-import { ImageIcon, Loader2, X, ArrowRight, FolderOpen, Check } from "lucide-react"
+import { ArrowRight, FolderOpen, Check, Loader2 } from "lucide-react"
+import { ImagePicker } from "./image-picker"
 import { createClient } from "@/lib/supabase/client"
 
 // ============================================================================
@@ -27,11 +28,9 @@ interface CategoryDef {
 
 export function PageWizardStep1() {
   const { state, dispatch } = usePageWizard()
-  const [heroUploading, setHeroUploading] = useState(false)
   const [categories, setCategories] = useState<CategoryDef[]>([])
   const [loadingCategories, setLoadingCategories] = useState(true)
   const [errors, setErrors] = useState<{ title?: string; routePath?: string }>({})
-  const heroInputRef = useRef<HTMLInputElement>(null)
 
   // Fetch categories from site_structure setting
   useEffect(() => {
@@ -77,23 +76,6 @@ export function PageWizardStep1() {
   const handleRouteSelect = (path: string) => {
     dispatch({ type: "SET_ROUTE_PATH", payload: path })
     if (path) setErrors((prev) => ({ ...prev, routePath: undefined }))
-  }
-
-  const handleHeroUpload = async (file: File) => {
-    setHeroUploading(true)
-    try {
-      const fd = new FormData()
-      fd.append("file", file)
-      const res = await fetch("/api/upload", { method: "POST", body: fd })
-      const data = await res.json()
-      if (res.ok) {
-        dispatch({ type: "SET_HERO_IMAGE", payload: data.url })
-      }
-    } catch {
-      // upload error
-    } finally {
-      setHeroUploading(false)
-    }
   }
 
   const validate = (): boolean => {
@@ -165,45 +147,33 @@ export function PageWizardStep1() {
         </div>
       </div>
 
+      {/* Hero Subtitle */}
+      <div className="rounded-2xl border bg-card p-6 space-y-3">
+        <Label htmlFor="wizard-subtitle" className="text-base font-semibold">Hero-Untertitel (optional)</Label>
+        <p className="text-xs text-muted-foreground">Wird als beschreibender Text unter dem Seitentitel angezeigt.</p>
+        <Input
+          id="wizard-subtitle"
+          value={state.heroSubtitle}
+          onChange={(e) => dispatch({ type: "SET_HERO_SUBTITLE", payload: e.target.value })}
+          placeholder="z.B. Alles rund um unsere Arbeitsgemeinschaften"
+          maxLength={200}
+        />
+        {state.heroSubtitle && (
+          <span className={`text-[10px] ${state.heroSubtitle.length > 180 ? "text-amber-600" : "text-muted-foreground"}`}>
+            {state.heroSubtitle.length}/200
+          </span>
+        )}
+      </div>
+
       {/* Hero Image */}
       <div className="rounded-2xl border bg-card p-6 space-y-3">
         <Label className="text-base font-semibold">Hero-Bild (optional)</Label>
         <p className="text-xs text-muted-foreground">Wird oben auf der Seite als großes Titelbild angezeigt.</p>
-
-        {state.heroImageUrl ? (
-          <div className="relative overflow-hidden rounded-xl border border-border">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={state.heroImageUrl} alt="Hero-Vorschau" className="h-40 w-full object-cover" />
-            <button
-              type="button"
-              onClick={() => dispatch({ type: "SET_HERO_IMAGE", payload: null })}
-              className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </div>
-        ) : (
-          <label className="flex cursor-pointer flex-col items-center gap-2 rounded-xl border-2 border-dashed border-muted-foreground/25 p-8 text-center transition-colors hover:border-primary/50 hover:bg-primary/5">
-            <input
-              ref={heroInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={(e) => {
-                const f = e.target.files?.[0]
-                if (f) handleHeroUpload(f)
-              }}
-            />
-            {heroUploading ? (
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            ) : (
-              <ImageIcon className="h-8 w-8 text-muted-foreground" />
-            )}
-            <span className="text-sm font-medium text-muted-foreground">
-              {heroUploading ? "Wird hochgeladen…" : "Bild hochladen oder hierher ziehen"}
-            </span>
-          </label>
-        )}
+        <ImagePicker
+          value={state.heroImageUrl || null}
+          onChange={(url) => dispatch({ type: "SET_HERO_IMAGE", payload: url })}
+          aspectRatio="16/9"
+        />
       </div>
 
       {/* Tags */}

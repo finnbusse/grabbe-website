@@ -2,25 +2,32 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { usePageWizard, clearWizardStorage, buildFullUrl } from "./page-wizard-context"
+import { usePostWizard, clearPostWizardStorage } from "./post-wizard-context"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { ImagePicker } from "./image-picker"
+import { SeoPreview } from "./seo-preview"
 import { TagBadge, type TagData } from "./tag-selector"
-import { ArrowLeft, Loader2, Save, Rocket, Check, X } from "lucide-react"
+import { PublishCelebration } from "./publish-celebration"
+import { ArrowLeft, Loader2, Save, Rocket, Check } from "lucide-react"
 import { toast } from "sonner"
 
 // ============================================================================
 // Step 3 — SEO & Publish
 // ============================================================================
 
-export function PageEditorStep3() {
-  const { state, dispatch } = usePageWizard()
+export function PostWizardStep3() {
+  const { state, dispatch } = usePostWizard()
   const router = useRouter()
   const [publishState, setPublishState] = useState<"idle" | "saving" | "success">("idle")
   const [error, setError] = useState<string | null>(null)
   const [allTags, setAllTags] = useState<TagData[]>([])
+  const [authorName, setAuthorName] = useState("")
+  const [seoSeparator, setSeoSeparator] = useState(" / ")
+  const [seoSuffix, setSeoSuffix] = useState("Grabbe-Gymnasium")
+  const [celebrationUrl, setCelebrationUrl] = useState("")
 
   // Load tags for display
   useEffect(() => {
@@ -32,15 +39,47 @@ export function PageEditorStep3() {
       .catch(() => {})
   }, [])
 
+  // Load author name from user profile
+  useEffect(() => {
+    fetch("/api/user-profile")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data: { profile?: { title?: string; first_name?: string; last_name?: string } } | null) => {
+        if (data?.profile) {
+          const parts = [data.profile.title, data.profile.first_name, data.profile.last_name].filter(Boolean)
+          if (parts.length > 0) setAuthorName(parts.join(" "))
+        }
+      })
+      .catch(() => {})
+  }, [])
+
+  // Load SEO settings
+  useEffect(() => {
+    async function loadSeoSettings() {
+      try {
+        const supabase = createClient()
+        const { data } = await supabase
+          .from("site_settings")
+          .select("key, value")
+          .in("key", ["seo_title_separator", "seo_title_suffix"])
+        if (data) {
+          for (const row of data as Array<{ key: string; value: string }>) {
+            if (row.key === "seo_title_separator" && row.value) setSeoSeparator(row.value)
+            if (row.key === "seo_title_suffix" && row.value) setSeoSuffix(row.value)
+          }
+        }
+      } catch {
+        // use defaults
+      }
+    }
+    loadSeoSettings()
+  }, [])
+
   const selectedTags = allTags.filter((t) => state.tagIds.includes(t.id))
-
-  const fullUrl = buildFullUrl(state.routePath, state.slug)
-
+  const postUrl = `/aktuelles/${state.slug || "..."}`
   const wordCount =
     state.contentMode === "markdown"
       ? state.markdownContent.split(/\s+/).filter(Boolean).length
       : 0
-
   const blockCount = state.blocks.length
 
   const handleBack = () => {
@@ -64,32 +103,72 @@ export function PageEditorStep3() {
           ? JSON.stringify(state.blocks)
           : state.markdownContent
 
-      const payload = {
+      const basePayload: Record<string, unknown> = {
         title: state.title,
         slug: state.slug,
         content: finalContent,
-        section: "allgemein",
-        sort_order: 0,
+        excerpt: state.excerpt || null,
+        category: state.category || null,
         published: publish,
-        route_path: state.routePath || null,
-        hero_image_url: state.heroImageUrl || null,
-        hero_subtitle: state.heroSubtitle || null,
-        meta_description: state.metaDescription || null,
-        seo_og_image: state.ogImageUrl || state.heroImageUrl || null,
+        featured: false,
+        image_url: state.coverImageUrl || null,
+        author_name: authorName || user.email?.split("@")[0] || "Redaktion",
         user_id: user.id,
         updated_at: new Date().toISOString(),
+        meta_description: state.metaDescription || null,
+        seo_og_image: state.ogImageUrl || state.coverImageUrl || null,
       }
 
-      const { error: saveError } = await supabase.from("pages").insert(payload as never)
+      const payloadWithDate = { ...basePayload, event_date: state.publishDate || null }
 
-      if (saveError) {
-        // Resilient: if hero_image_url or hero_subtitle column doesn't exist yet, retry without them
-        if ((saveError as { message?: string }).message?.includes("hero_image_url") || (saveError as { message?: string }).message?.includes("hero_subtitle")) {
-          const { hero_image_url: _a, hero_subtitle: _b, ...payloadWithout } = payload
-          const { error: err2 } = await supabase.from("pages").insert(payloadWithout as never)
-          if (err2) throw err2
+      const isUpdate = !!state.postId
+
+      const saveWithPayload = async (payload: Record<string, unknown>) => {
+        if (isUpdate) {
+          const { error } = await supabase.from("posts").update(payload as never).eq("id", state.postId!)
+          return error
         } else {
-          throw saveError
+          const { error } = await supabase.from("posts").insert(payload as never)
+          return error
+        }
+      }
+
+      let saveError = await saveWithPayload(payloadWithDate)
+
+      // If the error mentions event_date column, retry without it
+      if (saveError && (saveError as { message?: string }).message?.includes("event_date")) {
+        saveError = await saveWithPayload(basePayload)
+      }
+
+      if (saveError) throw saveError
+
+      // Save tags
+      if (isUpdate && state.postId) {
+        await supabase.from("post_tags").delete().eq("post_id", state.postId)
+        if (state.tagIds.length > 0) {
+          await supabase.from("post_tags").insert(
+            state.tagIds.map((tag_id) => ({ post_id: state.postId!, tag_id })) as never
+          )
+        }
+      } else {
+        // For new posts, get the created ID and assign tags
+        const { data: newPosts } = await supabase
+          .from("posts")
+          .select("id")
+          .eq("slug", state.slug)
+          .order("created_at", { ascending: false })
+          .limit(1)
+
+        const posts = newPosts as Array<{ id: string }> | null
+        if (posts && posts.length > 0) {
+          const newPostId = posts[0].id
+          dispatch({ type: "SET_POST_ID", payload: newPostId })
+
+          if (state.tagIds.length > 0) {
+            await supabase.from("post_tags").insert(
+              state.tagIds.map((tag_id) => ({ post_id: newPostId, tag_id })) as never
+            )
+          }
         }
       }
 
@@ -98,25 +177,20 @@ export function PageEditorStep3() {
         await fetch("/api/revalidate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ type: "pages" }),
+          body: JSON.stringify({ type: "posts" }),
         })
       } catch {
         // non-critical
       }
 
-      clearWizardStorage()
+      clearPostWizardStorage()
 
       if (publish) {
         setPublishState("success")
-        // Wait for celebration animation, then redirect
-        setTimeout(() => {
-          toast.success("Seite erfolgreich veröffentlicht!")
-          router.push("/cms/pages")
-          router.refresh()
-        }, 1500)
+        setCelebrationUrl(postUrl)
       } else {
         toast.success("Entwurf gespeichert!")
-        router.push("/cms/pages")
+        router.push("/cms/posts")
         router.refresh()
       }
     } catch (err: unknown) {
@@ -127,6 +201,12 @@ export function PageEditorStep3() {
     }
   }
 
+  const handleCelebrationClose = () => {
+    setPublishState("idle")
+    router.push("/cms/posts")
+    router.refresh()
+  }
+
   return (
     <div className="mx-auto max-w-4xl space-y-6 animate-fade-in">
       <div className="grid gap-6 lg:grid-cols-2">
@@ -135,24 +215,34 @@ export function PageEditorStep3() {
           <h3 className="font-display text-lg font-semibold">Zusammenfassung</h3>
 
           <div className="rounded-2xl border bg-card p-5 space-y-4">
-            {/* Title + URL */}
-            <div>
-              <p className="text-xs text-muted-foreground">Seitentitel</p>
-              <p className="font-display font-semibold text-lg">{state.title}</p>
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground">URL</p>
-              <p className="text-sm font-mono text-foreground">{fullUrl}</p>
-            </div>
-
-            {/* Hero Image */}
-            {state.heroImageUrl && (
+            {/* Cover Image */}
+            {state.coverImageUrl && (
               <div>
-                <p className="text-xs text-muted-foreground mb-1">Hero-Bild</p>
+                <p className="text-xs text-muted-foreground mb-1">Titelbild</p>
                 <div className="overflow-hidden rounded-lg border border-border">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={state.heroImageUrl} alt="Hero" className="h-24 w-full object-cover" />
+                  <img src={state.coverImageUrl} alt="Cover" className="h-24 w-full object-cover" />
                 </div>
+              </div>
+            )}
+
+            {/* Title */}
+            <div>
+              <p className="text-xs text-muted-foreground">Titel</p>
+              <p className="font-display font-semibold text-lg">{state.title}</p>
+            </div>
+
+            {/* Slug + URL */}
+            <div>
+              <p className="text-xs text-muted-foreground">URL</p>
+              <p className="text-sm font-mono text-foreground">grabbe.site{postUrl}</p>
+            </div>
+
+            {/* Category */}
+            {state.category && (
+              <div>
+                <p className="text-xs text-muted-foreground">Kategorie</p>
+                <p className="text-sm">{state.category}</p>
               </div>
             )}
 
@@ -168,6 +258,14 @@ export function PageEditorStep3() {
               </div>
             )}
 
+            {/* Excerpt */}
+            {state.excerpt && (
+              <div>
+                <p className="text-xs text-muted-foreground">Kurztext</p>
+                <p className="text-sm line-clamp-3">{state.excerpt}</p>
+              </div>
+            )}
+
             {/* Content Info */}
             <div>
               <p className="text-xs text-muted-foreground">Inhaltstyp</p>
@@ -180,15 +278,29 @@ export function PageEditorStep3() {
               </p>
             </div>
 
+            {/* Author */}
+            {authorName && (
+              <div>
+                <p className="text-xs text-muted-foreground">Autor</p>
+                <p className="text-sm">{authorName}</p>
+              </div>
+            )}
+
             {/* Date */}
             <div>
-              <p className="text-xs text-muted-foreground">Erstellt am</p>
+              <p className="text-xs text-muted-foreground">Datum</p>
               <p className="text-sm">
-                {new Date().toLocaleDateString("de-DE", {
-                  day: "2-digit",
-                  month: "long",
-                  year: "numeric",
-                })}
+                {state.publishDate
+                  ? new Date(state.publishDate + "T00:00:00").toLocaleDateString("de-DE", {
+                      day: "2-digit",
+                      month: "long",
+                      year: "numeric",
+                    })
+                  : new Date().toLocaleDateString("de-DE", {
+                      day: "2-digit",
+                      month: "long",
+                      year: "numeric",
+                    })}
               </p>
             </div>
           </div>
@@ -201,9 +313,9 @@ export function PageEditorStep3() {
           <div className="rounded-2xl border bg-card p-5 space-y-4">
             {/* Meta Description */}
             <div className="space-y-2">
-              <Label htmlFor="meta-desc">Meta-Beschreibung</Label>
+              <Label htmlFor="post-meta-desc">Meta-Beschreibung</Label>
               <textarea
-                id="meta-desc"
+                id="post-meta-desc"
                 value={state.metaDescription}
                 onChange={(e) => dispatch({ type: "SET_META_DESCRIPTION", payload: e.target.value })}
                 placeholder="Beschreibung für Suchmaschinen (max. 160 Zeichen)…"
@@ -228,12 +340,12 @@ export function PageEditorStep3() {
 
             {/* SEO Title */}
             <div className="space-y-2">
-              <Label htmlFor="seo-title">SEO-Titel (optional)</Label>
+              <Label htmlFor="post-seo-title">SEO-Titel (optional)</Label>
               <Input
-                id="seo-title"
+                id="post-seo-title"
                 value={state.seoTitle}
                 onChange={(e) => dispatch({ type: "SET_SEO_TITLE", payload: e.target.value })}
-                placeholder={state.title || "Wird vom Seitentitel übernommen"}
+                placeholder={state.title || "Wird vom Beitragstitel übernommen"}
               />
             </div>
 
@@ -241,41 +353,26 @@ export function PageEditorStep3() {
             <div className="space-y-2">
               <Label>OG-Bild (optional)</Label>
               <p className="text-xs text-muted-foreground">
-                {state.heroImageUrl
-                  ? "Standardmäßig wird das Hero-Bild verwendet."
+                {state.coverImageUrl
+                  ? "Standardmäßig wird das Titelbild verwendet."
                   : "Vorschaubild für Social Media."}
               </p>
-              {state.ogImageUrl && (
-                <div className="relative overflow-hidden rounded-lg border border-border">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={state.ogImageUrl} alt="OG" className="h-20 w-full object-cover" />
-                  <button
-                    type="button"
-                    onClick={() => dispatch({ type: "SET_OG_IMAGE", payload: null })}
-                    className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                </div>
-              )}
+              <ImagePicker
+                value={state.ogImageUrl}
+                onChange={(url) => dispatch({ type: "SET_OG_IMAGE", payload: url })}
+                aspectRatio="16/9"
+              />
             </div>
           </div>
 
           {/* Google Preview */}
-          <div className="rounded-2xl border bg-card p-5 space-y-2">
-            <p className="text-xs font-medium text-muted-foreground">Google-Vorschau</p>
-            <div className="space-y-0.5">
-              <p className="text-base text-[#1a0dab] font-medium truncate">
-                {state.seoTitle || state.title || "Seitentitel"}
-              </p>
-              <p className="text-xs text-[#006621] font-mono truncate">
-                {fullUrl}
-              </p>
-              <p className="text-xs text-[#545454] line-clamp-2">
-                {state.metaDescription || "Keine Meta-Beschreibung angegeben. Google wird automatisch einen Ausschnitt aus dem Seiteninhalt verwenden."}
-              </p>
-            </div>
-          </div>
+          <SeoPreview
+            title={state.seoTitle || state.title}
+            description={state.metaDescription || state.excerpt || ""}
+            url={postUrl}
+            titleSeparator={seoSeparator}
+            titleSuffix={seoSuffix}
+          />
         </div>
       </div>
 
@@ -305,7 +402,7 @@ export function PageEditorStep3() {
           </Button>
 
           {publishState === "success" ? (
-            <Button size="lg" className="gap-2 bg-emerald-600 hover:bg-emerald-600 pointer-events-none publish-success-btn">
+            <Button size="lg" className="gap-2 bg-emerald-600 hover:bg-emerald-600 pointer-events-none">
               <Check className="h-5 w-5" />
               Veröffentlicht!
             </Button>
@@ -326,6 +423,15 @@ export function PageEditorStep3() {
           )}
         </div>
       </div>
+
+      {/* Publish Celebration */}
+      {publishState === "success" && (
+        <PublishCelebration
+          title={state.title}
+          url={celebrationUrl}
+          onClose={handleCelebrationClose}
+        />
+      )}
     </div>
   )
 }

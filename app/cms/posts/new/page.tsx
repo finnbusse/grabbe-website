@@ -1,5 +1,10 @@
-import { PostEditor } from "@/components/cms/post-editor"
+import { PostWizardProvider } from "@/components/cms/post-wizard-context"
+import { PostWizard } from "@/components/cms/post-wizard"
 
 export default function NewPostPage() {
-  return <PostEditor />
+  return (
+    <PostWizardProvider>
+      <PostWizard />
+    </PostWizardProvider>
+  )
 }

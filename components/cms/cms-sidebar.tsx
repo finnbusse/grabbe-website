@@ -19,11 +19,10 @@ interface SidebarLink {
 
 const contentLinks: SidebarLink[] = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/cms" },
-  { icon: FileEdit, label: "Seiten-Editor", href: "/cms/seiten-editor", permCheck: (p) => checkPermission(p, "seitenEditor") },
+  { icon: FileEdit, label: "Seiten", href: "/cms/seiten", permCheck: (p) => checkPermission(p, "seitenEditor") || p.pages.edit },
   { icon: FileText, label: "Beiträge", href: "/cms/posts", permCheck: (p) => checkPermission(p, "posts") },
-  { icon: BookOpen, label: "Eigene Seiten", href: "/cms/pages", permCheck: (p) => p.pages.edit },
   { icon: CalendarDays, label: "Termine", href: "/cms/events", permCheck: (p) => checkPermission(p, "events") },
-  { icon: Upload, label: "Dokumente", href: "/cms/documents", permCheck: (p) => checkPermission(p, "documents") },
+  { icon: Upload, label: "Dateien & Medien", href: "/cms/dateien", permCheck: (p) => checkPermission(p, "documents") },
   { icon: Tag, label: "Tags", href: "/cms/tags", permCheck: (p) => checkPermission(p, "tags") },
 ]
 
@@ -90,9 +89,7 @@ export function CmsSidebar({ userEmail, userProfile, isOpen, onClose }: { userEm
   const meineSeiten = pagePermissions.map((pp) => ({
     icon: FileStack as LucideIcon,
     label: pp.page_id,
-    href: pp.page_type === "editable"
-      ? `/cms/seiten-editor/${pp.page_id}`
-      : `/cms/pages/${pp.page_id}`,
+    href: `/cms/seiten/${pp.page_id}/bearbeiten`,
   }))
 
   const sections = [

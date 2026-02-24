@@ -18,6 +18,33 @@ export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
   const segments = pathname.split('/').filter(Boolean)
 
+  // ── 301 Redirects for deprecated CMS routes ──
+  if (pathname.startsWith('/cms/seiten-editor')) {
+    const rest = pathname.replace('/cms/seiten-editor', '')
+    const redirectUrl = request.nextUrl.clone()
+    redirectUrl.pathname = rest ? `/cms/seiten${rest}/bearbeiten` : '/cms/seiten'
+    return NextResponse.redirect(redirectUrl, 301)
+  }
+  if (pathname === '/cms/pages/new') {
+    // Keep new page wizard at its current URL
+  } else if (pathname.startsWith('/cms/pages/') && pathname !== '/cms/pages') {
+    const pageId = pathname.replace('/cms/pages/', '')
+    const redirectUrl = request.nextUrl.clone()
+    redirectUrl.pathname = `/cms/seiten/${pageId}/bearbeiten`
+    return NextResponse.redirect(redirectUrl, 301)
+  } else if (pathname === '/cms/pages') {
+    const redirectUrl = request.nextUrl.clone()
+    redirectUrl.pathname = '/cms/seiten'
+    return NextResponse.redirect(redirectUrl, 301)
+  }
+
+  // Redirect /cms/documents → /cms/dateien
+  if (pathname === '/cms/documents') {
+    const redirectUrl = request.nextUrl.clone()
+    redirectUrl.pathname = '/cms/dateien'
+    return NextResponse.redirect(redirectUrl, 301)
+  }
+
   // Only consider paths with 1-3 segments that don't match known filesystem routes
   if (segments.length >= 1 && segments.length <= 3) {
     const firstSegment = segments[0]

@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { ArrowLeft, Save, Eye, Loader2 } from "lucide-react"
 import { FileUploader, FileListItem } from "./file-uploader"
+import { ImagePicker } from "./image-picker"
 import { TagSelector } from "./tag-selector"
 import Link from "next/link"
 
@@ -294,14 +295,11 @@ export function PostEditor({ post }: PostEditorProps) {
 
           <div className="rounded-2xl border bg-card p-6 space-y-4">
             <h3 className="font-display text-sm font-semibold">Beitragsbild</h3>
-            {imageUrl ? (
-              <div className="space-y-2">
-                <img src={imageUrl} alt="Beitragsbild" className="w-full rounded-lg object-cover aspect-video" />
-                <Button variant="outline" size="sm" className="w-full" onClick={() => setImageUrl("")}>Bild entfernen</Button>
-              </div>
-            ) : (
-              <FileUploader accept="image/*" label="Beitragsbild hochladen" onUpload={(file) => setImageUrl(file.url)} />
-            )}
+            <ImagePicker
+              value={imageUrl || null}
+              onChange={(url) => setImageUrl(url || "")}
+              aspectRatio="16/9"
+            />
           </div>
 
           <div className="rounded-2xl border bg-card p-6 space-y-4">
@@ -325,18 +323,13 @@ export function PostEditor({ post }: PostEditorProps) {
               )}
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="seoOgImg">Social-Media Bild (OG-Image)</Label>
-              {seoOgImage ? (
-                <div className="space-y-2">
-                  <img src={seoOgImage} alt="OG-Bild" className="w-full rounded-lg object-cover aspect-video" />
-                  <Button variant="outline" size="sm" className="w-full" onClick={() => setSeoOgImage("")}>Bild entfernen</Button>
-                </div>
-              ) : (
-                <>
-                  <p className="text-[10px] text-muted-foreground">Eigenes Vorschaubild für Social Media. Falls leer, wird das Beitragsbild verwendet.</p>
-                  <FileUploader accept="image/*" label="OG-Bild hochladen" onUpload={(file) => setSeoOgImage(file.url)} />
-                </>
-              )}
+              <Label>Social-Media Bild (OG-Image)</Label>
+              <p className="text-[10px] text-muted-foreground">Eigenes Vorschaubild für Social Media. Falls leer, wird das Beitragsbild verwendet.</p>
+              <ImagePicker
+                value={seoOgImage || null}
+                onChange={(url) => setSeoOgImage(url || "")}
+                aspectRatio="16/9"
+              />
             </div>
           </div>
         </div>
