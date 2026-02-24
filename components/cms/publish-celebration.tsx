@@ -46,6 +46,9 @@ export function PublishCelebration({ title, url, onClose }: PublishCelebrationPr
     duration: number
     rotateEnd: number
     xDrift: number
+    width: number
+    height: number
+    isCircle: boolean
   }>>([])
 
   useEffect(() => {
@@ -58,6 +61,9 @@ export function PublishCelebration({ title, url, onClose }: PublishCelebrationPr
       duration: randomBetween(2, 3.5),
       rotateEnd: randomBetween(360, 720) * (Math.random() > 0.5 ? 1 : -1),
       xDrift: randomBetween(-40, 40),
+      width: randomBetween(6, 10),
+      height: randomBetween(6, 10),
+      isCircle: Math.random() > 0.5,
     }))
     setConfettiPieces(pieces)
   }, [])
@@ -93,10 +99,10 @@ export function PublishCelebration({ title, url, onClose }: PublishCelebrationPr
               style={{
                 left: `${piece.left}%`,
                 top: "-10px",
-                width: `${randomBetween(6, 10)}px`,
-                height: `${randomBetween(6, 10)}px`,
+                width: `${piece.width}px`,
+                height: `${piece.height}px`,
                 backgroundColor: piece.color,
-                borderRadius: Math.random() > 0.5 ? "50%" : "2px",
+                borderRadius: piece.isCircle ? "50%" : "2px",
                 animation: `confetti-fall ${piece.duration}s ease-in ${piece.delay}s forwards`,
                 opacity: 0,
                 ["--x-drift" as string]: `${piece.xDrift}px`,

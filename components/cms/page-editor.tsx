@@ -146,8 +146,8 @@ export function PageEditor({ page }: PageEditorProps) {
         setShowCelebration(true)
       } else {
         router.push("/cms/seiten")
+        router.refresh()
       }
-      router.refresh()
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Fehler beim Speichern")
     } finally {

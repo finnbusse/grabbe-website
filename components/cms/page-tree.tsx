@@ -192,27 +192,25 @@ export function PageTree({ staticPages, customPages }: PageTreeProps) {
       </div>
 
       {/* Custom pages */}
-      {(custom.length > 0 || true) && (
-        <div className="border-t border-border px-2 py-2">
-          <div className="flex items-center gap-2 px-3 py-2">
-            <FolderOpen className="h-4 w-4 text-violet-500" />
-            <span className="text-sm font-semibold text-card-foreground">Eigene Seiten</span>
-            <span className="ml-auto text-[10px] text-muted-foreground">{custom.length} Seiten</span>
-          </div>
-          <div className="ml-4 border-l border-border pl-2">
-            {custom.map((item) => (
-              <PageRow key={item.id} item={item} />
-            ))}
-            <Link
-              href="/cms/pages/new"
-              className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-primary hover:bg-primary/5 transition-colors"
-            >
-              <Plus className="h-4 w-4" />
-              Neue Seite erstellen
-            </Link>
-          </div>
+      <div className="border-t border-border px-2 py-2">
+        <div className="flex items-center gap-2 px-3 py-2">
+          <FolderOpen className="h-4 w-4 text-violet-500" />
+          <span className="text-sm font-semibold text-card-foreground">Eigene Seiten</span>
+          <span className="ml-auto text-[10px] text-muted-foreground">{custom.length} Seiten</span>
         </div>
-      )}
+        <div className="ml-4 border-l border-border pl-2">
+          {custom.map((item) => (
+            <PageRow key={item.id} item={item} />
+          ))}
+          <Link
+            href="/cms/pages/new"
+            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-primary hover:bg-primary/5 transition-colors"
+          >
+            <Plus className="h-4 w-4" />
+            Neue Seite erstellen
+          </Link>
+        </div>
+      </div>
 
       {/* Other static pages (impressum, datenschutz, kontakt, etc.) */}
       {otherStatic.length > 0 && (

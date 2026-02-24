@@ -276,7 +276,7 @@ function ImagePickerModal({
                           <img
                             src={blob.url}
                             alt={filename}
-                            className={`w-full object-cover ${aspectRatio === "1/1" ? "aspect-square" : "aspect-video"}`}
+                            className={`w-full object-cover ${aspectRatio === "1/1" ? "aspect-square" : aspectRatio === "free" ? "aspect-auto max-h-40" : "aspect-video"}`}
                           />
                           {isSelected && (
                             <div className="absolute inset-0 flex items-center justify-center bg-primary/20">

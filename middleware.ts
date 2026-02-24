@@ -25,10 +25,8 @@ export async function middleware(request: NextRequest) {
     redirectUrl.pathname = rest ? `/cms/seiten${rest}/bearbeiten` : '/cms/seiten'
     return NextResponse.redirect(redirectUrl, 301)
   }
-  if (pathname.startsWith('/cms/pages/new')) {
-    const redirectUrl = request.nextUrl.clone()
-    redirectUrl.pathname = '/cms/pages/new'
-    // Keep new page wizard as-is
+  if (pathname === '/cms/pages/new') {
+    // Keep new page wizard at its current URL
   } else if (pathname.startsWith('/cms/pages/') && pathname !== '/cms/pages') {
     const pageId = pathname.replace('/cms/pages/', '')
     const redirectUrl = request.nextUrl.clone()

@@ -3,6 +3,8 @@ import { revalidatePath, revalidateTag } from "next/cache"
 import { type NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 
+const SUPPORTED_IMAGE_EXTENSIONS = ["jpg", "jpeg", "png", "gif", "webp", "svg", "avif"]
+
 export async function GET(request: NextRequest) {
   try {
     if (!process.env.BLOB_READ_WRITE_TOKEN) {
@@ -23,7 +25,7 @@ export async function GET(request: NextRequest) {
     // Filter to images only for the media library
     const imageBlobs = result.blobs.filter((blob) => {
       const ext = blob.pathname.split(".").pop()?.toLowerCase() || ""
-      return ["jpg", "jpeg", "png", "gif", "webp", "svg", "avif"].includes(ext)
+      return SUPPORTED_IMAGE_EXTENSIONS.includes(ext)
     })
 
     return NextResponse.json({
