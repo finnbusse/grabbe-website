@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { ImagePicker } from "@/components/cms/image-picker"
 import {
   Settings, Save, Loader2, Upload, Globe, Building2, Mail, Phone,
   MapPin, Share2, Search as SearchIcon, Image as ImageIcon, FileText,
@@ -94,7 +95,7 @@ function Field({
 }
 
 // ---------------------------------------------------------------------------
-// Image field with upload
+// Image field with upload (legacy)
 // ---------------------------------------------------------------------------
 function ImageField({
   label,
@@ -129,6 +130,27 @@ function ImageField({
         )}
       </div>
     </Field>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Image field with media library picker
+// ---------------------------------------------------------------------------
+function ImagePickerField({
+  value,
+  onChange,
+  aspectRatio = "free",
+}: {
+  value: string
+  onChange: (v: string) => void
+  aspectRatio?: "16/9" | "1/1" | "free"
+}) {
+  return (
+    <ImagePicker
+      value={value || null}
+      onChange={(url) => onChange(url || "")}
+      aspectRatio={aspectRatio}
+    />
   )
 }
 
@@ -296,14 +318,9 @@ export default function SettingsPage() {
             placeholder: "Wir fördern Deine Talente und stärken Deine Persönlichkeit.",
           })}
         </Field>
-        <ImageField
-          label="Logo"
-          hint="Quadratisch, mind. 512 x 512 px. Wird im Schema.org und ggf. in Suchergebnissen angezeigt."
-          value={values.seo_org_logo ?? ""}
-          onChange={(v) => set("seo_org_logo", v)}
-          uploading={uploadingKey === "seo_org_logo"}
-          onUpload={() => handleImageUpload("seo_org_logo")}
-        />
+        <Field label="Logo" hint="Quadratisch, mind. 512 x 512 px. Wird im Schema.org und ggf. in Suchergebnissen angezeigt.">
+          <ImagePickerField value={values.seo_org_logo ?? ""} onChange={(v) => set("seo_org_logo", v)} aspectRatio="1/1" />
+        </Field>
       </Section>
 
       {/* ====================== CONTACT ====================== */}
@@ -401,14 +418,9 @@ export default function SettingsPage() {
             placeholder: "Das Christian-Dietrich-Grabbe-Gymnasium in Detmold ...",
           })}
         </Field>
-        <ImageField
-          label="Standard OG-Bild"
-          hint="Vorschaubild für Social-Media, wenn kein seitenspezifisches Bild vorhanden ist (1200 x 630 px empfohlen)."
-          value={values.seo_og_image ?? ""}
-          onChange={(v) => set("seo_og_image", v)}
-          uploading={uploadingKey === "seo_og_image"}
-          onUpload={() => handleImageUpload("seo_og_image")}
-        />
+        <Field label="Standard OG-Bild" hint="Vorschaubild für Social-Media, wenn kein seitenspezifisches Bild vorhanden ist (1200 x 630 px empfohlen).">
+          <ImagePickerField value={values.seo_og_image ?? ""} onChange={(v) => set("seo_og_image", v)} aspectRatio="16/9" />
+        </Field>
       </Section>
 
       {/* ====================== SOCIAL ====================== */}
