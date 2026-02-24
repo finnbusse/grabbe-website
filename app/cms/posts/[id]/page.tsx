@@ -42,14 +42,14 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
       postId: p.id,
       lastAutoSaved: null,
     }}>
-      <PostWizard editMode editPostId={p.id} />
+      <PostWizard editMode />
     </PostWizardProvider>
   )
 }
 
 function isBlockContent(content: string): boolean {
   try {
-    if (content.startsWith("[{") || content.startsWith("[{\"")) {
+    if (content.startsWith("[{")) {
       const parsed = JSON.parse(content)
       return Array.isArray(parsed) && parsed.length > 0 && parsed[0].type && parsed[0].id
     }

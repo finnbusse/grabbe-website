@@ -114,7 +114,8 @@ export function PageSettingsForm({ page, isStatic }: PageSettingsFormProps) {
         const { error: err } = await supabase.from("pages").update(payload as never).eq("id", page.id)
         if (err) {
           // Retry without hero_image_url/hero_subtitle if columns don't exist
-          if ((err as { message?: string }).message?.includes("hero_image_url") || (err as { message?: string }).message?.includes("hero_subtitle")) {
+          const errMsg = (err as { message?: string }).message || ""
+          if (errMsg.includes("hero_image_url") || errMsg.includes("hero_subtitle")) {
             const { hero_image_url: _a, hero_subtitle: _b, ...payloadWithout } = payload
             const { error: err2 } = await supabase.from("pages").update(payloadWithout as never).eq("id", page.id)
             if (err2) throw err2

@@ -24,10 +24,9 @@ const STEPS = [
 
 interface PostWizardProps {
   editMode?: boolean
-  editPostId?: string
 }
 
-export function PostWizard({ editMode, editPostId: _editPostId }: PostWizardProps) {
+export function PostWizard({ editMode }: PostWizardProps) {
   const { state } = usePostWizard()
 
   return (

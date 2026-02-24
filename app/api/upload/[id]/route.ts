@@ -25,17 +25,19 @@ export async function PATCH(
     if (typeof body.description === "string") updates.description = body.description
     if (typeof body.category === "string") updates.category = body.category
 
-    if (Object.keys(updates).length === 0) {
+    if (Object.keys(updates).length === 0 && !Array.isArray(body.tagIds)) {
       return NextResponse.json({ error: "Keine Änderungen angegeben" }, { status: 400 })
     }
 
-    const { error } = await supabase
-      .from("documents")
-      .update(updates as never)
-      .eq("id", id)
+    if (Object.keys(updates).length > 0) {
+      const { error } = await supabase
+        .from("documents")
+        .update(updates as never)
+        .eq("id", id)
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 })
+      if (error) {
+        return NextResponse.json({ error: error.message }, { status: 500 })
+      }
     }
 
     // Handle tag updates if provided
