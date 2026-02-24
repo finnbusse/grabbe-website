@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { usePageWizard, generateSlug } from "./page-wizard-context"
+import { usePageWizard, generateSlug, buildFullUrl } from "./page-wizard-context"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -110,11 +110,7 @@ export function PageWizardStep1() {
     }
   }
 
-  const fullUrl = state.routePath
-    ? `grabbe.site${state.routePath}/${state.slug || "..."}`
-    : state.slug
-      ? `grabbe.site/seiten/${state.slug}`
-      : "grabbe.site/..."
+  const fullUrl = buildFullUrl(state.routePath, state.slug)
 
   const canProceed = state.title.trim() && state.routePath
 

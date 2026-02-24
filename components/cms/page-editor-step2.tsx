@@ -209,7 +209,7 @@ function MarkdownEditor({
       {/* Editor + Preview */}
       <div className={`rounded-2xl border bg-card overflow-hidden ${viewMode === "split" ? "grid grid-cols-2 divide-x" : ""}`}>
         {/* Editor Pane */}
-        <div className={viewMode === "split" ? "" : ""}>
+        <div>
           <div className="border-b bg-muted/30 px-4 py-2">
             <span className="text-xs font-medium text-muted-foreground">Editor</span>
           </div>

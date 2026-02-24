@@ -2,13 +2,13 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { usePageWizard, clearWizardStorage } from "./page-wizard-context"
+import { usePageWizard, clearWizardStorage, buildFullUrl } from "./page-wizard-context"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { TagBadge, type TagData, getTagColorClasses } from "./tag-selector"
-import { ArrowLeft, Loader2, Save, Rocket, Check, ImageIcon, X, Tag as TagIcon } from "lucide-react"
+import { TagBadge, type TagData } from "./tag-selector"
+import { ArrowLeft, Loader2, Save, Rocket, Check, X } from "lucide-react"
 import { toast } from "sonner"
 
 // ============================================================================
@@ -34,9 +34,7 @@ export function PageEditorStep3() {
 
   const selectedTags = allTags.filter((t) => state.tagIds.includes(t.id))
 
-  const fullUrl = state.routePath
-    ? `grabbe.site${state.routePath}/${state.slug}`
-    : `grabbe.site/seiten/${state.slug}`
+  const fullUrl = buildFullUrl(state.routePath, state.slug)
 
   const wordCount =
     state.contentMode === "markdown"

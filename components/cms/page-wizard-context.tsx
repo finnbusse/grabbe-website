@@ -196,3 +196,9 @@ export function generateSlug(text: string): string {
     .replace(/-+/g, "-")
     .trim()
 }
+
+export function buildFullUrl(routePath: string, slug: string): string {
+  if (routePath) return `grabbe.site${routePath}/${slug || "..."}`
+  if (slug) return `grabbe.site/seiten/${slug}`
+  return "grabbe.site/..."
+}
