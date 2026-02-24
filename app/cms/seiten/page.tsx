@@ -1,13 +1,39 @@
 import { createClient } from "@/lib/supabase/server"
 import { EDITABLE_PAGES } from "@/lib/page-content"
-import { PageTree, type PageTreeItem } from "@/components/cms/page-tree"
+import { PageTree, type PageTreeItem, type CategoryDef } from "@/components/cms/page-tree"
+
+const DEFAULT_CATEGORIES: CategoryDef[] = [
+  { id: "unsere-schule", slug: "unsere-schule", label: "Unsere Schule", sort_order: 0, children: [] },
+  { id: "schulleben", slug: "schulleben", label: "Schulleben", sort_order: 1, children: [] },
+]
 
 export default async function SeitenPage() {
   const supabase = await createClient()
-  const { data: pages } = await supabase
-    .from("pages")
-    .select("id, title, slug, published, route_path, section")
-    .order("sort_order", { ascending: true })
+
+  // Fetch pages and site structure in parallel
+  const [pagesResult, structResult] = await Promise.all([
+    supabase
+      .from("pages")
+      .select("id, title, slug, published, route_path, section")
+      .order("sort_order", { ascending: true }),
+    supabase
+      .from("site_settings")
+      .select("value")
+      .eq("key", "site_structure")
+      .single(),
+  ])
+
+  // Parse site structure categories
+  let categories: CategoryDef[] = DEFAULT_CATEGORIES
+  try {
+    const raw = (structResult.data as unknown as { value?: string })?.value
+    if (raw) {
+      const parsed = JSON.parse(raw)
+      if (parsed.categories?.length > 0) {
+        categories = parsed.categories
+      }
+    }
+  } catch { /* use defaults */ }
 
   // Build static page items from EDITABLE_PAGES (deduplicate by route)
   const seenRoutes = new Set<string>()
@@ -42,7 +68,7 @@ export default async function SeitenPage() {
   }
 
   // Build custom page items from DB
-  const customItems: PageTreeItem[] = ((pages as Array<{
+  const customItems: PageTreeItem[] = ((pagesResult.data as Array<{
     id: string
     title: string
     slug: string
@@ -55,6 +81,7 @@ export default async function SeitenPage() {
     route: p.route_path ? `${p.route_path}/${p.slug}` : `/seiten/${p.slug}`,
     type: "custom" as const,
     published: p.published,
+    routePath: p.route_path,
   }))
 
   return (
@@ -69,7 +96,7 @@ export default async function SeitenPage() {
       </div>
 
       <div className="mt-6">
-        <PageTree staticPages={staticItems} customPages={customItems} />
+        <PageTree staticPages={staticItems} customPages={customItems} categories={categories} />
       </div>
     </div>
   )

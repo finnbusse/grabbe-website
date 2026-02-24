@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -9,6 +9,7 @@ import { Switch } from "@/components/ui/switch"
 import { ArrowLeft, Save, Loader2, Trash2, ChevronDown, Lock } from "lucide-react"
 import { TagSelector } from "@/components/cms/tag-selector"
 import { ImagePicker } from "@/components/cms/image-picker"
+import { SeoPreview } from "@/components/cms/seo-preview"
 import { PublishCelebration } from "@/components/cms/publish-celebration"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
@@ -58,6 +59,28 @@ export function PageSettingsForm({ page, isStatic }: PageSettingsFormProps) {
   const [showCelebration, setShowCelebration] = useState(false)
   const wasPublished = page.published
 
+  // Fetch global SEO settings for the preview
+  const [seoSeparator, setSeoSeparator] = useState(" / ")
+  const [seoSuffix, setSeoSuffix] = useState("Grabbe-Gymnasium")
+  useEffect(() => {
+    async function loadSeoSettings() {
+      try {
+        const supabase = createClient()
+        const { data } = await supabase
+          .from("site_settings")
+          .select("key, value")
+          .in("key", ["seo_title_separator", "seo_title_suffix"])
+        if (data) {
+          for (const row of data as Array<{ key: string; value: string }>) {
+            if (row.key === "seo_title_separator" && row.value) setSeoSeparator(row.value)
+            if (row.key === "seo_title_suffix" && row.value) setSeoSuffix(row.value)
+          }
+        }
+      } catch { /* use defaults */ }
+    }
+    loadSeoSettings()
+  }, [])
+
   const handleSave = async () => {
     setSaving(true)
     setError(null)
@@ -69,7 +92,7 @@ export function PageSettingsForm({ page, isStatic }: PageSettingsFormProps) {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            pageId: page.id,
+            pageId: page.id === "homepage" ? "homepage-hero" : page.id,
             content: { hero_image: heroImageUrl },
           }),
         })
@@ -132,6 +155,10 @@ export function PageSettingsForm({ page, isStatic }: PageSettingsFormProps) {
       setDeleting(false)
     }
   }
+
+  // Compute values for SEO preview
+  const previewTitle = seoTitle || title || page.title
+  const previewDesc = metaDescription || "Beschreibung der Seite"
 
   return (
     <div>
@@ -206,7 +233,6 @@ export function PageSettingsForm({ page, isStatic }: PageSettingsFormProps) {
             <ImagePicker
               value={heroImageUrl || null}
               onChange={(url) => setHeroImageUrl(url || "")}
-              label="Hero-Bild auswählen"
               aspectRatio="16/9"
             />
           </div>
@@ -243,8 +269,11 @@ export function PageSettingsForm({ page, isStatic }: PageSettingsFormProps) {
                 id="seoTitle"
                 value={seoTitle}
                 onChange={(e) => setSeoTitle(e.target.value)}
-                placeholder="Eigener Titel für Suchmaschinen"
+                placeholder={`${title || "Seitentitel"}${seoSeparator}${seoSuffix}`}
               />
+              <p className="text-[10px] text-muted-foreground">
+                Wird automatisch ergänzt um &quot;{seoSeparator}{seoSuffix}&quot;
+              </p>
             </div>
             <div className="grid gap-2">
               <Label htmlFor="metaDesc">Meta-Beschreibung</Label>
@@ -261,12 +290,21 @@ export function PageSettingsForm({ page, isStatic }: PageSettingsFormProps) {
                 {metaDescription.length}/160 Zeichen
               </span>
             </div>
+
+            {/* Google preview */}
+            <SeoPreview
+              title={previewTitle}
+              description={previewDesc}
+              url={page.route}
+              titleSeparator={seoSeparator}
+              titleSuffix={seoSuffix}
+            />
+
             <div className="grid gap-2">
               <Label>Social-Media Bild</Label>
               <ImagePicker
                 value={seoOgImage || null}
                 onChange={(url) => setSeoOgImage(url || "")}
-                label="OG-Bild"
                 aspectRatio="16/9"
               />
             </div>

@@ -7,14 +7,52 @@ const SUPPORTED_IMAGE_EXTENSIONS = ["jpg", "jpeg", "png", "gif", "webp", "svg", 
 
 export async function GET(request: NextRequest) {
   try {
-    if (!process.env.BLOB_READ_WRITE_TOKEN) {
-      return NextResponse.json({ blobs: [] })
-    }
-
     const { searchParams } = new URL(request.url)
+    const typeFilter = searchParams.get("type") // e.g. "image"
     const cursor = searchParams.get("cursor") || undefined
     const limitParam = searchParams.get("limit")
     const limit = limitParam ? Math.min(parseInt(limitParam, 10) || 50, 100) : 50
+
+    // Try documents table first (unified media library)
+    const supabase = await createClient()
+    let query = supabase
+      .from("documents")
+      .select("id, title, file_url, file_name, file_size, file_type, created_at")
+      .order("created_at", { ascending: false })
+      .limit(limit)
+
+    if (typeFilter === "image") {
+      query = query.like("file_type", "image/%")
+    }
+
+    const { data: docs, error: docsError } = await query
+
+    if (!docsError && docs && docs.length > 0) {
+      const typedDocs = docs as Array<{
+        id: string
+        title: string
+        file_url: string
+        file_name: string
+        file_size: number
+        file_type: string | null
+        created_at: string
+      }>
+      return NextResponse.json({
+        blobs: typedDocs.map((d) => ({
+          url: d.file_url,
+          pathname: d.file_name || d.title,
+          size: d.file_size,
+          uploadedAt: d.created_at,
+        })),
+        cursor: undefined,
+        hasMore: false,
+      })
+    }
+
+    // Fallback to Vercel Blob storage if documents table is empty or unavailable
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      return NextResponse.json({ blobs: [] })
+    }
 
     const result = await list({
       prefix: "schulwebsite/",
@@ -85,23 +123,20 @@ export async function POST(request: NextRequest) {
       access: "public",
     })
 
-    // Also save to documents table
+    // Always create a document record for every uploaded file
     const docTitle = formData.get("title") as string
     const docCategory = formData.get("category") as string
 
-    if (docTitle) {
-      await supabase.from("documents").insert({
-        title: docTitle || file.name,
-        file_url: blob.url,
-        file_name: file.name,
-        file_size: file.size,
-        file_type: file.type,
-        category: docCategory || "allgemein",
-        user_id: user.id,
-      })
-      revalidateTag("documents", "max")
-      revalidatePath("/downloads")
-    }
+    await supabase.from("documents").insert({
+      title: docTitle || file.name,
+      file_url: blob.url,
+      file_name: file.name,
+      file_size: file.size,
+      file_type: file.type,
+      category: docCategory || "allgemein",
+      user_id: user.id,
+    } as never)
+    revalidateTag("documents", "max")
 
     return NextResponse.json({
       url: blob.url,

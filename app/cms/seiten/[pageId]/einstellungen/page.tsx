@@ -15,6 +15,22 @@ export default async function PageSettingsPage({ params }: { params: Promise<{ p
     const def = isHomepage ? EDITABLE_PAGES.find((p) => p.route === "/") : staticPage
     if (!def) notFound()
 
+    // Load saved hero image from site_settings for static pages
+    const supabase = await createClient()
+    let heroImageUrl = ""
+    try {
+      const contentKey = isHomepage ? "homepage-hero" : pageId
+      const { data } = await supabase
+        .from("site_settings")
+        .select("value")
+        .eq("key", `page_content:${contentKey}`)
+        .single()
+      if (data?.value) {
+        const stored = JSON.parse(data.value)
+        heroImageUrl = (stored.hero_image as string) || ""
+      }
+    } catch { /* default empty */ }
+
     return (
       <PageSettingsForm
         page={{
@@ -22,7 +38,7 @@ export default async function PageSettingsPage({ params }: { params: Promise<{ p
           title: isHomepage ? "Startseite" : def.title,
           slug: "",
           route: def.route,
-          heroImageUrl: "",
+          heroImageUrl,
           metaDescription: "",
           seoTitle: "",
           seoOgImage: "",

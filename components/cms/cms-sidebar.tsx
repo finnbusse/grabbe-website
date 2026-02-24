@@ -22,7 +22,7 @@ const contentLinks: SidebarLink[] = [
   { icon: FileEdit, label: "Seiten", href: "/cms/seiten", permCheck: (p) => checkPermission(p, "seitenEditor") || p.pages.edit },
   { icon: FileText, label: "Beiträge", href: "/cms/posts", permCheck: (p) => checkPermission(p, "posts") },
   { icon: CalendarDays, label: "Termine", href: "/cms/events", permCheck: (p) => checkPermission(p, "events") },
-  { icon: Upload, label: "Dokumente", href: "/cms/documents", permCheck: (p) => checkPermission(p, "documents") },
+  { icon: Upload, label: "Dateien & Medien", href: "/cms/dateien", permCheck: (p) => checkPermission(p, "documents") },
   { icon: Tag, label: "Tags", href: "/cms/tags", permCheck: (p) => checkPermission(p, "tags") },
 ]
 

@@ -38,6 +38,13 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(redirectUrl, 301)
   }
 
+  // Redirect /cms/documents → /cms/dateien
+  if (pathname === '/cms/documents') {
+    const redirectUrl = request.nextUrl.clone()
+    redirectUrl.pathname = '/cms/dateien'
+    return NextResponse.redirect(redirectUrl, 301)
+  }
+
   // Only consider paths with 1-3 segments that don't match known filesystem routes
   if (segments.length >= 1 && segments.length <= 3) {
     const firstSegment = segments[0]

@@ -2,17 +2,17 @@ import { createClient } from "@/lib/supabase/server"
 import { notFound } from "next/navigation"
 import { EDITABLE_PAGES } from "@/lib/page-content"
 import { PageContentEditor } from "@/components/cms/page-content-editor"
+import { HomepageEditor } from "@/components/cms/homepage-editor"
 import { PageEditor } from "@/components/cms/page-editor"
 
 export default async function PageEditPage({ params }: { params: Promise<{ pageId: string }> }) {
   const { pageId } = await params
 
-  // Check if it's the special "homepage" aggregate
+  // Check if it's the special "homepage" aggregate — show all homepage sections
   if (pageId === "homepage") {
-    // Redirect to the first homepage section
-    const first = EDITABLE_PAGES.find((p) => p.route === "/")
-    if (!first) notFound()
-    return <PageContentEditor page={first} />
+    const homepageSections = EDITABLE_PAGES.filter((p) => p.route === "/")
+    if (homepageSections.length === 0) notFound()
+    return <HomepageEditor sections={homepageSections} />
   }
 
   // Check if it's a static editable page
