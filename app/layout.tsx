@@ -84,8 +84,8 @@ function buildDesignOverrides(ds: DesignSettings) {
   const style: Record<string, string> = {}
   const googleFonts: string[] = []
 
-  // Fonts already bundled via next/font — skip Google Fonts loading for these
-  const bundledFonts = new Set(["Instrument Serif", "Josefin Sans", "Geist"])
+  // Fonts already bundled via next/font or @font-face — skip Google Fonts loading
+  const bundledFonts = new Set(["Instrument Serif", "Josefin Sans", "Geist", "Futura LT"])
 
   // Fonts — only override when not 'default'
   if (ds.fonts.heading !== "default") {

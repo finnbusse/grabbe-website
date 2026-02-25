@@ -46,6 +46,7 @@ const STANDARD_FONTS = [
   { value: "Instrument Serif", label: "Instrument Serif (Standard Überschrift)" },
   { value: "Geist", label: "Geist Sans (Standard Fließtext)" },
   { value: "Josefin Sans", label: "Josefin Sans (Standard Akzent)" },
+  { value: "Futura LT", label: "Futura LT" },
 ]
 
 // ---------------------------------------------------------------------------

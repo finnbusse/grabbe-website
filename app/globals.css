@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Futura LT';
+  src: url('https://iplsqewa1jv1ew7a.public.blob.vercel-storage.com/schulwebsite/FuturaLT-RVkSuFYoEm1riqvNIbYajebu7NLuFG.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer base {
   :root {
     --background: 210 40% 98%;
