@@ -1,5 +1,6 @@
 import { updateSession } from '@/lib/supabase/middleware'
 import { NextResponse, type NextRequest } from 'next/server'
+import { isIpBlocked } from '@/lib/rate-limiter'
 
 // Known filesystem routes that should NOT be rewritten
 const KNOWN_ROUTES = new Set([
@@ -8,14 +9,37 @@ const KNOWN_ROUTES = new Set([
 ])
 
 export async function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname
+
+  // ── Early block check for login API route ──
+  if (pathname === '/api/auth/login' && request.method === 'POST') {
+    const ip =
+      request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+      request.headers.get('x-real-ip') ||
+      'unknown'
+
+    const { blocked, retryAfterSeconds } = await isIpBlocked(ip)
+
+    if (blocked) {
+      return NextResponse.json(
+        {
+          error: 'Zu viele Anmeldeversuche. Bitte warten Sie.',
+          retryAfterSeconds,
+        },
+        {
+          status: 429,
+          headers: { 'Retry-After': String(retryAfterSeconds) },
+        }
+      )
+    }
+  }
+
   const sessionResponse = await updateSession(request)
 
   // If session handling already redirected (e.g., to login), return that
   if (sessionResponse.status === 307 || sessionResponse.status === 308) {
     return sessionResponse
   }
-
-  const pathname = request.nextUrl.pathname
   const segments = pathname.split('/').filter(Boolean)
 
   // ── 301 Redirects for deprecated CMS routes ──
