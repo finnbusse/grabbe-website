@@ -27,17 +27,15 @@ const BASE_DELAY_MS = 1_000
 // Hashing helpers (Web Crypto API — Edge-compatible)
 // ---------------------------------------------------------------------------
 
-function getSalt(): string {
-  const salt = process.env.IP_HASH_SALT
-  if (!salt) {
-    throw new Error("IP_HASH_SALT environment variable is required for rate limiting")
-  }
-  return salt
+function getSalt(): string | null {
+  return process.env.IP_HASH_SALT || null
 }
 
 /** Hash a value with SHA-256 + server-side salt using Web Crypto API. */
-async function hashValue(value: string): Promise<string> {
-  const data = new TextEncoder().encode(value.toLowerCase().trim() + getSalt())
+async function hashValue(value: string): Promise<string | null> {
+  const salt = getSalt()
+  if (!salt) return null
+  const data = new TextEncoder().encode(value.toLowerCase().trim() + salt)
   const hashBuffer = await crypto.subtle.digest("SHA-256", data)
   const hashArray = Array.from(new Uint8Array(hashBuffer))
   return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("")
@@ -70,6 +68,12 @@ export async function checkRateLimit(
 ): Promise<RateLimitResult> {
   const ipHash = await hashValue(ip)
   const emailHash = await hashValue(email)
+
+  // If hashing is unavailable (IP_HASH_SALT not set), skip rate limiting
+  if (!ipHash || !emailHash) {
+    return { allowed: true, remainingAttempts: ACCOUNT_MAX_ATTEMPTS, retryAfterSeconds: 0, delayMs: 0 }
+  }
+
   const supabase = createAdminClient()
 
   const now = new Date()
@@ -162,6 +166,10 @@ export async function recordLoginAttempt(
 ): Promise<void> {
   const ipHash = await hashValue(ip)
   const emailHash = await hashValue(email)
+
+  // If hashing is unavailable (IP_HASH_SALT not set), skip recording
+  if (!ipHash || !emailHash) return
+
   const supabase = createAdminClient()
 
   // Record in both tables
@@ -192,6 +200,8 @@ export async function recordLoginAttempt(
 export async function isIpBlocked(ip: string): Promise<{ blocked: boolean; retryAfterSeconds: number }> {
   try {
     const ipHash = await hashValue(ip)
+    if (!ipHash) return { blocked: false, retryAfterSeconds: 0 }
+
     const supabase = createAdminClient()
     const now = new Date()
     const windowStart = new Date(now.getTime() - IP_WINDOW_MS).toISOString()
