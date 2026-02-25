@@ -35,7 +35,6 @@ export async function POST(request: NextRequest) {
         {
           error: "Zu viele Anmeldeversuche. Bitte warten Sie.",
           retryAfterSeconds: rateLimit.retryAfterSeconds,
-          remainingAttempts: 0,
         },
         {
           status: 429,
@@ -61,16 +60,9 @@ export async function POST(request: NextRequest) {
       // Record the failed attempt
       await recordLoginAttempt(ip, email, false)
 
-      // Re-check to provide accurate remaining attempts
-      const updatedLimit = await checkRateLimit(ip, email)
-
       // Return uniform 401 — never reveal whether the email exists
       return NextResponse.json(
-        {
-          error: "E-Mail oder Passwort ist falsch.",
-          remainingAttempts: updatedLimit.remainingAttempts,
-          retryAfterSeconds: updatedLimit.retryAfterSeconds,
-        },
+        { error: "E-Mail oder Passwort ist falsch." },
         { status: 401 }
       )
     }

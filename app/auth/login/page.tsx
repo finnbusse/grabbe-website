@@ -6,7 +6,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
+
+/** Calculate cooldown in seconds based on consecutive failure count.
+ *  1→2s, 2→3s, 3→5s, 4→7s, 5→11s, 6→16s, 7→23s, 8+→30s */
+function getCooldownSeconds(failCount: number): number {
+  if (failCount <= 0) return 0
+  return Math.min(Math.ceil(2 * Math.pow(1.5, failCount - 1)), 30)
+}
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -14,8 +21,8 @@ export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const [remainingAttempts, setRemainingAttempts] = useState<number | null>(null)
   const [retryAfterSeconds, setRetryAfterSeconds] = useState(0)
+  const failCountRef = useRef(0)
 
   // Live countdown timer
   useEffect(() => {
@@ -57,18 +64,20 @@ export default function LoginPage() {
 
       const data = await res.json()
 
-      if (data.retryAfterSeconds && data.retryAfterSeconds > 0) {
-        setRetryAfterSeconds(data.retryAfterSeconds)
-      }
-
-      if (data.remainingAttempts !== undefined) {
-        setRemainingAttempts(data.remainingAttempts)
-      }
-
       if (!res.ok) {
+        // Increment local fail count and calculate progressive cooldown
+        failCountRef.current += 1
+        const localCooldown = getCooldownSeconds(failCountRef.current)
+        // Use the larger of server-provided or local cooldown
+        const serverCooldown = data.retryAfterSeconds ?? 0
+        setRetryAfterSeconds(Math.max(localCooldown, serverCooldown))
+
         setError(data.error || "Ein Fehler ist aufgetreten.")
         return
       }
+
+      // Reset on success
+      failCountRef.current = 0
 
       // Set the session in the browser Supabase client
       if (data.session) {
@@ -84,10 +93,6 @@ export default function LoginPage() {
       } else {
         localStorage.removeItem("cms_remember_me")
       }
-
-      // Reset rate limit UI state
-      setRemainingAttempts(null)
-      setRetryAfterSeconds(0)
 
       // Use full page navigation to ensure middleware properly picks up the new session cookies
       window.location.href = "/cms"
@@ -146,21 +151,14 @@ export default function LoginPage() {
                 </div>
                 {isBlocked && (
                   <div className="rounded-md border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">
-                    <p className="font-medium">Zugang vorübergehend gesperrt</p>
+                    <p className="font-medium">Bitte warten</p>
                     <p className="mt-1">
-                      Bitte warten Sie {formatCountdown(retryAfterSeconds)}, bevor Sie es erneut versuchen.
+                      Sie können es in {formatCountdown(retryAfterSeconds)} erneut versuchen.
                     </p>
                   </div>
                 )}
                 {error && !isBlocked && (
-                  <div className="text-sm text-destructive">
-                    <p>{error}</p>
-                    {remainingAttempts !== null && remainingAttempts > 0 && (
-                      <p className="mt-1 text-xs text-muted-foreground">
-                        Verbleibende Versuche: {remainingAttempts}
-                      </p>
-                    )}
-                  </div>
+                  <p className="text-sm text-destructive">{error}</p>
                 )}
                 <div className="flex items-center gap-2">
                   <input
@@ -177,7 +175,7 @@ export default function LoginPage() {
                 </div>
                 <Button type="submit" className="w-full" disabled={isLoading || isBlocked}>
                   {isBlocked
-                    ? `Gesperrt (${formatCountdown(retryAfterSeconds)})`
+                    ? `Bitte warten (${formatCountdown(retryAfterSeconds)})`
                     : isLoading
                       ? "Anmelden..."
                       : "Anmelden"}

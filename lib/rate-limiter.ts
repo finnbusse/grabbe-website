@@ -48,8 +48,6 @@ async function hashValue(value: string): Promise<string | null> {
 export interface RateLimitResult {
   /** Whether the request is allowed to proceed */
   allowed: boolean
-  /** Number of remaining attempts before block (only meaningful when allowed=true) */
-  remainingAttempts: number
   /** Seconds until the block expires (0 when not blocked) */
   retryAfterSeconds: number
   /** Server-side artificial delay to apply in milliseconds */
@@ -71,7 +69,7 @@ export async function checkRateLimit(
 
   // If hashing is unavailable (IP_HASH_SALT not set), skip rate limiting
   if (!ipHash || !emailHash) {
-    return { allowed: true, remainingAttempts: ACCOUNT_MAX_ATTEMPTS, retryAfterSeconds: 0, delayMs: 0 }
+    return { allowed: true, retryAfterSeconds: 0, delayMs: 0 }
   }
 
   const supabase = createAdminClient()
@@ -99,7 +97,6 @@ export async function checkRateLimit(
     if (retryAfterSeconds > 0) {
       return {
         allowed: false,
-        remainingAttempts: 0,
         retryAfterSeconds,
         delayMs: 0,
         reason: "ip_blocked",
@@ -128,7 +125,6 @@ export async function checkRateLimit(
     if (retryAfterSeconds > 0) {
       return {
         allowed: false,
-        remainingAttempts: 0,
         retryAfterSeconds,
         delayMs: 0,
         reason: "account_locked",
@@ -143,14 +139,8 @@ export async function checkRateLimit(
     ? Math.min(BASE_DELAY_MS * Math.pow(2, totalFails - 1), MAX_DELAY_MS)
     : 0
 
-  // Remaining attempts = minimum of both limits
-  const ipRemaining = Math.max(0, IP_MAX_ATTEMPTS - ipFailCount)
-  const accountRemaining = Math.max(0, ACCOUNT_MAX_ATTEMPTS - accountFailCount)
-  const remainingAttempts = Math.min(ipRemaining, accountRemaining)
-
   return {
     allowed: true,
-    remainingAttempts,
     retryAfterSeconds: 0,
     delayMs,
   }

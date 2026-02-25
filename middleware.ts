@@ -25,7 +25,6 @@ export async function middleware(request: NextRequest) {
         {
           error: 'Zu viele Anmeldeversuche. Bitte warten Sie.',
           retryAfterSeconds,
-          remainingAttempts: 0,
         },
         {
           status: 429,
