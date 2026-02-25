@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
-import { useState } from "react"
+import { useState, useEffect, useCallback } from "react"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -14,19 +14,70 @@ export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [remainingAttempts, setRemainingAttempts] = useState<number | null>(null)
+  const [retryAfterSeconds, setRetryAfterSeconds] = useState(0)
+
+  // Live countdown timer
+  useEffect(() => {
+    if (retryAfterSeconds <= 0) return
+    const interval = setInterval(() => {
+      setRetryAfterSeconds((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval)
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [retryAfterSeconds])
+
+  const formatCountdown = useCallback((seconds: number) => {
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+    if (mins > 0) return `${mins}:${secs.toString().padStart(2, "0")} Min.`
+    return `${secs} Sek.`
+  }, [])
+
+  const isBlocked = retryAfterSeconds > 0
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    const supabase = createClient()
+    if (isBlocked) return
+
     setIsLoading(true)
     setError(null)
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       })
-      if (error) throw error
+
+      const data = await res.json()
+
+      if (data.retryAfterSeconds && data.retryAfterSeconds > 0) {
+        setRetryAfterSeconds(data.retryAfterSeconds)
+      }
+
+      if (data.remainingAttempts !== undefined) {
+        setRemainingAttempts(data.remainingAttempts)
+      }
+
+      if (!res.ok) {
+        setError(data.error || "Ein Fehler ist aufgetreten.")
+        return
+      }
+
+      // Set the session in the browser Supabase client
+      if (data.session) {
+        const supabase = createClient()
+        await supabase.auth.setSession({
+          access_token: data.session.access_token,
+          refresh_token: data.session.refresh_token,
+        })
+      }
 
       if (rememberMe) {
         localStorage.setItem("cms_remember_me", "true")
@@ -34,10 +85,14 @@ export default function LoginPage() {
         localStorage.removeItem("cms_remember_me")
       }
 
+      // Reset rate limit UI state
+      setRemainingAttempts(null)
+      setRetryAfterSeconds(0)
+
       // Use full page navigation to ensure middleware properly picks up the new session cookies
       window.location.href = "/cms"
-    } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "Ein Fehler ist aufgetreten")
+    } catch {
+      setError("Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.")
     } finally {
       setIsLoading(false)
     }
@@ -75,6 +130,7 @@ export default function LoginPage() {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    disabled={isBlocked}
                   />
                 </div>
                 <div className="grid gap-2">
@@ -85,10 +141,26 @@ export default function LoginPage() {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    disabled={isBlocked}
                   />
                 </div>
-                {error && (
-                  <p className="text-sm text-destructive">{error}</p>
+                {isBlocked && (
+                  <div className="rounded-md border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">
+                    <p className="font-medium">Zugang vorübergehend gesperrt</p>
+                    <p className="mt-1">
+                      Bitte warten Sie {formatCountdown(retryAfterSeconds)}, bevor Sie es erneut versuchen.
+                    </p>
+                  </div>
+                )}
+                {error && !isBlocked && (
+                  <div className="text-sm text-destructive">
+                    <p>{error}</p>
+                    {remainingAttempts !== null && remainingAttempts > 0 && (
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        Verbleibende Versuche: {remainingAttempts}
+                      </p>
+                    )}
+                  </div>
                 )}
                 <div className="flex items-center gap-2">
                   <input
@@ -97,13 +169,18 @@ export default function LoginPage() {
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
                     className="h-4 w-4 rounded border-input accent-primary"
+                    disabled={isBlocked}
                   />
                   <Label htmlFor="rememberMe" className="text-sm font-normal text-muted-foreground cursor-pointer">
                     Angemeldet bleiben
                   </Label>
                 </div>
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Anmelden..." : "Anmelden"}
+                <Button type="submit" className="w-full" disabled={isLoading || isBlocked}>
+                  {isBlocked
+                    ? `Gesperrt (${formatCountdown(retryAfterSeconds)})`
+                    : isLoading
+                      ? "Anmelden..."
+                      : "Anmelden"}
                 </Button>
               </div>
             </form>
