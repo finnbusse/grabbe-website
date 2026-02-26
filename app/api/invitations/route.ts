@@ -174,6 +174,7 @@ export async function POST(request: NextRequest) {
     to: email,
     subject: template.subject,
     html: template.html,
+    replyTo: user.email || undefined,
   })
 
   if (!emailResult.success) {

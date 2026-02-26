@@ -1,6 +1,6 @@
 import { Resend } from "resend"
 
-const FROM_ADDRESS = "noreply@push.grabbe.site"
+const FROM_ADDRESS = "Grabbe-Gymnasium Detmold <noreply@push.grabbe.site>"
 
 let resendClient: Resend | null = null
 
@@ -13,11 +13,39 @@ function getResendClient(): Resend | null {
   return resendClient
 }
 
+/**
+ * Strip HTML tags and decode common HTML entities to produce a plain-text
+ * fallback for email clients that don't render HTML.
+ */
+function htmlToPlainText(html: string): string {
+  return html
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/p>/gi, "\n\n")
+    .replace(/<\/tr>/gi, "\n")
+    .replace(/<\/h[1-6]>/gi, "\n\n")
+    .replace(/<hr[^>]*>/gi, "---\n")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&ldquo;/g, "\u201C")
+    .replace(/&rdquo;/g, "\u201D")
+    .replace(/&mdash;/g, "\u2014")
+    .replace(/&rarr;/g, "\u2192")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim()
+}
+
 export interface SendEmailOptions {
   to: string | string[]
   subject: string
   html: string
   replyTo?: string
+  headers?: Record<string, string>
 }
 
 export interface SendEmailResult {
@@ -42,7 +70,12 @@ export async function sendEmail(options: SendEmailOptions): Promise<SendEmailRes
       to: recipients,
       subject: options.subject,
       html: options.html,
+      text: htmlToPlainText(options.html),
       replyTo: options.replyTo,
+      headers: {
+        "List-Unsubscribe": "<mailto:noreply@push.grabbe.site?subject=unsubscribe>",
+        ...options.headers,
+      },
     })
 
     if (error) {

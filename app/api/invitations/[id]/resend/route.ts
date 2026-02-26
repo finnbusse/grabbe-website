@@ -80,6 +80,7 @@ export async function POST(
     to: inv.email as string,
     subject: template.subject,
     html: template.html,
+    replyTo: user.email || undefined,
   })
 
   if (!emailResult.success) {
