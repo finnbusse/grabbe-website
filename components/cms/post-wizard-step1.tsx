@@ -176,7 +176,7 @@ export function PostWizardStep1() {
 
       {/* Tags */}
       <div className="space-y-3">
-        <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Tags</Label>
+        <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Tags (optional)</Label>
         <TagSelector
           selectedTagIds={state.tagIds}
           onChange={(ids) => dispatch({ type: "SET_TAG_IDS", payload: ids })}

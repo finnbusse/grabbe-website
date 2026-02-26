@@ -151,7 +151,7 @@ export function PageWizardStep1() {
 
       {/* Hero Subtitle */}
       <div className="space-y-3">
-        <Label htmlFor="wizard-subtitle" className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Hero-Untertitel</Label>
+        <Label htmlFor="wizard-subtitle" className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Hero-Untertitel (optional)</Label>
         <p className="text-xs text-muted-foreground">Wird als beschreibender Text unter dem Seitentitel angezeigt.</p>
         <Input
           id="wizard-subtitle"
@@ -171,7 +171,7 @@ export function PageWizardStep1() {
 
       {/* Hero Image */}
       <div className="space-y-3">
-        <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Hero-Bild</Label>
+        <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Hero-Bild (optional)</Label>
         <p className="text-xs text-muted-foreground">Wird oben auf der Seite als großes Titelbild angezeigt.</p>
         <ImagePicker
           value={state.heroImageUrl || null}
@@ -184,7 +184,7 @@ export function PageWizardStep1() {
 
       {/* Tags */}
       <div className="space-y-3">
-        <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Tags</Label>
+        <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Tags (optional)</Label>
         <TagSelector
           selectedTagIds={state.tagIds}
           onChange={(ids) => dispatch({ type: "SET_TAG_IDS", payload: ids })}
