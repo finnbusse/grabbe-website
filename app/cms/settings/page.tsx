@@ -420,7 +420,7 @@ export default function SettingsPage() {
     fetch("/api/email/status")
       .then((res) => res.ok ? res.json() : null)
       .then((data) => { if (data) setEmailStatus(data) })
-      .catch(() => { /* ignore */ })
+      .catch((err) => { console.error("[Email] Failed to load status:", err) })
       .finally(() => setEmailStatusLoading(false))
   }, [showEmailTab])
 

@@ -2,6 +2,17 @@ import { Resend } from "resend"
 
 const FROM_ADDRESS = "noreply@push.grabbe.site"
 
+let resendClient: Resend | null = null
+
+function getResendClient(): Resend | null {
+  const apiKey = process.env.RESEND_API_KEY
+  if (!apiKey) return null
+  if (!resendClient) {
+    resendClient = new Resend(apiKey)
+  }
+  return resendClient
+}
+
 export interface SendEmailOptions {
   to: string | string[]
   subject: string
@@ -16,13 +27,11 @@ export interface SendEmailResult {
 }
 
 export async function sendEmail(options: SendEmailOptions): Promise<SendEmailResult> {
-  const apiKey = process.env.RESEND_API_KEY
-  if (!apiKey) {
+  const resend = getResendClient()
+  if (!resend) {
     console.error("[Email] RESEND_API_KEY is not configured")
     return { success: false, error: "RESEND_API_KEY ist nicht konfiguriert" }
   }
-
-  const resend = new Resend(apiKey)
 
   const recipients = Array.isArray(options.to) ? options.to : [options.to]
   console.log(`[Email] Sending to ${recipients.join(", ")} — Subject: ${options.subject}`)
