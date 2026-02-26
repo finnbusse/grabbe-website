@@ -60,15 +60,29 @@ export function HeroSection({ content }: { content?: Record<string, unknown> }) 
           for the scroll indicator below so both the rounded corners and "Entdecken" arrow
           are visible without scrolling.  sm+ screens revert to the original aspect-ratio layout. */}
       <div className="relative w-full overflow-hidden rounded-b-[1.5rem] sm:rounded-b-[2rem] md:rounded-b-[3rem] h-[calc(100svh-5.5rem)] sm:h-auto sm:aspect-[16/9] lg:aspect-[21/9]">
-        {/* The image -- NO dark overlays whatsoever */}
-        <Image
-          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1770907263880.png-LbbwTH3bV3iIeTlN24uWwemZuKXx6y.jpeg"
-          alt="Grabbe-Gymnasium Schulgebäude"
-          fill
-          className="object-cover"
-          priority
-          sizes="100vw"
-        />
+        {/* Light mode hero image (default) */}
+        <div className="hero-image-light absolute inset-0">
+          <Image
+            src="/images/hero/hero-a-light.png"
+            alt="Grabbe-Gymnasium Schulgebäude"
+            fill
+            className="object-cover"
+            priority
+            sizes="100vw"
+          />
+        </div>
+
+        {/* Dark / night-themed hero image (shown via prefers-color-scheme: dark CSS) */}
+        <div className="hero-image-dark absolute inset-0">
+          <Image
+            src="/images/hero/hero-a-dark.png"
+            alt="Grabbe-Gymnasium Schulgebäude bei Nacht"
+            fill
+            className="object-cover"
+            priority
+            sizes="100vw"
+          />
+        </div>
 
         {/* Content overlay -- bottom left, text has its own shadow for readability, NO image darkening */}
         <div

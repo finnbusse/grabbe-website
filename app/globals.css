@@ -113,6 +113,20 @@ html {
 }
 
 /* ============================================
+   HERO IMAGE DARK / LIGHT MODE SWAP
+   Hide the dark-mode hero by default; reveal it (and hide the light-mode
+   hero) when the OS prefers a dark colour scheme.  This is purely CSS-driven
+   so the correct image is shown before any JavaScript executes — no flash.
+   ============================================ */
+
+.hero-image-dark { display: none; }
+
+@media (prefers-color-scheme: dark) {
+  .hero-image-light { display: none; }
+  .hero-image-dark  { display: block; }
+}
+
+/* ============================================
    ANIMATION KEYFRAMES
    ============================================ */
 
