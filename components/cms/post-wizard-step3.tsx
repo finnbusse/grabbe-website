@@ -103,9 +103,27 @@ export function PostWizardStep3() {
           ? JSON.stringify(state.blocks)
           : state.markdownContent
 
+      const isUpdate = !!state.postId
+
+      // Ensure unique slug for new posts
+      let finalSlug = state.slug
+      if (!isUpdate) {
+        const { data: existingSlugs } = await supabase
+          .from("posts")
+          .select("slug")
+          .like("slug", `${state.slug}%`)
+        const slugSet = new Set((existingSlugs as Array<{ slug: string }> | null)?.map((p) => p.slug) ?? [])
+        if (slugSet.has(finalSlug)) {
+          let counter = 2
+          while (slugSet.has(`${state.slug}-${counter}`)) counter++
+          finalSlug = `${state.slug}-${counter}`
+          dispatch({ type: "SET_SLUG", payload: finalSlug })
+        }
+      }
+
       const basePayload: Record<string, unknown> = {
         title: state.title,
-        slug: state.slug,
+        slug: finalSlug,
         content: finalContent,
         excerpt: state.excerpt || null,
         category: state.category || null,
@@ -120,8 +138,6 @@ export function PostWizardStep3() {
       }
 
       const payloadWithDate = { ...basePayload, event_date: state.publishDate || null }
-
-      const isUpdate = !!state.postId
 
       const saveWithPayload = async (payload: Record<string, unknown>) => {
         if (isUpdate) {
@@ -155,7 +171,7 @@ export function PostWizardStep3() {
         const { data: newPosts } = await supabase
           .from("posts")
           .select("id")
-          .eq("slug", state.slug)
+          .eq("slug", finalSlug)
           .order("created_at", { ascending: false })
           .limit(1)
 

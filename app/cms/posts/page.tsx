@@ -90,6 +90,7 @@ export default async function CmsPostsPage() {
                   })}
                 </div>
                 <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
+                  <span className="font-mono">/aktuelles/{post.slug}</span>
                   <span className="flex items-center gap-1">
                     <CalendarDays className="h-3 w-3" />
                     {new Date(post.event_date || post.created_at).toLocaleDateString("de-DE")}

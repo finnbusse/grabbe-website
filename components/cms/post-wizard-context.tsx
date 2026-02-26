@@ -229,3 +229,14 @@ export function generateSlug(text: string): string {
     .replace(/-+/g, "-")
     .trim()
 }
+
+/**
+ * Generate a slug with the publication date appended: `slugified-title-YYYY-MM-DD`
+ */
+export function generateSlugWithDate(title: string, date: string): string {
+  const base = generateSlug(title)
+  if (!base) return ""
+  // date is expected as YYYY-MM-DD (from <input type="date">)
+  const datePart = date || new Date().toISOString().split("T")[0]
+  return `${base}-${datePart}`
+}

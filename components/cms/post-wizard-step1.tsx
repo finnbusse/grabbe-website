@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { usePostWizard, generateSlug } from "./post-wizard-context"
+import { usePostWizard, generateSlugWithDate } from "./post-wizard-context"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -32,7 +32,14 @@ export function PostWizardStep1() {
   const handleTitleChange = (value: string) => {
     dispatch({ type: "SET_TITLE", payload: value })
     if (!state.postId) {
-      dispatch({ type: "SET_SLUG", payload: generateSlug(value) })
+      dispatch({ type: "SET_SLUG", payload: generateSlugWithDate(value, state.publishDate) })
+    }
+  }
+
+  const handleDateChange = (value: string) => {
+    dispatch({ type: "SET_PUBLISH_DATE", payload: value })
+    if (!state.postId && state.title) {
+      dispatch({ type: "SET_SLUG", payload: generateSlugWithDate(state.title, value) })
     }
   }
 
@@ -153,7 +160,7 @@ export function PostWizardStep1() {
           id="post-date"
           type="date"
           value={state.publishDate}
-          onChange={(e) => dispatch({ type: "SET_PUBLISH_DATE", payload: e.target.value })}
+          onChange={(e) => handleDateChange(e.target.value)}
         />
       </div>
 
