@@ -8,7 +8,9 @@ import { Label } from "@/components/ui/label"
 import {
   FolderOpen, FileText, Plus, Trash2, Save, Loader2, ChevronRight, ChevronDown,
   Globe, Lock, GripVertical, Pencil, Check, X, FolderPlus, ExternalLink, MoveRight, Home,
+  List, MousePointerClick,
 } from "lucide-react"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import Link from "next/link"
 
 // ============================================================================
@@ -105,6 +107,8 @@ export default function SeitenstrukturPage() {
   const [newCategoryLabel, setNewCategoryLabel] = useState("")
   const [movingPage, setMovingPage] = useState<string | null>(null)
   const [moveTarget, setMoveTarget] = useState("")
+
+  const [viewMode, setViewMode] = useState<"tree" | "interactive">("tree")
 
   // Load data
   const loadData = useCallback(async () => {
@@ -325,15 +329,32 @@ export default function SeitenstrukturPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-display text-3xl font-bold text-foreground">Seitenstruktur</h1>
-          <p className="mt-2 text-muted-foreground">
-            Verwalten Sie die Struktur und Hierarchie aller Seiten der Website.
+          <h1 className="text-2xl font-bold text-foreground">Seitenstruktur</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Website-Seiten und Navigation verwalten
           </p>
         </div>
-        <Button onClick={handleSave} disabled={saving}>
-          {saving ? <Loader2 className="mr-1.5 h-4 w-4 animate-spin" /> : <Save className="mr-1.5 h-4 w-4" />}
-          {saving ? "Speichern..." : "Struktur speichern"}
-        </Button>
+        <div className="flex items-center gap-3">
+          <ToggleGroup
+            type="single"
+            value={viewMode}
+            onValueChange={(v) => { if (v) setViewMode(v as "tree" | "interactive") }}
+            className="border border-border rounded-lg"
+          >
+            <ToggleGroupItem value="tree" aria-label="Baumansicht" className="gap-1.5 text-xs px-3">
+              <List className="h-3.5 w-3.5" />
+              Baum
+            </ToggleGroupItem>
+            <ToggleGroupItem value="interactive" aria-label="Interaktive Ansicht" className="gap-1.5 text-xs px-3">
+              <MousePointerClick className="h-3.5 w-3.5" />
+              Interaktiv
+            </ToggleGroupItem>
+          </ToggleGroup>
+          <Button onClick={handleSave} disabled={saving}>
+            {saving ? <Loader2 className="mr-1.5 h-4 w-4 animate-spin" /> : <Save className="mr-1.5 h-4 w-4" />}
+            {saving ? "Speichern..." : "Struktur speichern"}
+          </Button>
+        </div>
       </div>
 
       {message && (
@@ -367,7 +388,7 @@ export default function SeitenstrukturPage() {
         <div className="rounded-2xl border bg-card p-5">
           <div className="flex items-center gap-2 mb-4">
             <Globe className="h-4 w-4 text-primary" />
-            <h2 className="font-display text-lg font-semibold">Hauptebene</h2>
+            <h2 className="text-lg font-semibold">Hauptebene</h2>
             <span className="text-xs text-muted-foreground">hostname.de/</span>
           </div>
           <div className="space-y-1">
@@ -464,7 +485,7 @@ export default function SeitenstrukturPage() {
           <div className="rounded-2xl border border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950 p-5">
             <div className="flex items-center gap-2 mb-4">
               <FileText className="h-4 w-4 text-amber-600" />
-              <h2 className="font-display text-lg font-semibold text-amber-900 dark:text-amber-200">
+              <h2 className="text-lg font-semibold text-amber-900 dark:text-amber-200">
                 Nicht zugeordnete Seiten
               </h2>
               <span className="text-xs text-amber-600">/seiten/slug</span>
