@@ -196,7 +196,7 @@ export function PostEditor({ post }: PostEditorProps) {
 
       <div className="mt-6 grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
-          <div className="space-y-6 border-b border-border pb-6 space-y-4">
+          <div className="space-y-4 border-b border-border pb-6">
             <div className="grid gap-2">
               <Label htmlFor="title">Titel</Label>
               <Input id="title" value={title} onChange={(e) => handleTitleChange(e.target.value)} placeholder="Beitragstitel eingeben..." className="font-display text-lg" />
@@ -214,7 +214,7 @@ export function PostEditor({ post }: PostEditorProps) {
             </div>
           </div>
 
-          <div className="space-y-6 border-b border-border pb-6 space-y-3">
+          <div className="space-y-3 border-b border-border pb-6">
             <Label htmlFor="content">Inhalt (Markdown)</Label>
             <p className="text-xs text-muted-foreground">**fett**, *kursiv*, ## Überschrift, [Linktext](url), ![Bild](url) &mdash; Dateien unten hochladen und per Klick einfügen.</p>
             <textarea
@@ -226,7 +226,7 @@ export function PostEditor({ post }: PostEditorProps) {
             />
           </div>
 
-          <div className="space-y-6 border-b border-border pb-6 space-y-4">
+          <div className="space-y-4 border-b border-border pb-6">
             <h3 className="font-display font-semibold">Dateien & Medien</h3>
             <p className="text-xs text-muted-foreground">Laden Sie Bilder oder PDFs hoch. Klicken Sie &quot;Einfügen&quot;, um einen Link im Beitragsinhalt zu platzieren.</p>
             <FileUploader
@@ -257,7 +257,7 @@ export function PostEditor({ post }: PostEditorProps) {
         </div>
 
         <div className="space-y-6">
-          <div className="space-y-6 border-b border-border pb-6 space-y-4">
+          <div className="space-y-4 border-b border-border pb-6">
             <h3 className="font-display text-sm font-semibold">Einstellungen</h3>
             <div className="flex items-center justify-between">
               <Label htmlFor="pub">Veröffentlicht</Label>
@@ -293,7 +293,7 @@ export function PostEditor({ post }: PostEditorProps) {
             </div>
           </div>
 
-          <div className="space-y-6 border-b border-border pb-6 space-y-4">
+          <div className="space-y-4 border-b border-border pb-6">
             <h3 className="font-display text-sm font-semibold">Beitragsbild</h3>
             <ImagePicker
               value={imageUrl || null}
@@ -302,7 +302,7 @@ export function PostEditor({ post }: PostEditorProps) {
             />
           </div>
 
-          <div className="space-y-6 border-b border-border pb-6 space-y-4">
+          <div className="space-y-4 border-b border-border pb-6">
             <h3 className="font-display text-sm font-semibold">SEO (optional)</h3>
             <p className="text-[10px] text-muted-foreground">Falls leer, werden Titel und Kurztext automatisch für Suchmaschinen verwendet.</p>
             <div className="grid gap-2">
