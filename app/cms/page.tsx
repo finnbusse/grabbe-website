@@ -42,7 +42,7 @@ export default async function CmsDashboardPage({ searchParams }: { searchParams:
     { icon: FileText, label: "Seiten", count: pagesRes.count ?? 0 },
     { icon: CalendarDays, label: "Termine", count: eventsRes.count ?? 0 },
     { icon: FolderOpen, label: "Dokumente", count: docsRes.count ?? 0 },
-    { icon: Mail, label: "Gelesene Nachrichten", count: msgsRes.count ?? 0 },
+    { icon: Mail, label: "Ungelesene Nachrichten", count: msgsRes.count ?? 0 },
     { icon: GraduationCap, label: "Anmeldungen", count: anmRes.count ?? 0 },
   ]
 
