@@ -15,8 +15,12 @@ import { ImagePicker } from "@/components/cms/image-picker"
 import {
   Settings, Save, Loader2, Upload, Globe, Building2, Mail,
   Share2, Search as SearchIcon, Image as ImageIcon, FileText,
-  Shield, Hash, Quote, Paintbrush, Check, RotateCcw,
+  Shield, Hash, Quote, Paintbrush, Check, RotateCcw, Send,
+  CheckCircle2, XCircle,
 } from "lucide-react"
+import { toast } from "sonner"
+import { usePermissions } from "@/components/cms/permissions-context"
+import { isAdmin } from "@/lib/permissions-shared"
 import type { DesignSettings } from "@/lib/design-settings"
 import {
   DESIGN_DEFAULTS, TAILWIND_COLORS, TAILWIND_COLOR_FAMILIES,
@@ -339,6 +343,9 @@ function TailwindColorPicker({
 // Page
 // ===========================================================================
 export default function SettingsPage() {
+  const { roleSlugs } = usePermissions()
+  const showEmailTab = isAdmin(roleSlugs)
+
   const [values, setValues] = useState<Values>({})
   const [initial, setInitial] = useState<Values>({})
   const [design, setDesign] = useState<DesignSettings>(DESIGN_DEFAULTS)
@@ -350,6 +357,12 @@ export default function SettingsPage() {
   const [uploadingKey, setUploadingKey] = useState<string | null>(null)
   const loadedRef = useRef(false)
   const msgTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Email tab state
+  const [emailStatus, setEmailStatus] = useState<{ configured: boolean; domain: string; from: string } | null>(null)
+  const [emailStatusLoading, setEmailStatusLoading] = useState(false)
+  const [testEmailAddress, setTestEmailAddress] = useState("")
+  const [sendingTestEmail, setSendingTestEmail] = useState(false)
 
   // Derive dirty state (general settings + design settings)
   const designJson = JSON.stringify(design)
@@ -399,6 +412,40 @@ export default function SettingsPage() {
       setLoading(false)
     })()
   }, [])
+
+  // Load email configuration status (admin only)
+  useEffect(() => {
+    if (!showEmailTab) return
+    setEmailStatusLoading(true)
+    fetch("/api/email/status")
+      .then((res) => res.ok ? res.json() : null)
+      .then((data) => { if (data) setEmailStatus(data) })
+      .catch(() => { /* ignore */ })
+      .finally(() => setEmailStatusLoading(false))
+  }, [showEmailTab])
+
+  const handleSendTestEmail = async () => {
+    if (!testEmailAddress.trim()) return
+    setSendingTestEmail(true)
+    try {
+      const res = await fetch("/api/email/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "test", to: testEmailAddress.trim() }),
+      })
+      const data = await res.json()
+      if (res.ok && data.success) {
+        toast.success(`Test-E-Mail wurde gesendet an ${testEmailAddress.trim()}`)
+        setTestEmailAddress("")
+      } else {
+        toast.error(`Fehler beim Senden: ${data.error || "Unbekannter Fehler"}`)
+      }
+    } catch {
+      toast.error("Fehler beim Senden: Netzwerkfehler")
+    } finally {
+      setSendingTestEmail(false)
+    }
+  }
 
   const set = useCallback((key: string, value: string) => {
     setValues((prev) => ({ ...prev, [key]: value }))
@@ -528,6 +575,12 @@ export default function SettingsPage() {
             <Paintbrush className="mr-1.5 h-3.5 w-3.5" />
             Design
           </TabsTrigger>
+          {showEmailTab && (
+            <TabsTrigger value="email">
+              <Mail className="mr-1.5 h-3.5 w-3.5" />
+              E-Mail
+            </TabsTrigger>
+          )}
         </TabsList>
 
         {/* ==================== GENERAL TAB ==================== */}
@@ -801,6 +854,76 @@ export default function SettingsPage() {
           </Section>
 
         </TabsContent>
+
+        {/* ==================== EMAIL TAB ==================== */}
+        {showEmailTab && (
+          <TabsContent value="email" className="space-y-6">
+            <Section
+              icon={Mail}
+              title="Konfigurationsstatus"
+              description="Übersicht der E-Mail-Infrastruktur."
+            >
+              {emailStatusLoading ? (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Loader2 className="h-4 w-4 animate-spin" /> Lade Status…
+                </div>
+              ) : (
+                <div className="grid gap-3">
+                  <div className="flex items-center gap-2 text-sm">
+                    {emailStatus?.configured ? (
+                      <CheckCircle2 className="h-4 w-4 text-green-600" />
+                    ) : (
+                      <XCircle className="h-4 w-4 text-red-500" />
+                    )}
+                    <span className="font-medium">RESEND_API_KEY:</span>
+                    <span className={emailStatus?.configured ? "text-green-600" : "text-red-500"}>
+                      {emailStatus?.configured ? "Konfiguriert ✓" : "Nicht gesetzt ✗"}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <Globe className="h-4 w-4 text-muted-foreground" />
+                    <span className="font-medium">Absenderdomain:</span>
+                    <code className="rounded bg-muted px-1.5 py-0.5 text-xs">{emailStatus?.domain ?? "push.grabbe.site"}</code>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <Mail className="h-4 w-4 text-muted-foreground" />
+                    <span className="font-medium">Absenderadresse:</span>
+                    <code className="rounded bg-muted px-1.5 py-0.5 text-xs">{emailStatus?.from ?? "noreply@push.grabbe.site"}</code>
+                  </div>
+                </div>
+              )}
+            </Section>
+
+            <Section
+              icon={Send}
+              title="Test-E-Mail senden"
+              description="Sende eine Test-E-Mail, um die Konfiguration zu prüfen."
+            >
+              <Field label="Empfänger-E-Mail-Adresse">
+                <div className="flex items-center gap-3">
+                  <Input
+                    type="email"
+                    value={testEmailAddress}
+                    onChange={(e) => setTestEmailAddress(e.target.value)}
+                    placeholder="test@example.com"
+                    className="flex-1"
+                  />
+                  <Button
+                    onClick={handleSendTestEmail}
+                    disabled={sendingTestEmail || !testEmailAddress.trim()}
+                  >
+                    {sendingTestEmail ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <Send className="mr-2 h-4 w-4" />
+                    )}
+                    Test-E-Mail senden
+                  </Button>
+                </div>
+              </Field>
+            </Section>
+          </TabsContent>
+        )}
       </Tabs>
     </div>
   )
