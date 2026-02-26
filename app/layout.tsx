@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next"
+import Script from "next/script"
 import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
 import { GeistPixelSquare } from "geist/font/pixel"
@@ -196,6 +197,7 @@ export default async function RootLayout({
         {children}
         <SpeedInsights />
       </body>
+      <Script src="https://scripts.simpleanalyticscdn.com/latest.js" />
     </html>
   )
 }
