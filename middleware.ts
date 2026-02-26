@@ -5,7 +5,7 @@ import { isIpBlocked } from '@/lib/rate-limiter'
 // Known filesystem routes that should NOT be rewritten
 const KNOWN_ROUTES = new Set([
   '', 'aktuelles', 'termine', 'downloads', 'kontakt', 'impressum', 'datenschutz',
-  'unsere-schule', 'schulleben', 'seiten', 'cms', 'auth', 'api', 'protected',
+  'unsere-schule', 'schulleben', 'seiten', 'cms', 'auth', 'api', 'protected', 'onboarding',
 ])
 
 export async function middleware(request: NextRequest) {

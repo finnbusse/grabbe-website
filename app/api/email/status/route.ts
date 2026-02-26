@@ -24,6 +24,6 @@ export async function GET() {
   return NextResponse.json({
     configured: !!process.env.RESEND_API_KEY,
     domain: "push.grabbe.site",
-    from: "noreply@push.grabbe.site",
+    from: "Grabbe-Gymnasium Detmold <noreply@push.grabbe.site>",
   })
 }

@@ -19,7 +19,7 @@ export function testEmailTemplate(): { subject: string; html: string } {
       <strong>Gesendet am:</strong> ${now}
     </p>
     <p style="margin:0;font-size:14px;line-height:1.6;color:#3f3f46;">
-      <strong>Absender:</strong> noreply@push.grabbe.site
+      <strong>Absender:</strong> Grabbe-Gymnasium Detmold &lt;noreply@push.grabbe.site&gt;
     </p>
   `
 
