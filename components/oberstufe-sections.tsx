@@ -4,6 +4,7 @@ import type { ReactNode } from "react"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { AnimateOnScroll } from "./animate-on-scroll"
+import { trackEvent } from "@/lib/analytics"
 
 interface QuickLink {
   label: string
@@ -171,6 +172,7 @@ export function OberstufeSections({ content, quicklinks }: OberstufeSectionsProp
                     {['Antrag WLAN', 'Tablet-Knigge', 'Antrag WebUntis'].map((label) => (
                       <button
                         key={label}
+                        onClick={() => trackEvent("oberstufe_download_click", { label })}
                         className="flex w-full items-center gap-3 rounded-xl border border-border/60 bg-background px-4 py-3 text-sm transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/[0.06] group"
                       >
                         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-all group-hover:bg-primary group-hover:text-white">

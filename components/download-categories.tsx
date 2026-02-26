@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { ChevronDown, ChevronRight, FileText, ImageIcon, ExternalLink } from "lucide-react"
+import { trackEvent } from "@/lib/analytics"
 
 interface DocItem {
   id: string
@@ -34,8 +35,13 @@ export function DownloadCategories({ grouped }: { grouped: Record<string, DocIte
   const toggle = (cat: string) => {
     setOpenCategories(prev => {
       const next = new Set(prev)
-      if (next.has(cat)) next.delete(cat)
-      else next.add(cat)
+      if (next.has(cat)) {
+        next.delete(cat)
+        trackEvent("download_category_toggle", { category: cat, open: false })
+      } else {
+        next.add(cat)
+        trackEvent("download_category_toggle", { category: cat, open: true })
+      }
       return next
     })
   }
@@ -72,6 +78,7 @@ export function DownloadCategories({ grouped }: { grouped: Record<string, DocIte
                     href={doc.file_url}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => trackEvent("download_file_click", { title: doc.title, category: cat || "allgemein" })}
                     className="group flex items-center gap-3 rounded-xl border border-border/60 bg-background px-4 py-3 text-sm transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/[0.06]"
                   >
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-all group-hover:bg-primary group-hover:text-white">

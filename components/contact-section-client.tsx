@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { Mail, Phone, MapPin, ArrowRight } from "lucide-react"
 import { AnimateOnScroll } from "./animate-on-scroll"
+import { trackEvent } from "@/lib/analytics"
 
 interface ContactSectionClientProps {
   address: string
@@ -56,7 +57,7 @@ export function ContactSectionClient({
                     title: "Telefon",
                     content: (
                       <>
-                        <a href={`tel:${phone.replace(/[\s-]/g, "")}`} className="hover:text-primary transition-colors">{phone}</a>
+                        <a href={`tel:${phone.replace(/[\s-]/g, "")}`} onClick={() => trackEvent("contact_phone_click")} className="hover:text-primary transition-colors">{phone}</a>
                         <br />
                         <span className="text-xs">{"Fax: "}{fax}</span>
                       </>
@@ -66,7 +67,7 @@ export function ContactSectionClient({
                     icon: Mail,
                     title: "E-Mail",
                     content: (
-                      <a href={`mailto:${email}`} className="text-primary hover:underline">{email}</a>
+                      <a href={`mailto:${email}`} onClick={() => trackEvent("contact_email_click")} className="text-primary hover:underline">{email}</a>
                     ),
                   },
                 ].map((item) => (
@@ -84,6 +85,7 @@ export function ContactSectionClient({
 
               <Link
                 href="/kontakt"
+                onClick={() => trackEvent("nav_link_click", { label: "Alle Ansprechpartner", href: "/kontakt" })}
                 className="mt-10 inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-sm font-medium text-white transition-all hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/20 group"
               >
                 Alle Ansprechpartner:innen

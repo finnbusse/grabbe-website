@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Send, Loader2, CheckCircle2 } from "lucide-react"
+import { trackEvent } from "@/lib/analytics"
 
 export function ContactForm() {
   const [name, setName] = useState("")
@@ -32,8 +33,11 @@ export function ContactForm() {
         throw new Error(data.error || "Fehler beim Senden")
       }
       setSent(true)
+      trackEvent("contact_form_sent")
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Fehler beim Senden")
+      const msg = err instanceof Error ? err.message : "Fehler beim Senden"
+      setError(msg)
+      trackEvent("contact_form_error", { message: msg })
     } finally {
       setSending(false)
     }

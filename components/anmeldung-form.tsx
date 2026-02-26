@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { GraduationCap, Loader2, CheckCircle2 } from "lucide-react"
+import { trackEvent } from "@/lib/analytics"
 
 export function AnmeldungForm() {
   const [childName, setChildName] = useState("")
@@ -49,8 +50,11 @@ export function AnmeldungForm() {
         throw new Error(data.error || "Fehler beim Senden")
       }
       setSent(true)
+      trackEvent("anmeldung_form_sent", { type: anmeldungType })
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Fehler beim Senden")
+      const msg = err instanceof Error ? err.message : "Fehler beim Senden"
+      setError(msg)
+      trackEvent("anmeldung_form_error", { message: msg })
     } finally {
       setSending(false)
     }
@@ -89,11 +93,11 @@ export function AnmeldungForm() {
       <div className="space-y-2">
         <Label>Anmeldung für</Label>
         <div className="flex gap-3">
-          <button type="button" onClick={() => setAnmeldungType("klasse5")}
+          <button type="button" onClick={() => { setAnmeldungType("klasse5"); trackEvent("anmeldung_type_selected", { type: "klasse5" }) }}
             className={`flex-1 rounded-lg border p-3 text-sm font-medium transition-colors ${anmeldungType === "klasse5" ? "border-primary bg-primary/10 text-primary" : "hover:bg-muted"}`}>
             Klasse 5
           </button>
-          <button type="button" onClick={() => setAnmeldungType("oberstufe")}
+          <button type="button" onClick={() => { setAnmeldungType("oberstufe"); trackEvent("anmeldung_type_selected", { type: "oberstufe" }) }}
             className={`flex-1 rounded-lg border p-3 text-sm font-medium transition-colors ${anmeldungType === "oberstufe" ? "border-primary bg-primary/10 text-primary" : "hover:bg-muted"}`}>
             Oberstufe (EF)
           </button>

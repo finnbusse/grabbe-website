@@ -4,6 +4,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight, ArrowDown } from "lucide-react"
 import { useEffect, useState } from "react"
+import { trackEvent } from "@/lib/analytics"
 
 function TypingText({ text, delay = 0, speed = 40 }: { text: string; delay?: number; speed?: number }) {
   const [displayed, setDisplayed] = useState("")
@@ -115,6 +116,7 @@ export function HeroSection({ content }: { content?: Record<string, unknown> }) 
           <div className={`mt-4 sm:mt-5 flex flex-col sm:flex-row items-start gap-2 sm:gap-3 transition-all duration-700 delay-700 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
             <Link
               href={cta1Link}
+              onClick={() => trackEvent("hero_cta_click", { label: cta1Text, href: cta1Link })}
               className="group flex items-center gap-2 rounded-full bg-white/95 px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-medium text-primary shadow-lg transition-all hover:bg-white hover:shadow-xl w-full sm:w-auto justify-center sm:justify-start"
             >
               {cta1Text}
@@ -122,6 +124,7 @@ export function HeroSection({ content }: { content?: Record<string, unknown> }) 
             </Link>
             <Link
               href={cta2Link}
+              onClick={() => trackEvent("hero_cta_click", { label: cta2Text, href: cta2Link })}
               className="group flex items-center gap-2 rounded-full bg-white/15 backdrop-blur-md border border-white/25 px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-medium text-white shadow-lg transition-all hover:bg-white/25 w-full sm:w-auto justify-center sm:justify-start"
             >
               {cta2Text}
@@ -135,6 +138,7 @@ export function HeroSection({ content }: { content?: Record<string, unknown> }) 
         <button
           onClick={() => {
             document.getElementById("welcome")?.scrollIntoView({ behavior: "smooth" })
+            trackEvent("hero_scroll_click")
           }}
           className="flex flex-col items-center gap-2 text-muted-foreground/50 hover:text-primary transition-colors"
           aria-label="Weiter scrollen"

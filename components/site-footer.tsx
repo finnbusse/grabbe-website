@@ -1,5 +1,8 @@
+"use client"
+
 import Link from "next/link"
 import { Mail, Phone, MapPin } from "lucide-react"
+import { trackEvent } from "@/lib/analytics"
 
 export type FooterLink = { id: string; label: string; href: string }
 
@@ -95,6 +98,7 @@ export function SiteFooter({
                 <Phone className="h-4 w-4 shrink-0 text-primary-foreground/30" />
                 <a
                   href={`tel:${phone.replace(/[\s()-]/g, "")}`}
+                  onClick={() => trackEvent("footer_phone_click")}
                   className="text-sm text-primary-foreground/60 hover:text-[hsl(200,90%,80%)] transition-colors"
                 >
                   {phone}
@@ -104,6 +108,7 @@ export function SiteFooter({
                 <Mail className="h-4 w-4 shrink-0 text-primary-foreground/30" />
                 <a
                   href={`mailto:${email}`}
+                  onClick={() => trackEvent("footer_email_click")}
                   className="text-sm text-primary-foreground/60 hover:text-[hsl(200,90%,80%)] transition-colors"
                 >
                   {email}

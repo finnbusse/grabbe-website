@@ -4,6 +4,7 @@ import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useState, useRef, useCallback, useEffect } from "react"
 import { Menu, X, ChevronDown } from "lucide-react"
+import { trackEvent } from "@/lib/analytics"
 
 const DESKTOP_BREAKPOINT = 1024
 const SCROLL_TOP_OFFSET = 80
@@ -227,7 +228,11 @@ export function SiteHeader({
         {/* Mobile toggle */}
         <button
           className="flex h-9 w-9 items-center justify-center rounded-full text-foreground/80 hover:bg-white/20 hover:text-foreground transition-all duration-200 lg:hidden"
-          onClick={() => setMobileOpen(!mobileOpen)}
+          onClick={() => {
+            const next = !mobileOpen
+            setMobileOpen(next)
+            trackEvent("nav_mobile_toggle", { open: next })
+          }}
           aria-label={mobileOpen ? "Navigation schließen" : "Navigation öffnen"}
         >
           {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
@@ -247,7 +252,10 @@ export function SiteHeader({
                       ? "bg-white/20 text-foreground"
                       : "text-foreground/80 hover:bg-white/20 hover:text-foreground"
                   }`}
-                  onClick={() => setMobileOpen(false)}
+                  onClick={() => {
+                    setMobileOpen(false)
+                    trackEvent("nav_link_click", { label: item.label, href: item.href })
+                  }}
                 >
                   {item.label}
                 </Link>
@@ -260,7 +268,10 @@ export function SiteHeader({
                         ? "font-medium text-foreground"
                         : "text-foreground/80 hover:text-foreground"
                     }`}
-                    onClick={() => setMobileOpen(false)}
+                    onClick={() => {
+                      setMobileOpen(false)
+                      trackEvent("nav_link_click", { label: child.label, href: child.href })
+                    }}
                   >
                     {child.label}
                   </Link>
