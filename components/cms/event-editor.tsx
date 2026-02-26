@@ -166,81 +166,79 @@ export function EventEditor({ event }: EventEditorProps) {
       )}
 
       <div className="mt-6 max-w-2xl space-y-6">
-        <div className="rounded-2xl border border-border bg-card p-6">
-          <div className="space-y-4">
-            <div className="grid gap-2">
-              <Label htmlFor="title">Titel</Label>
-              <Input
-                id="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="z.B. Elternabend Klasse 5"
-                className="font-display"
-              />
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <div className="col-span-full lg:col-span-3">
-                <DateRangePicker
-                  date={eventDate}
-                  endDate={eventEndDate}
-                  time={eventTime}
-                  isAllDay={isAllDay}
-                  onDateChange={setEventDate}
-                  onEndDateChange={setEventEndDate}
-                  onTimeChange={setEventTime}
-                  onIsAllDayChange={setIsAllDay}
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="category">Kategorie</Label>
-                <select
-                  id="category"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  className="h-10 rounded-lg border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-                >
-                  <option value="termin">Schultermin</option>
-                  <option value="ferien">Ferien</option>
-                  <option value="pruefung">Prüfung / Klausur</option>
-                  <option value="veranstaltung">Veranstaltung</option>
-                  <option value="elternabend">Elternabend</option>
-                  <option value="projekttag">Projekttag</option>
-                  <option value="sonstiges">Sonstiges</option>
-                </select>
-              </div>
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="location">Ort (optional)</Label>
-              <Input
-                id="location"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                placeholder="z.B. Aula, Mensa, Sporthalle"
+        <div className="space-y-4">
+          <div className="grid gap-2">
+            <Label htmlFor="title">Titel</Label>
+            <Input
+              id="title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="z.B. Elternabend Klasse 5"
+              className="font-display"
+            />
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="col-span-full lg:col-span-3">
+              <DateRangePicker
+                date={eventDate}
+                endDate={eventEndDate}
+                time={eventTime}
+                isAllDay={isAllDay}
+                onDateChange={setEventDate}
+                onEndDateChange={setEventEndDate}
+                onTimeChange={setEventTime}
+                onIsAllDayChange={setIsAllDay}
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="description">Beschreibung (optional)</Label>
-              <textarea
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Weitere Informationen zum Termin..."
-                className="min-h-[120px] w-full resize-y rounded-lg border border-input bg-background px-4 py-3 text-sm leading-relaxed placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-              />
+              <Label htmlFor="category">Kategorie</Label>
+              <select
+                id="category"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="h-10 rounded-lg border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+              >
+                <option value="termin">Schultermin</option>
+                <option value="ferien">Ferien</option>
+                <option value="pruefung">Prüfung / Klausur</option>
+                <option value="veranstaltung">Veranstaltung</option>
+                <option value="elternabend">Elternabend</option>
+                <option value="projekttag">Projekttag</option>
+                <option value="sonstiges">Sonstiges</option>
+              </select>
             </div>
-            <label className="flex cursor-pointer items-center gap-2.5">
-              <input
-                type="checkbox"
-                checked={published}
-                onChange={(e) => setPublished(e.target.checked)}
-                className="h-4 w-4 rounded border-input"
-              />
-              <span className="text-sm text-card-foreground">Termin veröffentlichen</span>
-            </label>
-            <div className="grid gap-2 pt-2 border-t">
-              <Label>Tags</Label>
-              <TagSelector selectedTagIds={tagIds} onChange={setTagIds} />
-            </div>
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="location">Ort (optional)</Label>
+            <Input
+              id="location"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              placeholder="z.B. Aula, Mensa, Sporthalle"
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="description">Beschreibung (optional)</Label>
+            <textarea
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Weitere Informationen zum Termin..."
+              className="min-h-[120px] w-full resize-y rounded-lg border border-input bg-background px-4 py-3 text-sm leading-relaxed placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            />
+          </div>
+          <label className="flex cursor-pointer items-center gap-2.5">
+            <input
+              type="checkbox"
+              checked={published}
+              onChange={(e) => setPublished(e.target.checked)}
+              className="h-4 w-4 rounded border-input"
+            />
+            <span className="text-sm text-card-foreground">Termin veröffentlichen</span>
+          </label>
+          <div className="grid gap-2 pt-2 border-t">
+            <Label>Tags</Label>
+            <TagSelector selectedTagIds={tagIds} onChange={setTagIds} />
           </div>
         </div>
       </div>

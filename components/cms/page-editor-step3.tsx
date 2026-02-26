@@ -132,9 +132,9 @@ export function PageEditorStep3() {
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Left Column — Review Summary */}
         <div className="space-y-4">
-          <h3 className="font-display text-lg font-semibold">Zusammenfassung</h3>
+          <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Zusammenfassung</h3>
 
-          <div className="rounded-2xl border bg-card p-5 space-y-4">
+          <div className="space-y-4">
             {/* Title + URL */}
             <div>
               <p className="text-xs text-muted-foreground">Seitentitel</p>
@@ -196,9 +196,9 @@ export function PageEditorStep3() {
 
         {/* Right Column — SEO Fields */}
         <div className="space-y-4">
-          <h3 className="font-display text-lg font-semibold">SEO & Social Media</h3>
+          <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">SEO & Social Media</h3>
 
-          <div className="rounded-2xl border bg-card p-5 space-y-4">
+          <div className="space-y-4">
             {/* Meta Description */}
             <div className="space-y-2">
               <Label htmlFor="meta-desc">Meta-Beschreibung</Label>
@@ -261,8 +261,10 @@ export function PageEditorStep3() {
             </div>
           </div>
 
+          <div className="border-b border-border" />
+
           {/* Google Preview */}
-          <div className="rounded-2xl border bg-card p-5 space-y-2">
+          <div className="space-y-2">
             <p className="text-xs font-medium text-muted-foreground">Google-Vorschau</p>
             <div className="space-y-0.5">
               <p className="text-base text-[#1a0dab] font-medium truncate">
@@ -287,43 +289,45 @@ export function PageEditorStep3() {
       )}
 
       {/* Actions */}
-      <div className="flex items-center justify-between pt-4">
-        <Button variant="outline" onClick={handleBack} className="gap-2">
-          <ArrowLeft className="h-4 w-4" />
-          Zurück
-        </Button>
-
-        <div className="flex items-center gap-3">
-          <Button
-            variant="outline"
-            onClick={() => handleSave(false)}
-            disabled={publishState !== "idle"}
-            className="gap-2"
-          >
-            <Save className="h-4 w-4" />
-            Als Entwurf speichern
+      <div className="sticky bottom-0 z-10 -mx-4 px-4 sm:-mx-6 sm:px-6 py-4 bg-muted border-t border-border">
+        <div className="flex items-center justify-between">
+          <Button variant="outline" onClick={handleBack} className="gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            Zurück
           </Button>
 
-          {publishState === "success" ? (
-            <Button size="lg" className="gap-2 bg-emerald-600 hover:bg-emerald-600 pointer-events-none publish-success-btn">
-              <Check className="h-5 w-5" />
-              Veröffentlicht!
-            </Button>
-          ) : (
+          <div className="flex items-center gap-3">
             <Button
-              size="lg"
-              onClick={() => handleSave(true)}
-              disabled={publishState === "saving"}
+              variant="outline"
+              onClick={() => handleSave(false)}
+              disabled={publishState !== "idle"}
               className="gap-2"
             >
-              {publishState === "saving" ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Rocket className="h-4 w-4" />
-              )}
-              {publishState === "saving" ? "Wird veröffentlicht…" : "Jetzt veröffentlichen"}
+              <Save className="h-4 w-4" />
+              Als Entwurf speichern
             </Button>
-          )}
+
+            {publishState === "success" ? (
+              <Button size="lg" className="gap-2 bg-emerald-600 hover:bg-emerald-600 pointer-events-none publish-success-btn">
+                <Check className="h-5 w-5" />
+                Veröffentlicht!
+              </Button>
+            ) : (
+              <Button
+                size="lg"
+                onClick={() => handleSave(true)}
+                disabled={publishState === "saving"}
+                className="gap-2"
+              >
+                {publishState === "saving" ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Rocket className="h-4 w-4" />
+                )}
+                {publishState === "saving" ? "Wird veröffentlicht…" : "Jetzt veröffentlichen"}
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </div>

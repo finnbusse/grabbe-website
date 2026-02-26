@@ -200,9 +200,10 @@ export function PageSettingsForm({ page, isStatic }: PageSettingsFormProps) {
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         {/* Left column */}
-        <div className="space-y-6">
+        <div className="space-y-8">
           {/* Title */}
-          <div className="rounded-2xl border bg-card p-6 space-y-4">
+          <div className="space-y-4">
+            <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Seitentitel</h3>
             <div className="grid gap-2">
               <Label htmlFor="title">Seitentitel</Label>
               <Input
@@ -253,9 +254,11 @@ export function PageSettingsForm({ page, isStatic }: PageSettingsFormProps) {
             )}
           </div>
 
+          <div className="border-b border-border" />
+
           {/* Hero Image */}
-          <div className="rounded-2xl border bg-card p-6 space-y-4">
-            <h3 className="font-display text-sm font-semibold">Hero-Bild</h3>
+          <div className="space-y-4">
+            <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Hero-Bild</h3>
             <ImagePicker
               value={heroImageUrl || null}
               onChange={(url) => setHeroImageUrl(url || "")}
@@ -263,32 +266,37 @@ export function PageSettingsForm({ page, isStatic }: PageSettingsFormProps) {
             />
           </div>
 
+          <div className="border-b border-border" />
+
           {/* Tags */}
-          <div className="rounded-2xl border bg-card p-6 space-y-4">
-            <h3 className="font-display text-sm font-semibold">Tags</h3>
+          <div className="space-y-4">
+            <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Tags</h3>
             <TagSelector selectedTagIds={tagIds} onChange={setTagIds} />
           </div>
         </div>
 
         {/* Right column */}
-        <div className="space-y-6">
+        <div className="space-y-8">
           {/* Status */}
           {!isStatic && (
-            <div className="rounded-2xl border bg-card p-6 space-y-4">
-              <h3 className="font-display text-sm font-semibold">Status</h3>
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label htmlFor="pub">Veröffentlicht</Label>
-                  <p className="text-[11px] text-muted-foreground">Seite ist für Besucher sichtbar</p>
+            <>
+              <div className="space-y-4">
+                <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Status</h3>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="pub">Veröffentlicht</Label>
+                    <p className="text-[11px] text-muted-foreground">Seite ist für Besucher sichtbar</p>
+                  </div>
+                  <Switch id="pub" checked={published} onCheckedChange={setPublished} />
                 </div>
-                <Switch id="pub" checked={published} onCheckedChange={setPublished} />
               </div>
-            </div>
+              <div className="border-b border-border" />
+            </>
           )}
 
           {/* SEO */}
-          <div className="rounded-2xl border bg-card p-6 space-y-4">
-            <h3 className="font-display text-sm font-semibold">SEO</h3>
+          <div className="space-y-4">
+            <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">SEO</h3>
             <div className="grid gap-2">
               <Label htmlFor="seoTitle">SEO-Titel (optional)</Label>
               <Input
@@ -338,44 +346,50 @@ export function PageSettingsForm({ page, isStatic }: PageSettingsFormProps) {
 
           {/* Timestamps */}
           {(page.createdAt || page.updatedAt) && (
-            <div className="rounded-2xl border bg-card p-6 space-y-2">
-              <h3 className="font-display text-sm font-semibold">Zeitstempel</h3>
-              {page.createdAt && (
-                <p className="text-xs text-muted-foreground">
-                  Erstellt am: {new Date(page.createdAt).toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" })}
-                </p>
-              )}
-              {page.updatedAt && (
-                <p className="text-xs text-muted-foreground">
-                  Zuletzt bearbeitet: {new Date(page.updatedAt).toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" })}
-                </p>
-              )}
-            </div>
+            <>
+              <div className="border-b border-border" />
+              <div className="space-y-2">
+                <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Zeitstempel</h3>
+                {page.createdAt && (
+                  <p className="text-xs text-muted-foreground">
+                    Erstellt am: {new Date(page.createdAt).toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                  </p>
+                )}
+                {page.updatedAt && (
+                  <p className="text-xs text-muted-foreground">
+                    Zuletzt bearbeitet: {new Date(page.updatedAt).toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                  </p>
+                )}
+              </div>
+            </>
           )}
 
           {/* Danger zone */}
           {!isStatic && (
-            <div className="rounded-2xl border border-destructive/30 bg-card">
-              <button
-                type="button"
-                onClick={() => setShowDanger(!showDanger)}
-                className="flex w-full items-center justify-between px-6 py-4 text-sm font-semibold text-destructive"
-              >
-                Gefährliche Zone
-                <ChevronDown className={`h-4 w-4 transition-transform ${showDanger ? "rotate-180" : ""}`} />
-              </button>
-              {showDanger && (
-                <div className="border-t border-destructive/20 px-6 py-4">
-                  <p className="mb-3 text-xs text-muted-foreground">
-                    Das Löschen einer Seite kann nicht rückgängig gemacht werden. Alle Inhalte gehen verloren.
-                  </p>
-                  <Button variant="destructive" size="sm" onClick={handleDelete} disabled={deleting}>
-                    {deleting ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : <Trash2 className="mr-1.5 h-3.5 w-3.5" />}
-                    Seite löschen
-                  </Button>
-                </div>
-              )}
-            </div>
+            <>
+              <div className="border-b border-border" />
+              <div className="rounded-2xl border border-destructive/30 bg-card">
+                <button
+                  type="button"
+                  onClick={() => setShowDanger(!showDanger)}
+                  className="flex w-full items-center justify-between px-6 py-4 text-sm font-semibold text-destructive"
+                >
+                  Gefährliche Zone
+                  <ChevronDown className={`h-4 w-4 transition-transform ${showDanger ? "rotate-180" : ""}`} />
+                </button>
+                {showDanger && (
+                  <div className="border-t border-destructive/20 px-6 py-4">
+                    <p className="mb-3 text-xs text-muted-foreground">
+                      Das Löschen einer Seite kann nicht rückgängig gemacht werden. Alle Inhalte gehen verloren.
+                    </p>
+                    <Button variant="destructive" size="sm" onClick={handleDelete} disabled={deleting}>
+                      {deleting ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : <Trash2 className="mr-1.5 h-3.5 w-3.5" />}
+                      Seite löschen
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </>
           )}
         </div>
       </div>

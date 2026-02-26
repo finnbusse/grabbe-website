@@ -99,17 +99,17 @@ function Section({
   children: React.ReactNode
 }) {
   return (
-    <div className="rounded-2xl border border-border bg-card">
-      <div className="flex items-start gap-3 border-b border-border px-6 py-4">
+    <div className="space-y-5">
+      <div className="flex items-start gap-3 border-b border-border pb-4">
         <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
           <Icon className="h-4 w-4" />
         </div>
         <div>
-          <h2 className="font-display text-base font-semibold text-card-foreground">{title}</h2>
+          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">{title}</h2>
           <p className="text-sm text-muted-foreground">{description}</p>
         </div>
       </div>
-      <div className="grid gap-5 px-6 py-5">{children}</div>
+      <div className="grid gap-5">{children}</div>
     </div>
   )
 }

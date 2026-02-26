@@ -105,15 +105,17 @@ export function PageEditorStep2() {
       )}
 
       {/* Navigation */}
-      <div className="flex items-center justify-between">
-        <Button variant="outline" onClick={handleBack} className="gap-2">
-          <ArrowLeft className="h-4 w-4" />
-          Zurück
-        </Button>
-        <Button onClick={handleNext} disabled={!hasContent} size="lg" className="gap-2">
-          Weiter
-          <ArrowRight className="h-4 w-4" />
-        </Button>
+      <div className="sticky bottom-0 z-10 -mx-4 px-4 sm:-mx-6 sm:px-6 py-4 bg-muted border-t border-border">
+        <div className="flex items-center justify-between">
+          <Button variant="outline" onClick={handleBack} className="gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            Zurück
+          </Button>
+          <Button onClick={handleNext} disabled={!hasContent} size="lg" className="gap-2">
+            Weiter
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
     </div>
   )
@@ -127,7 +129,7 @@ function BlocksEditor() {
   const { state, dispatch } = usePageWizard()
 
   return (
-    <div className="rounded-2xl border bg-card p-6 space-y-4">
+    <div className="space-y-4">
       <div>
         <h3 className="font-display font-semibold">Seiteninhalt</h3>
         <p className="text-xs text-muted-foreground">
@@ -251,7 +253,7 @@ function PreviewPanel() {
   const { state } = usePageWizard()
 
   return (
-    <div className="rounded-2xl border bg-card p-6 space-y-4 animate-fade-in">
+    <div className="space-y-4 animate-fade-in">
       <div className="flex items-center gap-2 border-b border-border pb-3">
         <Eye className="h-4 w-4 text-primary" />
         <h3 className="font-display font-semibold text-sm">Seitenvorschau</h3>

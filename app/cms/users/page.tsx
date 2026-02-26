@@ -5,7 +5,6 @@ import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { UserPlus, Trash2, Shield, Mail, Pencil, X, Save, Loader2, Camera, Search, Users, ShieldCheck, FileStack } from "lucide-react"
 import { usePermissions } from "@/components/cms/permissions-context"
 import type { CmsRole } from "@/lib/permissions-shared"
@@ -417,12 +416,12 @@ export default function UsersPage() {
       )}
 
       {showForm && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Neuen Lehrer-Account erstellen</CardTitle>
-            <CardDescription>Der neue Benutzer kann sich nach der Erstellung im CMS anmelden.</CardDescription>
-          </CardHeader>
-          <CardContent>
+        <div className="space-y-4">
+          <div>
+            <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Neuen Lehrer-Account erstellen</h2>
+            <p className="text-xs text-muted-foreground mt-1">Der neue Benutzer kann sich nach der Erstellung im CMS anmelden.</p>
+          </div>
+          <div className="border-b border-border" />
             <form onSubmit={handleCreate} className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="grid gap-2">
@@ -468,8 +467,7 @@ export default function UsersPage() {
                 <Button type="submit" disabled={creating}>{creating ? "Erstelle..." : "Account erstellen"}</Button>
               </div>
             </form>
-          </CardContent>
-        </Card>
+        </div>
       )}
 
       <div className="grid gap-3">

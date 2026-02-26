@@ -52,7 +52,7 @@ export function PostWizardStep1() {
   return (
     <div className="mx-auto max-w-2xl space-y-8 animate-fade-in">
       {/* Title + Slug */}
-      <div className="rounded-2xl border bg-card p-6 space-y-4">
+      <div className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="post-title" className="text-base font-semibold">
             Titel *
@@ -84,9 +84,11 @@ export function PostWizardStep1() {
         </div>
       </div>
 
+      <div className="border-b border-border" />
+
       {/* Category */}
-      <div className="rounded-2xl border bg-card p-6 space-y-3">
-        <Label htmlFor="post-category" className="text-base font-semibold">
+      <div className="space-y-3">
+        <Label htmlFor="post-category" className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
           Kategorie
         </Label>
         <Input
@@ -103,9 +105,11 @@ export function PostWizardStep1() {
         </datalist>
       </div>
 
+      <div className="border-b border-border" />
+
       {/* Excerpt */}
-      <div className="rounded-2xl border bg-card p-6 space-y-3">
-        <Label htmlFor="post-excerpt" className="text-base font-semibold">
+      <div className="space-y-3">
+        <Label htmlFor="post-excerpt" className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
           Kurztext / Excerpt
         </Label>
         <p className="text-xs text-muted-foreground">
@@ -135,9 +139,11 @@ export function PostWizardStep1() {
         </div>
       </div>
 
+      <div className="border-b border-border" />
+
       {/* Cover Image */}
-      <div className="rounded-2xl border bg-card p-6 space-y-3">
-        <Label className="text-base font-semibold">Titelbild</Label>
+      <div className="space-y-3">
+        <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Titelbild</Label>
         <p className="text-xs text-muted-foreground">
           Wird als großes Bild über dem Beitrag und in der Übersicht angezeigt.
         </p>
@@ -148,9 +154,11 @@ export function PostWizardStep1() {
         />
       </div>
 
+      <div className="border-b border-border" />
+
       {/* Date */}
-      <div className="rounded-2xl border bg-card p-6 space-y-3">
-        <Label htmlFor="post-date" className="text-base font-semibold">
+      <div className="space-y-3">
+        <Label htmlFor="post-date" className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
           Datum
         </Label>
         <p className="text-xs text-muted-foreground">
@@ -164,9 +172,11 @@ export function PostWizardStep1() {
         />
       </div>
 
+      <div className="border-b border-border" />
+
       {/* Tags */}
-      <div className="rounded-2xl border bg-card p-6 space-y-3">
-        <Label className="text-base font-semibold">Tags (optional)</Label>
+      <div className="space-y-3">
+        <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Tags</Label>
         <TagSelector
           selectedTagIds={state.tagIds}
           onChange={(ids) => dispatch({ type: "SET_TAG_IDS", payload: ids })}
@@ -181,11 +191,13 @@ export function PostWizardStep1() {
       )}
 
       {/* Navigation */}
-      <div className="flex justify-end">
-        <Button onClick={handleNext} disabled={!canProceed} size="lg" className="gap-2">
-          Weiter
-          <ArrowRight className="h-4 w-4" />
-        </Button>
+      <div className="sticky bottom-0 z-10 -mx-4 px-4 sm:-mx-6 sm:px-6 py-4 bg-muted border-t border-border">
+        <div className="flex justify-end">
+          <Button onClick={handleNext} disabled={!canProceed} size="lg" className="gap-2">
+            Weiter
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
     </div>
   )

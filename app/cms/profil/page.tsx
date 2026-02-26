@@ -5,7 +5,6 @@ import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Save, Loader2, Camera, User } from "lucide-react"
 
 export default function ProfilPage() {
@@ -137,14 +136,12 @@ export default function ProfilPage() {
         <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">{error}</div>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-8 lg:grid-cols-3">
         {/* Avatar Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Profilbild</CardTitle>
-            <CardDescription>Wird bei Ihren Beiträgen angezeigt</CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col items-center gap-4">
+        <div className="space-y-3">
+          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Profilbild</h2>
+          <p className="text-xs text-muted-foreground">Wird bei Ihren Beiträgen angezeigt</p>
+          <div className="flex flex-col items-center gap-4">
             <div className="relative">
               {avatarUrl ? (
                 <img
@@ -176,49 +173,45 @@ export default function ProfilPage() {
             <p className="text-xs text-center text-muted-foreground">
               Klicken Sie auf das Kamera-Symbol, um ein neues Bild hochzuladen. Große Bilder werden automatisch komprimiert.
             </p>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Profile Info */}
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle className="text-lg">Persönliche Informationen</CardTitle>
-            <CardDescription>Diese Daten werden als Autoreninfo bei Beiträgen angezeigt</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-4">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="grid gap-2">
-                  <Label htmlFor="firstName">Vorname</Label>
-                  <Input id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="Max" />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="lastName">Nachname</Label>
-                  <Input id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Mustermann" />
-                </div>
+        <div className="lg:col-span-2 space-y-3">
+          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Persönliche Informationen</h2>
+          <p className="text-xs text-muted-foreground">Diese Daten werden als Autoreninfo bei Beiträgen angezeigt</p>
+          <div className="grid gap-4">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-2">
+                <Label htmlFor="firstName">Vorname</Label>
+                <Input id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="Max" />
               </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="grid gap-2">
-                  <Label htmlFor="title">Titel (optional)</Label>
-                  <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Dr., Prof., etc." />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="email">E-Mail</Label>
-                  <div className="flex items-center gap-2">
-                    <User className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground">{email}</span>
-                  </div>
-                </div>
-              </div>
-              <div className="flex justify-end pt-2">
-                <Button onClick={handleSave} disabled={saving}>
-                  {saving ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : <Save className="mr-1.5 h-3.5 w-3.5" />}
-                  {saving ? "Speichern..." : "Profil speichern"}
-                </Button>
+              <div className="grid gap-2">
+                <Label htmlFor="lastName">Nachname</Label>
+                <Input id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Mustermann" />
               </div>
             </div>
-          </CardContent>
-        </Card>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-2">
+                <Label htmlFor="title">Titel (optional)</Label>
+                <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Dr., Prof., etc." />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="email">E-Mail</Label>
+                <div className="flex items-center gap-2">
+                  <User className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">{email}</span>
+                </div>
+              </div>
+            </div>
+            <div className="flex justify-end pt-2">
+              <Button onClick={handleSave} disabled={saving}>
+                {saving ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : <Save className="mr-1.5 h-3.5 w-3.5" />}
+                {saving ? "Speichern..." : "Profil speichern"}
+              </Button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )

@@ -109,7 +109,7 @@ export function PageWizardStep1() {
   return (
     <div className="mx-auto max-w-2xl space-y-8 animate-fade-in">
       {/* Title Field */}
-      <div className="rounded-2xl border bg-card p-6 space-y-4">
+      <div className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="wizard-title" className="text-base font-semibold">
             Seitentitel *
@@ -147,9 +147,11 @@ export function PageWizardStep1() {
         </div>
       </div>
 
+      <div className="border-b border-border" />
+
       {/* Hero Subtitle */}
-      <div className="rounded-2xl border bg-card p-6 space-y-3">
-        <Label htmlFor="wizard-subtitle" className="text-base font-semibold">Hero-Untertitel (optional)</Label>
+      <div className="space-y-3">
+        <Label htmlFor="wizard-subtitle" className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Hero-Untertitel</Label>
         <p className="text-xs text-muted-foreground">Wird als beschreibender Text unter dem Seitentitel angezeigt.</p>
         <Input
           id="wizard-subtitle"
@@ -165,9 +167,11 @@ export function PageWizardStep1() {
         )}
       </div>
 
+      <div className="border-b border-border" />
+
       {/* Hero Image */}
-      <div className="rounded-2xl border bg-card p-6 space-y-3">
-        <Label className="text-base font-semibold">Hero-Bild (optional)</Label>
+      <div className="space-y-3">
+        <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Hero-Bild</Label>
         <p className="text-xs text-muted-foreground">Wird oben auf der Seite als großes Titelbild angezeigt.</p>
         <ImagePicker
           value={state.heroImageUrl || null}
@@ -176,19 +180,23 @@ export function PageWizardStep1() {
         />
       </div>
 
+      <div className="border-b border-border" />
+
       {/* Tags */}
-      <div className="rounded-2xl border bg-card p-6 space-y-3">
-        <Label className="text-base font-semibold">Tags (optional)</Label>
+      <div className="space-y-3">
+        <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Tags</Label>
         <TagSelector
           selectedTagIds={state.tagIds}
           onChange={(ids) => dispatch({ type: "SET_TAG_IDS", payload: ids })}
         />
       </div>
 
+      <div className="border-b border-border" />
+
       {/* Category / Route Path Picker */}
-      <div className="rounded-2xl border bg-card p-6 space-y-4">
+      <div className="space-y-4">
         <div>
-          <Label className="text-base font-semibold">URL-Pfad / Kategorie *</Label>
+          <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wide">URL-Pfad / Kategorie *</Label>
           <p className="text-xs text-muted-foreground mt-1">
             Wähle aus, unter welcher Kategorie die Seite erscheinen soll.
           </p>
@@ -239,11 +247,13 @@ export function PageWizardStep1() {
       </div>
 
       {/* Navigation */}
-      <div className="flex justify-end">
-        <Button onClick={handleNext} disabled={!canProceed} size="lg" className="gap-2">
-          Weiter
-          <ArrowRight className="h-4 w-4" />
-        </Button>
+      <div className="sticky bottom-0 z-10 -mx-4 px-4 sm:-mx-6 sm:px-6 py-4 bg-muted border-t border-border">
+        <div className="flex justify-end">
+          <Button onClick={handleNext} disabled={!canProceed} size="lg" className="gap-2">
+            Weiter
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
     </div>
   )

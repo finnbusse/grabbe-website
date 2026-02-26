@@ -30,22 +30,22 @@ export function PostWizard({ editMode }: PostWizardProps) {
   const { state } = usePostWizard()
 
   return (
-    <div>
-      {/* Header */}
-      <div className="flex items-center gap-3 mb-2">
-        <Button variant="ghost" size="icon" asChild>
-          <Link href="/cms/posts">
-            <ArrowLeft className="h-4 w-4" />
-          </Link>
-        </Button>
-        <h1 className="font-display text-2xl font-bold">
-          {editMode ? "Beitrag bearbeiten" : "Neuen Beitrag erstellen"}
-        </h1>
-      </div>
+    <div className="-mx-4 -mt-6 -mb-6 sm:-mx-6 lg:-mx-6 lg:-mt-8 lg:-mb-8 flex flex-col h-[calc(100svh-65px)] lg:h-svh overflow-hidden bg-muted">
+      {/* Fixed Header */}
+      <div className="shrink-0 border-b border-border bg-muted px-4 sm:px-6 lg:px-6 pt-4 lg:pt-6 pb-4">
+        <div className="mx-auto max-w-5xl flex items-center gap-3 mb-4">
+          <Button variant="ghost" size="icon" asChild>
+            <Link href="/cms/posts">
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
+          </Button>
+          <h1 className="font-display text-2xl font-bold">
+            {editMode ? "Beitrag bearbeiten" : "Neuen Beitrag erstellen"}
+          </h1>
+        </div>
 
-      {/* Progress Indicator */}
-      <div className="mb-8">
-        <div className="flex items-center justify-center gap-2">
+        {/* Step Indicator */}
+        <div className="mx-auto max-w-5xl flex items-center justify-center gap-2">
           {STEPS.map((step, i) => (
             <div key={step.number} className="flex items-center">
               {i > 0 && (
@@ -84,11 +84,13 @@ export function PostWizard({ editMode }: PostWizardProps) {
         </div>
       </div>
 
-      {/* Step Content */}
-      <div>
-        {state.currentStep === 1 && <PostWizardStep1 />}
-        {state.currentStep === 2 && <PostWizardStep2 />}
-        {state.currentStep === 3 && <PostWizardStep3 />}
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-6 py-6">
+          {state.currentStep === 1 && <PostWizardStep1 />}
+          {state.currentStep === 2 && <PostWizardStep2 />}
+          {state.currentStep === 3 && <PostWizardStep3 />}
+        </div>
       </div>
     </div>
   )
