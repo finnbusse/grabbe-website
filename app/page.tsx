@@ -32,9 +32,9 @@ export default async function HomePage() {
       .limit(4),
     supabase
       .from("events")
-      .select("id, title, event_date, event_time, location, category")
+      .select("id, title, event_date, event_end_date, event_time, location, category")
       .eq("published", true)
-      .gte("event_date", new Date().toISOString().split("T")[0])
+      .or(`event_date.gte.${new Date().toISOString().split("T")[0]},event_end_date.gte.${new Date().toISOString().split("T")[0]}`)
       .order("event_date", { ascending: true })
       .limit(6),
     getMultiplePageContents(pageIds, PAGE_DEFAULTS),

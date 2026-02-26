@@ -8,6 +8,7 @@ interface Event {
   id: string
   title: string
   event_date: string
+  event_end_date?: string | null
   event_time: string | null
   location: string | null
   category?: string | null
@@ -69,6 +70,9 @@ export function CalendarPreview({ events, content }: { events: Event[]; content?
                       <div className="min-w-0 flex-1">
                         <h3 className="font-display text-lg text-primary-foreground line-clamp-2">{event.title}</h3>
                         <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-primary-foreground/50">
+                          {event.event_end_date && event.event_end_date !== event.event_date && (
+                            <span>bis {new Date(event.event_end_date).getDate()}. {monthNames[new Date(event.event_end_date).getMonth()]}</span>
+                          )}
                           {event.event_time && (
                             <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{event.event_time}</span>
                           )}

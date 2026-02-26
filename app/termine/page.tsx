@@ -38,7 +38,7 @@ export default async function TerminePage() {
     .from("events")
     .select("id, title, description, event_date, event_end_date, event_time, location, category")
     .eq("published", true)
-    .gte("event_date", new Date().toISOString().split("T")[0])
+    .or(`event_date.gte.${new Date().toISOString().split("T")[0]},event_end_date.gte.${new Date().toISOString().split("T")[0]}`)
     .order("event_date", { ascending: true })
     .returns<EventListItem[]>()
 
