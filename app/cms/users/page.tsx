@@ -6,7 +6,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { UserPlus, Trash2, Shield, Mail, Pencil, X, Save, Loader2, Camera, Search, Users, ShieldCheck, FileStack } from "lucide-react"
+import { UserPlus, Trash2, Shield, Mail, Pencil, X, Save, Loader2, Camera, Search, Users, ShieldCheck, FileStack, Send, RotateCcw, Clock } from "lucide-react"
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet"
+import { Textarea } from "@/components/ui/textarea"
 import { usePermissions } from "@/components/cms/permissions-context"
 import type { CmsRole } from "@/lib/permissions-shared"
 
@@ -36,6 +38,17 @@ interface UserRoleAssignment {
 interface PagePermEntry {
   page_type: "editable" | "cms"
   page_id: string
+}
+
+interface PendingInvitation {
+  id: string
+  email: string
+  role_id: string | null
+  expires_at: string
+  created_at: string
+  personal_message: string | null
+  inviter_name: string | null
+  cms_roles: { name: string } | null
 }
 
 function getInitials(profile: UserProfile | null, email: string) {
@@ -131,6 +144,17 @@ export default function UsersPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  // Invitation state
+  const [inviteSheetOpen, setInviteSheetOpen] = useState(false)
+  const [inviteEmail, setInviteEmail] = useState("")
+  const [inviteRoleId, setInviteRoleId] = useState("")
+  const [inviteMessage, setInviteMessage] = useState("")
+  const [inviteSending, setInviteSending] = useState(false)
+  const [inviteError, setInviteError] = useState("")
+  const [pendingInvitations, setPendingInvitations] = useState<PendingInvitation[]>([])
+  const [resendingId, setResendingId] = useState<string | null>(null)
+  const [revokingId, setRevokingId] = useState<string | null>(null)
+
   // Role management state
   const [allRoles, setAllRoles] = useState<CmsRole[]>([])
   const [userRoleMap, setUserRoleMap] = useState<Record<string, string[]>>({}) // userId -> roleId[]
@@ -188,12 +212,24 @@ export default function UsersPage() {
     } catch { /* ok */ }
   }, [supabase])
 
+  const loadInvitations = useCallback(async () => {
+    if (!isCurrentAdmin) return
+    try {
+      const res = await fetch("/api/invitations")
+      if (res.ok) {
+        const data = await res.json()
+        setPendingInvitations(data.invitations || [])
+      }
+    } catch { /* ok */ }
+  }, [isCurrentAdmin])
+
   useEffect(() => {
     loadUsers()
     loadRoles()
     loadUserRoles()
     loadCmsPages()
-  }, [loadUsers, loadRoles, loadUserRoles, loadCmsPages])
+    loadInvitations()
+  }, [loadUsers, loadRoles, loadUserRoles, loadCmsPages, loadInvitations])
 
   const filteredUsers = useMemo(() => {
     if (!searchQuery.trim()) return users
@@ -381,6 +417,66 @@ export default function UsersPage() {
     })
   }
 
+  async function handleSendInvite(e: React.FormEvent) {
+    e.preventDefault()
+    setInviteSending(true)
+    setInviteError("")
+    try {
+      const res = await fetch("/api/invitations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: inviteEmail,
+          roleId: inviteRoleId,
+          personalMessage: inviteMessage || null,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || "Fehler beim Senden")
+      setInviteEmail("")
+      setInviteRoleId("")
+      setInviteMessage("")
+      setInviteSheetOpen(false)
+      setMessage("Einladung erfolgreich gesendet!")
+      loadInvitations()
+    } catch (err) {
+      setInviteError(err instanceof Error ? err.message : "Fehler beim Senden der Einladung")
+    } finally {
+      setInviteSending(false)
+    }
+  }
+
+  async function handleResendInvite(id: string) {
+    setResendingId(id)
+    try {
+      const res = await fetch(`/api/invitations/${id}/resend`, { method: "POST" })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || "Fehler")
+      setMessage("Einladung erneut gesendet!")
+      loadInvitations()
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : "Fehler beim erneuten Senden")
+    } finally {
+      setResendingId(null)
+    }
+  }
+
+  async function handleRevokeInvite(id: string) {
+    if (!confirm("Einladung wirklich widerrufen?")) return
+    setRevokingId(id)
+    try {
+      const res = await fetch(`/api/invitations/${id}`, { method: "DELETE" })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || "Fehler")
+      setMessage("Einladung widerrufen.")
+      loadInvitations()
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : "Fehler beim Widerrufen")
+    } finally {
+      setRevokingId(null)
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -388,13 +484,78 @@ export default function UsersPage() {
           <h1 className="font-display text-2xl font-bold text-foreground">Benutzerverwaltung</h1>
           <p className="text-sm text-muted-foreground">Lehrer-Accounts für das CMS erstellen und verwalten</p>
         </div>
-        {permissions.users.create && (
-          <Button onClick={() => setShowForm(!showForm)} className="gap-2">
-            <UserPlus className="h-4 w-4" />
-            Neuer Benutzer
-          </Button>
-        )}
+        <div className="flex items-center gap-2">
+          {isCurrentAdmin && (
+            <Button onClick={() => setInviteSheetOpen(true)} variant="outline" className="gap-2">
+              <Send className="h-4 w-4" />
+              Mitglied einladen
+            </Button>
+          )}
+          {permissions.users.create && (
+            <Button onClick={() => setShowForm(!showForm)} className="gap-2">
+              <UserPlus className="h-4 w-4" />
+              Neuer Benutzer
+            </Button>
+          )}
+        </div>
       </div>
+
+      {/* Invite Sheet */}
+      <Sheet open={inviteSheetOpen} onOpenChange={setInviteSheetOpen}>
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle>Mitglied einladen</SheetTitle>
+            <SheetDescription>Sende eine Einladung per E-Mail, um ein neues Teammitglied hinzuzufügen.</SheetDescription>
+          </SheetHeader>
+          <form onSubmit={handleSendInvite} className="mt-6 space-y-4">
+            <div className="grid gap-2">
+              <Label htmlFor="inviteEmail">E-Mail-Adresse</Label>
+              <Input
+                id="inviteEmail"
+                type="email"
+                value={inviteEmail}
+                onChange={(e) => setInviteEmail(e.target.value)}
+                placeholder="lehrer@schule.de"
+                required
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="inviteRole">Rolle zuweisen</Label>
+              <select
+                id="inviteRole"
+                value={inviteRoleId}
+                onChange={(e) => setInviteRoleId(e.target.value)}
+                className="rounded-md border border-input bg-background px-3 py-2 text-sm"
+                required
+              >
+                <option value="">Rolle wählen...</option>
+                {assignableRoles.map((r) => (
+                  <option key={r.id} value={r.id}>{r.name}</option>
+                ))}
+              </select>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="inviteMsg">Persönliche Nachricht (optional)</Label>
+              <Textarea
+                id="inviteMsg"
+                value={inviteMessage}
+                onChange={(e) => setInviteMessage(e.target.value.slice(0, 200))}
+                placeholder="Willkommen im Team..."
+                rows={3}
+                maxLength={200}
+              />
+              <span className="text-xs text-muted-foreground">{inviteMessage.length}/200</span>
+            </div>
+            {inviteError && (
+              <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive">{inviteError}</div>
+            )}
+            <Button type="submit" className="w-full gap-2" disabled={inviteSending || !inviteEmail || !inviteRoleId}>
+              {inviteSending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+              Einladung senden
+            </Button>
+          </form>
+        </SheetContent>
+      </Sheet>
 
       <div className="flex items-center justify-between gap-4 rounded-xl border border-border bg-card p-3">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -470,6 +631,70 @@ export default function UsersPage() {
             </form>
           </CardContent>
         </Card>
+      )}
+
+      {/* Pending Invitations */}
+      {isCurrentAdmin && pendingInvitations.length > 0 && (
+        <div className="space-y-3">
+          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide border-b border-border pb-2">
+            <Clock className="inline h-3.5 w-3.5 mr-1.5 -mt-0.5" />
+            Ausstehende Einladungen ({pendingInvitations.length})
+          </h2>
+          {pendingInvitations.map((inv) => {
+            const isExpired = new Date(inv.expires_at) < new Date()
+            return (
+              <div key={inv.id} className="rounded-xl border border-border bg-card p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                      <Mail className="h-4 w-4 text-primary" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-foreground">{inv.email}</span>
+                        {inv.cms_roles && (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+                            <Shield className="h-2.5 w-2.5" />
+                            {inv.cms_roles.name}
+                          </span>
+                        )}
+                        {isExpired && (
+                          <span className="rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-medium text-destructive">Abgelaufen</span>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-muted-foreground">
+                        {"Eingeladen: "}{new Date(inv.created_at).toLocaleDateString("de-DE")}
+                        {inv.inviter_name && ` von ${inv.inviter_name}`}
+                        {" · Gültig bis: "}{new Date(inv.expires_at).toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      title="Erneut senden"
+                      disabled={resendingId === inv.id}
+                      onClick={() => handleResendInvite(inv.id)}
+                    >
+                      {resendingId === inv.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <RotateCcw className="h-4 w-4" />}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      title="Widerrufen"
+                      className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                      disabled={revokingId === inv.id}
+                      onClick={() => handleRevokeInvite(inv.id)}
+                    >
+                      {revokingId === inv.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
       )}
 
       <div className="grid gap-3">
