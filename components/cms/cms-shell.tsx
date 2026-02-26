@@ -57,10 +57,8 @@ export function CmsShell({ children, userEmail, userProfile, permissions, roleSl
               <Menu className="h-5 w-5" />
             </Button>
             <div className="flex items-center gap-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
-                <span className="text-xs font-bold text-primary-foreground font-display">G</span>
-              </div>
-              <span className="font-display text-sm font-semibold text-card-foreground">Grabbe CMS</span>
+              <img src="/images/grabbe-logo.svg" alt="Grabbe Logo" className="h-7 w-7" />
+              <span className="font-display text-sm font-semibold text-card-foreground">Grabbe Gymnasium</span>
             </div>
           </div>
 

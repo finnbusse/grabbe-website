@@ -69,6 +69,29 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(redirectUrl, 301)
   }
 
+  // Redirect /cms/messages → /cms/nachrichten?tab=kontakt
+  if (pathname === '/cms/messages') {
+    const redirectUrl = request.nextUrl.clone()
+    redirectUrl.pathname = '/cms/nachrichten'
+    redirectUrl.searchParams.set('tab', 'kontakt')
+    return NextResponse.redirect(redirectUrl, 301)
+  }
+
+  // Redirect /cms/anmeldungen → /cms/nachrichten?tab=anmeldungen
+  if (pathname === '/cms/anmeldungen') {
+    const redirectUrl = request.nextUrl.clone()
+    redirectUrl.pathname = '/cms/nachrichten'
+    redirectUrl.searchParams.set('tab', 'anmeldungen')
+    return NextResponse.redirect(redirectUrl, 301)
+  }
+
+  // Redirect /cms/navigation → /cms/seitenstruktur
+  if (pathname === '/cms/navigation') {
+    const redirectUrl = request.nextUrl.clone()
+    redirectUrl.pathname = '/cms/seitenstruktur'
+    return NextResponse.redirect(redirectUrl, 301)
+  }
+
   // Only consider paths with 1-3 segments that don't match known filesystem routes
   if (segments.length >= 1 && segments.length <= 3) {
     const firstSegment = segments[0]
