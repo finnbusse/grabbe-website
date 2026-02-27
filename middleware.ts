@@ -36,6 +36,23 @@ export async function middleware(request: NextRequest) {
 
   const sessionResponse = await updateSession(request)
 
+  // Normalize canonical Unterricht index URLs (prevents edge-case 404s with trailing slash)
+  if (pathname === '/unterricht/') {
+    const redirectUrl = request.nextUrl.clone()
+    redirectUrl.pathname = '/unterricht'
+    return NextResponse.redirect(redirectUrl, 308)
+  }
+  if (pathname === '/unterricht/faecher/') {
+    const redirectUrl = request.nextUrl.clone()
+    redirectUrl.pathname = '/unterricht/faecher'
+    return NextResponse.redirect(redirectUrl, 308)
+  }
+
+  // Always let hard-coded index pages resolve via filesystem routing
+  if (pathname === '/unterricht' || pathname === '/unterricht/faecher') {
+    return sessionResponse
+  }
+
   // If session handling already redirected (e.g., to login), return that
   if (sessionResponse.status === 307 || sessionResponse.status === 308) {
     return sessionResponse
