@@ -25,10 +25,10 @@ import type {
 // Column selections for list views (avoid fetching unused large text fields)
 // ============================================================================
 
-const POST_LIST_COLUMNS = 'id, title, slug, excerpt, category, published, featured, image_url, author_name, user_id, event_date, meta_description, seo_og_image, created_at, updated_at' as const
-const EVENT_LIST_COLUMNS = 'id, title, description, event_date, event_end_date, event_time, location, category, published, user_id, created_at, updated_at' as const
-const DOCUMENT_LIST_COLUMNS = 'id, title, file_url, file_name, file_size, file_type, category, published, user_id, created_at, updated_at' as const
-const NAV_LIST_COLUMNS = 'id, label, href, parent_id, sort_order, visible, location, created_at, updated_at' as const
+const POST_LIST_COLUMNS = 'id, title, slug, excerpt, category, status, featured, image_url, author_name, user_id, event_date, meta_description, seo_og_image, published_at, created_by, updated_by, created_at, updated_at' as const
+const EVENT_LIST_COLUMNS = 'id, title, description, starts_at, ends_at, is_all_day, timezone, location, category, status, user_id, published_at, created_by, updated_by, created_at, updated_at' as const
+const DOCUMENT_LIST_COLUMNS = 'id, title, description, file_url, file_name, file_size, file_type, category, status, user_id, published_at, created_by, updated_by, created_at, updated_at' as const
+const NAV_LIST_COLUMNS = 'id, label, href, parent_id, sort_order, visible, location, menu_id, created_at, updated_at' as const
 
 // ============================================================================
 // Pages Queries
@@ -43,7 +43,7 @@ export const getPublishedPages = unstable_cache(
     const { data, error } = await supabase
       .from('pages')
       .select('*')
-      .eq('published', true)
+      .eq('status', 'published')
       .order('sort_order', { ascending: true })
 
     if (error) throw error
@@ -64,7 +64,7 @@ export async function getPageBySlug(slug: string) {
         .from('pages')
         .select('*')
         .eq('slug', slug)
-        .eq('published', true)
+        .eq('status', 'published')
         .single()
 
       if (error) throw error
@@ -86,7 +86,7 @@ export async function getPagesBySection(section: string) {
         .from('pages')
         .select('*')
         .eq('section', section)
-        .eq('published', true)
+        .eq('status', 'published')
         .order('sort_order', { ascending: true })
 
       if (error) throw error
@@ -111,7 +111,7 @@ export async function getPublishedPosts(limit?: number) {
       let query = supabase
         .from('posts')
         .select(POST_LIST_COLUMNS)
-        .eq('published', true)
+        .eq('status', 'published')
         .order('created_at', { ascending: false })
 
       if (limit) {
@@ -137,7 +137,7 @@ export async function getFeaturedPosts(limit: number = 3) {
       const { data, error } = await supabase
         .from('posts')
         .select(POST_LIST_COLUMNS)
-        .eq('published', true)
+        .eq('status', 'published')
         .eq('featured', true)
         .order('created_at', { ascending: false })
         .limit(limit)
@@ -161,7 +161,7 @@ export async function getPostBySlug(slug: string) {
         .from('posts')
         .select('*')
         .eq('slug', slug)
-        .eq('published', true)
+        .eq('status', 'published')
         .single()
 
       if (error) throw error
@@ -183,7 +183,7 @@ export async function getPostsByCategory(category: string, limit?: number) {
         .from('posts')
         .select(POST_LIST_COLUMNS)
         .eq('category', category)
-        .eq('published', true)
+        .eq('status', 'published')
         .order('created_at', { ascending: false })
 
       if (limit) {
@@ -210,14 +210,14 @@ export async function getUpcomingEvents(limit?: number) {
   return unstable_cache(
     async () => {
       const supabase = createStaticClient()
-      const today = new Date().toISOString().split('T')[0]
+      const now = new Date().toISOString()
 
       let query = supabase
         .from('events')
         .select(EVENT_LIST_COLUMNS)
-        .eq('published', true)
-        .gte('event_date', today)
-        .order('event_date', { ascending: true })
+        .eq('status', 'published')
+        .gte('starts_at', now)
+        .order('starts_at', { ascending: true })
 
       if (limit) {
         query = query.limit(limit)
@@ -239,14 +239,14 @@ export async function getPastEvents(limit?: number) {
   return unstable_cache(
     async () => {
       const supabase = createStaticClient()
-      const today = new Date().toISOString().split('T')[0]
+      const now = new Date().toISOString()
 
       let query = supabase
         .from('events')
         .select(EVENT_LIST_COLUMNS)
-        .eq('published', true)
-        .lt('event_date', today)
-        .order('event_date', { ascending: false })
+        .eq('status', 'published')
+        .lt('starts_at', now)
+        .order('starts_at', { ascending: false })
 
       if (limit) {
         query = query.limit(limit)
@@ -272,8 +272,8 @@ export async function getEventsByCategory(category: string) {
         .from('events')
         .select(EVENT_LIST_COLUMNS)
         .eq('category', category)
-        .eq('published', true)
-        .order('event_date', { ascending: true })
+        .eq('status', 'published')
+        .order('starts_at', { ascending: true })
 
       if (error) throw error
       return data as Event[]
@@ -296,7 +296,7 @@ export const getPublishedDocuments = unstable_cache(
     const { data, error } = await supabase
       .from('documents')
       .select(DOCUMENT_LIST_COLUMNS)
-      .eq('published', true)
+      .eq('status', 'published')
       .order('created_at', { ascending: false })
 
     if (error) throw error
@@ -317,7 +317,7 @@ export async function getDocumentsByCategory(category: string) {
         .from('documents')
         .select(DOCUMENT_LIST_COLUMNS)
         .eq('category', category)
-        .eq('published', true)
+        .eq('status', 'published')
         .order('created_at', { ascending: false })
 
       if (error) throw error

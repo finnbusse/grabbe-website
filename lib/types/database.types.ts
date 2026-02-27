@@ -6,6 +6,18 @@
  */
 
 // ============================================================================
+// Enums
+// ============================================================================
+
+/**
+ * Content publication status (maps to content_status enum in PostgreSQL)
+ */
+export type ContentStatus = 'draft' | 'published' | 'archived' | 'scheduled'
+
+/** Runtime-usable array of all valid content status values */
+export const CONTENT_STATUS = ['draft', 'published', 'archived', 'scheduled'] as const
+
+// ============================================================================
 // Database Tables
 // ============================================================================
 
@@ -19,7 +31,11 @@ export interface Page {
   content: string;
   section: string; // Default: 'allgemein'
   sort_order: number; // Default: 0
-  published: boolean; // Default: true
+  status: ContentStatus; // Default: 'published'
+  published_at: string | null; // timestamptz
+  created_by: string | null; // UUID, soft reference to auth.users
+  updated_by: string | null; // UUID, soft reference to auth.users
+  /** @deprecated Use created_by instead. Retained for backwards compatibility. */
   user_id: string | null; // UUID, references auth.users
   created_at: string; // timestamptz
   updated_at: string; // timestamptz
@@ -40,10 +56,14 @@ export interface Post {
   content: string;
   excerpt: string | null;
   category: string; // Default: 'aktuelles'
-  published: boolean; // Default: false
+  status: ContentStatus; // Default: 'draft'
+  published_at: string | null; // timestamptz
+  created_by: string | null; // UUID, soft reference to auth.users
+  updated_by: string | null; // UUID, soft reference to auth.users
   featured: boolean; // Default: false
   image_url: string | null;
   author_name: string | null;
+  /** @deprecated Use created_by instead. Retained for backwards compatibility. */
   user_id: string; // UUID, references auth.users
   event_date: string | null; // date (YYYY-MM-DD), optional custom display date
   meta_description: string | null;
@@ -59,12 +79,17 @@ export interface Event {
   id: string; // UUID
   title: string;
   description: string | null;
-  event_date: string; // date (YYYY-MM-DD)
-  event_end_date: string | null; // date (YYYY-MM-DD)
-  event_time: string | null;
+  starts_at: string; // timestamptz (replaces event_date + event_time)
+  ends_at: string | null; // timestamptz (replaces event_end_date)
+  is_all_day: boolean; // Default: false
+  timezone: string; // Default: 'Europe/Berlin'
   location: string | null;
   category: string; // Default: 'termin'
-  published: boolean; // Default: true
+  status: ContentStatus; // Default: 'published'
+  published_at: string | null; // timestamptz
+  created_by: string | null; // UUID, soft reference to auth.users
+  updated_by: string | null; // UUID, soft reference to auth.users
+  /** @deprecated Use created_by instead. Retained for backwards compatibility. */
   user_id: string; // UUID, references auth.users
   created_at: string; // timestamptz
   updated_at: string; // timestamptz
@@ -76,12 +101,17 @@ export interface Event {
 export interface Document {
   id: string; // UUID
   title: string;
+  description: string | null;
   file_url: string;
   file_name: string;
   file_size: number; // bigint, Default: 0
   file_type: string | null;
   category: string; // Default: 'allgemein'
-  published: boolean; // Default: true
+  status: ContentStatus; // Default: 'published'
+  published_at: string | null; // timestamptz
+  created_by: string | null; // UUID, soft reference to auth.users
+  updated_by: string | null; // UUID, soft reference to auth.users
+  /** @deprecated Use created_by instead. Retained for backwards compatibility. */
   user_id: string; // UUID, references auth.users
   created_at: string; // timestamptz
   updated_at: string; // timestamptz
@@ -97,13 +127,25 @@ export interface NavigationItem {
   parent_id: string | null; // UUID, self-referencing FK
   sort_order: number; // Default: 0
   visible: boolean; // Default: true
-  location: string; // Default: 'header'
+  location: string; // Default: 'header' (retained for backwards compatibility)
+  menu_id: string | null; // UUID, references navigation_menus
   created_at: string; // timestamptz
   updated_at: string; // timestamptz
 }
 
 /**
- * Key-value configuration store
+ * Named navigation menus (header, footer, etc.)
+ */
+export interface NavigationMenu {
+  id: string; // UUID
+  slug: string; // UNIQUE
+  label: string;
+  type: string;
+  created_at: string; // timestamptz
+}
+
+/**
+ * Key-value configuration store (legacy, being phased out in favour of site_config)
  */
 export interface SiteSetting {
   id: string; // UUID
@@ -114,6 +156,19 @@ export interface SiteSetting {
   category: string; // Default: 'allgemein'
   updated_at: string; // timestamptz
   protected: boolean; // Default: false
+}
+
+/**
+ * Singleton site configuration (replaces scattered site_settings keys)
+ */
+export interface SiteConfig {
+  id: true; // singleton – always true
+  seo: Record<string, unknown>; // JSONB
+  branding: Record<string, unknown>; // JSONB
+  features: Record<string, unknown>; // JSONB
+  integrations: Record<string, unknown>; // JSONB
+  updated_at: string; // timestamptz
+  updated_by: string | null; // UUID
 }
 
 /**
@@ -230,6 +285,13 @@ export type NavigationItemInsert = Omit<NavigationItem, 'id' | 'created_at' | 'u
   updated_at?: string;
 };
 
+export type NavigationMenuInsert = Omit<NavigationMenu, 'id' | 'created_at'> & {
+  id?: string;
+  created_at?: string;
+};
+
+export type NavigationMenuUpdate = Partial<Omit<NavigationMenu, 'id' | 'created_at'>>;
+
 export type SiteSettingInsert = Omit<SiteSetting, 'id' | 'updated_at'> & {
   id?: string;
   updated_at?: string;
@@ -317,10 +379,10 @@ export type CampaignUpdate = Partial<Omit<Campaign, 'id' | 'created_at'>>
 export type PostListItem = Omit<Post, 'content'>
 
 /** Event fields fetched for card/list views */
-export type EventListItem = Pick<Event, 'id' | 'title' | 'description' | 'event_date' | 'event_end_date' | 'event_time' | 'location' | 'category'>
+export type EventListItem = Pick<Event, 'id' | 'title' | 'description' | 'starts_at' | 'ends_at' | 'is_all_day' | 'timezone' | 'location' | 'category'>
 
 /** Document fields fetched for card/list views */
-export type DocumentListItem = Pick<Document, 'id' | 'title' | 'file_url' | 'file_name' | 'file_size' | 'file_type' | 'category'>
+export type DocumentListItem = Pick<Document, 'id' | 'title' | 'description' | 'file_url' | 'file_name' | 'file_size' | 'file_type' | 'category'>
 
 // ============================================================================
 // Database Schema Type (for Supabase client)
@@ -359,10 +421,22 @@ export interface Database {
         Update: NavigationItemUpdate;
         Relationships: [];
       };
+      navigation_menus: {
+        Row: NavigationMenu;
+        Insert: NavigationMenuInsert;
+        Update: NavigationMenuUpdate;
+        Relationships: [];
+      };
       site_settings: {
         Row: SiteSetting;
         Insert: SiteSettingInsert;
         Update: SiteSettingUpdate;
+        Relationships: [];
+      };
+      site_config: {
+        Row: SiteConfig;
+        Insert: SiteConfig;
+        Update: Partial<Omit<SiteConfig, 'id'>>;
         Relationships: [];
       };
       contact_submissions: {
@@ -431,11 +505,35 @@ export interface Database {
         Update: Partial<UserPagePermissionRow>;
         Relationships: [];
       };
+      role_permissions: {
+        Row: RolePermission;
+        Insert: RolePermission;
+        Update: Partial<RolePermission>;
+        Relationships: [];
+      };
+      content_revisions: {
+        Row: ContentRevision;
+        Insert: ContentRevisionInsert;
+        Update: Partial<ContentRevision>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
-    Enums: Record<string, never>;
+    Enums: {
+      content_status: ContentStatus;
+    };
     CompositeTypes: Record<string, never>;
+  };
+  audit: {
+    Tables: {
+      log: {
+        Row: AuditLog;
+        Insert: Omit<AuditLog, 'id' | 'changed_at'>;
+        Update: never;
+        Relationships: [];
+      };
+    };
   };
 }
 
@@ -471,7 +569,7 @@ export interface UserPagePermissionRow {
   id: string; // UUID
   user_id: string; // UUID
   page_type: "editable" | "cms";
-  page_id: string;
+  page_id: string; // UUID, references pages(id) ON DELETE CASCADE
 }
 
 export type CmsRoleInsert = Omit<CmsRoleRow, 'id' | 'created_at'> & {
@@ -484,6 +582,48 @@ export type CmsRoleUpdate = Partial<Omit<CmsRoleRow, 'id' | 'created_at'>>;
 export type UserRoleInsert = Omit<UserRoleRow, 'id'> & { id?: string };
 
 export type UserPagePermissionInsert = Omit<UserPagePermissionRow, 'id'> & { id?: string };
+
+/**
+ * Type-safe RBAC permission assignment (canonical source)
+ */
+export interface RolePermission {
+  role_id: string; // UUID, references cms_roles
+  resource: string;
+  action: string;
+  scope: string; // Default: 'all'
+}
+
+/**
+ * Audit log entry (audit.log table)
+ */
+export interface AuditLog {
+  id: number; // BIGSERIAL
+  table_name: string;
+  record_id: string; // UUID
+  operation: string;
+  old_data: Record<string, unknown> | null; // JSONB
+  new_data: Record<string, unknown> | null; // JSONB
+  changed_by: string | null; // UUID
+  changed_at: string; // timestamptz
+}
+
+/**
+ * Content revision history
+ */
+export interface ContentRevision {
+  id: string; // UUID
+  entity_type: string;
+  entity_id: string; // UUID
+  revision_number: number;
+  content: Record<string, unknown>; // JSONB
+  created_by: string | null; // UUID
+  created_at: string; // timestamptz
+}
+
+export type ContentRevisionInsert = Omit<ContentRevision, 'id' | 'created_at'> & {
+  id?: string;
+  created_at?: string;
+};
 
 // ============================================================================
 // Helper Types
