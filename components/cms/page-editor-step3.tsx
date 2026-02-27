@@ -312,7 +312,7 @@ export function PageEditorStep3() {
             className="gap-2"
           >
             <Save className="h-4 w-4" />
-            {state.pageId ? "Als Entwurf speichern" : "Als Entwurf speichern"}
+            Als Entwurf speichern
           </Button>
 
           {publishState === "success" ? (
