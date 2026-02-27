@@ -914,6 +914,7 @@ export default function UsersPage() {
           <p className="py-8 text-center text-sm text-muted-foreground">Noch keine weiteren Benutzer vorhanden.</p>
         )}
       </div>
+      </div>
     </div>
   )
 }
