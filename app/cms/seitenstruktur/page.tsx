@@ -1,17 +1,19 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react"
+import { Suspense, useEffect, useState, useCallback } from "react"
+import { useSearchParams } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
-  FolderOpen, FileText, Plus, Trash2, Save, Loader2, ChevronRight, ChevronDown,
+  FolderOpen, FileText, Save, Loader2, ChevronRight, ChevronDown,
   Globe, Lock, GripVertical, Pencil, Check, X, FolderPlus, ExternalLink, MoveRight, Home,
-  List, MousePointerClick,
+  Trash2, FileEdit, GraduationCap, School, BookOpen, ArrowRight,
 } from "lucide-react"
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import Link from "next/link"
+import { EDITABLE_PAGES } from "@/lib/page-content"
 
 // ============================================================================
 // Types
@@ -91,10 +93,10 @@ const DEFAULT_CATEGORIES: CategoryDef[] = [
 ]
 
 // ============================================================================
-// Main Component
+// Struktur Tab – manages site categories and page hierarchy
 // ============================================================================
 
-export default function SeitenstrukturPage() {
+function StrukturTab() {
   const [categories, setCategories] = useState<CategoryDef[]>(DEFAULT_CATEGORIES)
   const [pages, setPages] = useState<SitePage[]>([])
   const [loading, setLoading] = useState(true)
@@ -107,8 +109,6 @@ export default function SeitenstrukturPage() {
   const [newCategoryLabel, setNewCategoryLabel] = useState("")
   const [movingPage, setMovingPage] = useState<string | null>(null)
   const [moveTarget, setMoveTarget] = useState("")
-
-  const [viewMode, setViewMode] = useState<"tree" | "interactive">("tree")
 
   // Load data
   const loadData = useCallback(async () => {
@@ -326,35 +326,12 @@ export default function SeitenstrukturPage() {
 
   return (
     <div>
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Seitenstruktur</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Website-Seiten und Navigation verwalten
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <ToggleGroup
-            type="single"
-            value={viewMode}
-            onValueChange={(v) => { if (v) setViewMode(v as "tree" | "interactive") }}
-            className="border border-border rounded-lg"
-          >
-            <ToggleGroupItem value="tree" aria-label="Baumansicht" className="gap-1.5 text-xs px-3">
-              <List className="h-3.5 w-3.5" />
-              Baum
-            </ToggleGroupItem>
-            <ToggleGroupItem value="interactive" aria-label="Interaktive Ansicht" className="gap-1.5 text-xs px-3">
-              <MousePointerClick className="h-3.5 w-3.5" />
-              Interaktiv
-            </ToggleGroupItem>
-          </ToggleGroup>
-          <Button onClick={handleSave} disabled={saving}>
-            {saving ? <Loader2 className="mr-1.5 h-4 w-4 animate-spin" /> : <Save className="mr-1.5 h-4 w-4" />}
-            {saving ? "Speichern..." : "Struktur speichern"}
-          </Button>
-        </div>
+      {/* Action bar */}
+      <div className="flex items-center justify-end">
+        <Button onClick={handleSave} disabled={saving}>
+          {saving ? <Loader2 className="mr-1.5 h-4 w-4 animate-spin" /> : <Save className="mr-1.5 h-4 w-4" />}
+          {saving ? "Speichern..." : "Struktur speichern"}
+        </Button>
       </div>
 
       {message && (
@@ -854,5 +831,186 @@ function PageItem({
         </Link>
       </div>
     </div>
+  )
+}
+
+// ============================================================================
+// Inhalt Tab – edit content of static pages (restores lost functionality)
+// ============================================================================
+
+function InhaltTab() {
+  const homepagePages = EDITABLE_PAGES.filter((p) => p.route === "/")
+  const unsereSchulePages = EDITABLE_PAGES.filter((p) => p.route.startsWith("/unsere-schule"))
+  const schullebenPages = EDITABLE_PAGES.filter((p) => p.route.startsWith("/schulleben"))
+  const otherPages = EDITABLE_PAGES.filter(
+    (p) => p.route !== "/" && !p.route.startsWith("/unsere-schule") && !p.route.startsWith("/schulleben"),
+  )
+
+  return (
+    <div>
+      {/* Info Banner */}
+      <div className="rounded-2xl border border-primary/20 bg-primary/5 p-5">
+        <div className="flex gap-3">
+          <FileEdit className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+          <div>
+            <p className="text-sm font-medium text-foreground">So funktioniert der Seiten-Editor</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Jede Seite hat vordefinierte Textfelder, die Sie frei bearbeiten können. Das Design und Layout der Seite
+              bleibt dabei immer gleich – Sie können also nichts kaputt machen! Änderungen werden beim nächsten
+              Seitenaufruf sichtbar.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Homepage sections */}
+      <div className="mt-8">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+            <Home className="h-4 w-4 text-primary" />
+          </div>
+          <h2 className="text-lg font-semibold">Startseite</h2>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {homepagePages.map((page) => (
+            <PageEditorCard key={page.id} page={page} />
+          ))}
+        </div>
+      </div>
+
+      {/* Unsere Schule */}
+      {unsereSchulePages.length > 0 && (
+        <div className="mt-8">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10">
+              <GraduationCap className="h-4 w-4 text-emerald-600" />
+            </div>
+            <h2 className="text-lg font-semibold">Unsere Schule</h2>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {unsereSchulePages.map((page) => (
+              <PageEditorCard key={page.id} page={page} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Schulleben */}
+      {schullebenPages.length > 0 && (
+        <div className="mt-8">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-500/10">
+              <School className="h-4 w-4 text-sky-600" />
+            </div>
+            <h2 className="text-lg font-semibold">Schulleben</h2>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {schullebenPages.map((page) => (
+              <PageEditorCard key={page.id} page={page} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Other pages */}
+      {otherPages.length > 0 && (
+        <div className="mt-8">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/10">
+              <FileText className="h-4 w-4 text-amber-600" />
+            </div>
+            <h2 className="text-lg font-semibold">Weitere Seiten</h2>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {otherPages.map((page) => (
+              <PageEditorCard key={page.id} page={page} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Custom pages hint */}
+      <div className="mt-8 rounded-2xl border bg-card p-6">
+        <div className="flex items-center gap-3">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-500/10">
+            <BookOpen className="h-4 w-4 text-violet-600" />
+          </div>
+          <div>
+            <h2 className="text-base font-semibold">Eigene Seiten</h2>
+            <p className="text-sm text-muted-foreground">
+              Für komplett neue Seiten mit eigenem Inhalt nutzen Sie den{" "}
+              <Link href="/cms/seiten" className="text-primary hover:underline">Seiten-Bereich</Link> im CMS.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function PageEditorCard({ page }: { page: { id: string; title: string; description: string; route: string } }) {
+  return (
+    <Link
+      href={`/cms/seiten-editor/${page.id}`}
+      className="group rounded-2xl border bg-card p-5 transition-all hover:border-primary/30 hover:shadow-md"
+    >
+      <div className="flex items-start justify-between">
+        <div className="flex-1">
+          <h3 className="text-sm font-semibold text-card-foreground group-hover:text-primary transition-colors">
+            {page.title}
+          </h3>
+          <p className="mt-1 text-xs text-muted-foreground line-clamp-2">{page.description}</p>
+          <p className="mt-2 text-xs text-muted-foreground/60 font-mono">{page.route}</p>
+        </div>
+        <ArrowRight className="h-4 w-4 text-muted-foreground/40 group-hover:text-primary transition-colors shrink-0 mt-1" />
+      </div>
+    </Link>
+  )
+}
+
+// ============================================================================
+// Main Page – tab-based navigation (Struktur / Inhalt)
+// ============================================================================
+
+function SeitenstrukturContent() {
+  const searchParams = useSearchParams()
+  const defaultTab = searchParams.get("tab") || "struktur"
+
+  const handleTabChange = (value: string) => {
+    window.history.replaceState(null, "", `?tab=${value}`)
+  }
+
+  return (
+    <div>
+      <div>
+        <h1 className="text-2xl font-bold text-foreground">Seitenstruktur</h1>
+        <p className="text-sm text-muted-foreground mt-1">
+          Website-Seiten und Navigation verwalten
+        </p>
+      </div>
+
+      <Tabs defaultValue={defaultTab} onValueChange={handleTabChange} className="mt-6">
+        <TabsList>
+          <TabsTrigger value="struktur">Struktur</TabsTrigger>
+          <TabsTrigger value="inhalt">Inhalt</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="struktur" className="mt-6">
+          <StrukturTab />
+        </TabsContent>
+
+        <TabsContent value="inhalt" className="mt-6">
+          <InhaltTab />
+        </TabsContent>
+      </Tabs>
+    </div>
+  )
+}
+
+export default function SeitenstrukturPage() {
+  return (
+    <Suspense fallback={<div className="py-12 text-center text-muted-foreground">Laden...</div>}>
+      <SeitenstrukturContent />
+    </Suspense>
   )
 }
