@@ -42,7 +42,7 @@ export default async function CmsCampaignsPage() {
         </Button>
       </div>
 
-      <div className="mt-8 space-y-3">
+      <div className="mt-6 space-y-3">
         {campaignList.length > 0 ? (
           campaignList.map((campaign) => {
             const status = getStatus(campaign)

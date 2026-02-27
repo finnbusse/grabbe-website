@@ -330,7 +330,7 @@ export default function NavigationPage() {
   }
 
   return (
-    <div className="space-y-6 animate-fade-in-up">
+    <div>
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -364,7 +364,7 @@ export default function NavigationPage() {
       </div>
 
       {/* Location tabs */}
-      <div className="flex flex-wrap gap-2 border-b border-border pb-3">
+      <div className="mt-6 flex flex-wrap gap-2 border-b border-border pb-3">
         {LOCATIONS.map((loc) => (
           <button
             key={loc.key}

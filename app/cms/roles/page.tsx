@@ -61,17 +61,19 @@ export default function RolesPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div>
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-display text-2xl font-bold text-foreground">Rollenverwaltung</h1>
-          <p className="text-sm text-muted-foreground">System- und benutzerdefinierte Rollen verwalten</p>
+          <p className="mt-1 text-sm text-muted-foreground">System- und benutzerdefinierte Rollen verwalten</p>
         </div>
         <Button onClick={openCreate} className="gap-2">
           <Plus className="h-4 w-4" />
           Neue Rolle
         </Button>
       </div>
+
+      <div className="mt-6 space-y-6">
 
       {message && (
         <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 text-sm text-primary">{message}</div>
@@ -135,6 +137,7 @@ export default function RolesPage() {
           )}
         </div>
       )}
+      </div>
     </div>
   )
 }

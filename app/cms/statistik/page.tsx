@@ -3,12 +3,14 @@ import { BarChart2 } from "lucide-react"
 export default function StatistikPage() {
   return (
     <div>
-      <div>
-        <h1 className="font-display text-2xl font-bold text-foreground">Statistik</h1>
-        <p className="text-sm text-muted-foreground mt-1">Website-Statistiken und Analysen</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="font-display text-2xl font-bold text-foreground">Statistik</h1>
+          <p className="text-sm text-muted-foreground mt-1">Website-Statistiken und Analysen</p>
+        </div>
       </div>
 
-      <div className="mt-16 flex flex-col items-center justify-center text-center">
+      <div className="mt-6 flex flex-col items-center justify-center text-center py-10">
         <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-muted">
           <BarChart2 className="h-8 w-8 text-muted-foreground" />
         </div>

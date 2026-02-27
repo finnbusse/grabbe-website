@@ -124,12 +124,15 @@ export default function ProfilPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="font-display text-2xl font-bold text-foreground">Mein Profil</h1>
-        <p className="text-sm text-muted-foreground">Persönliche Informationen und Profilbild verwalten</p>
+    <div>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="font-display text-2xl font-bold text-foreground">Mein Profil</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Persönliche Informationen und Profilbild verwalten</p>
+        </div>
       </div>
 
+      <div className="mt-6 space-y-6">
       {message && (
         <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 text-sm text-primary">{message}</div>
       )}
@@ -219,6 +222,7 @@ export default function ProfilPage() {
             </div>
           </CardContent>
         </Card>
+      </div>
       </div>
     </div>
   )

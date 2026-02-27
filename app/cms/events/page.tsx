@@ -55,8 +55,7 @@ export default async function CmsEventsPage() {
         </Button>
       </div>
 
-      <div className="mt-8 space-y-3">
-        {events && events.length > 0 ? (
+      <div className="mt-6 space-y-3">
           events.map((event) => (
             <div
               key={event.id}

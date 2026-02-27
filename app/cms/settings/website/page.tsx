@@ -432,7 +432,7 @@ export default function WebsiteSettingsPage() {
   }
 
   return (
-    <div className="space-y-6 pb-12">
+    <div>
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -462,7 +462,7 @@ export default function WebsiteSettingsPage() {
       </div>
 
       {/* Tabs */}
-      <Tabs defaultValue="general" className="space-y-6">
+      <Tabs defaultValue="general" className="mt-6">
         <TabsList>
           <TabsTrigger value="general">Allgemein</TabsTrigger>
           <TabsTrigger value="design">
@@ -472,7 +472,7 @@ export default function WebsiteSettingsPage() {
         </TabsList>
 
         {/* ==================== GENERAL TAB ==================== */}
-        <TabsContent value="general" className="space-y-6">
+        <TabsContent value="general" className="mt-6 space-y-6 pb-12">
 
       <Section
         icon={Building2}
@@ -634,7 +634,7 @@ export default function WebsiteSettingsPage() {
         </TabsContent>
 
         {/* ==================== DESIGN TAB ==================== */}
-        <TabsContent value="design" className="space-y-6">
+        <TabsContent value="design" className="mt-6 space-y-6 pb-12">
 
           <Section
             icon={Paintbrush}
