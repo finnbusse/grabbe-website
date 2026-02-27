@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client"
 import {
   Gauge, Inbox, BarChart2, FileText, Newspaper, CalendarDays, FolderOpen,
   FolderTree, Globe, Users, Settings, HelpCircle, LogOut, X, UserCircle,
+  PanelLeftClose, PanelLeftOpen,
 } from "lucide-react"
 import {
   DropdownMenu,
@@ -14,6 +15,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { Button } from "@/components/ui/button"
 import { usePermissions } from "@/components/cms/permissions-context"
 import { checkPermission, isAdminOrSchulleitung } from "@/lib/permissions-shared"
 import type { CmsPermissions } from "@/lib/permissions-shared"
@@ -79,7 +87,16 @@ function filterLinks(links: SidebarLink[], permissions: CmsPermissions): Sidebar
   return links.filter((link) => !link.permCheck || link.permCheck(permissions))
 }
 
-export function CmsSidebar({ userEmail, userProfile, isOpen, onClose }: { userEmail: string; userProfile?: UserProfileData | null; isOpen?: boolean; onClose?: () => void }) {
+interface CmsSidebarProps {
+  userEmail: string
+  userProfile?: UserProfileData | null
+  isOpen?: boolean
+  onClose?: () => void
+  collapsed?: boolean
+  onToggleCollapse?: () => void
+}
+
+export function CmsSidebar({ userEmail, userProfile, isOpen, onClose, collapsed, onToggleCollapse }: CmsSidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const { permissions, roleSlugs } = usePermissions()
@@ -104,115 +121,172 @@ export function CmsSidebar({ userEmail, userProfile, isOpen, onClose }: { userEm
     ...(visibleAdmin.length > 0 ? [{ title: "Verwaltung", items: visibleAdmin }] : []),
   ]
 
-  return (
-    <aside className={`flex w-64 shrink-0 flex-col border-r border-border bg-card fixed inset-y-0 left-0 z-30 transform transition-transform duration-300 lg:relative lg:translate-x-0 lg:z-auto ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
-      {/* Sidebar Header */}
-      <div className="flex items-center gap-3 border-b border-border px-5 py-4">
-        <Image
-          src="/images/grabbe-logo.svg"
-          alt="Grabbe Logo"
-          width={32}
-          height={32}
-          className="h-8 w-8 shrink-0"
-        />
-        <div className="flex-1">
-          <p className="text-sm font-semibold text-card-foreground font-display">Grabbe Gymnasium</p>
-          <p className="text-xs text-muted-foreground">Content Management</p>
-        </div>
-        {onClose && (
-          <button
-            onClick={onClose}
-            className="lg:hidden rounded-lg p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
-            aria-label="Menü schließen"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        )}
-      </div>
+  const sidebarWidth = collapsed ? "w-16" : "w-64"
 
-      {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto px-3 py-4" aria-label="CMS Navigation">
-        {sections.map((section, idx) => (
-          <div key={section.title} className={idx > 0 ? "mt-5" : ""}>
-            <p className="mb-1 px-3 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{section.title}</p>
-            <div className="space-y-1">
-              {section.items.map((link) => {
+  return (
+    <TooltipProvider delayDuration={0}>
+      <aside className={`flex ${sidebarWidth} shrink-0 flex-col border-r border-border bg-card fixed inset-y-0 left-0 z-30 transform transition-all duration-300 lg:relative lg:translate-x-0 lg:z-auto ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
+        {/* Sidebar Header */}
+        <div className={`flex items-center border-b border-border ${collapsed ? "justify-center px-2 py-4" : "gap-3 px-5 py-4"}`}>
+          <Image
+            src="/images/grabbe-logo.svg"
+            alt="Grabbe Logo"
+            width={32}
+            height={32}
+            className="h-8 w-8 shrink-0"
+          />
+          {!collapsed && (
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-card-foreground font-display">Grabbe Gymnasium</p>
+              <p className="text-xs text-muted-foreground">Content Management</p>
+            </div>
+          )}
+          {onClose && !collapsed && (
+            <button
+              onClick={onClose}
+              className="lg:hidden rounded-lg p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
+              aria-label="Menü schließen"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+
+        {/* Navigation */}
+        <nav className={`flex-1 overflow-y-auto py-4 ${collapsed ? "px-2" : "px-3"}`} aria-label="CMS Navigation">
+          {sections.map((section, idx) => (
+            <div key={section.title} className={idx > 0 ? "mt-5" : ""}>
+              {!collapsed && (
+                <p className="mb-1 px-3 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{section.title}</p>
+              )}
+              <div className="space-y-1">
+                {section.items.map((link) => {
+                  const isActive = pathname === link.href || (link.href !== "/cms" && pathname.startsWith(link.href))
+                  const linkContent = (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={onClose}
+                      className={`flex items-center ${collapsed ? "justify-center" : "gap-3"} rounded-lg ${collapsed ? "px-0 py-2" : "px-3 py-2"} text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-ring ${
+                        isActive ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      }`}
+                    >
+                      <link.icon className="h-4 w-4 shrink-0" />
+                      {!collapsed && link.label}
+                    </Link>
+                  )
+                  if (collapsed) {
+                    return (
+                      <Tooltip key={link.href}>
+                        <TooltipTrigger asChild>{linkContent}</TooltipTrigger>
+                        <TooltipContent side="right" sideOffset={8}>
+                          {link.label}
+                        </TooltipContent>
+                      </Tooltip>
+                    )
+                  }
+                  return linkContent
+                })}
+              </div>
+            </div>
+          ))}
+        </nav>
+
+        {/* Footer Links */}
+        <div className={`border-t border-border py-3 ${collapsed ? "px-2" : "px-3"}`}>
+          {visibleFooter.length > 0 && (
+            <div className="space-y-1 mb-3">
+              {visibleFooter.map((link) => {
                 const isActive = pathname === link.href || (link.href !== "/cms" && pathname.startsWith(link.href))
-                return (
+                const linkContent = (
                   <Link
                     key={link.href}
                     href={link.href}
                     onClick={onClose}
-                    className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-ring ${
+                    className={`flex items-center ${collapsed ? "justify-center" : "gap-3"} rounded-lg ${collapsed ? "px-0 py-2" : "px-3 py-2"} text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-ring ${
                       isActive ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted hover:text-foreground"
                     }`}
                   >
-                    <link.icon className="h-4 w-4" />
-                    {link.label}
+                    <link.icon className="h-4 w-4 shrink-0" />
+                    {!collapsed && link.label}
                   </Link>
                 )
+                if (collapsed) {
+                  return (
+                    <Tooltip key={link.href}>
+                      <TooltipTrigger asChild>{linkContent}</TooltipTrigger>
+                      <TooltipContent side="right" sideOffset={8}>
+                        {link.label}
+                      </TooltipContent>
+                    </Tooltip>
+                  )
+                }
+                return linkContent
               })}
             </div>
-          </div>
-        ))}
-      </nav>
+          )}
 
-      {/* Footer Links */}
-      <div className="border-t border-border px-3 py-3">
-        {visibleFooter.length > 0 && (
-          <div className="space-y-1 mb-3">
-            {visibleFooter.map((link) => {
-              const isActive = pathname === link.href || (link.href !== "/cms" && pathname.startsWith(link.href))
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={onClose}
-                  className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-ring ${
-                    isActive ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                  }`}
-                >
-                  <link.icon className="h-4 w-4" />
-                  {link.label}
-                </Link>
-              )
-            })}
-          </div>
-        )}
-
-        {/* User Profile Block */}
-        <div className="border-t border-border pt-3">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2 hover:bg-muted transition-colors focus-visible:ring-2 focus-visible:ring-ring outline-none">
-                {userProfile?.avatar_url ? (
-                  <img src={userProfile.avatar_url} alt="" className="h-8 w-8 rounded-full object-cover" />
-                ) : (
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
-                    <span className="text-xs font-bold text-primary">{getInitials(userProfile || null, userEmail)}</span>
-                  </div>
+          {/* Collapse toggle (desktop only) */}
+          {onToggleCollapse && (
+            <div className="mb-3 hidden lg:block">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={onToggleCollapse}
+                    className={`w-full ${collapsed ? "justify-center px-0" : "justify-start gap-3 px-3"} text-muted-foreground hover:bg-muted hover:text-foreground`}
+                    aria-label={collapsed ? "Sidebar ausklappen" : "Sidebar einklappen"}
+                  >
+                    {collapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
+                    {!collapsed && "Einklappen"}
+                  </Button>
+                </TooltipTrigger>
+                {collapsed && (
+                  <TooltipContent side="right" sideOffset={8}>
+                    Sidebar ausklappen
+                  </TooltipContent>
                 )}
-                <div className="min-w-0 flex-1 text-left">
-                  <p className="truncate text-sm font-medium text-foreground">{getDisplayName(userProfile || null, userEmail)}</p>
-                  <p className="truncate text-xs text-muted-foreground">{userEmail}</p>
-                </div>
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" side="top" className="w-56">
-              <DropdownMenuItem asChild>
-                <Link href="/cms/profil" className="flex items-center gap-2">
-                  <UserCircle className="h-4 w-4" />
-                  Account-Einstellungen
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleLogout} className="flex items-center gap-2">
-                <LogOut className="h-4 w-4" />
-                Abmelden
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+              </Tooltip>
+            </div>
+          )}
+
+          {/* User Profile Block */}
+          <div className="border-t border-border pt-3">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className={`flex w-full items-center ${collapsed ? "justify-center" : "gap-3"} rounded-lg ${collapsed ? "px-0 py-2" : "px-3 py-2"} hover:bg-muted transition-colors focus-visible:ring-2 focus-visible:ring-ring outline-none`}>
+                  {userProfile?.avatar_url ? (
+                    <img src={userProfile.avatar_url} alt="" className="h-8 w-8 rounded-full object-cover shrink-0" />
+                  ) : (
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 shrink-0">
+                      <span className="text-xs font-bold text-primary">{getInitials(userProfile || null, userEmail)}</span>
+                    </div>
+                  )}
+                  {!collapsed && (
+                    <div className="min-w-0 flex-1 text-left">
+                      <p className="truncate text-sm font-medium text-foreground">{getDisplayName(userProfile || null, userEmail)}</p>
+                      <p className="truncate text-xs text-muted-foreground">{userEmail}</p>
+                    </div>
+                  )}
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align={collapsed ? "center" : "start"} side="top" className="w-56">
+                <DropdownMenuItem asChild>
+                  <Link href="/cms/profil" className="flex items-center gap-2">
+                    <UserCircle className="h-4 w-4" />
+                    Account-Einstellungen
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout} className="flex items-center gap-2">
+                  <LogOut className="h-4 w-4" />
+                  Abmelden
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
-      </div>
-    </aside>
+      </aside>
+    </TooltipProvider>
   )
 }

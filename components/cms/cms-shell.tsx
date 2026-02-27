@@ -1,11 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Menu } from "lucide-react"
 import { CmsSidebar } from "@/components/cms/cms-sidebar"
 import { Button } from "@/components/ui/button"
 import { PermissionsProvider } from "@/components/cms/permissions-context"
 import type { CmsPermissions, UserPagePermission } from "@/lib/permissions-shared"
+
+const SIDEBAR_COLLAPSED_KEY = "cms_sidebar_collapsed"
 
 interface UserProfileData {
   first_name?: string
@@ -25,6 +27,20 @@ interface CmsShellProps {
 
 export function CmsShell({ children, userEmail, userProfile, permissions, roleSlugs, pagePermissions }: CmsShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [collapsed, setCollapsed] = useState(false)
+
+  useEffect(() => {
+    const stored = localStorage.getItem(SIDEBAR_COLLAPSED_KEY)
+    if (stored === "true") setCollapsed(true)
+  }, [])
+
+  const toggleCollapsed = () => {
+    setCollapsed((prev) => {
+      const next = !prev
+      localStorage.setItem(SIDEBAR_COLLAPSED_KEY, String(next))
+      return next
+    })
+  }
 
   return (
     <PermissionsProvider value={{ permissions, roleSlugs, pagePermissions }}>
@@ -34,6 +50,8 @@ export function CmsShell({ children, userEmail, userProfile, permissions, roleSl
           userProfile={userProfile}
           isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
+          collapsed={collapsed}
+          onToggleCollapse={toggleCollapsed}
         />
 
         {/* Mobile backdrop */}
