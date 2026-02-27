@@ -23,8 +23,8 @@ export async function generateStaticParams() {
     .eq("status", "published")
     .returns<Array<{ slug: string; route_path: string | null }>>()
 
-  // Exclude pages served by known filesystem routes (unsere-schule, schulleben)
-  const knownPrefixes = ["/unsere-schule", "/schulleben"]
+  // Exclude pages served by known filesystem routes (unsere-schule, schulleben, unterricht)
+  const knownPrefixes = ["/unsere-schule", "/schulleben", "/unterricht"]
   return (data ?? [])
     .filter((page) => !knownPrefixes.some((p) => page.route_path?.startsWith(p)))
     .map((page) => {

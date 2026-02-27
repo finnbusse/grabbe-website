@@ -5,7 +5,7 @@ import { isIpBlocked } from '@/lib/rate-limiter'
 // Known filesystem routes that should NOT be rewritten
 const KNOWN_ROUTES = new Set([
   '', 'aktuelles', 'termine', 'downloads', 'kontakt', 'impressum', 'datenschutz',
-  'unsere-schule', 'schulleben', 'seiten', 'cms', 'auth', 'api', 'protected', 'onboarding',
+  'unsere-schule', 'schulleben', 'unterricht', 'seiten', 'cms', 'auth', 'api', 'protected', 'onboarding',
 ])
 
 export async function middleware(request: NextRequest) {
@@ -35,6 +35,23 @@ export async function middleware(request: NextRequest) {
   }
 
   const sessionResponse = await updateSession(request)
+
+  // Normalize canonical Unterricht index URLs (prevents edge-case 404s with trailing slash)
+  if (pathname === '/unterricht/') {
+    const redirectUrl = request.nextUrl.clone()
+    redirectUrl.pathname = '/unterricht'
+    return NextResponse.redirect(redirectUrl, 308)
+  }
+  if (pathname === '/unterricht/faecher/') {
+    const redirectUrl = request.nextUrl.clone()
+    redirectUrl.pathname = '/unterricht/faecher'
+    return NextResponse.redirect(redirectUrl, 308)
+  }
+
+  // Always let hard-coded index pages resolve via filesystem routing
+  if (pathname === '/unterricht' || pathname === '/unterricht/faecher') {
+    return sessionResponse
+  }
 
   // If session handling already redirected (e.g., to login), return that
   if (sessionResponse.status === 307 || sessionResponse.status === 308) {
