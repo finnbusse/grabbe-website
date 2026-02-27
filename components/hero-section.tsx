@@ -64,7 +64,7 @@ export function HeroSection({ content }: { content?: Record<string, unknown> }) 
         {/* Light mode hero image (default) */}
         <div className="hero-image-light absolute inset-0">
           <Image
-            src="/images/hero/hero-a-light.png"
+            src="/images/hero/hero-a-light.webp"
             alt="Grabbe-Gymnasium Schulgebäude"
             fill
             className="object-cover"
@@ -76,7 +76,7 @@ export function HeroSection({ content }: { content?: Record<string, unknown> }) 
         {/* Dark / night-themed hero image (shown via prefers-color-scheme: dark CSS) */}
         <div className="hero-image-dark absolute inset-0">
           <Image
-            src="/images/hero/hero-a-dark.png"
+            src="/images/hero/hero-a-dark.webp"
             alt="Grabbe-Gymnasium Schulgebäude bei Nacht"
             fill
             className="object-cover"
