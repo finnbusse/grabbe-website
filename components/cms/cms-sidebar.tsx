@@ -34,6 +34,9 @@ interface SidebarLink {
   permCheck?: (p: CmsPermissions) => boolean
 }
 
+const SIDEBAR_WIDTH_EXPANDED = "w-64"
+const SIDEBAR_WIDTH_COLLAPSED = "w-16"
+
 const homeLinks: SidebarLink[] = [
   { icon: Gauge, label: "Dashboard", href: "/cms" },
   { icon: Inbox, label: "Nachrichten", href: "/cms/nachrichten", permCheck: (p) => checkPermission(p, "messages") || checkPermission(p, "anmeldungen") },
@@ -121,7 +124,7 @@ export function CmsSidebar({ userEmail, userProfile, isOpen, onClose, collapsed,
     ...(visibleAdmin.length > 0 ? [{ title: "Verwaltung", items: visibleAdmin }] : []),
   ]
 
-  const sidebarWidth = collapsed ? "w-16" : "w-64"
+  const sidebarWidth = collapsed ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH_EXPANDED
 
   return (
     <TooltipProvider delayDuration={0}>

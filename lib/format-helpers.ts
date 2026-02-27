@@ -55,3 +55,18 @@ export function formatEventTime(startsAt: string, isAllDay?: boolean): string | 
   if (isNaN(d.getTime())) return null
   return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
 }
+
+/**
+ * Check if a content string is block-based JSON (used by page/post editors).
+ */
+export function isBlockContent(content: string): boolean {
+  try {
+    if (content.startsWith("[{")) {
+      const parsed = JSON.parse(content)
+      return Array.isArray(parsed) && parsed.length > 0 && parsed[0].type && parsed[0].id
+    }
+  } catch {
+    // not block content
+  }
+  return false
+}

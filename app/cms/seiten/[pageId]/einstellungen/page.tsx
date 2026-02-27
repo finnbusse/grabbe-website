@@ -4,18 +4,7 @@ import { EDITABLE_PAGES } from "@/lib/page-content"
 import { PageSettingsForm } from "@/components/cms/page-settings-form"
 import { PageWizardProvider } from "@/components/cms/page-wizard-context"
 import { PageWizard } from "@/components/cms/page-wizard"
-
-function isBlockContent(content: string): boolean {
-  try {
-    if (content.startsWith("[{")) {
-      const parsed = JSON.parse(content)
-      return Array.isArray(parsed) && parsed.length > 0 && parsed[0].type && parsed[0].id
-    }
-  } catch {
-    // not block content
-  }
-  return false
-}
+import { isBlockContent } from "@/lib/format-helpers"
 
 export default async function PageSettingsPage({ params }: { params: Promise<{ pageId: string }> }) {
   const { pageId } = await params

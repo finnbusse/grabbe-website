@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { notFound } from "next/navigation"
 import { PageWizardProvider } from "@/components/cms/page-wizard-context"
 import { PageWizard } from "@/components/cms/page-wizard"
+import { isBlockContent } from "@/lib/format-helpers"
 
 export default async function EditCmsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -44,16 +45,4 @@ export default async function EditCmsPage({ params }: { params: Promise<{ id: st
       <PageWizard editMode />
     </PageWizardProvider>
   )
-}
-
-function isBlockContent(content: string): boolean {
-  try {
-    if (content.startsWith("[{")) {
-      const parsed = JSON.parse(content)
-      return Array.isArray(parsed) && parsed.length > 0 && parsed[0].type && parsed[0].id
-    }
-  } catch {
-    // not block content
-  }
-  return false
 }

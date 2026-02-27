@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { isBlockContent } from "@/lib/format-helpers"
 import type { Page } from "@/lib/types/database.types"
 
 const SECTION_LABELS: Record<string, string> = {
@@ -21,16 +22,6 @@ const SECTION_LABELS: Record<string, string> = {
   "unsere-schule": "Unsere Schule",
   schulleben: "Schulleben",
   informationen: "Informationen",
-}
-
-function isBlockContent(content: string): boolean {
-  try {
-    if (content.startsWith("[{")) {
-      const parsed = JSON.parse(content)
-      return Array.isArray(parsed) && parsed.length > 0 && parsed[0].type && parsed[0].id
-    }
-  } catch { /* not blocks */ }
-  return false
 }
 
 function formatDate(dateStr: string): string {

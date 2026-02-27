@@ -5,18 +5,7 @@ import { PageContentEditor } from "@/components/cms/page-content-editor"
 import { HomepageEditor } from "@/components/cms/homepage-editor"
 import { PageWizardProvider } from "@/components/cms/page-wizard-context"
 import { PageWizard } from "@/components/cms/page-wizard"
-
-function isBlockContent(content: string): boolean {
-  try {
-    if (content.startsWith("[{")) {
-      const parsed = JSON.parse(content)
-      return Array.isArray(parsed) && parsed.length > 0 && parsed[0].type && parsed[0].id
-    }
-  } catch {
-    // not block content
-  }
-  return false
-}
+import { isBlockContent } from "@/lib/format-helpers"
 
 export default async function PageEditPage({ params }: { params: Promise<{ pageId: string }> }) {
   const { pageId } = await params
