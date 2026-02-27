@@ -16,12 +16,12 @@ interface EventEditorProps {
     id: string
     title: string
     description: string | null
-    event_date: string
-    event_end_date?: string | null
-    event_time: string | null
-    location: string | null
-    published: boolean
+    starts_at: string
+    ends_at?: string | null
     is_all_day?: boolean | null
+    timezone?: string
+    location: string | null
+    status: string
   }
 }
 
@@ -29,17 +29,23 @@ export function EventEditor({ event }: EventEditorProps) {
   const router = useRouter()
   const [title, setTitle] = useState(event?.title ?? "")
   const [description, setDescription] = useState(event?.description ?? "")
-  const [eventDate, setEventDate] = useState(event?.event_date ?? "")
-  const [eventEndDate, setEventEndDate] = useState(event?.event_end_date ?? "")
+  const [eventDate, setEventDate] = useState(() => {
+    if (!event?.starts_at) return ""
+    return new Date(event.starts_at).toISOString().split("T")[0]
+  })
+  const [eventEndDate, setEventEndDate] = useState(() => {
+    if (!event?.ends_at) return ""
+    return new Date(event.ends_at).toISOString().split("T")[0]
+  })
   const [eventTime, setEventTime] = useState(() => {
-    // Normalize legacy free-text values like "18:00 Uhr" → "18:00"
-    const t = event?.event_time ?? ""
-    return t.replace(/ ?uhr$/i, "").trim()
+    if (!event?.starts_at || event?.is_all_day) return ""
+    const d = new Date(event.starts_at)
+    return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`
   })
   const [isAllDay, setIsAllDay] = useState(event?.is_all_day ?? false)
   const [location, setLocation] = useState(event?.location ?? "")
   const [category, setCategory] = useState((event as Record<string, unknown>)?.category as string ?? "termin")
-  const [published, setPublished] = useState(event?.published ?? true)
+  const [published, setPublished] = useState(event?.status ? event.status === 'published' : true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [tagIds, setTagIds] = useState<string[]>([])
@@ -70,20 +76,19 @@ export function EventEditor({ event }: EventEditorProps) {
       const basePayload: Record<string, unknown> = {
         title,
         description: description || null,
-        event_date: eventDate,
-        event_time: isAllDay ? null : (eventTime || null),
+        starts_at: eventTime && !isAllDay
+          ? `${eventDate}T${eventTime}:00`
+          : `${eventDate}T00:00:00`,
+        ends_at: isAllDay && eventEndDate
+          ? `${eventEndDate}T23:59:59`
+          : null,
+        is_all_day: isAllDay,
+        timezone: event?.timezone ?? 'Europe/Berlin',
         location: location || null,
         category,
-        published,
+        status: published ? 'published' : 'draft',
         user_id: user.id,
         updated_at: new Date().toISOString(),
-      }
-
-      // Try with event_end_date and is_all_day first, fall back without them if columns don't exist
-      const payloadWithEndDate = {
-        ...basePayload,
-        event_end_date: isAllDay ? (eventEndDate || null) : null,
-        is_all_day: isAllDay,
       }
 
       const saveWithPayload = async (payload: Record<string, unknown>) => {
@@ -96,12 +101,7 @@ export function EventEditor({ event }: EventEditorProps) {
         }
       }
 
-      let saveError = await saveWithPayload(payloadWithEndDate)
-
-      // If the error mentions unknown columns, retry without them
-      if (saveError && (saveError.message?.includes("event_end_date") || saveError.message?.includes("is_all_day"))) {
-        saveError = await saveWithPayload(basePayload)
-      }
+      let saveError = await saveWithPayload(basePayload)
 
       if (saveError) throw saveError
 
@@ -121,7 +121,7 @@ export function EventEditor({ event }: EventEditorProps) {
           .from("events")
           .select("id")
           .eq("title", title)
-          .eq("event_date", eventDate)
+          .eq("starts_at", basePayload.starts_at as string)
           .order("created_at", { ascending: false })
           .limit(1)
         if (newEvents && newEvents.length > 0 && tagIds.length > 0) {

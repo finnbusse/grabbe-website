@@ -21,7 +21,7 @@ interface PostEditorProps {
     content: string
     excerpt: string | null
     category: string | null
-    published: boolean
+    status: string
     featured: boolean
     image_url: string | null
     author_name: string | null
@@ -44,7 +44,7 @@ export function PostEditor({ post }: PostEditorProps) {
   const [content, setContent] = useState(post?.content ?? "")
   const [excerpt, setExcerpt] = useState(post?.excerpt ?? "")
   const [category, setCategory] = useState(post?.category ?? "aktuelles")
-  const [published, setPublished] = useState(post?.published ?? false)
+  const [published, setPublished] = useState(post?.status ? post.status === 'published' : false)
   const [featured, setFeatured] = useState(post?.featured ?? false)
   const [imageUrl, setImageUrl] = useState(post?.image_url ?? "")
   const [authorName, setAuthorName] = useState(post?.author_name ?? "")
@@ -106,7 +106,7 @@ export function PostEditor({ post }: PostEditorProps) {
       const basePayload: Record<string, unknown> = {
         title, slug, content,
         excerpt: excerpt || null,
-        category, published, featured,
+        category, status: published ? 'published' : 'draft', featured,
         image_url: imageUrl || null,
         author_name: authorName || user.email?.split("@")[0] || "Redaktion",
         user_id: user.id,

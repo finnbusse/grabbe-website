@@ -22,7 +22,7 @@ interface PageEditorProps {
     content: string
     section: string | null
     sort_order: number
-    published: boolean
+    status: string
     route_path?: string | null
     hero_image_url?: string | null
     meta_description?: string | null
@@ -58,7 +58,7 @@ export function PageEditor({ page }: PageEditorProps) {
   const [section, setSection] = useState(page?.section ?? "allgemein")
   const [routePath, setRoutePath] = useState(page?.route_path ?? "")
   const [sortOrder, setSortOrder] = useState(page?.sort_order ?? 0)
-  const [published, setPublished] = useState(page?.published ?? true)
+  const [published, setPublished] = useState(page?.status ? page.status === 'published' : true)
   const [heroImageUrl, setHeroImageUrl] = useState(page?.hero_image_url ?? "")
   const [metaDescription, setMetaDescription] = useState(page?.meta_description ?? "")
   const [seoOgImage, setSeoOgImage] = useState(page?.seo_og_image ?? "")
@@ -67,7 +67,7 @@ export function PageEditor({ page }: PageEditorProps) {
   const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([])
   const [showPreview, setShowPreview] = useState(false)
   const [showCelebration, setShowCelebration] = useState(false)
-  const wasPublished = page?.published ?? true
+  const wasPublished = page?.status === 'published'
 
   // Determine editor mode based on content format
   const existingBlocks = parseBlocks(content)
@@ -112,7 +112,7 @@ export function PageEditor({ page }: PageEditorProps) {
 
       const payload = {
         title, slug, content: finalContent, section,
-        sort_order: sortOrder, published,
+        sort_order: sortOrder, status: published ? 'published' as const : 'draft' as const,
         route_path: routePath || null,
         hero_image_url: heroImageUrl || null,
         meta_description: metaDescription || null,

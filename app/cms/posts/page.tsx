@@ -32,7 +32,7 @@ interface PostItem {
   id: string
   title: string
   slug: string
-  published: boolean
+  status: string
   event_date: string | null
   created_at: string
   category: string | null
@@ -47,7 +47,7 @@ function BeitraegeTab() {
     const load = async () => {
       const supabase = createClient()
       const [{ data: postsData }, { data: allTags }, { data: postTags }] = await Promise.all([
-        supabase.from("posts").select("id,title,slug,published,event_date,created_at,category").order("created_at", { ascending: false }),
+        supabase.from("posts").select("id,title,slug,status,event_date,created_at,category").order("created_at", { ascending: false }),
         supabase.from("tags").select("*"),
         supabase.from("post_tags").select("*"),
       ])
@@ -89,7 +89,7 @@ function BeitraegeTab() {
                 >
                   {post.title}
                 </Link>
-                {post.published ? (
+                {post.status === 'published' ? (
                   <span className="flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs text-emerald-600">
                     <Eye className="h-3 w-3" />
                     Veröffentlicht

@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
   if (postSlugMatch) {
     const { data } = await supabase
       .from("posts")
-      .select("slug, title, excerpt, meta_description, image_url, seo_og_image, published, updated_at")
+      .select("slug, title, excerpt, meta_description, image_url, seo_og_image, status, updated_at")
       .eq("slug", postSlugMatch[1])
       .maybeSingle()
     postMatch = data
@@ -32,8 +32,8 @@ export async function GET(request: NextRequest) {
   let pageMatch = null
   const { data: pages } = await supabase
     .from("pages")
-    .select("slug, title, route_path, published, meta_description, seo_og_image, updated_at")
-    .eq("published", true)
+    .select("slug, title, route_path, status, meta_description, seo_og_image, updated_at")
+    .eq("status", "published")
   if (pages) {
     pageMatch = pages.find((p) => {
       const prefix = p.route_path || ""
@@ -65,7 +65,7 @@ export async function GET(request: NextRequest) {
       ? {
           type: "post",
           title: postMatch.title,
-          published: postMatch.published,
+          status: postMatch.status,
           hasDescription: !!(postMatch.meta_description || postMatch.excerpt),
           hasOgImage: !!(postMatch.seo_og_image || postMatch.image_url),
         }
@@ -73,7 +73,7 @@ export async function GET(request: NextRequest) {
         ? {
             type: "page",
             title: pageMatch.title,
-            published: pageMatch.published,
+            status: pageMatch.status,
             hasDescription: !!pageMatch.meta_description,
             hasOgImage: !!pageMatch.seo_og_image,
           }
@@ -101,17 +101,17 @@ function getExpectedJsonLdTypes(path: string): string[] {
 
 function generateTips(
   seo: { ogImage: string; siteUrl: string; orgLogo: string; isPreview: boolean },
-  post: { published?: boolean; meta_description?: string | null; excerpt?: string | null; seo_og_image?: string | null; image_url?: string | null } | null,
-  page: { published?: boolean; meta_description?: string | null; seo_og_image?: string | null } | null,
+  post: { status?: string; meta_description?: string | null; excerpt?: string | null; seo_og_image?: string | null; image_url?: string | null } | null,
+  page: { status?: string; meta_description?: string | null; seo_og_image?: string | null } | null,
   path: string,
 ): string[] {
   const tips: string[] = []
   if (!seo.ogImage) tips.push("Kein Standard-OG-Bild gesetzt – empfohlen unter Einstellungen > SEO.")
   if (!seo.orgLogo) tips.push("Kein Organisations-Logo gesetzt – wird für Schema.org benötigt.")
   if (seo.isPreview) tips.push("Preview-Environment erkannt – Seite wird mit noindex ausgeliefert.")
-  if (post && !post.published) tips.push("Beitrag ist nicht veröffentlicht und wird nicht in der Sitemap erscheinen.")
+  if (post && post.status !== 'published') tips.push("Beitrag ist nicht veröffentlicht und wird nicht in der Sitemap erscheinen.")
   if (post && !post.meta_description && !post.excerpt) tips.push("Beitrag hat weder Meta-Beschreibung noch Kurztext – Fallback wird verwendet.")
-  if (page && !page.published) tips.push("Seite ist nicht veröffentlicht.")
+  if (page && page.status !== 'published') tips.push("Seite ist nicht veröffentlicht.")
   if (!post && !page && path !== "/" && !path.startsWith("/cms") && !path.startsWith("/auth")) {
     tips.push("Kein dynamischer Inhalt für diesen Pfad gefunden – möglicherweise eine statische Seite.")
   }

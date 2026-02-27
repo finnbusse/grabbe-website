@@ -36,10 +36,10 @@ export default async function TerminePage() {
   const heroImageUrl = (heroContent.hero_image_url as string) || undefined
   const { data: events } = await supabase
     .from("events")
-    .select("id, title, description, event_date, event_end_date, event_time, location, category")
-    .eq("published", true)
-    .or(`event_date.gte.${new Date().toISOString().split("T")[0]},event_end_date.gte.${new Date().toISOString().split("T")[0]}`)
-    .order("event_date", { ascending: true })
+    .select("id, title, description, starts_at, ends_at, is_all_day, timezone, location, category")
+    .eq("status", "published")
+    .or(`starts_at.gte.${new Date().toISOString()},ends_at.gte.${new Date().toISOString()}`)
+    .order("starts_at", { ascending: true })
     .returns<EventListItem[]>()
 
   const items = events || []
@@ -47,7 +47,7 @@ export default async function TerminePage() {
   // Group by month
   const grouped: Record<string, typeof items> = {}
   items.forEach((ev) => {
-    const d = new Date(ev.event_date)
+    const d = new Date(ev.starts_at)
     const key = `${d.getFullYear()}-${d.getMonth()}`
     if (!grouped[key]) grouped[key] = []
     grouped[key].push(ev)
@@ -97,7 +97,7 @@ export default async function TerminePage() {
                       </h3>
                       <div className="mt-6 space-y-4">
                         {evts.map((ev) => {
-                          const d = new Date(ev.event_date)
+                          const d = new Date(ev.starts_at)
                           const cat = ev.category || "default"
                           const colorClass = categoryColors[cat] || categoryColors.default
                           return (
@@ -109,8 +109,10 @@ export default async function TerminePage() {
                                 <span className="text-[10px] font-medium uppercase leading-none">{monthNamesShort[d.getMonth()]}</span>
                                 <span className="text-xl font-bold leading-none mt-0.5">{d.getDate()}</span>
                               </div>
-                              {ev.event_end_date && ev.event_end_date !== ev.event_date && (() => {
-                                const endD = new Date(ev.event_end_date)
+                              {ev.ends_at && (() => {
+                                const endD = new Date(ev.ends_at)
+                                const sameDay = d.toDateString() === endD.toDateString()
+                                if (sameDay) return null
                                 return (
                                   <>
                                     <div className="flex items-center text-muted-foreground shrink-0">&ndash;</div>
@@ -134,9 +136,9 @@ export default async function TerminePage() {
                                   <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground line-clamp-2">{ev.description}</p>
                                 )}
                                 <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
-                                  {ev.event_time && (
+                                  {!ev.is_all_day && (
                                     <span className="flex items-center gap-1.5">
-                                      <Clock className="h-3 w-3" />{ev.event_time} Uhr
+                                      <Clock className="h-3 w-3" />{`${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`} Uhr
                                     </span>
                                   )}
                                   {ev.location && (

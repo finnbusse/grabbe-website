@@ -16,7 +16,7 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
 
   const p = post as unknown as {
     id: string; title: string; slug: string; content: string; excerpt: string | null;
-    category: string | null; published: boolean; featured: boolean; image_url: string | null;
+    category: string | null; status: string; featured: boolean; image_url: string | null;
     author_name: string | null; event_date: string | null; meta_description: string | null;
     seo_og_image: string | null; created_at: string
   }
@@ -38,7 +38,7 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
       ogImageUrl: p.seo_og_image,
       currentStep: 2,
       isSaving: false,
-      isPublished: p.published,
+      isPublished: p.status === 'published',
       postId: p.id,
       lastAutoSaved: null,
     }}>

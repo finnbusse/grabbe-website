@@ -23,7 +23,7 @@ export async function generateStaticParams() {
   const { data } = await supabase
     .from("posts")
     .select("slug")
-    .eq("published", true)
+    .eq("status", "published")
     .returns<Array<{ slug: string }>>()
   return (data ?? []).map((post) => ({ slug: post.slug }))
 }
@@ -34,7 +34,7 @@ async function getPost(slug: string) {
     .from("posts")
     .select("*")
     .eq("slug", slug)
-    .eq("published", true)
+    .eq("status", "published")
     .single()
   return post
 }
@@ -64,7 +64,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     .from("posts")
     .select("*")
     .eq("slug", slug)
-    .eq("published", true)
+    .eq("status", "published")
     .single()
 
   if (!post) notFound()

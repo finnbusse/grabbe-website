@@ -14,7 +14,7 @@ export default async function SeitenPage() {
   const [pagesResult, structResult] = await Promise.all([
     supabase
       .from("pages")
-      .select("id, title, slug, published, route_path, section, is_index")
+      .select("id, title, slug, status, route_path, section, is_index")
       .order("sort_order", { ascending: true }),
     supabase
       .from("site_settings")
@@ -49,7 +49,7 @@ export default async function SeitenPage() {
           title: "Startseite",
           route: "/",
           type: "static",
-          published: true,
+          status: 'published',
         })
       }
       continue
@@ -63,7 +63,7 @@ export default async function SeitenPage() {
       title: ep.title,
       route: ep.route,
       type: "static",
-      published: true,
+      status: 'published',
     })
   }
 
@@ -72,7 +72,7 @@ export default async function SeitenPage() {
     id: string
     title: string
     slug: string
-    published: boolean
+    status: string
     route_path: string | null
     section: string | null
     is_index: boolean | null
@@ -81,7 +81,7 @@ export default async function SeitenPage() {
     title: p.title,
     route: p.route_path ? `${p.route_path}/${p.slug}` : `/seiten/${p.slug}`,
     type: "custom" as const,
-    published: p.published,
+    status: p.status,
     routePath: p.route_path,
     isIndex: p.is_index === true,
   }))

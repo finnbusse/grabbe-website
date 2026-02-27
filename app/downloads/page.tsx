@@ -27,7 +27,7 @@ export default async function DownloadsPage() {
   const { data: docs } = await supabase
     .from("documents")
     .select("id, title, file_url, file_name, file_size, file_type, category")
-    .eq("published", true)
+    .eq("status", "published")
     .order("category", { ascending: true })
     .order("created_at", { ascending: false })
     .returns<DocumentListItem[]>()

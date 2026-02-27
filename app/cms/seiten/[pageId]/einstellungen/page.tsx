@@ -43,7 +43,7 @@ export default async function PageSettingsPage({ params }: { params: Promise<{ p
           metaDescription: "",
           seoTitle: "",
           seoOgImage: "",
-          published: true,
+          status: 'published',
           createdAt: null,
           updatedAt: null,
           tagIds: [],
@@ -68,7 +68,7 @@ export default async function PageSettingsPage({ params }: { params: Promise<{ p
     hero_subtitle: string | null
     meta_description: string | null
     seo_og_image: string | null
-    published: boolean
+    status: string
     created_at: string | null
     updated_at: string | null
   }
@@ -85,7 +85,7 @@ export default async function PageSettingsPage({ params }: { params: Promise<{ p
         metaDescription: p.meta_description || "",
         seoTitle: "",
         seoOgImage: p.seo_og_image || "",
-        published: p.published,
+        status: p.status,
         createdAt: p.created_at,
         updatedAt: p.updated_at,
         tagIds: [],

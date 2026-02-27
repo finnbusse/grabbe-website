@@ -21,7 +21,7 @@ export default async function CmsEventsPage() {
   const { data: events } = await supabase
     .from("events")
     .select("*")
-    .order("event_date", { ascending: true })
+    .order("starts_at", { ascending: true })
 
   // Load all tags and event-tag assignments
   const { data: allTags } = await supabase.from("tags").select("*")
@@ -64,10 +64,10 @@ export default async function CmsEventsPage() {
               <div className="flex items-start gap-4">
                 <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-xl bg-primary/10 text-primary">
                   <span className="text-xs font-medium uppercase">
-                    {new Date(event.event_date).toLocaleDateString("de-DE", { month: "short" })}
+                    {new Date(event.starts_at).toLocaleDateString("de-DE", { month: "short" })}
                   </span>
                   <span className="font-display text-lg font-bold leading-tight">
-                    {new Date(event.event_date).getDate()}
+                    {new Date(event.starts_at).getDate()}
                   </span>
                 </div>
                 <div>
@@ -90,13 +90,16 @@ export default async function CmsEventsPage() {
                   <div className="mt-1 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
                     <span className="flex items-center gap-1">
                       <CalendarDays className="h-3 w-3" />
-                      {new Date(event.event_date).toLocaleDateString("de-DE", {
+                      {new Date(event.starts_at).toLocaleDateString("de-DE", {
                         weekday: "long",
                         day: "numeric",
                         month: "long",
                         year: "numeric",
                       })}
-                      {event.event_time && `, ${event.event_time}`}
+                      {!event.is_all_day && (() => {
+                        const d = new Date(event.starts_at)
+                        return `, ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+                      })()}
                     </span>
                     {event.location && (
                       <span className="flex items-center gap-1">

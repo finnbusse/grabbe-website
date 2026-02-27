@@ -17,7 +17,7 @@ export interface PageTreeItem {
   title: string
   route: string
   type: "static" | "custom"
-  published?: boolean
+  status?: string
   routePath?: string | null
   isIndex?: boolean
 }
@@ -125,11 +125,25 @@ function collectCustomIds(folder: TreeFolder, set: Set<string>) {
 // Components
 // ---------------------------------------------------------------------------
 
-function StatusBadge({ published }: { published?: boolean }) {
-  if (published === false) {
+function StatusBadge({ status }: { status?: string }) {
+  if (status === 'draft') {
     return (
       <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-medium text-amber-700 border border-amber-200">
         Entwurf
+      </span>
+    )
+  }
+  if (status === 'archived') {
+    return (
+      <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium text-gray-700 border border-gray-200">
+        Archiviert
+      </span>
+    )
+  }
+  if (status === 'scheduled') {
+    return (
+      <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-medium text-blue-700 border border-blue-200">
+        Geplant
       </span>
     )
   }
@@ -156,7 +170,7 @@ function PageRow({ item }: { item: PageTreeItem }) {
             {item.isIndex ? "Hauptseite" : item.title}
           </span>
           {isStatic && <Lock className="h-3 w-3 text-muted-foreground/50" />}
-          <StatusBadge published={item.published} />
+          <StatusBadge status={item.status} />
         </div>
         <p className="text-[11px] text-muted-foreground font-mono truncate">{item.route}</p>
       </div>
@@ -246,7 +260,7 @@ export function PageTree({ staticPages, customPages, categories }: PageTreeProps
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-semibold text-card-foreground truncate">{item.title}</span>
                   <Lock className="h-3 w-3 text-muted-foreground/50" />
-                  <StatusBadge published={item.published} />
+                  <StatusBadge status={item.status} />
                 </div>
                 <p className="text-[11px] text-muted-foreground font-mono">/</p>
               </div>

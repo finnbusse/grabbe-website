@@ -28,7 +28,7 @@ export default async function AktuellesPage() {
   const { data: posts } = await supabase
     .from("posts")
     .select("id, title, slug, excerpt, category, author_name, user_id, event_date, created_at")
-    .eq("published", true)
+    .eq("status", "published")
     .order("created_at", { ascending: false })
     .limit(20)
     .returns<PostListItem[]>()

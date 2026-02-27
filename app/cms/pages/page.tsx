@@ -71,8 +71,8 @@ export default function CmsPagesPage() {
       const matchesSection = sectionFilter === "all" || page.section === sectionFilter
       const matchesStatus =
         statusFilter === "all" ||
-        (statusFilter === "published" && page.published) ||
-        (statusFilter === "draft" && !page.published)
+        (statusFilter === "published" && page.status === 'published') ||
+        (statusFilter === "draft" && page.status === 'draft')
       return matchesSearch && matchesSection && matchesStatus
     })
   }, [pages, search, sectionFilter, statusFilter])
@@ -166,7 +166,7 @@ export default function CmsPagesPage() {
                 </p>
 
                 <div className="mt-3 flex flex-wrap items-center gap-1.5">
-                  {page.published ? (
+                  {page.status === 'published' ? (
                     <span className="flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs text-emerald-600">
                       <Eye className="h-3 w-3" />
                       Aktiv

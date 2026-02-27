@@ -33,7 +33,7 @@ interface SitePage {
   title: string
   slug: string
   route_path: string | null
-  published: boolean
+  status: string
   is_system: boolean
   is_index: boolean
   sort_order: number
@@ -135,7 +135,7 @@ export default function SeitenstrukturPage() {
       // Load all custom pages
       const { data: pagesData } = await supabase
         .from("pages")
-        .select("id, title, slug, route_path, published, is_system, is_index, sort_order")
+        .select("id, title, slug, route_path, status, is_system, is_index, sort_order")
         .order("sort_order")
 
       if (pagesData) {
@@ -834,7 +834,7 @@ function PageItem({
       <GripVertical className="h-3.5 w-3.5 text-muted-foreground/40" />
       <FileText className="h-3.5 w-3.5 text-muted-foreground" />
       <span className="text-sm text-foreground flex-1">{page.title}</span>
-      {!page.published && (
+      {page.status !== 'published' && (
         <span className="text-[10px] rounded-full border px-2 py-0.5 text-muted-foreground">Entwurf</span>
       )}
       <span className="text-xs text-muted-foreground font-mono">{currentPath}</span>

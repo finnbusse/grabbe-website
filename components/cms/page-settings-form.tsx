@@ -28,7 +28,7 @@ interface PageSettingsData {
   metaDescription: string
   seoTitle: string
   seoOgImage: string
-  published: boolean
+  status: string
   createdAt: string | null
   updatedAt: string | null
   tagIds: string[]
@@ -51,7 +51,7 @@ export function PageSettingsForm({ page, isStatic }: PageSettingsFormProps) {
   const [metaDescription, setMetaDescription] = useState(page.metaDescription)
   const [seoTitle, setSeoTitle] = useState(page.seoTitle)
   const [seoOgImage, setSeoOgImage] = useState(page.seoOgImage)
-  const [published, setPublished] = useState(page.published)
+  const [published, setPublished] = useState(page.status === 'published')
   const [tagIds, setTagIds] = useState<string[]>(page.tagIds)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -59,7 +59,7 @@ export function PageSettingsForm({ page, isStatic }: PageSettingsFormProps) {
   const [showDanger, setShowDanger] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [showCelebration, setShowCelebration] = useState(false)
-  const wasPublished = page.published
+  const wasPublished = page.status === 'published'
 
   // Fetch global SEO settings for the preview
   const [seoSeparator, setSeoSeparator] = useState(" / ")
@@ -108,7 +108,7 @@ export function PageSettingsForm({ page, isStatic }: PageSettingsFormProps) {
           hero_subtitle: heroSubtitle || null,
           meta_description: metaDescription || null,
           seo_og_image: seoOgImage || null,
-          published,
+          status: published ? 'published' : 'draft',
           updated_at: new Date().toISOString(),
         }
         const { error: err } = await supabase.from("pages").update(payload as never).eq("id", page.id)
