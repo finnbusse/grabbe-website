@@ -12,63 +12,52 @@ interface InvitationEmailOptions {
 export function invitationEmailTemplate(options: InvitationEmailOptions): { subject: string; html: string } {
   const greeting = options.recipientFirstName
     ? `Willkommen im Team, ${options.recipientFirstName}!`
-    : "Hallo!"
+    : "Willkommen im Team!"
 
-  // Derive inviter first name for body copy
   const inviterFirstName = options.inviterName.split(" ")[0] || options.inviterName
 
   const personalMessageBlock = options.personalMessage
     ? `
-      <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="margin:0 0 24px;">
+      <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="margin:0 0 20px;">
         <tr>
-          <td style="border-left:3px solid #2563b0;padding:12px 16px;background-color:#f0f5ff;border-radius:0 6px 6px 0;">
-            <p style="margin:0 0 4px;font-size:12px;color:#6b7280;font-style:italic;">Persönliche Nachricht von ${options.inviterName}:</p>
-            <p style="margin:0;font-size:14px;line-height:1.6;color:#1e3a5f;">&ldquo;${options.personalMessage}&rdquo;</p>
+          <td style="padding:14px 16px;border:1px solid #dfe5ec;background-color:#f8fafc;border-radius:10px;">
+            <p style="margin:0 0 6px;font-family:'Josefin Sans','Trebuchet MS',Arial,sans-serif;font-size:12px;line-height:1.5;letter-spacing:0.03em;color:#667085;">Persönliche Nachricht von ${options.inviterName}:</p>
+            <p style="margin:0;font-family:'Geist','Segoe UI',Arial,sans-serif;font-size:14px;line-height:1.6;color:#1a2332;">„${options.personalMessage}“</p>
           </td>
         </tr>
       </table>`
     : ""
 
   const content = `
-    <h2 style="margin:0 0 8px;font-size:22px;font-weight:700;color:#1e3a5f;">
-      ${greeting}
-    </h2>
-    <p style="margin:0 0 20px;font-size:15px;line-height:1.7;color:#374151;">
-      ${inviterFirstName} lädt dich ein, an der offiziellen Website des Grabbe-Gymnasiums Detmold mitzuwirken &mdash; Inhalte zu gestalten, Neuigkeiten zu veröffentlichen und die Schulgemeinschaft digital zu bereichern.
+    <h2 style="margin:0 0 10px;font-family:'Instrument Serif',Georgia,serif;font-size:34px;line-height:1.15;font-weight:400;color:#1a2332;">${greeting}</h2>
+    <p style="margin:0 0 18px;font-family:'Geist','Segoe UI',Arial,sans-serif;font-size:15px;line-height:1.7;color:#364152;">
+      ${inviterFirstName} lädt dich ein, im CMS des Grabbe-Gymnasiums Inhalte zu verwalten und die Schulwebsite mitzugestalten.
     </p>
-    <p style="margin:0 0 20px;font-size:14px;line-height:1.6;color:#6b7280;">
-      Deine Rolle: <span style="display:inline-block;background-color:#e0edff;color:#1e3a5f;padding:2px 10px;border-radius:12px;font-size:13px;font-weight:600;">${options.roleName}</span>
-    </p>
+    <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="margin:0 0 18px;">
+      <tr>
+        <td style="padding:14px 16px;border:1px solid #dfe5ec;border-radius:10px;background-color:#ffffff;">
+          <p style="margin:0 0 8px;font-family:'Josefin Sans','Trebuchet MS',Arial,sans-serif;font-size:12px;letter-spacing:0.04em;color:#667085;">Einladung für</p>
+          <p style="margin:0 0 10px;font-family:'Geist','Segoe UI',Arial,sans-serif;font-size:14px;color:#1a2332;font-weight:600;">${options.recipientEmail}</p>
+          <p style="margin:0;font-family:'Josefin Sans','Trebuchet MS',Arial,sans-serif;font-size:13px;letter-spacing:0.03em;color:#2563b0;font-weight:600;display:inline-block;background-color:#edf4ff;padding:4px 10px;border-radius:999px;">Rolle: ${options.roleName}</p>
+        </td>
+      </tr>
+    </table>
     ${personalMessageBlock}
     <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="margin:0 0 16px;">
       <tr>
         <td align="center">
-          <table role="presentation" cellpadding="0" cellspacing="0">
-            <tr>
-              <td style="background-color:#1e3a5f;border-radius:8px;padding:14px 32px;">
-                <a href="${options.onboardingUrl}" style="color:#ffffff;text-decoration:none;font-size:16px;font-weight:600;letter-spacing:0.3px;">
-                  Konto einrichten &rarr;
-                </a>
-              </td>
-            </tr>
-          </table>
+          <a href="${options.onboardingUrl}" style="display:inline-block;background-color:#2563b0;color:#f5f7fa;text-decoration:none;font-family:'Geist','Segoe UI',Arial,sans-serif;font-size:15px;font-weight:600;padding:12px 24px;border-radius:8px;">
+            Konto einrichten
+          </a>
         </td>
       </tr>
     </table>
-    <p style="margin:0 0 24px;font-size:12px;line-height:1.5;color:#9ca3af;text-align:center;">
-      Dieser Link ist 72 Stunden gültig und kann nur einmal verwendet werden.
-    </p>
-    <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;" />
-    <p style="margin:0 0 8px;font-size:12px;line-height:1.5;color:#9ca3af;">
-      Diese Einladung wurde von ${options.inviterName} versendet.
-    </p>
-    <p style="margin:0;font-size:11px;line-height:1.5;color:#9ca3af;">
-      Falls du keine Einladung erwartest, kannst du diese E-Mail ignorieren.
-    </p>
+    <p style="margin:0 0 12px;font-family:'Geist','Segoe UI',Arial,sans-serif;font-size:12px;line-height:1.6;color:#667085;text-align:center;">Der Link ist 72 Stunden gültig und kann nur einmal verwendet werden.</p>
+    <p style="margin:0;font-family:'Geist','Segoe UI',Arial,sans-serif;font-size:12px;line-height:1.6;color:#667085;">Falls der Button nicht funktioniert, kopiere diesen Link in deinen Browser:<br /><a href="${options.onboardingUrl}" style="color:#2563b0;word-break:break-all;">${options.onboardingUrl}</a></p>
   `
 
   return {
-    subject: `Einladung: Werde Teil des Grabbe-Gymnasium CMS`,
+    subject: "Einladung: Zugang zum Grabbe-Gymnasium CMS",
     html: baseLayout(content),
   }
 }

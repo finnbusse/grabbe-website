@@ -2,11 +2,12 @@
 
 import { useState, useEffect, useCallback, useRef, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
-import { Eye, EyeOff, Check } from "lucide-react"
+import { Eye, EyeOff, Check, Mail, Shield, UserRound, AlertCircle } from "lucide-react"
 
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 interface InvitationData {
   id: string
@@ -17,25 +18,9 @@ interface InvitationData {
   expiresAt: string
 }
 
-// ---------------------------------------------------------------------------
-// Onboarding Page (wrapped in Suspense for useSearchParams)
-// ---------------------------------------------------------------------------
-
 export default function OnboardingPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="onboarding-page">
-          <OnboardingHeader />
-          <div className="onboarding-content">
-            <div className="onboarding-loading">
-              <div className="onboarding-spinner" />
-              <p>Einladung wird überprüft...</p>
-            </div>
-          </div>
-        </div>
-      }
-    >
+    <Suspense fallback={<OnboardingFrame><LoadingState /></OnboardingFrame>}>
       <OnboardingContent />
     </Suspense>
   )
@@ -49,31 +34,22 @@ function OnboardingContent() {
   const [error, setError] = useState<string | null>(null)
   const [invitation, setInvitation] = useState<InvitationData | null>(null)
   const [step, setStep] = useState(0)
-  const [animating, setAnimating] = useState(false)
 
-  // Step 2 — personal info
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [displayName, setDisplayName] = useState("")
   const [displayNameTouched, setDisplayNameTouched] = useState(false)
   const [touched, setTouched] = useState<Record<string, boolean>>({})
 
-  // Step 3 — password
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
-
-  // Step 4 — done
   const [done, setDone] = useState(false)
 
   const firstNameRef = useRef<HTMLInputElement>(null)
-
-  // ---------------------------------------------------------------------------
-  // Validate token on mount
-  // ---------------------------------------------------------------------------
 
   useEffect(() => {
     if (!token) {
@@ -84,7 +60,7 @@ function OnboardingContent() {
 
     async function validate() {
       try {
-        const res = await fetch(`/api/onboarding?token=${encodeURIComponent(token!)}`)
+        const res = await fetch(`/api/onboarding?token=${encodeURIComponent(token)}`)
         const data = await res.json()
         if (!res.ok) {
           setError(data.error || "Einladung ungültig")
@@ -101,35 +77,22 @@ function OnboardingContent() {
     validate()
   }, [token])
 
-  // Auto-fill display name
   useEffect(() => {
     if (!displayNameTouched && (firstName || lastName)) {
       setDisplayName(`${firstName} ${lastName}`.trim())
     }
   }, [firstName, lastName, displayNameTouched])
 
-  // Focus first name field on step 2
   useEffect(() => {
     if (step === 1 && firstNameRef.current) {
-      setTimeout(() => firstNameRef.current?.focus(), 300)
+      setTimeout(() => firstNameRef.current?.focus(), 150)
     }
   }, [step])
 
-  // ---------------------------------------------------------------------------
-  // Step navigation with animation
-  // ---------------------------------------------------------------------------
-
   const goToStep = useCallback((nextStep: number) => {
-    setAnimating(true)
-    setTimeout(() => {
-      setStep(nextStep)
-      setAnimating(false)
-    }, 100)
+    setSubmitError(null)
+    setStep(nextStep)
   }, [])
-
-  // ---------------------------------------------------------------------------
-  // Password validation
-  // ---------------------------------------------------------------------------
 
   const pwChecks = {
     length: password.length >= 8,
@@ -141,17 +104,8 @@ function OnboardingContent() {
   const allPwValid = pwChecks.length && pwChecks.mixed && pwChecks.number && pwChecks.special
   const passwordsMatch = password === confirmPassword && confirmPassword.length > 0
 
-  const pwStrength = (() => {
-    const met = [pwChecks.length, pwChecks.mixed, pwChecks.number, pwChecks.special].filter(Boolean).length
-    if (met <= 1) return { label: "Zu kurz", percent: 25, color: "#ef4444" }
-    if (met === 2) return { label: "Mittelmäßig", percent: 50, color: "#f97316" }
-    if (met === 3) return { label: "Gut", percent: 75, color: "#eab308" }
-    return { label: "Stark", percent: 100, color: "#22c55e" }
-  })()
-
-  // ---------------------------------------------------------------------------
-  // Submit onboarding
-  // ---------------------------------------------------------------------------
+  const strength = [pwChecks.length, pwChecks.mixed, pwChecks.number, pwChecks.special].filter(Boolean).length
+  const strengthLabel = strength <= 1 ? "Schwach" : strength === 2 ? "Mittel" : strength === 3 ? "Gut" : "Stark"
 
   async function handleSubmit() {
     if (!allPwValid || !passwordsMatch || !token) return
@@ -187,311 +141,264 @@ function OnboardingContent() {
     }
   }
 
-  // ---------------------------------------------------------------------------
-  // Render
-  // ---------------------------------------------------------------------------
+  if (loading) return <OnboardingFrame><LoadingState /></OnboardingFrame>
 
-  // Loading state
-  if (loading) {
-    return (
-      <div className="onboarding-page">
-        <OnboardingHeader />
-        <div className="onboarding-content">
-          <div className="onboarding-loading">
-            <div className="onboarding-spinner" />
-            <p>Einladung wird überprüft...</p>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  // Error state
   if (error) {
     return (
-      <div className="onboarding-page">
-        <OnboardingHeader />
-        <div className="onboarding-content">
-          <div className="onboarding-error">
-            <div className="onboarding-error-icon">✕</div>
-            <h2>Einladung ungültig</h2>
-            <p>{error}</p>
-            <a href="mailto:info@grabbe-gymnasium.de" className="onboarding-link-btn">
-              Administrator kontaktieren
-            </a>
-          </div>
-        </div>
-      </div>
+      <OnboardingFrame>
+        <Card className="rounded-xl border-border font-sans">
+          <CardHeader className="space-y-2 text-center">
+            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-destructive/10 text-destructive">
+              <AlertCircle className="h-5 w-5" />
+            </div>
+            <CardTitle className="font-display">Einladung ungültig</CardTitle>
+            <CardDescription>{error}</CardDescription>
+          </CardHeader>
+          <CardContent className="flex justify-center">
+            <Button asChild>
+              <a href="mailto:info@grabbe-gymnasium.de">Administrator kontaktieren</a>
+            </Button>
+          </CardContent>
+        </Card>
+      </OnboardingFrame>
     )
   }
 
   if (!invitation) return null
 
-  const totalSteps = 4
-  const currentStep = step
-
   return (
-    <div className="onboarding-page">
-      <OnboardingHeader />
+    <OnboardingFrame>
+      <StepDots step={step} totalSteps={4} />
 
-      {/* Step indicator */}
-      <div className="onboarding-progress">
-        {Array.from({ length: totalSteps }).map((_, i) => (
-          <div
-            key={i}
-            className={`onboarding-dot ${i === currentStep ? "active" : ""} ${i < currentStep ? "completed" : ""}`}
-          />
-        ))}
-      </div>
-
-      <div className="onboarding-content">
-        <div className={`onboarding-step ${animating ? "onboarding-step-exit" : "onboarding-step-enter"}`}>
-          {/* Step 1: Welcome */}
-          {step === 0 && (
-            <div className="onboarding-welcome">
-              <h1>Willkommen im Team!</h1>
-              <p className="onboarding-subtitle">
-                Richte jetzt dein Konto ein. Das dauert nur zwei Minuten.
-              </p>
-
-              <div className="onboarding-meta">
-                <span className="onboarding-email">{invitation.email}</span>
-                {invitation.role && (
-                  <span className="onboarding-role-badge">{invitation.role.name}</span>
-                )}
-              </div>
-
-              {invitation.personalMessage && (
-                <div className="onboarding-quote">
-                  <p>&ldquo;{invitation.personalMessage}&rdquo;</p>
-                  {invitation.inviterName && (
-                    <span className="onboarding-quote-author">— {invitation.inviterName}</span>
-                  )}
-                </div>
+      {step === 0 && (
+        <Card className="rounded-xl border-border font-sans">
+          <CardHeader className="space-y-4">
+            <CardTitle className="font-display text-2xl tracking-tight">Willkommen im Team</CardTitle>
+            <CardDescription>Richte jetzt dein Konto ein. Das dauert nur wenige Minuten.</CardDescription>
+            <div className="flex flex-wrap items-center gap-2 text-sm">
+                <span className="inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1 font-sub text-muted-foreground">
+                <Mail className="h-3.5 w-3.5" />
+                {invitation.email}
+              </span>
+              {invitation.role && (
+                <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 font-sub font-medium text-primary">
+                  {invitation.role.name}
+                </span>
               )}
-
-              <button
-                onClick={() => goToStep(1)}
-                className="onboarding-btn-primary"
-              >
-                Los geht&apos;s →
-              </button>
             </div>
-          )}
-
-          {/* Step 2: Personal info */}
-          {step === 1 && (
-            <div className="onboarding-form">
-              <h2>Persönliche Angaben</h2>
-
-              <div className="onboarding-fields">
-                <div className="onboarding-field-row">
-                  <div className="onboarding-field">
-                    <label htmlFor="ob-firstname">Vorname *</label>
-                    <input
-                      ref={firstNameRef}
-                      id="ob-firstname"
-                      type="text"
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
-                      onBlur={() => setTouched((t) => ({ ...t, firstName: true }))}
-                      className={touched.firstName && !firstName ? "field-error" : ""}
-                      placeholder="Max"
-                    />
-                    {touched.firstName && !firstName && (
-                      <span className="field-error-text">Vorname ist erforderlich</span>
-                    )}
-                  </div>
-                  <div className="onboarding-field">
-                    <label htmlFor="ob-lastname">Nachname *</label>
-                    <input
-                      id="ob-lastname"
-                      type="text"
-                      value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
-                      onBlur={() => setTouched((t) => ({ ...t, lastName: true }))}
-                      className={touched.lastName && !lastName ? "field-error" : ""}
-                      placeholder="Mustermann"
-                    />
-                    {touched.lastName && !lastName && (
-                      <span className="field-error-text">Nachname ist erforderlich</span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="onboarding-field">
-                  <label htmlFor="ob-displayname">Anzeigename</label>
-                  <input
-                    id="ob-displayname"
-                    type="text"
-                    value={displayName}
-                    onChange={(e) => {
-                      setDisplayName(e.target.value)
-                      setDisplayNameTouched(true)
-                    }}
-                    placeholder="Max Mustermann"
-                  />
-                  <span className="field-helper">So wirst du im CMS angezeigt</span>
-                </div>
-
-                <p className="field-helper" style={{ marginTop: "8px" }}>
-                  Dein Profilbild kannst du nach der Anmeldung in deinem Profil hinzufügen.
-                </p>
-              </div>
-
-              <div className="onboarding-actions">
-                <button onClick={() => goToStep(0)} className="onboarding-btn-secondary">
-                  Zurück
-                </button>
-                <button
-                  onClick={() => goToStep(2)}
-                  disabled={!firstName || !lastName}
-                  className="onboarding-btn-primary"
-                >
-                  Weiter →
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Step 3: Password */}
-          {step === 2 && (
-            <div className="onboarding-form">
-              <h2>Passwort festlegen</h2>
-
-              <div className="onboarding-fields">
-                <div className="onboarding-field">
-                  <label htmlFor="ob-password">Passwort</label>
-                  <div className="onboarding-pw-wrapper">
-                    <input
-                      id="ob-password"
-                      type={showPassword ? "text" : "password"}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Sicheres Passwort wählen"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="onboarding-pw-toggle"
-                      aria-label={showPassword ? "Passwort verbergen" : "Passwort anzeigen"}
-                    >
-                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                    </button>
-                  </div>
-
-                  {/* Strength indicator */}
-                  {password.length > 0 && (
-                    <div className="onboarding-pw-strength">
-                      <div className="onboarding-pw-bar">
-                        <div
-                          className="onboarding-pw-bar-fill"
-                          style={{ width: `${pwStrength.percent}%`, backgroundColor: pwStrength.color }}
-                        />
-                      </div>
-                      <span className="onboarding-pw-label" style={{ color: pwStrength.color }}>
-                        {pwStrength.label}
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Requirements checklist */}
-                  <div className="onboarding-pw-checks">
-                    <PwCheck met={pwChecks.length} label="Mindestens 8 Zeichen" />
-                    <PwCheck met={pwChecks.mixed} label="Groß- und Kleinbuchstaben" />
-                    <PwCheck met={pwChecks.number} label="Mindestens eine Zahl" />
-                    <PwCheck met={pwChecks.special} label="Mindestens ein Sonderzeichen" />
-                  </div>
-                </div>
-
-                <div className="onboarding-field">
-                  <label htmlFor="ob-confirm">Passwort bestätigen</label>
-                  <div className="onboarding-pw-wrapper">
-                    <input
-                      id="ob-confirm"
-                      type={showConfirm ? "text" : "password"}
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      placeholder="Passwort wiederholen"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowConfirm(!showConfirm)}
-                      className="onboarding-pw-toggle"
-                      aria-label={showConfirm ? "Passwort verbergen" : "Passwort anzeigen"}
-                    >
-                      {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
-                    </button>
-                  </div>
-                  {confirmPassword && !passwordsMatch && (
-                    <span className="field-error-text">Passwörter stimmen nicht überein</span>
-                  )}
-                </div>
-
-                {submitError && (
-                  <div className="onboarding-submit-error">{submitError}</div>
+          </CardHeader>
+          <CardContent className="space-y-5">
+            {invitation.personalMessage && (
+              <div className="rounded-lg border border-border bg-muted/40 p-4 text-sm leading-relaxed">
+                <p className="italic">„{invitation.personalMessage}“</p>
+                {invitation.inviterName && (
+                  <p className="mt-2 text-xs text-muted-foreground">— {invitation.inviterName}</p>
                 )}
               </div>
+            )}
+            <Button onClick={() => goToStep(1)} className="w-full">Los geht’s</Button>
+          </CardContent>
+        </Card>
+      )}
 
-              <div className="onboarding-actions">
-                <button onClick={() => goToStep(1)} className="onboarding-btn-secondary">
-                  Zurück
-                </button>
+      {step === 1 && (
+        <Card className="rounded-xl border-border font-sans">
+          <CardHeader>
+            <CardTitle className="font-display text-xl">Persönliche Angaben</CardTitle>
+            <CardDescription>Diese Daten werden für dein Profil im CMS verwendet.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-5">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="ob-firstname">Vorname *</Label>
+                <Input
+                  ref={firstNameRef}
+                  id="ob-firstname"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  onBlur={() => setTouched((s) => ({ ...s, firstName: true }))}
+                  placeholder="Max"
+                />
+                {touched.firstName && !firstName && <p className="text-xs text-destructive">Vorname ist erforderlich.</p>}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="ob-lastname">Nachname *</Label>
+                <Input
+                  id="ob-lastname"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  onBlur={() => setTouched((s) => ({ ...s, lastName: true }))}
+                  placeholder="Mustermann"
+                />
+                {touched.lastName && !lastName && <p className="text-xs text-destructive">Nachname ist erforderlich.</p>}
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="ob-displayname">Anzeigename</Label>
+              <Input
+                id="ob-displayname"
+                value={displayName}
+                onChange={(e) => {
+                  setDisplayName(e.target.value)
+                  setDisplayNameTouched(true)
+                }}
+                placeholder="Max Mustermann"
+              />
+              <p className="text-xs text-muted-foreground">So wirst du im CMS angezeigt.</p>
+            </div>
+            <p className="text-xs text-muted-foreground">Profilbild und weitere Angaben kannst du später im Profil ergänzen.</p>
+            <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-between">
+              <Button variant="outline" onClick={() => goToStep(0)}>Zurück</Button>
+              <Button onClick={() => goToStep(2)} disabled={!firstName || !lastName}>Weiter</Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {step === 2 && (
+        <Card className="rounded-xl border-border font-sans">
+          <CardHeader>
+            <CardTitle className="font-display text-xl">Passwort festlegen</CardTitle>
+            <CardDescription>Wähle ein sicheres Passwort für dein neues Konto.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-5">
+            <div className="space-y-2">
+              <Label htmlFor="ob-password">Passwort</Label>
+              <div className="relative">
+                <Input
+                  id="ob-password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Sicheres Passwort"
+                  className="pr-10"
+                />
                 <button
-                  onClick={handleSubmit}
-                  disabled={!allPwValid || !passwordsMatch || submitting}
-                  className="onboarding-btn-primary"
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  aria-label={showPassword ? "Passwort verbergen" : "Passwort anzeigen"}
                 >
-                  {submitting ? "Wird erstellt..." : "Konto erstellen"}
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
-            </div>
-          )}
-
-          {/* Step 4: Done */}
-          {step === 3 && done && (
-            <div className="onboarding-done">
-              <div className="onboarding-checkmark">
-                <svg viewBox="0 0 52 52" className="onboarding-checkmark-svg">
-                  <circle cx="26" cy="26" r="25" fill="none" className="onboarding-checkmark-circle" />
-                  <path fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" className="onboarding-checkmark-path" />
-                </svg>
+              <div className="space-y-1">
+                <div className="h-1.5 overflow-hidden rounded-full bg-muted">
+                  <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${Math.max(20, strength * 25)}%` }} />
+                </div>
+                <p className="text-xs text-muted-foreground">Passwortstärke: {strengthLabel}</p>
               </div>
-              <h1>Alles bereit!</h1>
-              <p className="onboarding-subtitle">
-                Dein Konto wurde erfolgreich eingerichtet.
-              </p>
-              <a href="/cms" className="onboarding-btn-primary">
-                Zum CMS →
-              </a>
+              <div className="grid gap-1 text-xs text-muted-foreground">
+                <PwCheck met={pwChecks.length} label="Mindestens 8 Zeichen" />
+                <PwCheck met={pwChecks.mixed} label="Groß- und Kleinbuchstaben" />
+                <PwCheck met={pwChecks.number} label="Mindestens eine Zahl" />
+                <PwCheck met={pwChecks.special} label="Mindestens ein Sonderzeichen" />
+              </div>
             </div>
-          )}
-        </div>
-      </div>
-    </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="ob-confirm">Passwort bestätigen</Label>
+              <div className="relative">
+                <Input
+                  id="ob-confirm"
+                  type={showConfirm ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Passwort wiederholen"
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirm((v) => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  aria-label={showConfirm ? "Passwort verbergen" : "Passwort anzeigen"}
+                >
+                  {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+              {confirmPassword && !passwordsMatch && <p className="text-xs text-destructive">Passwörter stimmen nicht überein.</p>}
+            </div>
+
+            {submitError && <p className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{submitError}</p>}
+
+            <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-between">
+              <Button variant="outline" onClick={() => goToStep(1)}>Zurück</Button>
+              <Button onClick={handleSubmit} disabled={!allPwValid || !passwordsMatch || submitting}>
+                {submitting ? "Konto wird erstellt..." : "Konto erstellen"}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {step === 3 && done && (
+        <Card className="rounded-xl border-border font-sans">
+          <CardHeader className="items-center text-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <Shield className="h-6 w-6" />
+            </div>
+            <CardTitle className="font-display">Alles bereit</CardTitle>
+            <CardDescription>Dein Konto wurde erfolgreich eingerichtet.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button asChild className="w-full">
+              <a href="/cms">Zum CMS</a>
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+    </OnboardingFrame>
   )
 }
 
-// ---------------------------------------------------------------------------
-// Sub-components
-// ---------------------------------------------------------------------------
-
-function OnboardingHeader() {
+function OnboardingFrame({ children }: { children: React.ReactNode }) {
   return (
-    <header className="onboarding-header">
-      <div className="onboarding-header-logo">
-        <span>Grabbe-Gymnasium</span>
-        <span className="onboarding-header-sub">Detmold</span>
+    <main className="min-h-dvh bg-background px-4 py-10 font-sans text-foreground sm:px-6 sm:py-14">
+      <div className="mx-auto flex w-full max-w-xl flex-col gap-6">
+        <header className="flex items-center gap-2 text-sm text-muted-foreground">
+          <UserRound className="h-4 w-4" />
+          <span className="font-sub font-medium text-foreground">Grabbe-Gymnasium</span>
+          <span>·</span>
+          <span>Onboarding</span>
+        </header>
+        {children}
       </div>
-    </header>
+    </main>
+  )
+}
+
+function LoadingState() {
+  return (
+    <Card className="rounded-xl border-border">
+      <CardHeader>
+        <CardTitle>Einladung wird überprüft</CardTitle>
+        <CardDescription>Bitte einen Moment Geduld…</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="h-2 w-full animate-pulse rounded-full bg-muted" />
+      </CardContent>
+    </Card>
+  )
+}
+
+function StepDots({ step, totalSteps }: { step: number; totalSteps: number }) {
+  return (
+    <div className="flex items-center justify-center gap-2" aria-hidden>
+      {Array.from({ length: totalSteps }).map((_, i) => (
+        <span
+          key={i}
+          className={`h-2.5 w-2.5 rounded-full transition ${i <= step ? "bg-primary" : "bg-border"}`}
+        />
+      ))}
+    </div>
   )
 }
 
 function PwCheck({ met, label }: { met: boolean; label: string }) {
   return (
-    <div className={`onboarding-pw-check ${met ? "met" : ""}`}>
-      <Check size={14} />
-      <span>{label}</span>
-    </div>
+    <p className={`inline-flex items-center gap-1.5 ${met ? "text-primary" : "text-muted-foreground"}`}>
+      <Check className="h-3.5 w-3.5" />
+      {label}
+    </p>
   )
 }
