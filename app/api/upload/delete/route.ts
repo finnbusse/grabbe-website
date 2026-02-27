@@ -2,6 +2,7 @@ import { del } from "@vercel/blob"
 import { revalidatePath, revalidateTag } from "next/cache"
 import { type NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
+import { checkPermission, getUserPermissions } from "@/lib/permissions"
 
 export async function DELETE(request: NextRequest) {
   try {
@@ -12,6 +13,11 @@ export async function DELETE(request: NextRequest) {
 
     if (!user) {
       return NextResponse.json({ error: "Nicht autorisiert" }, { status: 401 })
+    }
+
+    const permissions = await getUserPermissions(user.id)
+    if (!checkPermission(permissions, "documents.upload")) {
+      return NextResponse.json({ error: "Keine Berechtigung" }, { status: 403 })
     }
 
     const { url, id } = await request.json()

@@ -46,6 +46,9 @@
     --sidebar-border: 210 25% 90%;
     --sidebar-ring: 215 70% 45%;
 
+    --font-instrument-serif: "Times New Roman", Times, serif;
+    --font-josefin-sans: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
+
     /* Customisable font indirection (overridden via inline style on <html>) */
     --font-heading: var(--font-instrument-serif);
     --font-body: var(--font-geist-sans);

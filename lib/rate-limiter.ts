@@ -31,6 +31,10 @@ function getSalt(): string | null {
   return process.env.IP_HASH_SALT || null
 }
 
+export function isRateLimitConfigured(): boolean {
+  return !!getSalt()
+}
+
 /** Hash a value with SHA-256 + server-side salt using Web Crypto API. */
 async function hashValue(value: string): Promise<string | null> {
   const salt = getSalt()

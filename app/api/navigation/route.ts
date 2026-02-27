@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { revalidatePath, revalidateTag } from "next/cache"
+import { getUserRoleSlugs, isAdminOrSchulleitung } from "@/lib/permissions"
 import { NextResponse, type NextRequest } from "next/server"
 
 export async function GET(request: NextRequest) {
@@ -21,6 +22,8 @@ export async function POST(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  const roleSlugs = await getUserRoleSlugs(user.id)
+  if (!isAdminOrSchulleitung(roleSlugs)) return NextResponse.json({ error: "Keine Berechtigung" }, { status: 403 })
 
   const body = await request.json()
   const { data, error } = await supabase
@@ -40,6 +43,8 @@ export async function PUT(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  const roleSlugs = await getUserRoleSlugs(user.id)
+  if (!isAdminOrSchulleitung(roleSlugs)) return NextResponse.json({ error: "Keine Berechtigung" }, { status: 403 })
 
   const body = await request.json()
   const { id, ...updates } = body
@@ -60,6 +65,8 @@ export async function DELETE(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  const roleSlugs = await getUserRoleSlugs(user.id)
+  if (!isAdminOrSchulleitung(roleSlugs)) return NextResponse.json({ error: "Keine Berechtigung" }, { status: 403 })
 
   const { id } = await request.json()
   const { error } = await supabase

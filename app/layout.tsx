@@ -3,7 +3,6 @@ import Script from "next/script"
 import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
 import { GeistPixelSquare } from "geist/font/pixel"
-import { Instrument_Serif, Josefin_Sans } from "next/font/google"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import {
   getSEOSettings,
@@ -15,18 +14,6 @@ import { getDesignSettings, DESIGN_DEFAULTS } from "@/lib/settings"
 import type { DesignSettings } from "@/lib/settings"
 import { tailwindToHex } from "@/lib/design-settings"
 import "./globals.css"
-
-const _instrumentSerif = Instrument_Serif({
-  subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
-  variable: "--font-instrument-serif",
-})
-
-const _josefinSans = Josefin_Sans({
-  subsets: ["latin"],
-  variable: "--font-josefin-sans",
-})
 
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await getSEOSettings()
@@ -179,7 +166,7 @@ export default async function RootLayout({
   return (
     <html
       lang="de"
-      className={`${GeistSans.variable} ${GeistMono.variable} ${GeistPixelSquare.variable} ${_instrumentSerif.variable} ${_josefinSans.variable}`}
+      className={`${GeistSans.variable} ${GeistMono.variable} ${GeistPixelSquare.variable}`}
       style={Object.keys(style).length > 0 ? (style as React.CSSProperties) : undefined}
     >
       <head>

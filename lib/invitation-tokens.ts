@@ -1,10 +1,10 @@
-import { createHmac, randomUUID } from "crypto"
+import { createHmac, randomUUID, timingSafeEqual } from "crypto"
 
-const HMAC_SECRET = process.env.INVITATION_HMAC_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY || ""
+const HMAC_SECRET = process.env.INVITATION_HMAC_SECRET || ""
 
 function getHmacSecret(): string {
   if (!HMAC_SECRET) {
-    throw new Error("Missing INVITATION_HMAC_SECRET or SUPABASE_SERVICE_ROLE_KEY environment variable")
+    throw new Error("Missing INVITATION_HMAC_SECRET environment variable")
   }
   return HMAC_SECRET
 }
@@ -39,7 +39,9 @@ export function validateTokenSignature(token: string): boolean {
     .digest("hex")
     .slice(0, 16)
 
-  return providedSignature === expectedSignature
+  const provided = Buffer.from(providedSignature)
+  const expected = Buffer.from(expectedSignature)
+  return provided.length === expected.length && timingSafeEqual(provided, expected)
 }
 
 /**

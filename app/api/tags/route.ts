@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { revalidateTag } from "next/cache"
+import { getUserRoleSlugs, isAdminOrSchulleitung } from "@/lib/permissions"
 import { NextRequest, NextResponse } from "next/server"
 
 export async function GET() {
@@ -20,6 +21,10 @@ export async function POST(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
     return NextResponse.json({ error: "Nicht angemeldet" }, { status: 401 })
+  }
+  const roleSlugs = await getUserRoleSlugs(user.id)
+  if (!isAdminOrSchulleitung(roleSlugs)) {
+    return NextResponse.json({ error: "Keine Berechtigung" }, { status: 403 })
   }
 
   const body = await request.json()
@@ -50,6 +55,10 @@ export async function PUT(request: NextRequest) {
   if (!user) {
     return NextResponse.json({ error: "Nicht angemeldet" }, { status: 401 })
   }
+  const roleSlugs = await getUserRoleSlugs(user.id)
+  if (!isAdminOrSchulleitung(roleSlugs)) {
+    return NextResponse.json({ error: "Keine Berechtigung" }, { status: 403 })
+  }
 
   const body = await request.json()
   const { id, name, color } = body
@@ -79,6 +88,10 @@ export async function DELETE(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
     return NextResponse.json({ error: "Nicht angemeldet" }, { status: 401 })
+  }
+  const roleSlugs = await getUserRoleSlugs(user.id)
+  if (!isAdminOrSchulleitung(roleSlugs)) {
+    return NextResponse.json({ error: "Keine Berechtigung" }, { status: 403 })
   }
 
   const { searchParams } = new URL(request.url)

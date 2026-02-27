@@ -1,10 +1,20 @@
 import { createClient } from "@/lib/supabase/server"
+import { getRequestIp, isRateLimited } from "@/lib/request-throttle"
 import { NextResponse } from "next/server"
 
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { child_name, child_birthday, parent_name, parent_email, parent_phone, grundschule, anmeldung_type, wunschpartner, profilprojekt, message } = body
+    const { child_name, child_birthday, parent_name, parent_email, parent_phone, grundschule, anmeldung_type, wunschpartner, profilprojekt, message, website } = body
+
+    if (website) {
+      return NextResponse.json({ success: true })
+    }
+
+    const ip = getRequestIp(request.headers)
+    if (isRateLimited(`anmeldung:${ip}`, 3, 10 * 60 * 1000)) {
+      return NextResponse.json({ error: "Zu viele Anfragen. Bitte später erneut versuchen." }, { status: 429 })
+    }
 
     if (!child_name || !parent_name || !parent_email) {
       return NextResponse.json({ error: "Name des Kindes, Name und E-Mail des Erziehungsberechtigten sind erforderlich." }, { status: 400 })

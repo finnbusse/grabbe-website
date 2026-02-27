@@ -149,28 +149,35 @@ export async function POST(request: NextRequest) {
 
   const userId = authData.user.id
 
-  // Create user profile
-  await adminClient.from("user_profiles").insert({
-    user_id: userId,
-    first_name: firstName,
-    last_name: lastName,
-    display_name: displayName || `${firstName} ${lastName}`,
-    title: "",
-  })
-
-  // Assign role
-  if (inv.role_id) {
-    await adminClient.from("user_roles").insert({
+  try {
+    const { error: profileError } = await adminClient.from("user_profiles").insert({
       user_id: userId,
-      role_id: inv.role_id,
+      first_name: firstName,
+      last_name: lastName,
+      display_name: displayName || `${firstName} ${lastName}`,
+      title: "",
     })
+    if (profileError) throw profileError
+
+    if (inv.role_id) {
+      const { error: roleError } = await adminClient.from("user_roles").insert({
+        user_id: userId,
+        role_id: inv.role_id,
+      })
+      if (roleError) throw roleError
+    }
+
+    const { error: invitationError } = await adminClient
+      .from("invitations")
+      .update({ accepted_at: new Date().toISOString() })
+      .eq("id", inv.id)
+
+    if (invitationError) throw invitationError
+
+    return NextResponse.json({ success: true, userId })
+  } catch (setupError) {
+    await adminClient.auth.admin.deleteUser(userId)
+    const message = setupError instanceof Error ? setupError.message : "Onboarding fehlgeschlagen"
+    return NextResponse.json({ error: message }, { status: 500 })
   }
-
-  // Mark invitation as accepted
-  await adminClient
-    .from("invitations")
-    .update({ accepted_at: new Date().toISOString() })
-    .eq("id", inv.id)
-
-  return NextResponse.json({ success: true, userId })
 }

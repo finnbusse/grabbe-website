@@ -2,8 +2,18 @@ import { list, put } from "@vercel/blob"
 import { revalidatePath, revalidateTag } from "next/cache"
 import { type NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
+import { checkPermission, getUserPermissions } from "@/lib/permissions"
 
 const SUPPORTED_IMAGE_EXTENSIONS = ["jpg", "jpeg", "png", "gif", "webp", "svg", "avif"]
+const ALLOWED_UPLOAD_MIME_TYPES = new Set([
+  "application/pdf",
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+  "image/svg+xml",
+  "image/avif",
+])
 
 export async function GET(request: NextRequest) {
   try {
@@ -17,6 +27,10 @@ export async function GET(request: NextRequest) {
 
     // Try documents table first (unified media library)
     const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      return NextResponse.json({ error: "Nicht autorisiert" }, { status: 401 })
+    }
 
     // Deduplication check: if filename and size provided, return matching documents
     if (filenameFilter && sizeFilter) {
@@ -128,11 +142,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Nicht autorisiert" }, { status: 401 })
     }
 
+    const permissions = await getUserPermissions(user.id)
+    if (!checkPermission(permissions, "documents.upload")) {
+      return NextResponse.json({ error: "Keine Berechtigung" }, { status: 403 })
+    }
+
     const formData = await request.formData()
     const file = formData.get("file") as File
 
     if (!file) {
       return NextResponse.json({ error: "Keine Datei angegeben" }, { status: 400 })
+    }
+
+    if (!ALLOWED_UPLOAD_MIME_TYPES.has(file.type)) {
+      return NextResponse.json({ error: "Dateityp nicht erlaubt" }, { status: 400 })
     }
 
     // Validate file size (max 50MB)

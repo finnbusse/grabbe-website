@@ -13,12 +13,12 @@ const ALLOWED_PATH_PREFIXES = [
   "/unsere-schule/",
   "/schulleben/",
   "/seiten/",
-  "/",
 ]
 
 function isValidRevalidationPath(path: string): boolean {
   if (!path.startsWith("/")) return false
   if (path.includes("?") || path.includes("#") || path.includes("..")) return false
+  if (path === "/") return true
   return ALLOWED_PATH_PREFIXES.some((prefix) => path === prefix || path.startsWith(prefix))
 }
 

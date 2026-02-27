@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
+import { getUserRoleSlugs, isAdminOrSchulleitung } from "@/lib/permissions"
 import { revalidatePath, revalidateTag } from "next/cache"
 import { NextResponse, type NextRequest } from "next/server"
 
@@ -34,6 +35,8 @@ export async function PUT(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  const roleSlugs = await getUserRoleSlugs(user.id)
+  if (!isAdminOrSchulleitung(roleSlugs)) return NextResponse.json({ error: "Keine Berechtigung" }, { status: 403 })
 
   const body = await request.json()
 
@@ -88,6 +91,8 @@ export async function POST(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  const roleSlugs = await getUserRoleSlugs(user.id)
+  if (!isAdminOrSchulleitung(roleSlugs)) return NextResponse.json({ error: "Keine Berechtigung" }, { status: 403 })
 
   const { key, value, type, label, category } = await request.json()
   if (typeof key !== "string" || key.trim().length === 0) {

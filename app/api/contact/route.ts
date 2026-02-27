@@ -1,10 +1,20 @@
 import { createClient } from "@/lib/supabase/server"
+import { getRequestIp, isRateLimited } from "@/lib/request-throttle"
 import { NextResponse } from "next/server"
 
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { name, email, subject, message } = body
+    const { name, email, subject, message, website } = body
+
+    if (website) {
+      return NextResponse.json({ success: true })
+    }
+
+    const ip = getRequestIp(request.headers)
+    if (isRateLimited(`contact:${ip}`, 5, 10 * 60 * 1000)) {
+      return NextResponse.json({ error: "Zu viele Anfragen. Bitte später erneut versuchen." }, { status: 429 })
+    }
 
     if (!name || !email || !message) {
       return NextResponse.json({ error: "Name, E-Mail und Nachricht sind erforderlich." }, { status: 400 })

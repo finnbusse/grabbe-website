@@ -1,3 +1,7 @@
+-- DO NOT APPLY IN PRODUCTION.
+-- Legacy migration kept for historical reference only.
+-- Use scripts/complete_schema.sql for real deployments.
+
 -- CMS Tables for Grabbe-Gymnasium Website
 
 -- News/Aktuelles posts

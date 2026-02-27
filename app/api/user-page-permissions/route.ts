@@ -8,11 +8,18 @@ export async function GET(request: Request) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: "Nicht angemeldet" }, { status: 401 })
 
+  const roleSlugs = await getUserRoleSlugs(user.id)
+  const canManagePermissions = isAdminOrSchulleitung(roleSlugs)
+
   const url = new URL(request.url)
   const userId = url.searchParams.get("userId")
 
   if (!userId) {
     return NextResponse.json({ error: "userId erforderlich" }, { status: 400 })
+  }
+
+  if (!canManagePermissions && userId !== user.id) {
+    return NextResponse.json({ error: "Keine Berechtigung" }, { status: 403 })
   }
 
   const { data, error } = await supabase

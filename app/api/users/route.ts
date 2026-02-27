@@ -1,11 +1,15 @@
 import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
+import { getUserRoleSlugs, isAdmin } from "@/lib/permissions"
 import { NextResponse } from "next/server"
 
 export async function GET() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: "Nicht angemeldet" }, { status: 401 })
+
+  const roleSlugs = await getUserRoleSlugs(user.id)
+  if (!isAdmin(roleSlugs)) return NextResponse.json({ error: "Keine Berechtigung" }, { status: 403 })
 
   try {
     const adminClient = createAdminClient()
@@ -56,6 +60,9 @@ export async function POST(request: Request) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: "Nicht angemeldet" }, { status: 401 })
 
+  const roleSlugs = await getUserRoleSlugs(user.id)
+  if (!isAdmin(roleSlugs)) return NextResponse.json({ error: "Keine Berechtigung" }, { status: 403 })
+
   const body = await request.json()
   const { email, password, first_name, last_name, title: userTitle } = body
 
@@ -92,6 +99,9 @@ export async function DELETE(request: Request) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: "Nicht angemeldet" }, { status: 401 })
+
+  const roleSlugs = await getUserRoleSlugs(user.id)
+  if (!isAdmin(roleSlugs)) return NextResponse.json({ error: "Keine Berechtigung" }, { status: 403 })
 
   const body = await request.json()
   const { userId } = body

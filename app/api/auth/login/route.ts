@@ -1,5 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin"
-import { checkRateLimit, recordLoginAttempt, applyDelay } from "@/lib/rate-limiter"
+import { checkRateLimit, recordLoginAttempt, applyDelay, isRateLimitConfigured } from "@/lib/rate-limiter"
 import { NextResponse, type NextRequest } from "next/server"
 
 /**
@@ -27,8 +27,17 @@ export async function POST(request: NextRequest) {
       request.headers.get("x-real-ip") ||
       "unknown"
 
+
+    if (!isRateLimitConfigured()) {
+      return NextResponse.json(
+        { error: "Login vorübergehend nicht verfügbar. Bitte kontaktieren Sie den Support." },
+        { status: 503 }
+      )
+    }
+
     // ── Rate limit check ──
-    const rateLimit = await checkRateLimit(ip, email)
+    const normalizedEmail = String(email).trim().toLowerCase()
+    const rateLimit = await checkRateLimit(ip, normalizedEmail)
 
     if (!rateLimit.allowed) {
       return NextResponse.json(
@@ -52,13 +61,13 @@ export async function POST(request: NextRequest) {
     // Use signInWithPassword via the admin client's auth API
     // We need a client-style auth call; admin client can verify credentials
     const { data, error } = await supabase.auth.signInWithPassword({
-      email,
+      email: normalizedEmail,
       password,
     })
 
     if (error || !data.session) {
       // Record the failed attempt
-      await recordLoginAttempt(ip, email, false)
+      await recordLoginAttempt(ip, normalizedEmail, false)
 
       // Return uniform 401 — never reveal whether the email exists
       return NextResponse.json(
@@ -68,7 +77,7 @@ export async function POST(request: NextRequest) {
     }
 
     // ── Successful login ──
-    await recordLoginAttempt(ip, email, true)
+    await recordLoginAttempt(ip, normalizedEmail, true)
 
     // Return session tokens so the client can establish the session
     return NextResponse.json({
