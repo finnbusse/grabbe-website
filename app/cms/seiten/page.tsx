@@ -5,6 +5,9 @@ import { PageTree, type PageTreeItem, type CategoryDef } from "@/components/cms/
 const DEFAULT_CATEGORIES: CategoryDef[] = [
   { id: "unsere-schule", slug: "unsere-schule", label: "Unsere Schule", sort_order: 0, children: [] },
   { id: "schulleben", slug: "schulleben", label: "Schulleben", sort_order: 1, children: [] },
+  { id: "unterricht", slug: "unterricht", label: "Unterricht", sort_order: 2, children: [
+    { id: "unterricht/faecher", slug: "faecher", label: "Fächer", sort_order: 0, children: [] },
+  ] },
 ]
 
 export default async function SeitenPage() {

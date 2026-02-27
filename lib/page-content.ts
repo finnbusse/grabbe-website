@@ -1333,7 +1333,7 @@ export const EDITABLE_PAGES: PageDefinition[] = [
   // Landing pages (category overviews)
   {
     id: 'landing-unterricht',
-    title: 'Unterricht (Übersicht)',
+    title: 'Unterricht',
     description: 'Die Kategorieübersicht für den Bereich Unterricht.',
     route: '/unterricht',
     sections: [
@@ -1359,7 +1359,7 @@ export const EDITABLE_PAGES: PageDefinition[] = [
   },
   {
     id: 'landing-unterricht-faecher',
-    title: 'Fächer (Übersicht)',
+    title: 'Fächer',
     description: 'Die Fächerübersicht unter Unterricht > Fächer.',
     route: '/unterricht/faecher',
     sections: [
