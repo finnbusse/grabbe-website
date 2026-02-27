@@ -273,6 +273,43 @@ export type TagUpdate = Partial<Omit<Tag, 'id' | 'created_at'>>;
 export type UserProfileUpdate = Partial<Omit<UserProfile, 'id' | 'created_at'>>;
 
 // ============================================================================
+// Campaigns
+// ============================================================================
+
+export interface CampaignButton {
+  id: string
+  label: string
+  url: string
+  style: 'primary' | 'secondary' | 'outline' | 'ghost'
+  target: '_self' | '_blank'
+}
+
+export interface Campaign {
+  id: string
+  title: string
+  headline: string
+  message: string
+  is_active: boolean
+  starts_at: string | null
+  ends_at: string | null
+  show_once: boolean
+  overlay_style: 'blur' | 'dark' | 'light'
+  accent_color: string
+  buttons: CampaignButton[]
+  created_at: string
+  updated_at: string
+  user_id: string | null
+}
+
+export type CampaignInsert = Omit<Campaign, 'id' | 'created_at' | 'updated_at'> & {
+  id?: string
+  created_at?: string
+  updated_at?: string
+}
+
+export type CampaignUpdate = Partial<Omit<Campaign, 'id' | 'created_at'>>
+
+// ============================================================================
 // List-view types (narrow projections for card/list views without large blobs)
 // ============================================================================
 
@@ -368,6 +405,12 @@ export interface Database {
         Row: PostTag;
         Insert: PostTag;
         Update: PostTag;
+        Relationships: [];
+      };
+      campaigns: {
+        Row: Campaign;
+        Insert: CampaignInsert;
+        Update: CampaignUpdate;
         Relationships: [];
       };
       cms_roles: {

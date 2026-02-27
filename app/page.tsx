@@ -8,8 +8,10 @@ import { InfoSection } from "@/components/info-section"
 import { NachmittagSection } from "@/components/nachmittag-section"
 import { ContactSection } from "@/components/contact-section"
 import { PartnersSection } from "@/components/partners-section"
+import { CampaignPopup } from "@/components/campaign-popup"
 import { createClient } from "@/lib/supabase/server"
 import { PAGE_DEFAULTS, getMultiplePageContents } from "@/lib/page-content"
+import type { Campaign } from "@/lib/types/database.types"
 
 export const revalidate = 300
 
@@ -23,7 +25,7 @@ export default async function HomePage() {
     'homepage-news', 'homepage-calendar',
   ]
 
-  const [postsRes, eventsRes, pageContents] = await Promise.all([
+  const [postsRes, eventsRes, pageContents, campaignsRes] = await Promise.all([
     supabase
       .from("posts")
       .select("id, title, slug, excerpt, category, image_url, author_name, event_date, created_at, user_id")
@@ -38,6 +40,11 @@ export default async function HomePage() {
       .order("event_date", { ascending: true })
       .limit(6),
     getMultiplePageContents(pageIds, PAGE_DEFAULTS),
+    supabase
+      .from("campaigns")
+      .select("*")
+      .eq("is_active", true)
+      .order("created_at", { ascending: false }),
   ])
 
   // Fetch author profiles for posts
@@ -80,6 +87,7 @@ export default async function HomePage() {
         <ContactSection />
         <PartnersSection content={pageContents['homepage-partners']} />
       </main>
+      <CampaignPopup campaigns={(campaignsRes.data || []) as unknown as Campaign[]} />
     </SiteLayout>
   )
 }
