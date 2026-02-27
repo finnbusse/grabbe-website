@@ -4,12 +4,14 @@ import Link from "next/link"
 export default function DokumentationPage() {
   return (
     <div>
-      <div>
-        <h1 className="text-2xl font-bold text-foreground">Dokumentation</h1>
-        <p className="text-sm text-muted-foreground mt-1">Hilfe und Anleitungen für das CMS</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="font-display text-2xl font-bold text-foreground">Dokumentation</h1>
+          <p className="text-sm text-muted-foreground mt-1">Hilfe und Anleitungen für das CMS</p>
+        </div>
       </div>
 
-      <div className="mt-8 space-y-4">
+      <div className="mt-6 space-y-4">
         <Link
           href="/docs/SCHNELLE_HILFE_DE.md"
           target="_blank"

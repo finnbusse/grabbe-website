@@ -109,14 +109,18 @@ export default function SystemSettingsPage() {
   }
 
   return (
-    <div className="space-y-6 pb-12">
+    <div>
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-foreground">CMS-Einstellungen</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Einstellungen, die das CMS-System betreffen.
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="font-display text-2xl font-bold text-foreground">CMS-Einstellungen</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Einstellungen, die das CMS-System betreffen.
+          </p>
+        </div>
       </div>
+
+      <div className="mt-6 space-y-6 pb-12">
 
       {showEmailSection && (
         <>
@@ -198,6 +202,7 @@ export default function SystemSettingsPage() {
           </p>
         </div>
       )}
+      </div>
     </div>
   )
 }

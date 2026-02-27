@@ -17,19 +17,19 @@ export default async function CmsCampaignsPage() {
   const now = new Date()
 
   function getStatus(campaign: { is_active: boolean; starts_at: string | null; ends_at: string | null }) {
-    if (!campaign.is_active) return { label: "Inaktiv", variant: "secondary" as const }
+    if (!campaign.is_active) return { label: "Inaktiv", className: "border-transparent bg-muted text-muted-foreground hover:bg-muted" }
     const start = campaign.starts_at ? new Date(campaign.starts_at) : null
     const end = campaign.ends_at ? new Date(campaign.ends_at) : null
-    if (start && start > now) return { label: "Geplant", variant: "outline" as const }
-    if (end && end < now) return { label: "Abgelaufen", variant: "secondary" as const }
-    return { label: "Aktiv", variant: "default" as const }
+    if (start && start > now) return { label: "Geplant", className: "border-transparent bg-amber-100 text-amber-700 hover:bg-amber-100" }
+    if (end && end < now) return { label: "Abgelaufen", className: "border-transparent bg-muted text-muted-foreground hover:bg-muted" }
+    return { label: "Aktiv", className: "border-transparent bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/10" }
   }
 
   return (
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-display text-3xl font-bold text-foreground">Kampagnen</h1>
+          <h1 className="font-display text-2xl font-bold text-foreground">Kampagnen</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Verwalten Sie Popup-Kampagnen für die Startseite.
           </p>
@@ -42,7 +42,7 @@ export default async function CmsCampaignsPage() {
         </Button>
       </div>
 
-      <div className="mt-8 space-y-3">
+      <div className="mt-6 space-y-3">
         {campaignList.length > 0 ? (
           campaignList.map((campaign) => {
             const status = getStatus(campaign)
@@ -63,7 +63,7 @@ export default async function CmsCampaignsPage() {
                       >
                         {campaign.title}
                       </Link>
-                      <Badge variant={status.variant}>{status.label}</Badge>
+                      <Badge className={status.className}>{status.label}</Badge>
                     </div>
                     <p className="mt-0.5 text-xs text-muted-foreground line-clamp-1">
                       {campaign.headline}

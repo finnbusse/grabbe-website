@@ -90,22 +90,22 @@ function BeitraegeTab() {
                   {post.title}
                 </Link>
                 {post.status === 'published' ? (
-                  <span className="flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs text-emerald-600">
-                    <Eye className="h-3 w-3" />
+                  <Badge className="border-transparent bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/10">
+                    <Eye className="mr-1 h-3 w-3" />
                     Veröffentlicht
-                  </span>
+                  </Badge>
                 ) : (
-                  <span className="flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-                    <EyeOff className="h-3 w-3" />
+                  <Badge className="border-transparent bg-muted text-muted-foreground hover:bg-muted">
+                    <EyeOff className="mr-1 h-3 w-3" />
                     Entwurf
-                  </span>
+                  </Badge>
                 )}
                 {(postTagsMap.get(post.id) || []).map((tag) => {
                   const c = TAG_COLORS[tag.color] || TAG_COLORS.blue
                   return (
-                    <span key={tag.id} className={`inline-flex items-center gap-0.5 rounded-full border px-1.5 py-0 text-[10px] font-medium ${c.bg} ${c.text} ${c.border}`}>
-                      <TagIcon className="h-2 w-2" />{tag.name}
-                    </span>
+                    <Badge key={tag.id} className={`${c.bg} ${c.text} ${c.border} text-[10px] font-medium hover:opacity-90`}>
+                      <TagIcon className="mr-0.5 h-2 w-2" />{tag.name}
+                    </Badge>
                   )
                 })}
               </div>
@@ -169,12 +169,12 @@ function KampagnenTab() {
   const now = new Date()
 
   function getStatus(campaign: { is_active: boolean; starts_at: string | null; ends_at: string | null }) {
-    if (!campaign.is_active) return { label: "Inaktiv", variant: "secondary" as const }
+    if (!campaign.is_active) return { label: "Inaktiv", className: "border-transparent bg-muted text-muted-foreground hover:bg-muted" }
     const start = campaign.starts_at ? new Date(campaign.starts_at) : null
     const end = campaign.ends_at ? new Date(campaign.ends_at) : null
-    if (start && start > now) return { label: "Geplant", variant: "outline" as const }
-    if (end && end < now) return { label: "Abgelaufen", variant: "secondary" as const }
-    return { label: "Aktiv", variant: "default" as const }
+    if (start && start > now) return { label: "Geplant", className: "border-transparent bg-amber-100 text-amber-700 hover:bg-amber-100" }
+    if (end && end < now) return { label: "Abgelaufen", className: "border-transparent bg-muted text-muted-foreground hover:bg-muted" }
+    return { label: "Aktiv", className: "border-transparent bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/10" }
   }
 
   return (
@@ -199,7 +199,7 @@ function KampagnenTab() {
                     >
                       {campaign.title}
                     </Link>
-                    <Badge variant={status.variant}>{status.label}</Badge>
+                    <Badge className={status.className}>{status.label}</Badge>
                   </div>
                   <p className="mt-0.5 text-xs text-muted-foreground line-clamp-1">
                     {campaign.headline}
@@ -246,7 +246,7 @@ function PostsContent() {
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">News</h1>
+          <h1 className="font-display text-2xl font-bold text-foreground">News</h1>
           <p className="mt-1 text-sm text-muted-foreground">Beiträge und Popup-Kampagnen verwalten</p>
         </div>
         <div className="flex items-center gap-2">

@@ -137,8 +137,12 @@ export function DocumentsManager({ initialDocuments }: { initialDocuments: Doc[]
 
   return (
     <div>
-      <h1 className="font-display text-2xl font-bold">Dokumente & Medien</h1>
-      <p className="mt-1 text-sm text-muted-foreground">Laden Sie Dateien hoch und kopieren Sie die URL, um sie auf Seiten und Beiträgen einzubinden.</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="font-display text-2xl font-bold text-foreground">Dokumente & Medien</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Laden Sie Dateien hoch und kopieren Sie die URL, um sie auf Seiten und Beiträgen einzubinden.</p>
+        </div>
+      </div>
 
       <div className="mt-6 rounded-2xl border bg-card p-6 space-y-4">
         <h3 className="font-display font-semibold">Neues Dokument hochladen</h3>

@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { isBlockContent } from "@/lib/format-helpers"
 import type { Page } from "@/lib/types/database.types"
 
 const SECTION_LABELS: Record<string, string> = {
@@ -21,16 +22,6 @@ const SECTION_LABELS: Record<string, string> = {
   "unsere-schule": "Unsere Schule",
   schulleben: "Schulleben",
   informationen: "Informationen",
-}
-
-function isBlockContent(content: string): boolean {
-  try {
-    if (content.startsWith("[{")) {
-      const parsed = JSON.parse(content)
-      return Array.isArray(parsed) && parsed.length > 0 && parsed[0].type && parsed[0].id
-    }
-  } catch { /* not blocks */ }
-  return false
 }
 
 function formatDate(dateStr: string): string {
@@ -81,7 +72,7 @@ export default function CmsPagesPage() {
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-display text-3xl font-bold text-foreground">Seiten</h1>
+          <h1 className="font-display text-2xl font-bold text-foreground">Seiten</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Statische Seiten der Website verwalten.
             {!loading && (
@@ -167,32 +158,32 @@ export default function CmsPagesPage() {
 
                 <div className="mt-3 flex flex-wrap items-center gap-1.5">
                   {page.status === 'published' ? (
-                    <span className="flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs text-emerald-600">
-                      <Eye className="h-3 w-3" />
+                    <Badge className="border-transparent bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/10">
+                      <Eye className="mr-1 h-3 w-3" />
                       Aktiv
-                    </span>
+                    </Badge>
                   ) : (
-                    <span className="flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-                      <EyeOff className="h-3 w-3" />
+                    <Badge className="border-transparent bg-muted text-muted-foreground hover:bg-muted">
+                      <EyeOff className="mr-1 h-3 w-3" />
                       Entwurf
-                    </span>
+                    </Badge>
                   )}
                   <Badge variant="secondary" className="text-xs font-normal">
                     {SECTION_LABELS[page.section] ?? page.section}
                   </Badge>
-                  <span className="flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
+                  <Badge className="border-transparent bg-muted text-muted-foreground hover:bg-muted">
                     {blocks ? (
                       <>
-                        <Blocks className="h-3 w-3" />
+                        <Blocks className="mr-1 h-3 w-3" />
                         Blöcke
                       </>
                     ) : (
                       <>
-                        <FileText className="h-3 w-3" />
+                        <FileText className="mr-1 h-3 w-3" />
                         Markdown
                       </>
                     )}
-                  </span>
+                  </Badge>
                 </div>
 
                 {page.updated_at && (

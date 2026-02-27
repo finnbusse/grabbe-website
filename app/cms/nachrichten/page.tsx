@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { MessagesInbox } from "@/components/cms/messages-inbox"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import { Trash2, ChevronDown, ChevronUp, Download } from "lucide-react"
 
 // ============================================================================
@@ -103,9 +104,9 @@ function AnmeldungenTab() {
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <span className="font-semibold text-sm truncate">{item.child_name}</span>
-                  <span className="text-xs rounded-full bg-primary/10 px-2 py-0.5 text-primary shrink-0">
+                  <Badge variant="secondary">
                     {item.anmeldung_type === "klasse5" ? "Klasse 5" : "Oberstufe"}
-                  </span>
+                  </Badge>
                   <span className="text-xs text-muted-foreground shrink-0">
                     {new Date(item.created_at).toLocaleDateString("de-DE")}
                   </span>
@@ -230,7 +231,7 @@ function NachrichtenContent() {
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Nachrichten</h1>
+          <h1 className="font-display text-2xl font-bold text-foreground">Nachrichten</h1>
           <p className="text-sm text-muted-foreground mt-1">Kontaktanfragen und Schulanmeldungen verwalten</p>
         </div>
       </div>

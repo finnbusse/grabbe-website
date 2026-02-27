@@ -2,6 +2,9 @@ import { createClient } from "@/lib/supabase/server"
 import { notFound } from "next/navigation"
 import { EDITABLE_PAGES } from "@/lib/page-content"
 import { PageSettingsForm } from "@/components/cms/page-settings-form"
+import { PageWizardProvider } from "@/components/cms/page-wizard-context"
+import { PageWizard } from "@/components/cms/page-wizard"
+import { isBlockContent } from "@/lib/format-helpers"
 
 export default async function PageSettingsPage({ params }: { params: Promise<{ pageId: string }> }) {
   const { pageId } = await params
@@ -53,7 +56,7 @@ export default async function PageSettingsPage({ params }: { params: Promise<{ p
     )
   }
 
-  // Otherwise, look up in the pages table
+  // Otherwise, look up in the pages table — use the three-step wizard at step 1
   const supabase = await createClient()
   const { data: page } = await supabase.from("pages").select("*").eq("id", pageId).single()
 
@@ -63,6 +66,9 @@ export default async function PageSettingsPage({ params }: { params: Promise<{ p
     id: string
     title: string
     slug: string
+    content: string
+    section: string | null
+    sort_order: number
     route_path: string | null
     hero_image_url: string | null
     hero_subtitle: string | null
@@ -74,23 +80,29 @@ export default async function PageSettingsPage({ params }: { params: Promise<{ p
   }
 
   return (
-    <PageSettingsForm
-      page={{
-        id: p.id,
-        title: p.title,
-        slug: p.slug,
-        route: p.route_path ? `${p.route_path}/${p.slug}` : `/seiten/${p.slug}`,
-        heroImageUrl: p.hero_image_url || "",
-        heroSubtitle: p.hero_subtitle || "",
-        metaDescription: p.meta_description || "",
-        seoTitle: "",
-        seoOgImage: p.seo_og_image || "",
-        status: p.status,
-        createdAt: p.created_at,
-        updatedAt: p.updated_at,
-        tagIds: [],
-      }}
-      isStatic={false}
-    />
+    <PageWizardProvider initialState={{
+      title: p.title,
+      slug: p.slug,
+      routePath: p.route_path || "",
+      heroImageUrl: p.hero_image_url,
+      heroSubtitle: p.hero_subtitle || "",
+      tagIds: [],
+      contentMode: isBlockContent(p.content) ? "blocks" : "markdown",
+      blocks: isBlockContent(p.content) ? JSON.parse(p.content) : [],
+      markdownContent: isBlockContent(p.content) ? "" : p.content,
+      metaDescription: p.meta_description || "",
+      seoTitle: "",
+      ogImageUrl: p.seo_og_image,
+      currentStep: 1,
+      isSaving: false,
+      isPublished: p.status === "published",
+      pageId: p.id,
+      savedPageId: null,
+      lastAutoSaved: null,
+      section: p.section || "allgemein",
+      sortOrder: p.sort_order || 0,
+    }}>
+      <PageWizard editMode />
+    </PageWizardProvider>
   )
 }

@@ -330,11 +330,11 @@ export default function NavigationPage() {
   }
 
   return (
-    <div className="space-y-6 animate-fade-in-up">
+    <div>
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-display text-3xl font-bold text-foreground">Navigation verwalten</h1>
+          <h1 className="font-display text-2xl font-bold text-foreground">Navigation verwalten</h1>
           <p className="text-sm text-muted-foreground mt-1">Drag & Drop zum Sortieren • Klick zum Bearbeiten</p>
         </div>
         <div className="flex items-center gap-3">
@@ -364,7 +364,7 @@ export default function NavigationPage() {
       </div>
 
       {/* Location tabs */}
-      <div className="flex flex-wrap gap-2 border-b border-border pb-3">
+      <div className="mt-6 flex flex-wrap gap-2 border-b border-border pb-3">
         {LOCATIONS.map((loc) => (
           <button
             key={loc.key}

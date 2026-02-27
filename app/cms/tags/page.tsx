@@ -98,7 +98,7 @@ export default function TagsPage() {
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-display text-3xl font-bold text-foreground">Tags</h1>
+          <h1 className="font-display text-2xl font-bold text-foreground">Tags</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Erstellen Sie Tags, um Beiträge, Termine und Dokumente thematisch zu organisieren.
           </p>

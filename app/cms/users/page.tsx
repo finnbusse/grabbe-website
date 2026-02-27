@@ -478,11 +478,11 @@ export default function UsersPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div>
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-display text-2xl font-bold text-foreground">Benutzerverwaltung</h1>
-          <p className="text-sm text-muted-foreground">Lehrer-Accounts für das CMS erstellen und verwalten</p>
+          <p className="mt-1 text-sm text-muted-foreground">Lehrer-Accounts für das CMS erstellen und verwalten</p>
         </div>
         <div className="flex items-center gap-2">
           {isCurrentAdmin && (
@@ -499,6 +499,8 @@ export default function UsersPage() {
           )}
         </div>
       </div>
+
+      <div className="mt-6 space-y-6">
 
       {/* Invite Sheet */}
       <Sheet open={inviteSheetOpen} onOpenChange={setInviteSheetOpen}>
@@ -911,6 +913,7 @@ export default function UsersPage() {
         {users.length === 0 && (
           <p className="py-8 text-center text-sm text-muted-foreground">Noch keine weiteren Benutzer vorhanden.</p>
         )}
+      </div>
       </div>
     </div>
   )

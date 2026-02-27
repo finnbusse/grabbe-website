@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import { X, Plus, Tag as TagIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 
 export const TAG_COLORS: Record<string, { bg: string; text: string; border: string; label: string }> = {
@@ -32,17 +33,17 @@ export function getTagColorClasses(color: string) {
 export function TagBadge({ tag, onRemove, size = "sm" }: { tag: TagData; onRemove?: () => void; size?: "sm" | "xs" }) {
   const colors = getTagColorClasses(tag.color)
   return (
-    <span className={`inline-flex items-center gap-1 rounded-full border ${colors.bg} ${colors.text} ${colors.border} ${
+    <Badge className={`${colors.bg} ${colors.text} ${colors.border} ${
       size === "xs" ? "px-1.5 py-0 text-[10px]" : "px-2 py-0.5 text-xs"
-    } font-medium`}>
-      <TagIcon className={size === "xs" ? "h-2 w-2" : "h-2.5 w-2.5"} />
+    } font-medium hover:opacity-90`}>
+      <TagIcon className={size === "xs" ? "mr-0.5 h-2 w-2" : "mr-1 h-2.5 w-2.5"} />
       {tag.name}
       {onRemove && (
         <button type="button" onClick={onRemove} className="ml-0.5 hover:opacity-70">
           <X className="h-2.5 w-2.5" />
         </button>
       )}
-    </span>
+    </Badge>
   )
 }
 
