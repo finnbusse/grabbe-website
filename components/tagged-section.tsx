@@ -4,7 +4,7 @@
  * filtered by a CMS-configurable tag ID.
  */
 
-import { createClient } from "@/lib/supabase/server"
+import { createStaticClient as createClient } from "@/lib/supabase/static"
 import { formatEventTime } from "@/lib/db-helpers"
 import { CalendarDays, Clock, MapPin, Download, FileText, ChevronRight } from "lucide-react"
 
@@ -18,7 +18,7 @@ interface TaggedSectionProps {
 export async function TaggedSection({ type, tagId, heading, limit = 10 }: TaggedSectionProps) {
   if (!tagId) return null
 
-  const supabase = await createClient()
+  const supabase = createClient()
 
   if (type === "events") {
     const { data: eventTags } = await supabase.from("event_tags").select("event_id").eq("tag_id", tagId)

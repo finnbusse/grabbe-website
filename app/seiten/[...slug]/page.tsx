@@ -1,5 +1,4 @@
-import { createClient } from "@/lib/supabase/server"
-import { createStaticClient } from "@/lib/supabase/static"
+import { createStaticClient as createClient } from "@/lib/supabase/static"
 import { SiteLayout } from "@/components/site-layout"
 import { PageHero } from "@/components/page-hero"
 import { Breadcrumbs } from "@/components/breadcrumbs"
@@ -16,7 +15,7 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  const supabase = createStaticClient()
+  const supabase = createClient()
   const { data } = await supabase
     .from("pages")
     .select("slug, route_path")
@@ -41,7 +40,7 @@ export async function generateStaticParams() {
  *   (also handles middleware rewrites from /category/my-page)
  */
 async function resolvePage(segments: string[]) {
-  const supabase = await createClient()
+  const supabase = createClient()
 
   if (segments.length === 1) {
     // Simple slug lookup: /seiten/my-page

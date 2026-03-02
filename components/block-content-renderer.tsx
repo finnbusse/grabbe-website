@@ -4,7 +4,7 @@
  */
 
 import { ChevronDown, CalendarDays, MapPin, Clock, Download, FileText } from "lucide-react"
-import { createClient } from "@/lib/supabase/server"
+import { createStaticClient as createClient } from "@/lib/supabase/static"
 import { formatEventTime } from "@/lib/db-helpers"
 
 interface ContentBlock {
@@ -50,7 +50,7 @@ async function TaggedBlockRenderer({ block }: { block: ContentBlock }) {
     )
   }
 
-  const supabase = await createClient()
+  const supabase = createClient()
 
   // Get tag info for color
   const { data: tag } = await supabase.from("tags").select("id, color").eq("id", tagId).single()

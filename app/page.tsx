@@ -9,14 +9,14 @@ import { NachmittagSection } from "@/components/nachmittag-section"
 import { ContactSection } from "@/components/contact-section"
 import { PartnersSection } from "@/components/partners-section"
 import { CampaignPopup } from "@/components/campaign-popup"
-import { createClient } from "@/lib/supabase/server"
+import { createStaticClient as createClient } from "@/lib/supabase/static"
 import { PAGE_DEFAULTS, getMultiplePageContents } from "@/lib/page-content"
 import type { Campaign } from "@/lib/types/database.types"
 
 export const revalidate = 300
 
 export default async function HomePage() {
-  const supabase = await createClient()
+  const supabase = createClient()
 
   // Load posts, events, and all page content in parallel (single DB round-trip for content)
   const pageIds = [

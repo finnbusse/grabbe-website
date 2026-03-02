@@ -105,7 +105,7 @@ export async function getNavigation(location: string): Promise<NavItem[]> {
 
 /** Fetch all nav items flat (for CMS editing — NOT cached) */
 export async function getAllNavItems(location?: string): Promise<NavItem[]> {
-  const supabase = await createClient()
+  const supabase = createStaticClient()
   let query = supabase
     .from("navigation_items")
     .select("*")

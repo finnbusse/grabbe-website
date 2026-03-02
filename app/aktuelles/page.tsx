@@ -1,7 +1,7 @@
 import { SiteLayout } from "@/components/site-layout"
 import { PageHero } from "@/components/page-hero"
 import { Breadcrumbs } from "@/components/breadcrumbs"
-import { createClient } from "@/lib/supabase/server"
+import { createStaticClient as createClient } from "@/lib/supabase/static"
 import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
 import type { PostListItem } from "@/lib/types/database.types"
 import { CalendarDays, ArrowRight } from "lucide-react"
@@ -20,10 +20,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function AktuellesPage() {
-  const [heroContent, supabase] = await Promise.all([
+  const [heroContent] = await Promise.all([
     getPageContent('aktuelles', PAGE_DEFAULTS['aktuelles']),
-    createClient(),
   ])
+  const supabase = createClient()
   const heroImageUrl = (heroContent.hero_image_url as string) || undefined
   const { data: posts } = await supabase
     .from("posts")

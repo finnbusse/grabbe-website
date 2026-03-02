@@ -2,8 +2,7 @@ import { SiteLayout } from "@/components/site-layout"
 import { PageHero } from "@/components/page-hero"
 import { Breadcrumbs } from "@/components/breadcrumbs"
 import { MarkdownContent } from "@/components/markdown-content"
-import { createClient } from "@/lib/supabase/server"
-import { createStaticClient } from "@/lib/supabase/static"
+import { createStaticClient as createClient } from "@/lib/supabase/static"
 import { notFound } from "next/navigation"
 import { CalendarDays, ArrowLeft, User } from "lucide-react"
 import Link from "next/link"
@@ -20,7 +19,7 @@ import {
 export const revalidate = 300
 
 export async function generateStaticParams() {
-  const supabase = createStaticClient()
+  const supabase = createClient()
   const { data } = await supabase
     .from("posts")
     .select("slug")
@@ -30,7 +29,7 @@ export async function generateStaticParams() {
 }
 
 async function getPost(slug: string) {
-  const supabase = await createClient()
+  const supabase = createClient()
   const { data: post } = await supabase
     .from("posts")
     .select("*")
@@ -63,7 +62,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const supabase = await createClient()
+  const supabase = createClient()
   const { data: post } = await supabase
     .from("posts")
     .select("*")

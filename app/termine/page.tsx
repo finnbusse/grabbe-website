@@ -1,6 +1,6 @@
 import { SiteLayout } from "@/components/site-layout"
 import { PageHero } from "@/components/page-hero"
-import { createClient } from "@/lib/supabase/server"
+import { createStaticClient as createClient } from "@/lib/supabase/static"
 import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
 import { formatEventTime } from "@/lib/db-helpers"
 import { CalendarDays, MapPin, Clock, Tag } from "lucide-react"
@@ -30,10 +30,10 @@ const categoryColors: Record<string, string> = {
 }
 
 export default async function TerminePage() {
-  const [heroContent, supabase] = await Promise.all([
+  const [heroContent] = await Promise.all([
     getPageContent('termine', PAGE_DEFAULTS['termine']),
-    createClient(),
   ])
+  const supabase = createClient()
   const heroImageUrl = (heroContent.hero_image_url as string) || undefined
   const { data: events } = await supabase
     .from("events")

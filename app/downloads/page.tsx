@@ -1,6 +1,6 @@
 import { SiteLayout } from "@/components/site-layout"
 import { PageHero } from "@/components/page-hero"
-import { createClient } from "@/lib/supabase/server"
+import { createStaticClient as createClient } from "@/lib/supabase/static"
 import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
 import { Download, FileText, ImageIcon, ExternalLink } from "lucide-react"
 import { DownloadCategories } from "@/components/download-categories"
@@ -19,10 +19,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function DownloadsPage() {
-  const [heroContent, supabase] = await Promise.all([
+  const [heroContent] = await Promise.all([
     getPageContent('downloads', PAGE_DEFAULTS['downloads']),
-    createClient(),
   ])
+  const supabase = createClient()
   const heroImageUrl = (heroContent.hero_image_url as string) || undefined
   const { data: docs } = await supabase
     .from("documents")
