@@ -30,6 +30,7 @@ export default async function HomePage() {
       .from("posts")
       .select("id, title, slug, excerpt, category, image_url, author_name, event_date, created_at, user_id")
       .eq("status", "published")
+      .order("event_date", { ascending: false, nullsFirst: false })
       .order("created_at", { ascending: false })
       .limit(4),
     supabase

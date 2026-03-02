@@ -29,6 +29,7 @@ export default async function AktuellesPage() {
     .from("posts")
     .select("id, title, slug, excerpt, category, author_name, user_id, event_date, created_at")
     .eq("status", "published")
+    .order("event_date", { ascending: false, nullsFirst: false })
     .order("created_at", { ascending: false })
     .limit(20)
     .returns<PostListItem[]>()
