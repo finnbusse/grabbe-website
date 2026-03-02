@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/command"
 
 import { usePermissions } from "@/components/cms/permissions-context"
+import { useCommandPalette } from "@/components/cms/command-palette-context"
 import { checkPermission, isAdminOrSchulleitung } from "@/lib/permissions-shared"
 import type { CmsPermissions } from "@/lib/permissions-shared"
 import type { LucideIcon } from "lucide-react"
@@ -54,7 +55,7 @@ const homeLinks: SidebarLink[] = [
 ]
 
 const contentLinks: SidebarLink[] = [
-  { icon: FileText, label: "Seiten", href: "/cms/seiten", permCheck: (p) => checkPermission(p, "seitenEditor") || p.pages.edit },
+  { icon: FileText, label: "Seiten", href: "/cms/seiten", permCheck: (p) => checkPermission(p, "seitenEditor") || p.pages?.edit },
   { icon: Newspaper, label: "News", href: "/cms/posts", permCheck: (p) => checkPermission(p, "posts") },
   { icon: CalendarDays, label: "Termine", href: "/cms/events", permCheck: (p) => checkPermission(p, "events") },
   { icon: FolderOpen, label: "Dateien", href: "/cms/dateien", permCheck: (p) => checkPermission(p, "documents") },
@@ -75,18 +76,15 @@ function filterLinks(links: SidebarLink[], permissions: CmsPermissions): Sidebar
   return links.filter((link) => !link.permCheck || link.permCheck(permissions))
 }
 
-interface CommandPaletteProps {
-  open: boolean
-  setOpen: (open: boolean) => void
-}
-
-export function CommandPalette({ open, setOpen }: CommandPaletteProps) {
+export function CommandPalette() {
   const router = useRouter()
+  const { open, setOpen } = useCommandPalette()
   const { permissions, roleSlugs } = usePermissions()
 
   const [recentPosts, setRecentPosts] = React.useState<{ id: string; title: string }[]>([])
   const [recentPages, setRecentPages] = React.useState<{ id: string; title: string }[]>([])
   const [recentEvents, setRecentEvents] = React.useState<{ id: string; title: string }[]>([])
+  const [searchQuery, setSearchQuery] = React.useState("")
 
   React.useEffect(() => {
     if (!open) return
@@ -98,7 +96,7 @@ export function CommandPalette({ open, setOpen }: CommandPaletteProps) {
         checkPermission(permissions, "posts")
           ? supabase.from("posts").select("id, title").order("updated_at", { ascending: false }).limit(5)
           : Promise.resolve({ data: [] }),
-        checkPermission(permissions, "seitenEditor") || permissions.pages.edit
+        checkPermission(permissions, "seitenEditor") || permissions.pages?.edit
           ? supabase.from("pages").select("id, title").order("updated_at", { ascending: false }).limit(5)
           : Promise.resolve({ data: [] }),
         checkPermission(permissions, "events")
@@ -143,9 +141,13 @@ export function CommandPalette({ open, setOpen }: CommandPaletteProps) {
 
   return (
     <CommandDialog open={open} onOpenChange={setOpen}>
-      <CommandInput placeholder="Suche..." />
+      <CommandInput
+        placeholder="Suche..."
+        value={searchQuery}
+        onValueChange={setSearchQuery}
+      />
       <CommandList>
-        <CommandEmpty>Keine Ergebnisse gefunden.</CommandEmpty>
+        <CommandEmpty>Keine Ergebnisse für '{searchQuery}'</CommandEmpty>
 
         <CommandGroup heading="Navigation">
           {allNavigationLinks.map((link) => (
@@ -207,7 +209,7 @@ export function CommandPalette({ open, setOpen }: CommandPaletteProps) {
               <span>Neuen Beitrag erstellen</span>
             </CommandItem>
           )}
-          {(checkPermission(permissions, "seitenEditor") || permissions.pages.edit) && (
+          {(checkPermission(permissions, "seitenEditor") || permissions.pages?.edit) && (
              <CommandItem onSelect={() => runCommand(() => router.push("/cms/seiten/new"))}>
               <Plus className="mr-2 h-4 w-4" />
               <span>Neue Seite erstellen</span>
