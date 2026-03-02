@@ -113,6 +113,11 @@ function buildDesignOverrides(ds: DesignSettings) {
     const hsl = hexToHSL(hex)
     if (hsl) style["--primary"] = hsl
   }
+  if (ds.colors.darkPrimary !== DESIGN_DEFAULTS.colors.darkPrimary) {
+    const darkHex = tailwindToHex(ds.colors.darkPrimary)
+    const darkHsl = hexToHSL(darkHex)
+    if (darkHsl) style["--primary-dark"] = darkHsl
+  }
 
   // Subject accent colours (resolve Tailwind keys to hex)
   if (ds.colors.subjectNaturwissenschaften !== DESIGN_DEFAULTS.colors.subjectNaturwissenschaften) {
@@ -126,6 +131,18 @@ function buildDesignOverrides(ds: DesignSettings) {
   }
   if (ds.colors.subjectSport !== DESIGN_DEFAULTS.colors.subjectSport) {
     style["--color-subject-sport"] = tailwindToHex(ds.colors.subjectSport)
+  }
+  if (ds.colors.darkSubjectNaturwissenschaften !== DESIGN_DEFAULTS.colors.darkSubjectNaturwissenschaften) {
+    style["--color-subject-nawi-dark"] = tailwindToHex(ds.colors.darkSubjectNaturwissenschaften)
+  }
+  if (ds.colors.darkSubjectMusik !== DESIGN_DEFAULTS.colors.darkSubjectMusik) {
+    style["--color-subject-musik-dark"] = tailwindToHex(ds.colors.darkSubjectMusik)
+  }
+  if (ds.colors.darkSubjectKunst !== DESIGN_DEFAULTS.colors.darkSubjectKunst) {
+    style["--color-subject-kunst-dark"] = tailwindToHex(ds.colors.darkSubjectKunst)
+  }
+  if (ds.colors.darkSubjectSport !== DESIGN_DEFAULTS.colors.darkSubjectSport) {
+    style["--color-subject-sport-dark"] = tailwindToHex(ds.colors.darkSubjectSport)
   }
 
   // Build Google Fonts URL (deduped)

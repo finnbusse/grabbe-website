@@ -57,6 +57,13 @@
     --color-subject-kunst: #7c3aed;
     --color-subject-sport: #0891b2;
 
+    /* Optional dark-mode overrides set by CMS design settings */
+    --primary-dark: 210 80% 55%;
+    --color-subject-nawi-dark: #22c55e;
+    --color-subject-musik-dark: #f97316;
+    --color-subject-kunst-dark: #8b5cf6;
+    --color-subject-sport-dark: #06b6d4;
+
     /* Navbar glass colours (light default, can be overridden in dark media query) */
     --nav-glass-bg: 255 255 255;
     --nav-glass-border: 255 255 255;
@@ -71,7 +78,7 @@
     --card-foreground: 210 30% 95%;
     --popover: 215 30% 10%;
     --popover-foreground: 210 30% 95%;
-    --primary: 210 80% 55%;
+    --primary: var(--primary-dark, 210 80% 55%);
     --primary-foreground: 215 30% 7%;
     --secondary: 215 25% 15%;
     --secondary-foreground: 210 30% 95%;
@@ -97,6 +104,10 @@
     --sidebar-accent-foreground: 210 30% 95%;
     --sidebar-border: 215 20% 18%;
     --sidebar-ring: 210 80% 55%;
+    --color-subject-nawi: var(--color-subject-nawi-dark, #22c55e);
+    --color-subject-musik: var(--color-subject-musik-dark, #f97316);
+    --color-subject-kunst: var(--color-subject-kunst-dark, #8b5cf6);
+    --color-subject-sport: var(--color-subject-sport-dark, #06b6d4);
   }
 }
 
@@ -108,7 +119,7 @@
     --card-foreground: 210 30% 95%;
     --popover: 215 30% 10%;
     --popover-foreground: 210 30% 95%;
-    --primary: 210 80% 55%;
+    --primary: var(--primary-dark, 210 80% 55%);
     --primary-foreground: 215 30% 7%;
     --secondary: 215 25% 15%;
     --secondary-foreground: 210 30% 95%;
@@ -134,6 +145,11 @@
     --sidebar-accent-foreground: 210 30% 95%;
     --sidebar-border: 215 20% 18%;
     --sidebar-ring: 210 80% 55%;
+
+    --color-subject-nawi: var(--color-subject-nawi-dark, #22c55e);
+    --color-subject-musik: var(--color-subject-musik-dark, #f97316);
+    --color-subject-kunst: var(--color-subject-kunst-dark, #8b5cf6);
+    --color-subject-sport: var(--color-subject-sport-dark, #06b6d4);
 
     /* Higher contrast glass surfaces for dark hero/header readability */
     --nav-glass-bg: 10 19 35;
