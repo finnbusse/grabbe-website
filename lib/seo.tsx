@@ -250,7 +250,7 @@ export function generateWebSiteJsonLd(seo: SEOSettings) {
     description: seo.defaultDescription,
     inLanguage: "de-DE",
     publisher: {
-      "@type": "EducationalOrganization",
+      "@type": seo.schemaType || "EducationalOrganization",
       name: seo.orgName,
     },
   }
@@ -281,7 +281,7 @@ export function generateArticleJsonLd(opts: {
       ? { author: { "@type": "Person", name: opts.authorName } }
       : { author: { "@type": "EducationalOrganization", name: opts.seo.orgName } }),
     publisher: {
-      "@type": "EducationalOrganization",
+      "@type": opts.seo.schemaType || "EducationalOrganization",
       name: opts.seo.orgName,
       ...(opts.seo.orgLogo ? { logo: { "@type": "ImageObject", url: opts.seo.orgLogo } } : {}),
     },

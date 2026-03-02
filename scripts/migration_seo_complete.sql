@@ -56,7 +56,7 @@ VALUES (gen_random_uuid(), 'seo_schema_type', 'HighSchool', 'text', 'Schema.org 
 ON CONFLICT (key) DO NOTHING;
 
 INSERT INTO public.site_settings (id, key, value, type, label, category)
-VALUES (gen_random_uuid(), 'seo_org_founding_year', '', 'text', 'Gruendungsjahr', 'seo')
+VALUES (gen_random_uuid(), 'seo_org_founding_year', '', 'text', 'Gründungsjahr', 'seo')
 ON CONFLICT (key) DO NOTHING;
 
 INSERT INTO public.site_settings (id, key, value, type, label, category)
@@ -68,5 +68,5 @@ VALUES (gen_random_uuid(), 'seo_org_wikidata', '', 'text', 'Wikidata-URL', 'seo'
 ON CONFLICT (key) DO NOTHING;
 
 INSERT INTO public.site_settings (id, key, value, type, label, category)
-VALUES (gen_random_uuid(), 'seo_org_opening_hours', 'Mo-Fr 07:30-16:00', 'text', 'Oeffnungszeiten', 'seo')
+VALUES (gen_random_uuid(), 'seo_org_opening_hours', 'Mo-Fr 07:30-16:00', 'text', 'Öffnungszeiten', 'seo')
 ON CONFLICT (key) DO NOTHING;
