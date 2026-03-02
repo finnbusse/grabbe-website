@@ -48,28 +48,30 @@ export function HomepageEditor({ sections }: HomepageEditorProps) {
       const supabase = createClient()
       const states: Record<string, SectionState> = {}
 
-      for (const section of sections) {
-        try {
-          const { data } = await supabase
-            .from("site_settings")
-            .select("value")
-            .eq("key", `page_content:${section.id}`)
-            .single()
+      await Promise.all(
+        sections.map(async (section) => {
+          try {
+            const { data } = await supabase
+              .from("site_settings")
+              .select("value")
+              .eq("key", `page_content:${section.id}`)
+              .single()
 
-          const stored = data?.value ? JSON.parse(data.value) : {}
-          const merged: Record<string, string> = {}
-          for (const [key, val] of Object.entries(section.defaults)) {
-            merged[key] = (stored[key] as string) ?? (val as string)
+            const stored = data?.value ? JSON.parse(data.value) : {}
+            const merged: Record<string, string> = {}
+            for (const [key, val] of Object.entries(section.defaults)) {
+              merged[key] = (stored[key] as string) ?? (val as string)
+            }
+            states[section.id] = { values: merged, dirty: false, saving: false, saved: false, error: null }
+          } catch {
+            const defaults: Record<string, string> = {}
+            for (const [key, val] of Object.entries(section.defaults)) {
+              defaults[key] = val as string
+            }
+            states[section.id] = { values: defaults, dirty: false, saving: false, saved: false, error: null }
           }
-          states[section.id] = { values: merged, dirty: false, saving: false, saved: false, error: null }
-        } catch {
-          const defaults: Record<string, string> = {}
-          for (const [key, val] of Object.entries(section.defaults)) {
-            defaults[key] = val as string
-          }
-          states[section.id] = { values: defaults, dirty: false, saving: false, saved: false, error: null }
-        }
-      }
+        }),
+      )
 
       setSectionStates(states)
       setLoading(false)
@@ -142,11 +144,9 @@ export function HomepageEditor({ sections }: HomepageEditorProps) {
     const dirtySections = sections.filter((s) => sectionStates[s.id]?.dirty)
     const toSave = dirtySections.length > 0 ? dirtySections : sections
 
-    let allOk = true
-    for (const section of toSave) {
-      const ok = await saveSection(section.id)
-      if (!ok) allOk = false
-    }
+    const results = await Promise.all(toSave.map((section) => saveSection(section.id)))
+    const allOk = results.every((ok) => ok)
+
     setSavingAll(false)
     if (allOk) {
       setSavedAll(true)
