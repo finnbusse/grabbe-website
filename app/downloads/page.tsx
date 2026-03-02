@@ -2,9 +2,10 @@ import { SiteLayout } from "@/components/site-layout"
 import { PageHero } from "@/components/page-hero"
 import { createStaticClient as createClient } from "@/lib/supabase/static"
 import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
-import { FileText } from "lucide-react"
+import { Download, FileText, ImageIcon, ExternalLink } from "lucide-react"
 import { DownloadCategories } from "@/components/download-categories"
 import { generatePageMetadata } from "@/lib/seo"
+import type { DocumentListItem } from "@/lib/types/database.types"
 import type { Metadata } from "next"
 
 export const revalidate = 300
@@ -23,28 +24,37 @@ export default async function DownloadsPage() {
   ])
   const supabase = createClient()
   const heroImageUrl = (heroContent.hero_image_url as string) || undefined
+  // Fetch folders and documents concurrently
+  const [{ data: folders }, { data: docs }] = await Promise.all([
+    supabase
+      .from("document_folders")
+      .select("id, name, parent_id")
+      .eq("is_public", true)
+      .order("name", { ascending: true }),
+    supabase
+      .from("documents")
+      .select("id, title, file_url, file_name, file_size, file_type, category, folder_id")
+      .eq("status", "published")
+      .order("category", { ascending: true })
+      .order("created_at", { ascending: false })
+      .returns<DocumentListItem[]>()
+  ])
 
-  // Fetch all published public folders
-  const { data: folders } = await supabase
-    .from("document_folders")
-    .select("id, name, parent_id")
-    .eq("is_public", true)
-    .order("name", { ascending: true })
-
-  const { data: docs } = await supabase
-    .from("documents")
-    .select("id, title, file_url, file_name, file_size, file_type, category, folder_id")
-    .eq("status", "published")
-    .order("created_at", { ascending: false })
-
-  // Since we use the flat output and nest it client-side or pass a structured map:
   const validFolderIds = new Set((folders || []).map(f => f.id))
+  const items = docs || []
 
-  // Only show docs in valid public folders OR root level docs (folder_id is null)
-  // For docs in a folder that isn't public, they are filtered out entirely
-  const items = (docs || []).filter(doc =>
-    doc.folder_id === null || validFolderIds.has(doc.folder_id)
-  )
+  // Split into documents inside a valid public folder vs. documents without a folder
+  const folderDocs = items.filter(doc => doc.folder_id && validFolderIds.has(doc.folder_id))
+
+  // Loose documents get grouped by category exactly as before to preserve functionality
+  const looseDocs = items.filter(doc => !doc.folder_id || !validFolderIds.has(doc.folder_id))
+
+  const groupedLoose: Record<string, typeof looseDocs> = {}
+  looseDocs.forEach((doc) => {
+    const cat = doc.category || "allgemein"
+    if (!groupedLoose[cat]) groupedLoose[cat] = []
+    groupedLoose[cat].push(doc)
+  })
 
   return (
     <SiteLayout>
@@ -76,8 +86,12 @@ export default async function DownloadsPage() {
                 <p className="mt-4 text-base text-muted-foreground">Aktuell sind keine Dokumente verfuegbar.</p>
               </div>
             ) : (
-              <div className="mt-16">
-                <DownloadCategories docs={items} folders={folders || []} />
+              <div className="mt-16 space-y-8">
+                <DownloadCategories
+                  groupedLoose={groupedLoose}
+                  folderDocs={folderDocs}
+                  folders={folders || []}
+                />
               </div>
             )}
           </div>

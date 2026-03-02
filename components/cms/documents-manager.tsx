@@ -5,10 +5,11 @@ import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
 import { FileUploader } from "./file-uploader"
 import { TagSelector, TagBadge } from "./tag-selector"
 import type { TagData } from "./tag-selector"
-import { Trash2, ExternalLink, FileText, ImageIcon, Copy, Check, Folder, ChevronRight, ChevronDown, Plus, MoreVertical, Edit2 } from "lucide-react"
+import { Trash2, ExternalLink, FileText, ImageIcon, Copy, Check, Folder, ChevronRight, ChevronDown, Plus, Edit2, Globe, Lock } from "lucide-react"
 import { DndContext, DragOverlay, closestCenter, useSensor, useSensors, PointerSensor, DragStartEvent, DragEndEvent } from "@dnd-kit/core"
 import { useDroppable } from "@dnd-kit/core"
 import { useDraggable } from "@dnd-kit/core"
@@ -22,6 +23,7 @@ interface Doc {
   file_type: string | null
   category: string
   folder_id: string | null
+  is_public: boolean
   status: string
   created_at: string
 }
@@ -76,7 +78,14 @@ function DraggableDocItem({
           <FileText className="h-5 w-5 text-primary shrink-0" />
         )}
         <div className="flex-1 min-w-0">
-          <p className="font-medium text-sm">{doc.title}</p>
+          <div className="flex items-center gap-2">
+            <p className="font-medium text-sm">{doc.title}</p>
+            {doc.is_public !== false ? (
+               <Globe className="h-3 w-3 text-muted-foreground" title="Öffentlich sichtbar" />
+            ) : (
+               <Lock className="h-3 w-3 text-amber-500" title="Privat (nur im CMS sichtbar)" />
+            )}
+          </div>
           <p className="text-xs text-muted-foreground">
             {doc.file_name} &middot; {formatSize(doc.file_size)} &middot; {doc.category}
           </p>
@@ -137,7 +146,6 @@ function FolderTreeItem({
     data: { type: "folder", folderId: folder.id },
   })
 
-  // Inline Editing state
   const [isEditing, setIsEditing] = useState(false)
   const [editName, setEditName] = useState(folder.name)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -206,7 +214,6 @@ function FolderTreeItem({
           )}
         </div>
 
-        {/* Actions (Hover) */}
         {!isEditing && (
           <div className="opacity-0 group-hover:opacity-100 flex items-center shrink-0">
             <Button variant="ghost" size="icon" className="h-6 w-6" onClick={(e) => { e.stopPropagation(); onCreateSubfolder(folder.id) }}>
@@ -254,6 +261,7 @@ export function DocumentsManager({ initialDocuments, initialFolders }: { initial
 
   const [title, setTitle] = useState("")
   const [category, setCategory] = useState("allgemein")
+  const [isPublic, setIsPublic] = useState(true)
   const [uploadedUrl, setUploadedUrl] = useState("")
   const [uploadedName, setUploadedName] = useState("")
   const [uploadedType, setUploadedType] = useState("")
@@ -266,7 +274,6 @@ export function DocumentsManager({ initialDocuments, initialFolders }: { initial
 
   const [activeDragDoc, setActiveDragDoc] = useState<Doc | null>(null)
 
-  // New Folder inline state
   const [creatingFolderParentId, setCreatingFolderParentId] = useState<string | null | undefined>(undefined)
   const [newFolderName, setNewFolderName] = useState("")
   const newFolderInputRef = useRef<HTMLInputElement>(null)
@@ -336,6 +343,7 @@ export function DocumentsManager({ initialDocuments, initialFolders }: { initial
       file_type: uploadedType,
       category,
       folder_id: selectedFolderId,
+      is_public: isPublic,
       status: 'published',
       user_id: user.id,
     }).select().single()
@@ -355,6 +363,7 @@ export function DocumentsManager({ initialDocuments, initialFolders }: { initial
       setUploadedUrl("")
       setUploadedName("")
       setNewDocTagIds([])
+      setIsPublic(true)
     }
     setSaving(false)
   }
@@ -373,7 +382,6 @@ export function DocumentsManager({ initialDocuments, initialFolders }: { initial
     setTimeout(() => setCopiedId(null), 2000)
   }
 
-  // Folder Actions
   function initiateCreateFolder(parentId: string | null = null) {
     setCreatingFolderParentId(parentId)
     setNewFolderName("")
@@ -433,7 +441,6 @@ export function DocumentsManager({ initialDocuments, initialFolders }: { initial
           return // Abort completely
         }
 
-        // Move to parent
         const folder = folders.find(f => f.id === id)
         const parentId = folder ? folder.parent_id : null
 
@@ -451,12 +458,8 @@ export function DocumentsManager({ initialDocuments, initialFolders }: { initial
         if (!simpleConfirm) return
     }
 
-    // Hard delete: delete files first!
     if (folderDocs.length > 0) {
-        // Optimistically remove from state
         setDocs(docs.filter(d => d.folder_id !== id))
-
-        // Delete each document from storage and DB
         for (const doc of folderDocs) {
             await supabase.from("documents").delete().eq("id", doc.id)
             try { await fetch("/api/upload/delete", { method: "DELETE", body: JSON.stringify({ url: doc.file_url }) }) } catch {}
@@ -594,6 +597,7 @@ export function DocumentsManager({ initialDocuments, initialFolders }: { initial
               <h3 className="font-display font-semibold">
                 Neues Dokument {selectedFolderId ? "in diesen Ordner " : ""}hochladen
               </h3>
+
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label>Titel / Beschreibung</Label>
@@ -612,10 +616,23 @@ export function DocumentsManager({ initialDocuments, initialFolders }: { initial
                   </select>
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label>Tags</Label>
-                <TagSelector selectedTagIds={newDocTagIds} onChange={setNewDocTagIds} />
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label>Tags</Label>
+                  <TagSelector selectedTagIds={newDocTagIds} onChange={setNewDocTagIds} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Sichtbarkeit</Label>
+                  <div className="flex items-center space-x-2 pt-2">
+                    <Switch id="is-public" checked={isPublic} onCheckedChange={setIsPublic} />
+                    <Label htmlFor="is-public" className="cursor-pointer font-normal text-sm">
+                      {isPublic ? "Öffentlich (Auf Downloads-Seite sichtbar)" : "Privat (Nur intern im CMS)"}
+                    </Label>
+                  </div>
+                </div>
               </div>
+
               {uploadedUrl ? (
                 <div className="flex items-center gap-3 rounded-lg border bg-muted/50 p-3">
                   <FileText className="h-5 w-5 text-primary shrink-0" />

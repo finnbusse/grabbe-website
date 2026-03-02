@@ -131,6 +131,7 @@ export interface Document {
   file_type: string | null;
   category: string; // Default: 'allgemein'
   folder_id: string | null; // UUID
+  is_public: boolean; // Default: true
   status: ContentStatus; // Default: 'published'
   published_at: string | null; // timestamptz
   created_by: string | null; // UUID, soft reference to auth.users
@@ -406,7 +407,7 @@ export type PostListItem = Omit<Post, 'content'>
 export type EventListItem = Pick<Event, 'id' | 'title' | 'description' | 'starts_at' | 'ends_at' | 'is_all_day' | 'timezone' | 'location' | 'category'>
 
 /** Document fields fetched for card/list views */
-export type DocumentListItem = Pick<Document, 'id' | 'title' | 'description' | 'file_url' | 'file_name' | 'file_size' | 'file_type' | 'category' | 'folder_id'>
+export type DocumentListItem = Pick<Document, 'id' | 'title' | 'description' | 'file_url' | 'file_name' | 'file_size' | 'file_type' | 'category' | 'folder_id' | 'is_public'>
 
 // ============================================================================
 // Database Schema Type (for Supabase client)

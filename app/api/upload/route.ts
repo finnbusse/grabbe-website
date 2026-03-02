@@ -171,6 +171,7 @@ export async function POST(request: NextRequest) {
     const docTitle = formData.get("title") as string
     const docCategory = formData.get("category") as string
     const folderId = formData.get("folder_id") as string | null
+    const isPublic = formData.get("is_public") !== "false"
 
     const { data: insertedDoc } = await supabase.from("documents").insert({
       title: docTitle || file.name,
@@ -180,6 +181,7 @@ export async function POST(request: NextRequest) {
       file_type: file.type,
       category: docCategory || "allgemein",
       folder_id: folderId || null,
+      is_public: isPublic,
       user_id: user.id,
     } as never).select("id").single()
     revalidateTag("documents", "max")
