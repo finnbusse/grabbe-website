@@ -140,6 +140,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         <PageHero
           title={post.title}
           label={post.category || "Aktuelles"}
+          subtitle={post.excerpt || undefined}
           imageUrl={post.image_url || undefined}
         />
         <Breadcrumbs items={[
@@ -177,12 +178,6 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
               </span>
             )}
           </div>
-
-          {post.excerpt && (
-            <p className="mt-8 text-lg leading-relaxed text-muted-foreground font-medium border-l-4 border-primary pl-4">
-              {post.excerpt}
-            </p>
-          )}
 
           <div className="mt-10 max-w-none">
             <MarkdownContent content={post.content} />
