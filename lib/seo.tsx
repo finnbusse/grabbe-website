@@ -27,6 +27,19 @@ export interface SEOSettings {
   socialYoutube: string
   robotsTxt: string
   isPreview: boolean
+  twitterHandle: string
+  googleVerification: string
+  bingVerification: string
+  locale: string
+  geoRegion: string
+  geoPlacename: string
+  geoLat: string
+  geoLng: string
+  schemaType: string
+  orgFoundingYear: string
+  orgLegalName: string
+  orgWikidata: string
+  orgOpeningHours: string
 }
 
 export interface PageSEO {
@@ -40,6 +53,10 @@ export interface PageSEO {
   author?: string
   section?: string
   noIndex?: boolean
+  seoTitleOverride?: string
+  canonicalOverride?: string
+  twitterCreator?: string
+  ogType?: "website" | "article"
 }
 
 export interface BreadcrumbItem {
@@ -117,6 +134,19 @@ export async function getSEOSettings(): Promise<SEOSettings> {
       s.seo_robots_txt ||
       "User-agent: *\nAllow: /\nDisallow: /cms/\nDisallow: /auth/\nDisallow: /api/",
     isPreview: isPreviewEnvironment(),
+    twitterHandle: s.seo_twitter_handle || "",
+    googleVerification: s.seo_google_verification || "",
+    bingVerification: s.seo_bing_verification || "",
+    locale: s.seo_locale || "de_DE",
+    geoRegion: s.seo_geo_region || "",
+    geoPlacename: s.seo_geo_placename || "",
+    geoLat: s.seo_geo_lat || "",
+    geoLng: s.seo_geo_lng || "",
+    schemaType: s.seo_schema_type || "HighSchool",
+    orgFoundingYear: s.seo_org_founding_year || "",
+    orgLegalName: s.seo_org_legal_name || "",
+    orgWikidata: s.seo_org_wikidata || "",
+    orgOpeningHours: s.seo_org_opening_hours || "",
   }
 }
 
@@ -126,23 +156,29 @@ export async function getSEOSettings(): Promise<SEOSettings> {
 
 export async function generatePageMetadata(page: PageSEO): Promise<Metadata> {
   const seo = await getSEOSettings()
+  const resolvedTitle = page.seoTitleOverride || page.title
   const description = page.description || seo.defaultDescription
   const ogImage = page.ogImage || seo.ogImage
   const shouldNoIndex = seo.isPreview || page.noIndex
+  const canonicalUrl = page.canonicalOverride || page.path
+  const ogType = page.ogType || page.type || "website"
 
   const metadata: Metadata = {
-    title: page.title,
+    title: resolvedTitle,
     description,
-    alternates: { canonical: page.path },
+    alternates: {
+      canonical: canonicalUrl,
+      languages: { "de": `${seo.siteUrl}${page.path}`, "x-default": `${seo.siteUrl}${page.path}` },
+    },
     ...(shouldNoIndex ? { robots: { index: false, follow: false } } : {}),
     openGraph: {
-      title: `${page.title}${seo.titleSeparator}${seo.titleSuffix}`,
+      title: `${resolvedTitle}${seo.titleSeparator}${seo.titleSuffix}`,
       description,
-      type: page.type === "article" ? "article" : "website",
-      locale: "de_DE",
+      type: ogType === "article" ? "article" : "website",
+      locale: seo.locale || "de_DE",
       siteName: seo.siteName,
       url: `${seo.siteUrl}${page.path}`,
-      ...(ogImage ? { images: [{ url: ogImage, width: 1200, height: 630, alt: page.title }] } : {}),
+      ...(ogImage ? { images: [{ url: ogImage, width: 1200, height: 630, alt: resolvedTitle }] } : {}),
       ...(page.type === "article"
         ? {
             ...(page.publishedTime ? { publishedTime: page.publishedTime } : {}),
@@ -154,8 +190,10 @@ export async function generatePageMetadata(page: PageSEO): Promise<Metadata> {
     },
     twitter: {
       card: ogImage ? "summary_large_image" : "summary",
-      title: `${page.title}${seo.titleSeparator}${seo.titleSuffix}`,
+      title: `${resolvedTitle}${seo.titleSeparator}${seo.titleSuffix}`,
       description,
+      ...(seo.twitterHandle ? { site: seo.twitterHandle } : {}),
+      ...(page.twitterCreator ? { creator: page.twitterCreator } : {}),
       ...(ogImage ? { images: [ogImage] } : {}),
     },
   }
@@ -170,7 +208,7 @@ export async function generatePageMetadata(page: PageSEO): Promise<Metadata> {
 export function generateOrganizationJsonLd(seo: SEOSettings) {
   const org: Record<string, unknown> = {
     "@context": "https://schema.org",
-    "@type": "EducationalOrganization",
+    "@type": seo.schemaType || "EducationalOrganization",
     name: seo.orgName,
     url: seo.siteUrl,
     ...(seo.orgLogo
@@ -178,6 +216,9 @@ export function generateOrganizationJsonLd(seo: SEOSettings) {
       : {}),
     ...(seo.orgEmail ? { email: seo.orgEmail } : {}),
     ...(seo.orgPhone ? { telephone: seo.orgPhone } : {}),
+    ...(seo.orgLegalName ? { legalName: seo.orgLegalName } : {}),
+    ...(seo.orgFoundingYear ? { foundingDate: seo.orgFoundingYear } : {}),
+    ...(seo.orgOpeningHours ? { openingHours: seo.orgOpeningHours } : {}),
   }
 
   if (seo.orgStreet || seo.orgCity || seo.orgZip) {
@@ -194,6 +235,7 @@ export function generateOrganizationJsonLd(seo: SEOSettings) {
   if (seo.socialInstagram) sameAs.push(seo.socialInstagram)
   if (seo.socialFacebook) sameAs.push(seo.socialFacebook)
   if (seo.socialYoutube) sameAs.push(seo.socialYoutube)
+  if (seo.orgWikidata) sameAs.push(seo.orgWikidata)
   if (sameAs.length > 0) org.sameAs = sameAs
 
   return org
@@ -208,7 +250,7 @@ export function generateWebSiteJsonLd(seo: SEOSettings) {
     description: seo.defaultDescription,
     inLanguage: "de-DE",
     publisher: {
-      "@type": "EducationalOrganization",
+      "@type": seo.schemaType || "EducationalOrganization",
       name: seo.orgName,
     },
   }
@@ -239,7 +281,7 @@ export function generateArticleJsonLd(opts: {
       ? { author: { "@type": "Person", name: opts.authorName } }
       : { author: { "@type": "EducationalOrganization", name: opts.seo.orgName } }),
     publisher: {
-      "@type": "EducationalOrganization",
+      "@type": opts.seo.schemaType || "EducationalOrganization",
       name: opts.seo.orgName,
       ...(opts.seo.orgLogo ? { logo: { "@type": "ImageObject", url: opts.seo.orgLogo } } : {}),
     },
@@ -296,5 +338,26 @@ export function JsonLd({ data }: { data: Record<string, unknown> | Record<string
       type="application/ld+json"
       dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
     />
+  )
+}
+
+// ============================================================================
+// Global Head Tags (verification, geo meta tags)
+// ============================================================================
+
+export function GlobalHeadTags({ seo }: { seo: SEOSettings }) {
+  return (
+    <>
+      {seo.googleVerification && <meta name="google-site-verification" content={seo.googleVerification} />}
+      {seo.bingVerification && <meta name="msvalidate.01" content={seo.bingVerification} />}
+      {seo.geoRegion && <meta name="geo.region" content={seo.geoRegion} />}
+      {seo.geoPlacename && <meta name="geo.placename" content={seo.geoPlacename} />}
+      {seo.geoLat && seo.geoLng && (
+        <>
+          <meta name="geo.position" content={`${seo.geoLat};${seo.geoLng}`} />
+          <meta name="ICBM" content={`${seo.geoLat}, ${seo.geoLng}`} />
+        </>
+      )}
+    </>
   )
 }

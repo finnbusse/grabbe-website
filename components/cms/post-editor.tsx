@@ -28,6 +28,9 @@ interface PostEditorProps {
     event_date?: string | null
     meta_description?: string | null
     seo_og_image?: string | null
+    seo_title?: string | null
+    seo_no_index?: boolean
+    seo_canonical_override?: string | null
   }
 }
 
@@ -51,6 +54,9 @@ export function PostEditor({ post }: PostEditorProps) {
   const [eventDate, setEventDate] = useState(post?.event_date ?? "")
   const [metaDescription, setMetaDescription] = useState(post?.meta_description ?? "")
   const [seoOgImage, setSeoOgImage] = useState(post?.seo_og_image ?? "")
+  const [seoTitle, setSeoTitle] = useState(post?.seo_title ?? "")
+  const [noIndex, setNoIndex] = useState(post?.seo_no_index ?? false)
+  const [canonicalOverride, setCanonicalOverride] = useState(post?.seo_canonical_override ?? "")
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([])
@@ -113,6 +119,9 @@ export function PostEditor({ post }: PostEditorProps) {
         updated_at: new Date().toISOString(),
         meta_description: metaDescription || null,
         seo_og_image: seoOgImage || null,
+        seo_title: seoTitle || null,
+        seo_no_index: noIndex,
+        seo_canonical_override: canonicalOverride || null,
       }
 
       const payloadWithDate = { ...basePayload, event_date: eventDate || null }
@@ -306,6 +315,15 @@ export function PostEditor({ post }: PostEditorProps) {
             <h3 className="font-display text-sm font-semibold">SEO (optional)</h3>
             <p className="text-[10px] text-muted-foreground">Falls leer, werden Titel und Kurztext automatisch für Suchmaschinen verwendet.</p>
             <div className="grid gap-2">
+              <Label htmlFor="seoTitle">SEO-Titel (optional)</Label>
+              <Input
+                id="seoTitle"
+                value={seoTitle}
+                onChange={(e) => setSeoTitle(e.target.value)}
+                placeholder={title || "Wird vom Beitragstitel übernommen"}
+              />
+            </div>
+            <div className="grid gap-2">
               <Label htmlFor="metaDesc">Meta-Beschreibung</Label>
               <textarea
                 id="metaDesc"
@@ -330,6 +348,22 @@ export function PostEditor({ post }: PostEditorProps) {
                 onChange={(url) => setSeoOgImage(url || "")}
                 aspectRatio="16/9"
               />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="canonicalOverride">Kanonische URL (optional)</Label>
+              <Input
+                id="canonicalOverride"
+                value={canonicalOverride}
+                onChange={(e) => setCanonicalOverride(e.target.value)}
+                placeholder="Leer = automatisch generierte URL"
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <div>
+                <Label htmlFor="noIndex">Von Suchmaschinen ausschließen</Label>
+                <p className="text-[11px] text-muted-foreground">Beitrag wird nicht indexiert (noindex)</p>
+              </div>
+              <Switch id="noIndex" checked={noIndex} onCheckedChange={setNoIndex} />
             </div>
           </div>
         </div>

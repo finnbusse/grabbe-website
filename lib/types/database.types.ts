@@ -44,6 +44,10 @@ export interface Page {
   hero_image_url: string | null;
   meta_description: string | null;
   seo_og_image: string | null;
+  seo_title: string | null;
+  seo_no_index: boolean;
+  seo_canonical_override: string | null;
+  og_type: string | null;
 }
 
 /**
@@ -68,6 +72,9 @@ export interface Post {
   event_date: string | null; // date (YYYY-MM-DD), optional custom display date
   meta_description: string | null;
   seo_og_image: string | null;
+  seo_title: string | null;
+  seo_no_index: boolean;
+  seo_canonical_override: string | null;
   created_at: string; // timestamptz
   updated_at: string; // timestamptz
 }

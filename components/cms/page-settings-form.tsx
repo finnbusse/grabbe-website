@@ -32,6 +32,8 @@ interface PageSettingsData {
   createdAt: string | null
   updatedAt: string | null
   tagIds: string[]
+  seoNoIndex?: boolean
+  canonicalOverride?: string
 }
 
 interface PageSettingsFormProps {
@@ -51,6 +53,8 @@ export function PageSettingsForm({ page, isStatic }: PageSettingsFormProps) {
   const [metaDescription, setMetaDescription] = useState(page.metaDescription)
   const [seoTitle, setSeoTitle] = useState(page.seoTitle)
   const [seoOgImage, setSeoOgImage] = useState(page.seoOgImage)
+  const [noIndex, setNoIndex] = useState(page.seoNoIndex ?? false)
+  const [canonicalOverride, setCanonicalOverride] = useState(page.canonicalOverride ?? "")
   const [published, setPublished] = useState(page.status === 'published')
   const [tagIds, setTagIds] = useState<string[]>(page.tagIds)
   const [saving, setSaving] = useState(false)
@@ -107,7 +111,10 @@ export function PageSettingsForm({ page, isStatic }: PageSettingsFormProps) {
           hero_image_url: heroImageUrl || null,
           hero_subtitle: heroSubtitle || null,
           meta_description: metaDescription || null,
+          seo_title: seoTitle || null,
           seo_og_image: seoOgImage || null,
+          seo_no_index: noIndex,
+          seo_canonical_override: canonicalOverride || null,
           status: published ? 'published' : 'draft',
           updated_at: new Date().toISOString(),
         }
@@ -333,6 +340,27 @@ export function PageSettingsForm({ page, isStatic }: PageSettingsFormProps) {
                 onChange={(url) => setSeoOgImage(url || "")}
                 aspectRatio="16/9"
               />
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="canonicalOverride">Kanonische URL (optional)</Label>
+              <Input
+                id="canonicalOverride"
+                value={canonicalOverride}
+                onChange={(e) => setCanonicalOverride(e.target.value)}
+                placeholder="Leer = automatisch generierte URL"
+              />
+              <p className="text-[10px] text-muted-foreground">
+                Leer = automatisch
+              </p>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div>
+                <Label htmlFor="noIndex">Von Suchmaschinen ausschließen</Label>
+                <p className="text-[11px] text-muted-foreground">Seite wird nicht indexiert (noindex)</p>
+              </div>
+              <Switch id="noIndex" checked={noIndex} onCheckedChange={setNoIndex} />
             </div>
           </div>
 

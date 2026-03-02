@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
 import { ImagePicker } from "./image-picker"
 import { SeoPreview } from "./seo-preview"
 import { TagBadge, type TagData } from "./tag-selector"
@@ -135,6 +136,9 @@ export function PostWizardStep3() {
         updated_at: new Date().toISOString(),
         meta_description: state.metaDescription || null,
         seo_og_image: state.ogImageUrl || state.coverImageUrl || null,
+        seo_title: state.seoTitle || null,
+        seo_no_index: state.noIndex,
+        seo_canonical_override: state.canonicalOverride || null,
       }
 
       const payloadWithDate = { ...basePayload, event_date: state.publishDate || null }
@@ -377,6 +381,30 @@ export function PostWizardStep3() {
                 value={state.ogImageUrl}
                 onChange={(url) => dispatch({ type: "SET_OG_IMAGE", payload: url })}
                 aspectRatio="16/9"
+              />
+            </div>
+
+            {/* Canonical URL Override */}
+            <div className="space-y-2">
+              <Label htmlFor="post-canonical">Kanonische URL (optional)</Label>
+              <Input
+                id="post-canonical"
+                value={state.canonicalOverride}
+                onChange={(e) => dispatch({ type: "SET_CANONICAL_OVERRIDE", payload: e.target.value })}
+                placeholder="Leer = automatisch generierte URL"
+              />
+            </div>
+
+            {/* No Index */}
+            <div className="flex items-center justify-between">
+              <div>
+                <Label htmlFor="post-noindex">Von Suchmaschinen ausschließen</Label>
+                <p className="text-[11px] text-muted-foreground">Beitrag wird nicht indexiert (noindex)</p>
+              </div>
+              <Switch
+                id="post-noindex"
+                checked={state.noIndex}
+                onCheckedChange={(v) => dispatch({ type: "SET_NO_INDEX", payload: v })}
               />
             </div>
           </div>

@@ -16,6 +16,7 @@ import {
   Save, Loader2, Upload, Globe, Building2, Mail,
   Share2, Search as SearchIcon, Image as ImageIcon, FileText,
   Shield, Hash, Quote, Paintbrush, Check, RotateCcw,
+  Code2, MapPin, ShieldCheck, Zap, ExternalLink,
 } from "lucide-react"
 import type { DesignSettings } from "@/lib/design-settings"
 import {
@@ -465,6 +466,10 @@ export default function WebsiteSettingsPage() {
       <Tabs defaultValue="general" className="mt-6">
         <TabsList>
           <TabsTrigger value="general">Allgemein</TabsTrigger>
+          <TabsTrigger value="seo">
+            <SearchIcon className="mr-1.5 h-3.5 w-3.5" />
+            SEO
+          </TabsTrigger>
           <TabsTrigger value="design">
             <Paintbrush className="mr-1.5 h-3.5 w-3.5" />
             Design
@@ -591,16 +596,28 @@ export default function WebsiteSettingsPage() {
             placeholder: "Das Christian-Dietrich-Grabbe-Gymnasium in Detmold ...",
           })}
         </Field>
+      </Section>
+
+        </TabsContent>
+
+        {/* ==================== SEO TAB ==================== */}
+        <TabsContent value="seo" className="mt-6 space-y-6 pb-12">
+
+      {/* Section A — Open Graph & Social */}
+      <Section
+        icon={Share2}
+        title="Open Graph & Social"
+        description="Social-Media-Vorschaubilder und Profile."
+      >
         <Field label="Standard OG-Bild" hint="Vorschaubild für Social-Media (1200 x 630 px empfohlen).">
           <ImagePickerField value={values.seo_og_image ?? ""} onChange={(v) => set("seo_og_image", v)} aspectRatio="16/9" />
         </Field>
-      </Section>
-
-      <Section
-        icon={Share2}
-        title="Social Media"
-        description="Links zu den Social-Media-Profilen der Schule."
-      >
+        <Field label="Twitter/X-Handle" hint="z. B. @grabbe_gym">
+          {field(values, "seo_twitter_handle", set, { placeholder: "@handle" })}
+        </Field>
+        <Field label="Locale" hint="Open-Graph-Locale (z. B. de_DE)">
+          {field(values, "seo_locale", set, { placeholder: "de_DE" })}
+        </Field>
         <Field label="Instagram">
           {field(values, "seo_social_instagram", set, { placeholder: "https://instagram.com/..." })}
         </Field>
@@ -612,21 +629,139 @@ export default function WebsiteSettingsPage() {
         </Field>
       </Section>
 
+      {/* Section B — Schema.org */}
       <Section
-        icon={Shield}
-        title="Erweitert"
-        description="Erweiterte technische SEO-Einstellungen."
+        icon={Code2}
+        title="Schema.org / Strukturierte Daten"
+        description="Strukturierte Daten für Google Knowledge Panel und Rich Results."
       >
         <Field label="Organisationsname (Schema.org)" hint="Falls abweichend vom Schulnamen.">
           {field(values, "seo_org_name", set, { placeholder: "Grabbe-Gymnasium Detmold" })}
         </Field>
+        <Field label="Organisations-Logo (Schema.org)" hint="Quadratisch, mind. 512 x 512 px.">
+          <ImagePickerField value={values.seo_org_logo ?? ""} onChange={(v) => set("seo_org_logo", v)} aspectRatio="1/1" />
+        </Field>
+        <Field label="Organisationstyp" hint="Schema.org @type für die Organisation.">
+          <Select value={values.seo_schema_type || "HighSchool"} onValueChange={(v) => set("seo_schema_type", v)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Typ wählen…" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="HighSchool">HighSchool</SelectItem>
+              <SelectItem value="SecondarySchool">SecondarySchool</SelectItem>
+              <SelectItem value="EducationalOrganization">EducationalOrganization</SelectItem>
+              <SelectItem value="School">School</SelectItem>
+            </SelectContent>
+          </Select>
+        </Field>
+        <Field label="Offizieller Name (legalName)" hint="Vollständiger juristischer Name.">
+          {field(values, "seo_org_legal_name", set, { placeholder: "" })}
+        </Field>
+        <Field label="Gründungsjahr" hint="z. B. 1847">
+          {field(values, "seo_org_founding_year", set, { placeholder: "" })}
+        </Field>
+        <Field label="Wikidata-URL" hint="z. B. https://www.wikidata.org/wiki/Q...">
+          {field(values, "seo_org_wikidata", set, { placeholder: "" })}
+        </Field>
+        <Field label="Öffnungszeiten" hint="Schema.org Format, z. B. Mo-Fr 07:30-16:00">
+          {field(values, "seo_org_opening_hours", set, { placeholder: "Mo-Fr 07:30-16:00" })}
+        </Field>
         <div className="rounded-xl border border-border bg-muted/30 px-4 py-3">
-          <p className="text-sm font-medium text-card-foreground">Automatisch generiert</p>
-          <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
-            <li className="flex items-center gap-2"><Globe className="h-3.5 w-3.5" /> <code className="rounded bg-muted px-1.5 py-0.5 text-xs">/sitemap.xml</code> – Alle veröffentlichten Seiten &amp; Beiträge</li>
-            <li className="flex items-center gap-2"><FileText className="h-3.5 w-3.5" /> <code className="rounded bg-muted px-1.5 py-0.5 text-xs">/robots.txt</code> – CMS, Auth und API werden blockiert</li>
-            <li className="flex items-center gap-2"><Hash className="h-3.5 w-3.5" /> JSON-LD Organisation &amp; WebSite auf jeder Seite</li>
-            <li className="flex items-center gap-2"><ImageIcon className="h-3.5 w-3.5" /> Preview-Deployments werden automatisch auf <code className="rounded bg-muted px-1.5 py-0.5 text-xs">noindex</code> gesetzt</li>
+          <p className="text-sm font-medium text-card-foreground">Kontakt & Adresse</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Kontaktdaten werden in <strong>Allgemein</strong> verwaltet.
+          </p>
+          <div className="mt-2 text-xs text-muted-foreground space-y-0.5">
+            {values.school_email && <p>E-Mail: {values.seo_org_email || values.school_email}</p>}
+            {values.school_phone && <p>Telefon: {values.seo_org_phone || values.school_phone}</p>}
+            {values.school_address && <p>Adresse: {values.school_address}</p>}
+          </div>
+        </div>
+      </Section>
+
+      {/* Section C — Lokale SEO */}
+      <Section
+        icon={MapPin}
+        title="Lokale SEO"
+        description="Geo-Metadaten für lokale Suchergebnisse."
+      >
+        <Field label="Geo-Region" hint="ISO 3166 (z. B. DE-NW)">
+          {field(values, "seo_geo_region", set, { placeholder: "DE-NW" })}
+        </Field>
+        <Field label="Geo-Ortsname">
+          {field(values, "seo_geo_placename", set, { placeholder: "Detmold" })}
+        </Field>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="Breitengrad (Lat)">
+            {field(values, "seo_geo_lat", set, { placeholder: "51.9318" })}
+          </Field>
+          <Field label="Längengrad (Lng)">
+            {field(values, "seo_geo_lng", set, { placeholder: "8.8800" })}
+          </Field>
+        </div>
+      </Section>
+
+      {/* Section D — Suchmaschinen-Verifikation */}
+      <Section
+        icon={ShieldCheck}
+        title="Suchmaschinen-Verifikation"
+        description="Bestätigungscodes für Google Search Console und Bing Webmaster Tools."
+      >
+        <Field label="Google Site Verification" hint="Nur den Wert des content-Attributs einfügen.">
+          {field(values, "seo_google_verification", set, { placeholder: "" })}
+        </Field>
+        {values.seo_google_verification && (
+          <code className="block rounded bg-muted px-3 py-2 text-xs font-mono text-muted-foreground break-all">
+            {`<meta name="google-site-verification" content="${values.seo_google_verification}" />`}
+          </code>
+        )}
+        <Field label="Bing Site Verification" hint="Nur den Wert des content-Attributs einfügen.">
+          {field(values, "seo_bing_verification", set, { placeholder: "" })}
+        </Field>
+        {values.seo_bing_verification && (
+          <code className="block rounded bg-muted px-3 py-2 text-xs font-mono text-muted-foreground break-all">
+            {`<meta name="msvalidate.01" content="${values.seo_bing_verification}" />`}
+          </code>
+        )}
+      </Section>
+
+      {/* Section E — robots.txt */}
+      <Section
+        icon={FileText}
+        title="robots.txt"
+        description="Steuerung der Webcrawler-Zugriffe."
+      >
+        <Field label="robots.txt Inhalt" hint="Wird unter /robots.txt ausgeliefert. Sitemap wird automatisch ergänzt.">
+          <textarea
+            value={values.seo_robots_txt ?? ""}
+            onChange={(e) => set("seo_robots_txt", e.target.value)}
+            rows={10}
+            className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-ring resize-y min-h-[200px]"
+          />
+        </Field>
+        <Button variant="outline" size="sm" asChild>
+          <a href="/robots.txt" target="_blank" rel="noopener noreferrer">
+            <ExternalLink className="mr-1.5 h-3.5 w-3.5" />
+            robots.txt öffnen
+          </a>
+        </Button>
+      </Section>
+
+      {/* Section F — Automatisch generiert */}
+      <Section
+        icon={Zap}
+        title="Automatisch generiert"
+        description="Diese Funktionen werden vom System automatisch bereitgestellt."
+      >
+        <div className="rounded-xl border border-border bg-muted/30 px-4 py-3">
+          <ul className="space-y-1.5 text-sm text-muted-foreground">
+            <li className="flex items-center gap-2"><Globe className="h-3.5 w-3.5 shrink-0" /> <code className="rounded bg-muted px-1.5 py-0.5 text-xs">/sitemap.xml</code> – Alle veröffentlichten Seiten &amp; Beiträge</li>
+            <li className="flex items-center gap-2"><FileText className="h-3.5 w-3.5 shrink-0" /> <code className="rounded bg-muted px-1.5 py-0.5 text-xs">/robots.txt</code> – Dynamisch aus Datenbank</li>
+            <li className="flex items-center gap-2"><Hash className="h-3.5 w-3.5 shrink-0" /> JSON-LD: Organization, WebSite, BreadcrumbList, NewsArticle, WebPage</li>
+            <li className="flex items-center gap-2"><MapPin className="h-3.5 w-3.5 shrink-0" /> Geo-Meta-Tags (wenn Koordinaten gesetzt)</li>
+            <li className="flex items-center gap-2"><Globe className="h-3.5 w-3.5 shrink-0" /> Kanonische URLs auf allen Seiten</li>
+            <li className="flex items-center gap-2"><ImageIcon className="h-3.5 w-3.5 shrink-0" /> Preview-Deployments automatisch <code className="rounded bg-muted px-1.5 py-0.5 text-xs">noindex</code></li>
+            <li className="flex items-center gap-2"><Globe className="h-3.5 w-3.5 shrink-0" /> <code className="rounded bg-muted px-1.5 py-0.5 text-xs">hreflang=&quot;de&quot;</code> auf allen Seiten</li>
           </ul>
         </div>
       </Section>

@@ -10,6 +10,7 @@ import {
   generateOrganizationJsonLd,
   generateWebSiteJsonLd,
   JsonLd,
+  GlobalHeadTags,
 } from "@/lib/seo"
 import { getDesignSettings, DESIGN_DEFAULTS } from "@/lib/settings"
 import type { DesignSettings } from "@/lib/settings"
@@ -40,7 +41,10 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     description,
     metadataBase: new URL(seo.siteUrl),
-    alternates: { canonical: "/" },
+    alternates: {
+      canonical: "/",
+      languages: { "de": seo.siteUrl, "x-default": seo.siteUrl },
+    },
     openGraph: {
       title: homepageTitle,
       description,
@@ -54,6 +58,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: seo.ogImage ? "summary_large_image" : "summary",
       title: homepageTitle,
       description,
+      ...(seo.twitterHandle ? { site: seo.twitterHandle } : {}),
       ...(seo.ogImage ? { images: [seo.ogImage] } : {}),
     },
     robots: seo.isPreview
@@ -183,6 +188,7 @@ export default async function RootLayout({
       style={Object.keys(style).length > 0 ? (style as React.CSSProperties) : undefined}
     >
       <head>
+        <GlobalHeadTags seo={seo} />
         {fontsUrl && (
           <>
             <link rel="preconnect" href="https://fonts.googleapis.com" />

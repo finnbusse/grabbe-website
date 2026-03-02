@@ -26,6 +26,8 @@ export interface PostWizardState {
   metaDescription: string
   seoTitle: string
   ogImageUrl: string | null
+  noIndex: boolean
+  canonicalOverride: string
 
   // Meta
   currentStep: 1 | 2 | 3
@@ -49,6 +51,8 @@ export type PostWizardAction =
   | { type: "SET_META_DESCRIPTION"; payload: string }
   | { type: "SET_SEO_TITLE"; payload: string }
   | { type: "SET_OG_IMAGE"; payload: string | null }
+  | { type: "SET_NO_INDEX"; payload: boolean }
+  | { type: "SET_CANONICAL_OVERRIDE"; payload: string }
   | { type: "SET_STEP"; payload: 1 | 2 | 3 }
   | { type: "SET_SAVING"; payload: boolean }
   | { type: "SET_IS_PUBLISHED"; payload: boolean }
@@ -74,6 +78,8 @@ const initialState: PostWizardState = {
   metaDescription: "",
   seoTitle: "",
   ogImageUrl: null,
+  noIndex: false,
+  canonicalOverride: "",
   currentStep: 1,
   isSaving: false,
   isPublished: false,
@@ -113,6 +119,10 @@ function wizardReducer(state: PostWizardState, action: PostWizardAction): PostWi
       return { ...state, seoTitle: action.payload }
     case "SET_OG_IMAGE":
       return { ...state, ogImageUrl: action.payload }
+    case "SET_NO_INDEX":
+      return { ...state, noIndex: action.payload }
+    case "SET_CANONICAL_OVERRIDE":
+      return { ...state, canonicalOverride: action.payload }
     case "SET_STEP":
       return { ...state, currentStep: action.payload }
     case "SET_SAVING":

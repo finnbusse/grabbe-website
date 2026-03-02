@@ -13,6 +13,7 @@ import {
   generatePageMetadata,
   getSEOSettings,
   generateArticleJsonLd,
+  generateWebPageJsonLd,
   JsonLd,
 } from "@/lib/seo"
 
@@ -45,7 +46,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!post) return {}
 
   return generatePageMetadata({
-    title: post.title,
+    title: post.seo_title || post.title,
+    seoTitleOverride: post.seo_title || undefined,
     description: post.meta_description || post.excerpt || undefined,
     ogImage: post.seo_og_image || post.image_url || undefined,
     path: `/aktuelles/${post.slug}`,
@@ -54,6 +56,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     modifiedTime: post.updated_at,
     author: post.author_name || undefined,
     section: post.category || undefined,
+    canonicalOverride: post.seo_canonical_override || undefined,
+    noIndex: post.seo_no_index || false,
   })
 }
 
@@ -117,10 +121,22 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     section: post.category || undefined,
   })
 
+  const webPageJsonLd = generateWebPageJsonLd({
+    seo,
+    title: post.seo_title || post.title,
+    description: post.meta_description || post.excerpt || seo.defaultDescription,
+    url: postUrl,
+    breadcrumbs: [
+      { name: "Aktuelles", href: "/aktuelles" },
+      { name: post.title, href: `/aktuelles/${slug}` },
+    ],
+  })
+
   return (
     <SiteLayout>
       <main>
         <JsonLd data={articleJsonLd} />
+        <JsonLd data={webPageJsonLd} />
         <PageHero
           title={post.title}
           label={post.category || "Aktuelles"}
