@@ -118,13 +118,13 @@ export function SiteHeader({
 
   return (
     <>
-      {/* School logo - absolute positioned, scrolls with page */}
-      <div className="absolute top-[4.5rem] lg:top-4 left-5 md:left-8 lg:left-12 z-40">
+      {/* School logo */}
+      <div className="fixed left-4 top-3 z-[55] md:left-6 lg:absolute lg:left-12 lg:top-4 lg:z-40">
         <Link href="/">
           <img
             src={logoUrl || "/images/grabbe-logo.svg"}
             alt={schoolName}
-            className="school-logo-dark h-16 w-auto md:h-20 lg:h-24 drop-shadow-lg transition-all duration-300"
+            className="school-logo-dark h-12 w-auto md:h-16 lg:h-24 drop-shadow-lg transition-all duration-300"
           />
         </Link>
       </div>
@@ -135,7 +135,7 @@ export function SiteHeader({
         }`}
       >
         {/* Centered glass navbar */}
-        <div className="mx-auto mt-3 flex max-w-3xl items-center justify-between rounded-full px-3 py-1.5 backdrop-blur-md shadow-lg lg:mt-4 lg:px-1 lg:py-1"
+        <div className="ml-auto mr-4 mt-3 flex w-fit items-center justify-end rounded-full px-2 py-1.5 backdrop-blur-md shadow-lg lg:mx-auto lg:mt-4 lg:w-full lg:max-w-3xl lg:justify-between lg:px-1 lg:py-1"
           style={{
             backgroundColor: "rgba(var(--nav-glass-bg), 0.2)",
             border: "1px solid rgba(var(--nav-glass-border), 0.26)",
@@ -144,7 +144,7 @@ export function SiteHeader({
         {/* Start button */}
         <Link
           href="/"
-          className={`shrink-0 rounded-full px-5 py-2 text-[13px] font-medium transition-colors duration-200 nav-glass-interactive ${
+          className={`hidden shrink-0 rounded-full px-5 py-2 text-[13px] font-medium transition-colors duration-200 nav-glass-interactive lg:inline-flex ${
             pathname === "/"
               ? "text-foreground"
               : "text-foreground/85 hover:text-foreground"

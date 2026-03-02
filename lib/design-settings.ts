@@ -10,10 +10,15 @@ export interface DesignSettings {
   }
   colors: {
     primary: string   // Tailwind color key e.g. "blue-600"
+    darkPrimary: string
     subjectNaturwissenschaften: string
+    darkSubjectNaturwissenschaften: string
     subjectMusik: string
+    darkSubjectMusik: string
     subjectKunst: string
+    darkSubjectKunst: string
     subjectSport: string
+    darkSubjectSport: string
   }
 }
 
@@ -21,10 +26,15 @@ export const DESIGN_DEFAULTS: DesignSettings = {
   fonts: { heading: "default", body: "default", accent: "default" },
   colors: {
     primary: "blue-600",
+    darkPrimary: "blue-500",
     subjectNaturwissenschaften: "green-600",
+    darkSubjectNaturwissenschaften: "green-500",
     subjectMusik: "orange-600",
+    darkSubjectMusik: "orange-500",
     subjectKunst: "violet-600",
+    darkSubjectKunst: "violet-500",
     subjectSport: "cyan-600",
+    darkSubjectSport: "cyan-500",
   },
 }
 

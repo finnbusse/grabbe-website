@@ -799,7 +799,7 @@ export default function WebsiteSettingsPage() {
           <Section
             icon={Paintbrush}
             title="Farbpalette"
-            description="Primärfarbe und Akzentfarben der vier Profilprojekte."
+            description="Farbkonfiguration für Light- und Dark-Mode."
           >
             <TailwindColorPicker
               label="Primärfarbe"
@@ -807,6 +807,14 @@ export default function WebsiteSettingsPage() {
               value={design.colors.primary}
               defaultValue={DESIGN_DEFAULTS.colors.primary}
               onChange={(v) => setColor("primary", v)}
+            />
+
+            <TailwindColorPicker
+              label="Primärfarbe (Dark Mode)"
+              hint="Wird automatisch bei dunklem Farbschema verwendet. Standard: blue-500."
+              value={design.colors.darkPrimary}
+              defaultValue={DESIGN_DEFAULTS.colors.darkPrimary}
+              onChange={(v) => setColor("darkPrimary", v)}
             />
 
             <div className="mt-2 rounded-xl border border-border bg-muted/30 px-4 py-4">
@@ -839,9 +847,42 @@ export default function WebsiteSettingsPage() {
               </div>
             </div>
 
+            <div className="mt-2 rounded-xl border border-border bg-muted/30 px-4 py-4">
+              <p className="mb-4 text-sm font-medium text-card-foreground">Profilprojekt-Farben (Dark Mode)</p>
+              <div className="grid gap-5 sm:grid-cols-2">
+                <TailwindColorPicker
+                  label="NaWi-Projekt (Dark Mode)"
+                  value={design.colors.darkSubjectNaturwissenschaften}
+                  defaultValue={DESIGN_DEFAULTS.colors.darkSubjectNaturwissenschaften}
+                  onChange={(v) => setColor("darkSubjectNaturwissenschaften", v)}
+                />
+                <TailwindColorPicker
+                  label="Musikprojekt (Dark Mode)"
+                  value={design.colors.darkSubjectMusik}
+                  defaultValue={DESIGN_DEFAULTS.colors.darkSubjectMusik}
+                  onChange={(v) => setColor("darkSubjectMusik", v)}
+                />
+                <TailwindColorPicker
+                  label="Kunstprojekt (Dark Mode)"
+                  value={design.colors.darkSubjectKunst}
+                  defaultValue={DESIGN_DEFAULTS.colors.darkSubjectKunst}
+                  onChange={(v) => setColor("darkSubjectKunst", v)}
+                />
+                <TailwindColorPicker
+                  label="Sportprojekt (Dark Mode)"
+                  value={design.colors.darkSubjectSport}
+                  defaultValue={DESIGN_DEFAULTS.colors.darkSubjectSport}
+                  onChange={(v) => setColor("darkSubjectSport", v)}
+                />
+              </div>
+            </div>
+
             <div className="mt-2">
-              <p className="mb-2 text-sm font-medium text-card-foreground">Vorschau</p>
-              <div className="flex gap-3">
+              <p className="mb-2 text-sm font-medium text-card-foreground">Vorschau (Light / Dark)</p>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <p className="mb-2 text-xs uppercase tracking-wide text-muted-foreground">Light Mode</p>
+                  <div className="flex gap-3">
                 <div className="flex flex-col items-center gap-1">
                   <div className="h-12 w-12 rounded-lg border border-border" style={{ backgroundColor: tailwindToHex(design.colors.primary) }} />
                   <span className="text-[10px] text-muted-foreground">Primär</span>
@@ -861,6 +902,33 @@ export default function WebsiteSettingsPage() {
                 <div className="flex flex-col items-center gap-1">
                   <div className="h-12 w-12 rounded-lg border border-border" style={{ backgroundColor: tailwindToHex(design.colors.subjectSport) }} />
                   <span className="text-[10px] text-muted-foreground">Sport</span>
+                </div>
+                  </div>
+                </div>
+                <div>
+                  <p className="mb-2 text-xs uppercase tracking-wide text-muted-foreground">Dark Mode</p>
+                  <div className="flex gap-3">
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="h-12 w-12 rounded-lg border border-border" style={{ backgroundColor: tailwindToHex(design.colors.darkPrimary) }} />
+                      <span className="text-[10px] text-muted-foreground">Primär</span>
+                    </div>
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="h-12 w-12 rounded-lg border border-border" style={{ backgroundColor: tailwindToHex(design.colors.darkSubjectNaturwissenschaften) }} />
+                      <span className="text-[10px] text-muted-foreground">NaWi</span>
+                    </div>
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="h-12 w-12 rounded-lg border border-border" style={{ backgroundColor: tailwindToHex(design.colors.darkSubjectMusik) }} />
+                      <span className="text-[10px] text-muted-foreground">Musik</span>
+                    </div>
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="h-12 w-12 rounded-lg border border-border" style={{ backgroundColor: tailwindToHex(design.colors.darkSubjectKunst) }} />
+                      <span className="text-[10px] text-muted-foreground">Kunst</span>
+                    </div>
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="h-12 w-12 rounded-lg border border-border" style={{ backgroundColor: tailwindToHex(design.colors.darkSubjectSport) }} />
+                      <span className="text-[10px] text-muted-foreground">Sport</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

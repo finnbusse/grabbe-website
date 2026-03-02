@@ -52,7 +52,7 @@ export function PageHero({ title, label, subtitle, imageUrl }: PageHeroProps) {
 
   return (
     <section className="border-b border-border bg-background">
-      <div className="mx-auto max-w-7xl px-4 py-12 lg:px-8 lg:py-16">
+      <div className="mx-auto max-w-7xl px-4 pb-12 pt-24 sm:pt-28 lg:px-8 lg:py-16">
         <div className="flex items-center justify-between gap-8">
 
           {/* ── Left: text ── */}
