@@ -35,7 +35,7 @@ function normalizeAnalytics(raw: any, source: string): NormalizedAnalytics {
   const pagesSource = Array.isArray(raw?.pages) ? raw.pages : []
   const referrersSource = Array.isArray(raw?.referrers) ? raw.referrers : []
   const countriesSource = Array.isArray(raw?.countries) ? raw.countries : []
-  const browsersSource = Array.isArray(raw?.browsers) ? raw.browsers : []
+  const browsersSource = Array.isArray(raw?.browser_names) ? raw.browser_names : []
   const devicesSource = Array.isArray(raw?.device_types) ? raw.device_types : []
 
   const timeseries = histogramSource
@@ -113,7 +113,7 @@ export async function GET(request: NextRequest) {
   const domain = process.env.SIMPLE_ANALYTICS_DOMAIN || "grabbe.site"
   const query = new URLSearchParams({
     version: "6",
-    fields: "histogram,pages,seconds_on_page,referrers,countries,browsers,device_types",
+    fields: "histogram,pages,seconds_on_page,referrers,countries,browser_names,device_types",
     start: startParam,
     end: endParam,
     timezone: "Europe/Berlin",
