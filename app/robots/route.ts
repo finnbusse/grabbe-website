@@ -1,7 +1,7 @@
 import { resolveBaseUrl } from "@/lib/seo"
-import { createClient } from "@/lib/supabase/server"
+import { createStaticClient } from "@/lib/supabase/static"
 
-export const dynamic = "force-dynamic"
+export const revalidate = 3600 // Revalidate every hour
 
 export async function GET() {
   const baseUrl = resolveBaseUrl()
@@ -16,7 +16,7 @@ export async function GET() {
   let content = `User-agent: *\nAllow: /\nDisallow: /cms/\nDisallow: /auth/\nDisallow: /api/\nSitemap: ${baseUrl}/sitemap.xml`
 
   try {
-    const supabase = await createClient()
+    const supabase = createStaticClient()
     const { data } = await supabase
       .from("site_settings")
       .select("value")

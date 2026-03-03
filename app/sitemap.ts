@@ -1,10 +1,12 @@
 import type { MetadataRoute } from "next"
-import { createClient } from "@/lib/supabase/server"
+import { createStaticClient } from "@/lib/supabase/static"
 import { resolveBaseUrl } from "@/lib/seo"
+
+export const revalidate = 3600 // Revalidate every hour
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = resolveBaseUrl()
-  const supabase = await createClient()
+  const supabase = createStaticClient()
 
   // Fetch all published posts
   const { data: posts } = await supabase

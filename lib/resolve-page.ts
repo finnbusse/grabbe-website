@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server"
+import { createStaticClient } from "@/lib/supabase/static"
 
 /**
  * Resolves a custom (user-created) page from the database by slug and optional route_path.
@@ -9,7 +9,7 @@ import { createClient } from "@/lib/supabase/server"
  * @returns The page data or null if not found
  */
 export async function resolveCustomPage(slug: string, routePath?: string) {
-  const supabase = await createClient()
+  const supabase = createStaticClient()
 
   if (routePath) {
     // Try exact route_path + slug match first
