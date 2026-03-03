@@ -78,6 +78,7 @@ function renderBlock(block: ContentBlock) {
               {heading}
             </h2>
           )}
+          {/* CMS-authored content from block editor — trusted admin input */}
           {text && (
             <div
               className="prose prose-neutral max-w-none dark:prose-invert"
