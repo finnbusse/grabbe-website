@@ -321,7 +321,6 @@ function PresentationBlockRenderer({ block }: { block: PresentationBlock }) {
             ? "lg:grid-cols-[2fr_3fr]"
             : "lg:grid-cols-2"
       const textEl = (
-        {/* CMS-authored content from presentation editor — trusted admin input */}
         <div
           className="prose prose-neutral max-w-none dark:prose-invert"
           dangerouslySetInnerHTML={{ __html: block.textContent }}

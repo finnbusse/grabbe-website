@@ -55,6 +55,8 @@ export default async function CmsLayout({ children }: { children: React.ReactNod
     permissions = {
       posts: { create: true, edit: "all", delete: "all", publish: true },
       events: { create: true, edit: "all", delete: "all", publish: true },
+      parent_letters: { create: true, edit: "all", delete: "all", publish: true },
+      presentations: { create: true, edit: "all", delete: "all", publish: true },
       pages: { edit: true },
       documents: { upload: true, delete: "all" },
       settings: { basic: true, advanced: true, seo: true },
