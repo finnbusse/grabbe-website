@@ -35,16 +35,20 @@ async function getLetter(slugParam: string) {
 }
 
 export async function generateStaticParams() {
-  const supabase = createClient()
-  const { data } = await supabase
-    .from("parent_letters")
-    .select("slug")
-    .eq("status", "published")
-    .returns<Array<{ slug: string }>>()
-  // Strip the "elterninfobrief-" prefix since the folder name already includes it
-  return (data ?? []).map((l) => ({
-    slug: l.slug.replace(/^elterninfobrief-/, ""),
-  }))
+  try {
+    const supabase = createClient()
+    const { data } = await supabase
+      .from("parent_letters")
+      .select("slug")
+      .eq("status", "published")
+      .returns<Array<{ slug: string }>>()
+    // Strip the "elterninfobrief-" prefix since the folder name already includes it
+    return (data ?? []).map((l) => ({
+      slug: l.slug.replace(/^elterninfobrief-/, ""),
+    }))
+  } catch {
+    return []
+  }
 }
 
 export async function generateMetadata({

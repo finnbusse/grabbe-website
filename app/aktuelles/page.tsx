@@ -28,6 +28,7 @@ export default async function AktuellesPage() {
   const heroImageUrl = (heroContent.hero_image_url as string) || undefined
 
   // Fetch posts, presentations, and parent letters in parallel
+  // Supabase returns { data: null } for non-existent tables — handled below
   const [postsResult, presentationsResult, parentLettersResult] = await Promise.all([
     supabase
       .from("posts")

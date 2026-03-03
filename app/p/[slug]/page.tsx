@@ -9,7 +9,7 @@ import {
   generateWebPageJsonLd,
   JsonLd,
 } from "@/lib/seo"
-import { AnimateOnScroll } from "./animate-on-scroll"
+import { AnimateOnScroll } from "@/components/animate-on-scroll"
 
 export const revalidate = 300
 
@@ -29,13 +29,17 @@ async function getPresentation(slug: string) {
 }
 
 export async function generateStaticParams() {
-  const supabase = createClient()
-  const { data } = await supabase
-    .from("presentations")
-    .select("slug")
-    .eq("status", "published")
-    .returns<Array<{ slug: string }>>()
-  return (data ?? []).map((p) => ({ slug: p.slug }))
+  try {
+    const supabase = createClient()
+    const { data } = await supabase
+      .from("presentations")
+      .select("slug")
+      .eq("status", "published")
+      .returns<Array<{ slug: string }>>()
+    return (data ?? []).map((p) => ({ slug: p.slug }))
+  } catch {
+    return []
+  }
 }
 
 export async function generateMetadata({
