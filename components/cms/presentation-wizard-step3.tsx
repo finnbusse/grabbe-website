@@ -60,12 +60,19 @@ export function PresentationWizardStep3() {
       // Ensure unique slug for new presentations
       let finalSlug = state.slug
       if (!isUpdate) {
-        const { data: existingSlugs } = await supabase
+        const { data: exactMatch } = await supabase
           .from("presentations")
           .select("slug")
-          .like("slug", `${state.slug}%`)
-        const slugSet = new Set((existingSlugs as Array<{ slug: string }> | null)?.map((p) => p.slug) ?? [])
-        if (slugSet.has(finalSlug)) {
+          .eq("slug", state.slug)
+        if (exactMatch && exactMatch.length > 0) {
+          const { data: similarSlugs } = await supabase
+            .from("presentations")
+            .select("slug")
+            .like("slug", `${state.slug}-%`)
+          const slugSet = new Set([
+            state.slug,
+            ...((similarSlugs as Array<{ slug: string }> | null)?.map((p) => p.slug) ?? []),
+          ])
           let counter = 2
           while (slugSet.has(`${state.slug}-${counter}`)) counter++
           finalSlug = `${state.slug}-${counter}`
@@ -225,7 +232,7 @@ export function PresentationWizardStep3() {
                 value={state.metaDescription}
                 onChange={(e) => dispatch({ type: "SET_META_DESCRIPTION", payload: e.target.value })}
                 placeholder="Beschreibung für Suchmaschinen (max. 160 Zeichen)…"
-                maxLength={200}
+                maxLength={160}
                 rows={3}
                 className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none"
               />

@@ -60,7 +60,7 @@ const initialState: PresentationWizardState = {
   coverImageUrl: null,
   tagIds: [],
   blocks: [],
-  showOnAktuelles: false,
+  showOnAktuelles: true,
   metaDescription: "",
   seoOgImage: null,
   currentStep: 1,
