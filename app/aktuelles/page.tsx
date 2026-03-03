@@ -142,7 +142,7 @@ export default async function AktuellesPage() {
         />
         <Breadcrumbs items={[{ name: "Aktuelles", href: "/aktuelles" }]} />
 
-        <Suspense>
+        <Suspense fallback={null}>
           <AktuellesContent items={items} />
         </Suspense>
       </main>
