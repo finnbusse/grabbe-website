@@ -105,6 +105,22 @@ export interface Event {
 /**
  * Downloads (PDFs, files)
  */
+export interface DocumentFolder {
+  id: string; // UUID
+  name: string;
+  parent_id: string | null; // UUID
+  slug: string;
+  is_public: boolean; // Default: true
+  created_at: string; // timestamptz
+}
+
+export type DocumentFolderInsert = Omit<DocumentFolder, 'id' | 'created_at'> & {
+  id?: string;
+  created_at?: string;
+};
+
+export type DocumentFolderUpdate = Partial<Omit<DocumentFolder, 'id' | 'created_at'>>;
+
 export interface Document {
   id: string; // UUID
   title: string;
@@ -114,6 +130,8 @@ export interface Document {
   file_size: number; // bigint, Default: 0
   file_type: string | null;
   category: string; // Default: 'allgemein'
+  folder_id: string | null; // UUID
+  is_public: boolean; // Default: true
   status: ContentStatus; // Default: 'published'
   published_at: string | null; // timestamptz
   created_by: string | null; // UUID, soft reference to auth.users
@@ -389,7 +407,7 @@ export type PostListItem = Omit<Post, 'content'>
 export type EventListItem = Pick<Event, 'id' | 'title' | 'description' | 'starts_at' | 'ends_at' | 'is_all_day' | 'timezone' | 'location' | 'category'>
 
 /** Document fields fetched for card/list views */
-export type DocumentListItem = Pick<Document, 'id' | 'title' | 'description' | 'file_url' | 'file_name' | 'file_size' | 'file_type' | 'category'>
+export type DocumentListItem = Pick<Document, 'id' | 'title' | 'description' | 'file_url' | 'file_name' | 'file_size' | 'file_type' | 'category' | 'folder_id' | 'is_public'>
 
 // ============================================================================
 // Database Schema Type (for Supabase client)
@@ -414,6 +432,12 @@ export interface Database {
         Row: Event;
         Insert: EventInsert;
         Update: EventUpdate;
+        Relationships: [];
+      };
+      document_folders: {
+        Row: DocumentFolder;
+        Insert: DocumentFolderInsert;
+        Update: DocumentFolderUpdate;
         Relationships: [];
       };
       documents: {
