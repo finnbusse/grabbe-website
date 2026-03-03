@@ -14,10 +14,11 @@ export async function GET(request: NextRequest) {
     const limit = limitParam ? Math.min(parseInt(limitParam, 10) || 50, 100) : 50
     const filenameFilter = searchParams.get("filename")
     const sizeFilter = searchParams.get("size")
-    const folderId = searchParams.get("folder_id") // Can be null/empty for root
 
+    // Try documents table first (unified media library)
     const supabase = await createClient()
 
+    // Deduplication check: if filename and size provided, return matching documents
     if (filenameFilter && sizeFilter) {
       const { data: dupes } = await supabase
         .from("documents")
@@ -39,7 +40,7 @@ export async function GET(request: NextRequest) {
 
     let query = supabase
       .from("documents")
-      .select("id, title, file_url, file_name, file_size, file_type, created_at, folder_id")
+      .select("id, title, file_url, file_name, file_size, file_type, created_at")
       .order("created_at", { ascending: false })
       .limit(limit)
 
@@ -47,30 +48,10 @@ export async function GET(request: NextRequest) {
       query = query.like("file_type", "image/%")
     }
 
-    if (folderId === 'root') {
-      query = query.is("folder_id", null)
-    } else if (folderId) {
-      query = query.eq("folder_id", folderId)
-    }
-
     const { data: docs, error: docsError } = await query
 
-    // Also fetch folders if we are building a browser
-    let foldersQuery = supabase
-      .from("document_folders")
-      .select("*")
-      .order("name", { ascending: true })
-
-    if (folderId === 'root') {
-      foldersQuery = foldersQuery.is("parent_id", null)
-    } else if (folderId) {
-      foldersQuery = foldersQuery.eq("parent_id", folderId)
-    }
-
-    const { data: folders, error: foldersError } = await foldersQuery
-
     if (!docsError && docs && docs.length > 0) {
-      const typedDocs = (docs || []) as Array<{
+      const typedDocs = docs as Array<{
         id: string
         title: string
         file_url: string
@@ -78,7 +59,6 @@ export async function GET(request: NextRequest) {
         file_size: number
         file_type: string | null
         created_at: string
-        folder_id: string | null
       }>
       return NextResponse.json({
         blobs: typedDocs.map((d) => ({
@@ -87,9 +67,7 @@ export async function GET(request: NextRequest) {
           pathname: d.file_name || d.title,
           size: d.file_size,
           uploadedAt: d.created_at,
-          folder_id: d.folder_id
         })),
-        folders: folders || [],
         cursor: undefined,
         hasMore: false,
       })
@@ -97,7 +75,7 @@ export async function GET(request: NextRequest) {
 
     // Fallback to Vercel Blob storage if documents table is empty or unavailable
     if (!process.env.BLOB_READ_WRITE_TOKEN) {
-      return NextResponse.json({ blobs: [], folders: [] })
+      return NextResponse.json({ blobs: [] })
     }
 
     const result = await list({
@@ -119,18 +97,18 @@ export async function GET(request: NextRequest) {
         size: b.size,
         uploadedAt: b.uploadedAt,
       })),
-      folders: [],
       cursor: result.cursor,
       hasMore: result.hasMore,
     })
   } catch (error: unknown) {
     console.error("Blob list error:", error)
-    return NextResponse.json({ blobs: [], folders: [], error: "Mediathek konnte nicht geladen werden" })
+    return NextResponse.json({ blobs: [], error: "Mediathek konnte nicht geladen werden" })
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
+    // Check if Blob storage is configured
     if (!process.env.BLOB_READ_WRITE_TOKEN) {
       return NextResponse.json(
         { 
@@ -157,6 +135,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Keine Datei angegeben" }, { status: 400 })
     }
 
+    // Validate file size (max 50MB)
     const maxSize = 50 * 1024 * 1024 // 50MB
     if (file.size > maxSize) {
       return NextResponse.json({ 
@@ -168,10 +147,9 @@ export async function POST(request: NextRequest) {
       access: "public",
     })
 
+    // Always create a document record for every uploaded file
     const docTitle = formData.get("title") as string
     const docCategory = formData.get("category") as string
-    const folderId = formData.get("folder_id") as string | null
-    const isPublic = formData.get("is_public") !== "false"
 
     const { data: insertedDoc } = await supabase.from("documents").insert({
       title: docTitle || file.name,
@@ -180,8 +158,6 @@ export async function POST(request: NextRequest) {
       file_size: file.size,
       file_type: file.type,
       category: docCategory || "allgemein",
-      folder_id: folderId || null,
-      is_public: isPublic,
       user_id: user.id,
     } as never).select("id").single()
     revalidateTag("documents", "max")
@@ -197,6 +173,8 @@ export async function POST(request: NextRequest) {
     })
   } catch (error: unknown) {
     console.error("Upload error:", error)
+    
+    // Provide specific error messages
     let errorMessage = "Upload fehlgeschlagen"
     const errMsg = error instanceof Error ? error.message : ""
     if (errMsg.includes("BLOB_READ_WRITE_TOKEN")) {

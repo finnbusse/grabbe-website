@@ -24,36 +24,22 @@ export default async function DownloadsPage() {
   ])
   const supabase = createClient()
   const heroImageUrl = (heroContent.hero_image_url as string) || undefined
-  // Fetch folders and documents concurrently
-  const [{ data: folders }, { data: docs }] = await Promise.all([
-    supabase
-      .from("document_folders")
-      .select("id, name, parent_id")
-      .eq("is_public", true)
-      .order("name", { ascending: true }),
-    supabase
-      .from("documents")
-      .select("id, title, file_url, file_name, file_size, file_type, category, folder_id")
-      .eq("status", "published")
-      .order("category", { ascending: true })
-      .order("created_at", { ascending: false })
-      .returns<DocumentListItem[]>()
-  ])
+  const { data: docs } = await supabase
+    .from("documents")
+    .select("id, title, file_url, file_name, file_size, file_type, category")
+    .eq("status", "published")
+    .order("category", { ascending: true })
+    .order("created_at", { ascending: false })
+    .returns<DocumentListItem[]>()
 
-  const validFolderIds = new Set((folders || []).map(f => f.id))
   const items = docs || []
 
-  // Split into documents inside a valid public folder vs. documents without a folder
-  const folderDocs = items.filter(doc => doc.folder_id && validFolderIds.has(doc.folder_id))
-
-  // Loose documents get grouped by category exactly as before to preserve functionality
-  const looseDocs = items.filter(doc => !doc.folder_id || !validFolderIds.has(doc.folder_id))
-
-  const groupedLoose: Record<string, typeof looseDocs> = {}
-  looseDocs.forEach((doc) => {
+  // Group by category
+  const grouped: Record<string, typeof items> = {}
+  items.forEach((doc) => {
     const cat = doc.category || "allgemein"
-    if (!groupedLoose[cat]) groupedLoose[cat] = []
-    groupedLoose[cat].push(doc)
+    if (!grouped[cat]) grouped[cat] = []
+    grouped[cat].push(doc)
   })
 
   return (
@@ -86,12 +72,8 @@ export default async function DownloadsPage() {
                 <p className="mt-4 text-base text-muted-foreground">Aktuell sind keine Dokumente verfuegbar.</p>
               </div>
             ) : (
-              <div className="mt-16 space-y-8">
-                <DownloadCategories
-                  groupedLoose={groupedLoose}
-                  folderDocs={folderDocs}
-                  folders={folders || []}
-                />
+              <div className="mt-16">
+                <DownloadCategories grouped={grouped} />
               </div>
             )}
           </div>
