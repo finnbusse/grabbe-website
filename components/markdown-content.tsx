@@ -1,6 +1,7 @@
 /**
  * Simple Markdown-like content renderer.
- * Supports: **bold**, *italic*, ## headings, [links](url), ![images](url), paragraphs, lists.
+ * Supports: **bold**, *italic*, ## headings, [links](url), ![images](url),
+ *           paragraphs, bullet lists, ordered lists, blockquotes, horizontal rules.
  */
 export function MarkdownContent({ content }: { content: string }) {
   if (!content) return null
@@ -106,12 +107,35 @@ export function MarkdownContent({ content }: { content: string }) {
       continue
     }
 
-    // Lists
+    // Blockquotes
+    if (trimmed.startsWith("> ")) {
+      flushParagraph()
+      elements.push(
+        <blockquote key={key++} className="border-l-3 border-primary pl-4 my-4 text-muted-foreground italic">
+          {renderInline(trimmed.slice(2))}
+        </blockquote>
+      )
+      continue
+    }
+
+    // Unordered lists
     if (trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
       flushParagraph()
       elements.push(
         <li key={key++} className="text-muted-foreground leading-relaxed ml-6 list-disc mb-1">
           {renderInline(trimmed.slice(2))}
+        </li>
+      )
+      continue
+    }
+
+    // Ordered lists (e.g. "1. item", "2. item")
+    const orderedMatch = trimmed.match(/^(\d+)\.\s+(.*)/)
+    if (orderedMatch) {
+      flushParagraph()
+      elements.push(
+        <li key={key++} className="text-muted-foreground leading-relaxed ml-6 list-decimal mb-1">
+          {renderInline(orderedMatch[2])}
         </li>
       )
       continue

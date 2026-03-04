@@ -12,6 +12,7 @@ import { FileUploader, FileListItem } from "./file-uploader"
 import { ImagePicker } from "./image-picker"
 import { TagSelector } from "./tag-selector"
 import { TeacherAuthorSelector, teacherPublicName } from "./teacher-author-selector"
+import { RichTextEditor } from "./rich-text-editor"
 import Link from "next/link"
 
 interface PostEditorProps {
@@ -271,14 +272,11 @@ export function PostEditor({ post }: PostEditorProps) {
           </div>
 
           <div className="rounded-2xl border bg-card p-6 space-y-3">
-            <Label htmlFor="content">Inhalt (Markdown)</Label>
-            <p className="text-xs text-muted-foreground">**fett**, *kursiv*, ## Überschrift, [Linktext](url), ![Bild](url) &mdash; Dateien unten hochladen und per Klick einfügen.</p>
-            <textarea
-              id="content"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder={"Beitragsinhalt hier eingeben...\n\nAbsätze mit Leerzeilen trennen.\nBilder und Dokumente unten hochladen und einfügen."}
-              className="min-h-[400px] w-full resize-y rounded-lg border border-input bg-background px-4 py-3 text-sm leading-relaxed font-mono placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            <Label htmlFor="content">Inhalt</Label>
+            <RichTextEditor
+              content={content}
+              onChange={(md) => setContent(md)}
+              placeholder="Beitragsinhalt hier eingeben…"
             />
           </div>
 

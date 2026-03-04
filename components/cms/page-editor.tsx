@@ -12,6 +12,7 @@ import { FileUploader, FileListItem } from "./file-uploader"
 import { BlockEditor, renderBlocks, type ContentBlock } from "./block-editor"
 import { ImagePicker } from "./image-picker"
 import { PublishCelebration } from "./publish-celebration"
+import { RichTextEditor } from "./rich-text-editor"
 import Link from "next/link"
 
 interface PageEditorProps {
@@ -249,7 +250,7 @@ export function PageEditor({ page }: PageEditorProps) {
                   onClick={() => handleModeChange('markdown')}
                 >
                   <FileText className="mr-1.5 h-3.5 w-3.5" />
-                  Markdown
+                  Texteditor
                 </Button>
                 <Button
                   variant={editorMode === 'blocks' ? 'default' : 'outline'}
@@ -264,14 +265,10 @@ export function PageEditor({ page }: PageEditorProps) {
               {editorMode === 'markdown' ? (
                 <>
                   <div className="rounded-2xl border bg-card p-6 space-y-3">
-                    <Label htmlFor="content">Inhalt (Markdown)</Label>
-                    <p className="text-xs text-muted-foreground">**fett**, *kursiv*, ## Überschrift, [Link](url), ![Bild](url)</p>
-                    <textarea
-                      id="content"
-                      value={content}
-                      onChange={(e) => setContent(e.target.value)}
-                      placeholder="Seiteninhalt hier eingeben..."
-                      className="min-h-[400px] w-full resize-y rounded-lg border border-input bg-background px-4 py-3 text-sm leading-relaxed font-mono placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                    <RichTextEditor
+                      content={content}
+                      onChange={(md) => setContent(md)}
+                      placeholder="Seiteninhalt hier eingeben…"
                     />
                   </div>
 

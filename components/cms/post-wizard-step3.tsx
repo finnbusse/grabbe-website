@@ -323,7 +323,7 @@ export function PostWizardStep3() {
                 {state.contentMode === "blocks" ? (
                   <span>{blockCount} {blockCount === 1 ? "Baustein" : "Bausteine"}</span>
                 ) : (
-                  <span>Markdown · {wordCount} {wordCount === 1 ? "Wort" : "Wörter"}</span>
+                  <span>Texteditor · {wordCount} {wordCount === 1 ? "Wort" : "Wörter"}</span>
                 )}
               </p>
             </div>
