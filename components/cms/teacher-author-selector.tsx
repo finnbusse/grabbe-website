@@ -34,6 +34,10 @@ import {
   CommandList,
 } from "@/components/ui/command"
 import { cn } from "@/lib/utils"
+import { teacherDisplayName } from "@/lib/teacher-utils"
+
+// Re-export so existing imports from this module keep working in client code
+export { teacherDisplayName } from "@/lib/teacher-utils"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -60,26 +64,6 @@ interface TeacherAuthorSelectorProps {
   multiple?: boolean
   /** Auto-populate with the current user's linked teacher (default: false) */
   autoPopulateCurrentUser?: boolean
-}
-
-// ---------------------------------------------------------------------------
-// Helper: gender-aware salutation prefix for display
-// ---------------------------------------------------------------------------
-
-function genderPrefix(gender: string): string {
-  switch (gender) {
-    case "male":
-      return "Herr"
-    case "female":
-      return "Frau"
-    default:
-      return ""
-  }
-}
-
-export function teacherDisplayName(teacher: Pick<TeacherOption, "gender" | "first_name" | "last_name">): string {
-  const prefix = genderPrefix(teacher.gender)
-  return [prefix, teacher.first_name, teacher.last_name].filter(Boolean).join(" ")
 }
 
 // ---------------------------------------------------------------------------

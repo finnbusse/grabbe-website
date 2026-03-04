@@ -10,7 +10,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import type { Metadata } from "next"
 import type { ContentBlock } from "@/components/cms/block-editor"
-import { teacherDisplayName } from "@/components/cms/teacher-author-selector"
+import { teacherDisplayName } from "@/lib/teacher-utils"
 import {
   generatePageMetadata,
   getSEOSettings,
