@@ -111,7 +111,7 @@ export function MarkdownContent({ content }: { content: string }) {
     if (trimmed.startsWith("> ")) {
       flushParagraph()
       elements.push(
-        <blockquote key={key++} className="border-l-3 border-primary pl-4 my-4 text-muted-foreground italic">
+        <blockquote key={key++} className="border-l-4 border-primary pl-4 my-4 text-muted-foreground italic">
           {renderInline(trimmed.slice(2))}
         </blockquote>
       )

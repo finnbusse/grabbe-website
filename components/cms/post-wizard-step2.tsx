@@ -3,9 +3,8 @@
 import { usePostWizard } from "./post-wizard-context"
 import { Button } from "@/components/ui/button"
 import { BlockEditor, type ContentBlock } from "./block-editor"
-import { MarkdownContent } from "@/components/markdown-content"
 import { RichTextEditor } from "./rich-text-editor"
-import { ArrowLeft, ArrowRight, Blocks, FileText, Eye } from "lucide-react"
+import { ArrowLeft, ArrowRight, Blocks, FileText } from "lucide-react"
 
 // ============================================================================
 // Step 2 — Content Editor

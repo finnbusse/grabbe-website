@@ -285,7 +285,7 @@ function TextBlockEditor({ data, onChange }: { data: Record<string, unknown>; on
         <textarea
           value={(data.text as string) || ''}
           onChange={(e) => onChange({ ...data, text: e.target.value })}
-          placeholder="Text eingeben... (Markdown wird unterstützt: **fett**, *kursiv*, [Link](url))"
+          placeholder="Text eingeben... (Formatierung: **fett**, *kursiv*, [Link](url))"
           className="mt-1 min-h-[100px] w-full resize-y rounded-lg border border-input bg-background px-3 py-2 text-sm leading-relaxed placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
         />
       </div>

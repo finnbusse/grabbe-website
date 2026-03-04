@@ -2,10 +2,9 @@
 
 import { usePageWizard } from "./page-wizard-context"
 import { Button } from "@/components/ui/button"
-import { BlockEditor, renderBlocks, type ContentBlock } from "./block-editor"
-import { MarkdownContent } from "@/components/markdown-content"
+import { BlockEditor, type ContentBlock } from "./block-editor"
 import { RichTextEditor } from "./rich-text-editor"
-import { ArrowLeft, ArrowRight, Blocks, FileText, Eye } from "lucide-react"
+import { ArrowLeft, ArrowRight, Blocks, FileText } from "lucide-react"
 
 // ============================================================================
 // Step 2 — Content Editor
