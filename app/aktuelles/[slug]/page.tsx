@@ -10,6 +10,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import type { Metadata } from "next"
 import type { ContentBlock } from "@/components/cms/block-editor"
+import { teacherDisplayName } from "@/components/cms/teacher-author-selector"
 import {
   generatePageMetadata,
   getSEOSettings,
@@ -357,11 +358,8 @@ async function PostView({ post, slug }: { post: Record<string, unknown>; slug: s
 
   if (teacherAuthors.length > 0) {
     // Build from teacher records
-    authorDisplayName = teacherAuthors.map((t) => {
-      const prefix = t.gender === "male" ? "Herr" : t.gender === "female" ? "Frau" : ""
-      return [prefix, t.first_name, t.last_name].filter(Boolean).join(" ")
-    }).join(", ")
-    // Use first teacher's avatar
+    authorDisplayName = teacherAuthors.map((t) => teacherDisplayName(t)).join(", ")
+    // Use first teacher's avatar (additional authors shown via name)
     authorAvatar = teacherAuthors[0].image_url
     authorInitials = (teacherAuthors[0].first_name?.charAt(0) || "") + (teacherAuthors[0].last_name?.charAt(0) || "")
   } else if (post.author_name) {

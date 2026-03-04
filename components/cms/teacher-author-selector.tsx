@@ -46,7 +46,7 @@ export interface TeacherOption {
   abbreviation: string
   image_url: string | null
   gender: string
-  user_id?: string | null
+  user_id: string | null
 }
 
 interface TeacherAuthorSelectorProps {

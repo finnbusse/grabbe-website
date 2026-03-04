@@ -11,6 +11,7 @@ import { Switch } from "@/components/ui/switch"
 import { ImagePicker } from "./image-picker"
 import { SeoPreview } from "./seo-preview"
 import { TagBadge, type TagData } from "./tag-selector"
+import { teacherDisplayName } from "./teacher-author-selector"
 import { PublishCelebration } from "./publish-celebration"
 import { ArrowLeft, Loader2, Save, Rocket, Check } from "lucide-react"
 import { toast } from "sonner"
@@ -116,10 +117,9 @@ export function PostWizardStep3() {
           const teacherData = await teacherRes.json()
           if (Array.isArray(teacherData)) {
             const selected = teacherData.filter((t: { id: string }) => state.authorTeacherIds.includes(t.id))
-            authorName = selected.map((t: { gender: string; first_name: string; last_name: string }) => {
-              const prefix = t.gender === "male" ? "Herr" : t.gender === "female" ? "Frau" : ""
-              return [prefix, t.first_name, t.last_name].filter(Boolean).join(" ")
-            }).join(", ")
+            authorName = selected.map((t: { gender: string; first_name: string; last_name: string }) =>
+              teacherDisplayName(t)
+            ).join(", ")
           }
         } catch {
           // fallback below
