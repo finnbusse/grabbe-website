@@ -207,7 +207,7 @@ export function SiteHeader({
                     <div
                       className="min-w-[220px] backdrop-blur-md rounded-2xl p-1.5 shadow-xl animate-blur-in"
                       style={{
-                        backgroundColor: "rgba(var(--nav-glass-bg), 0.2)",
+                        backgroundColor: "rgba(var(--nav-glass-bg), 0.85)",
                         border: "1px solid rgba(var(--nav-glass-border), 0.26)",
                       }}
                     >
