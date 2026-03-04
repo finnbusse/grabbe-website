@@ -64,11 +64,12 @@ export function HeroSection({ content }: { content?: Record<string, unknown> }) 
         {/* Light mode hero image (default) */}
         <div className="hero-image-light absolute inset-0">
           <Image
-            src="/images/hero/hero-a-light.webp"
+            src="https://iplsqewa1jv1ew7a.public.blob.vercel-storage.com/schulwebsite/hero-a-light-JYVqm0zAQBXijY3qt5X7egYP4fmJow.webp"
             alt="Grabbe-Gymnasium Schulgebäude"
             fill
             className="object-cover"
             priority
+            fetchPriority="high"
             sizes="100vw"
           />
         </div>
@@ -76,11 +77,12 @@ export function HeroSection({ content }: { content?: Record<string, unknown> }) 
         {/* Dark / night-themed hero image (shown via prefers-color-scheme: dark CSS) */}
         <div className="hero-image-dark absolute inset-0">
           <Image
-            src="/images/hero/hero-a-dark.webp"
+            src="https://iplsqewa1jv1ew7a.public.blob.vercel-storage.com/schulwebsite/hero-a-dark-9y46Mdl0OXCy6CpagXTisMr7j5Tcl8.webp"
             alt="Grabbe-Gymnasium Schulgebäude bei Nacht"
             fill
             className="object-cover"
             priority
+            fetchPriority="high"
             sizes="100vw"
           />
         </div>

@@ -105,6 +105,11 @@ export async function middleware(request: NextRequest) {
   if (segments.length >= 1 && segments.length <= 3) {
     const firstSegment = segments[0]
 
+    // Don't rewrite system root files
+    if (['ads.txt', 'llms.txt', 'robots.txt', 'sitemap.xml'].includes(pathname.substring(1))) {
+      return sessionResponse
+    }
+
     // If the first segment is NOT a known route, this might be a custom category page
     // Rewrite to /seiten/[...slug] which handles DB lookup
     if (!KNOWN_ROUTES.has(firstSegment) && !firstSegment.startsWith('_')) {
@@ -125,6 +130,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|sitemap\\.xml|robots\\.txt|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|sitemap\\.xml|robots\\.txt|ads\\.txt|llms\\.txt|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }
