@@ -61,7 +61,7 @@ export function NewsSection({ posts, content }: { posts: Post[]; content?: Recor
             <Link href={`/aktuelles/${featured.slug}`} className="group relative flex flex-col overflow-hidden rounded-2xl border border-border/60 bg-card/80 backdrop-blur-sm transition-all duration-500 hover:shadow-xl hover:shadow-primary/[0.06] hover:border-primary/30 h-full">
               {featured.image_url ? (
                 <div className="relative h-72 overflow-hidden">
-                  <img src={featured.image_url} alt={featured.title} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                  <img src={featured.image_url} alt={featured.title} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" loading="eager" decoding="async" />
                   <div className="absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent" />
                 </div>
               ) : (
@@ -79,7 +79,7 @@ export function NewsSection({ posts, content }: { posts: Post[]; content?: Recor
                   {(featured.author_name || featured.author_profile) && (
                     <span className="flex items-center gap-1.5">
                       {featured.author_profile?.avatar_url ? (
-                        <img src={featured.author_profile.avatar_url} alt="" className="h-5 w-5 rounded-full object-cover" />
+                        <img src={featured.author_profile.avatar_url} alt="" className="h-5 w-5 rounded-full object-cover" loading="lazy" decoding="async" />
                       ) : (
                         <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 text-[8px] font-bold text-primary">
                           {featured.author_profile?.first_name?.charAt(0) || featured.author_name?.charAt(0) || ""}
@@ -110,7 +110,7 @@ export function NewsSection({ posts, content }: { posts: Post[]; content?: Recor
                 >
                   {post.image_url ? (
                     <div className="h-24 w-24 shrink-0 overflow-hidden rounded-xl">
-                      <img src={post.image_url} alt={post.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                      <img src={post.image_url} alt={post.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" decoding="async" />
                     </div>
                   ) : (
                     <div className="h-24 w-24 shrink-0 rounded-xl bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
@@ -124,7 +124,7 @@ export function NewsSection({ posts, content }: { posts: Post[]; content?: Recor
                       {(post.author_name || post.author_profile) && (
                         <span className="flex items-center gap-1">
                           {post.author_profile?.avatar_url ? (
-                            <img src={post.author_profile.avatar_url} alt="" className="h-4 w-4 rounded-full object-cover" />
+                            <img src={post.author_profile.avatar_url} alt="" className="h-4 w-4 rounded-full object-cover" loading="lazy" decoding="async" />
                           ) : (
                             <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary/10 text-[7px] font-bold text-primary">
                               {post.author_profile?.first_name?.charAt(0) || post.author_name?.charAt(0) || ""}
