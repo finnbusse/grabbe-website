@@ -52,6 +52,7 @@ export interface CmsPermissions {
   navigation: boolean
   seitenstruktur: boolean
   seitenEditor: boolean
+  organisation: boolean
   users: UserPermission
   tags: boolean
   messages: boolean
@@ -97,6 +98,7 @@ export const EMPTY_PERMISSIONS: CmsPermissions = {
   navigation: false,
   seitenstruktur: false,
   seitenEditor: false,
+  organisation: false,
   users: { view: false, create: false, delete: false, assignRoles: false },
   tags: false,
   messages: false,
@@ -143,6 +145,7 @@ export function mergePermissions(a: CmsPermissions, b: CmsPermissions): CmsPermi
     navigation: a.navigation || b.navigation,
     seitenstruktur: a.seitenstruktur || b.seitenstruktur,
     seitenEditor: a.seitenEditor || b.seitenEditor,
+    organisation: a.organisation || b.organisation,
     users: {
       view: a.users.view || b.users.view,
       create: a.users.create || b.users.create,
@@ -203,6 +206,7 @@ export function coercePermissions(raw: unknown): CmsPermissions {
     navigation: bool(p.navigation),
     seitenstruktur: bool(p.seitenstruktur),
     seitenEditor: bool(p.seitenEditor),
+    organisation: bool(p.organisation),
     users: { view: bool(users.view), create: bool(users.create), delete: bool(users.delete), assignRoles: bool(users.assignRoles) },
     tags: bool(p.tags),
     messages: bool(p.messages),
@@ -223,6 +227,7 @@ export type PermissionCheck =
   | "navigation"
   | "seitenstruktur"
   | "seitenEditor"
+  | "organisation"
   | "users"
   | "users.view"
   | "tags"
@@ -256,6 +261,8 @@ export function checkPermission(permissions: CmsPermissions, check: PermissionCh
       return permissions.seitenstruktur
     case "seitenEditor":
       return permissions.seitenEditor
+    case "organisation":
+      return permissions.organisation
     case "users":
     case "users.view":
       return permissions.users.view

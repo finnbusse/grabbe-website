@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { ImagePicker } from "./image-picker"
 import { TagBadge, type TagData } from "./tag-selector"
+import { TeacherAuthorSelector } from "./teacher-author-selector"
 import { PublishCelebration } from "./publish-celebration"
 import { ArrowLeft, Loader2, Save, Rocket, Check } from "lucide-react"
 import { toast } from "sonner"
@@ -24,6 +25,7 @@ export function PresentationWizardStep3() {
   const [error, setError] = useState<string | null>(null)
   const [allTags, setAllTags] = useState<TagData[]>([])
   const [celebrationUrl, setCelebrationUrl] = useState("")
+  const [authorTeacherIds, setAuthorTeacherIds] = useState<string[]>([])
 
   // Load tags for display
   useEffect(() => {
@@ -34,6 +36,20 @@ export function PresentationWizardStep3() {
       })
       .catch(() => {})
   }, [])
+
+  // Load existing author teachers when editing
+  useEffect(() => {
+    if (!state.presentationId) return
+    const supabase = createClient()
+    supabase
+      .from("presentation_authors")
+      .select("teacher_id")
+      .eq("presentation_id", state.presentationId)
+      .then(({ data }) => {
+        if (data) setAuthorTeacherIds(data.map((a: { teacher_id: string }) => a.teacher_id))
+      })
+      .catch(() => {})
+  }, [state.presentationId])
 
   const selectedTags = allTags.filter((t) => state.tagIds.includes(t.id))
   const presentationUrl = `/p/${state.slug || "..."}`
@@ -101,11 +117,33 @@ export function PresentationWizardStep3() {
           .update(payload as never)
           .eq("id", state.presentationId!)
         if (saveError) throw saveError
+
+        // Save author teachers
+        await supabase.from("presentation_authors").delete().eq("presentation_id", state.presentationId!)
+        if (authorTeacherIds.length > 0) {
+          await supabase.from("presentation_authors").insert(
+            authorTeacherIds.map((teacher_id) => ({ presentation_id: state.presentationId!, teacher_id })) as never
+          )
+        }
       } else {
         const { error: saveError } = await supabase
           .from("presentations")
           .insert(payload as never)
         if (saveError) throw saveError
+
+        // Get the created ID for author teachers
+        const { data: newPres } = await supabase
+          .from("presentations")
+          .select("id")
+          .eq("slug", finalSlug)
+          .order("created_at", { ascending: false })
+          .limit(1)
+        const presentations = newPres as Array<{ id: string }> | null
+        if (presentations && presentations.length > 0 && authorTeacherIds.length > 0) {
+          await supabase.from("presentation_authors").insert(
+            authorTeacherIds.map((teacher_id) => ({ presentation_id: presentations[0].id, teacher_id })) as never
+          )
+        }
       }
 
       // Revalidate
@@ -222,6 +260,18 @@ export function PresentationWizardStep3() {
                 checked={state.showOnAktuelles}
                 onCheckedChange={(v) => dispatch({ type: "SET_SHOW_ON_AKTUELLES", payload: v })}
               />
+            </div>
+
+            {/* Author Teachers */}
+            <div className="grid gap-2 pt-2 border-t">
+              <Label>Autor/innen (Lehrkräfte)</Label>
+              <TeacherAuthorSelector
+                selectedTeacherIds={authorTeacherIds}
+                onChange={setAuthorTeacherIds}
+              />
+              <p className="text-[10px] text-muted-foreground">
+                Tippen Sie @Kürzel ein, um Lehrkräfte als Autoren zuzuweisen.
+              </p>
             </div>
 
             {/* Meta Description */}

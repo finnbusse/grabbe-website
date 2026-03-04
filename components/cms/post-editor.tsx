@@ -11,6 +11,7 @@ import { ArrowLeft, Save, Eye, Loader2 } from "lucide-react"
 import { FileUploader, FileListItem } from "./file-uploader"
 import { ImagePicker } from "./image-picker"
 import { TagSelector } from "./tag-selector"
+import { TeacherAuthorSelector } from "./teacher-author-selector"
 import Link from "next/link"
 
 interface PostEditorProps {
@@ -61,6 +62,7 @@ export function PostEditor({ post }: PostEditorProps) {
   const [error, setError] = useState<string | null>(null)
   const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([])
   const [tagIds, setTagIds] = useState<string[]>([])
+  const [authorTeacherIds, setAuthorTeacherIds] = useState<string[]>([])
 
   // Load existing tags for this post
   useEffect(() => {
@@ -72,6 +74,20 @@ export function PostEditor({ post }: PostEditorProps) {
       .eq("post_id", post.id)
       .then(({ data }) => {
         if (data) setTagIds(data.map((t) => t.tag_id))
+      })
+      .catch(() => {})
+  }, [post])
+
+  // Load existing author teachers for this post
+  useEffect(() => {
+    if (!post) return
+    const supabase = createClient()
+    supabase
+      .from("post_authors")
+      .select("teacher_id")
+      .eq("post_id", post.id)
+      .then(({ data }) => {
+        if (data) setAuthorTeacherIds(data.map((a: { teacher_id: string }) => a.teacher_id))
       })
       .catch(() => {})
   }, [post])
@@ -153,6 +169,13 @@ export function PostEditor({ post }: PostEditorProps) {
             tagIds.map((tag_id) => ({ post_id: post.id, tag_id }))
           )
         }
+        // Save author teachers
+        await supabase.from("post_authors").delete().eq("post_id", post.id)
+        if (authorTeacherIds.length > 0) {
+          await supabase.from("post_authors").insert(
+            authorTeacherIds.map((teacher_id) => ({ post_id: post.id, teacher_id }))
+          )
+        }
       } else {
         // For new posts, get the created ID and assign tags
         const { data: newPosts } = await supabase
@@ -164,6 +187,12 @@ export function PostEditor({ post }: PostEditorProps) {
         if (newPosts && newPosts.length > 0 && tagIds.length > 0) {
           await supabase.from("post_tags").insert(
             tagIds.map((tag_id) => ({ post_id: newPosts[0].id, tag_id }))
+          )
+        }
+        // Save author teachers for new post
+        if (newPosts && newPosts.length > 0 && authorTeacherIds.length > 0) {
+          await supabase.from("post_authors").insert(
+            authorTeacherIds.map((teacher_id) => ({ post_id: newPosts[0].id, teacher_id }))
           )
         }
       }
@@ -290,6 +319,16 @@ export function PostEditor({ post }: PostEditorProps) {
             <div className="grid gap-2">
               <Label htmlFor="author">Autor</Label>
               <Input id="author" value={authorName} onChange={(e) => setAuthorName(e.target.value)} placeholder="Name des Autors" />
+            </div>
+            <div className="grid gap-2">
+              <Label>Autor/innen (Lehrkräfte)</Label>
+              <TeacherAuthorSelector
+                selectedTeacherIds={authorTeacherIds}
+                onChange={setAuthorTeacherIds}
+              />
+              <p className="text-[10px] text-muted-foreground">
+                Lehrkräfte als Autoren zuweisen. Tippen Sie @Kürzel ein.
+              </p>
             </div>
             <div className="grid gap-2">
               <Label htmlFor="eventDate">Datum (optional)</Label>

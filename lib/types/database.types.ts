@@ -729,3 +729,67 @@ export interface EventWithMetadata extends Event {
   isToday?: boolean;
   isFuture?: boolean;
 }
+
+// ============================================================================
+// Teachers / Organisation
+// ============================================================================
+
+/** Gender options for a teacher record */
+export type TeacherGender = '' | 'male' | 'female' | 'diverse'
+
+/**
+ * A teacher / staff member of the school.
+ * Teachers can optionally be linked to a user account.
+ */
+export interface Teacher {
+  id: string;            // UUID
+  gender: TeacherGender;
+  first_name: string;
+  last_name: string;
+  email: string | null;
+  abbreviation: string;  // Kürzel, e.g. "hig"
+  image_url: string | null;
+  user_id: string | null; // optional link to auth.users
+  is_active: boolean;
+  created_at: string;    // timestamptz
+  updated_at: string;    // timestamptz
+}
+
+/** Insert payload for teacher (server-side, id/timestamps auto-generated) */
+export type TeacherInsert = Omit<Teacher, 'id' | 'created_at' | 'updated_at'>
+
+/** Update payload for teacher (all fields optional except id) */
+export type TeacherUpdate = Partial<Omit<Teacher, 'id' | 'created_at' | 'updated_at'>>
+
+/** Teacher with resolved subject IDs */
+export interface TeacherWithSubjects extends Teacher {
+  subject_ids: string[];
+}
+
+/** Minimal teacher projection for dropdowns / author selectors */
+export interface TeacherListItem {
+  id: string;
+  first_name: string;
+  last_name: string;
+  abbreviation: string;
+  image_url: string | null;
+  gender: TeacherGender;
+}
+
+/** Post-author junction row */
+export interface PostAuthor {
+  post_id: string;
+  teacher_id: string;
+}
+
+/** Parent-letter-author junction row */
+export interface ParentLetterAuthor {
+  parent_letter_id: string;
+  teacher_id: string;
+}
+
+/** Presentation-author junction row */
+export interface PresentationAuthor {
+  presentation_id: string;
+  teacher_id: string;
+}

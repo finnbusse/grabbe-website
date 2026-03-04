@@ -63,6 +63,7 @@ export default async function CmsLayout({ children }: { children: React.ReactNod
       navigation: true,
       seitenstruktur: true,
       seitenEditor: true,
+      organisation: true,
       users: { view: true, create: true, delete: true, assignRoles: true },
       tags: true,
       messages: true,

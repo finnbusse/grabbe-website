@@ -173,6 +173,12 @@ const PERMISSION_SECTIONS: PermissionSection[] = [
     fields: [
       {
         type: "boolean",
+        label: "Organisation",
+        get: (p) => p.organisation,
+        set: (p, v) => ({ ...p, organisation: v }),
+      },
+      {
+        type: "boolean",
         label: "Benutzer anzeigen",
         get: (p) => p.users.view,
         set: (p, v) => ({ ...p, users: { ...p.users, view: v } }),

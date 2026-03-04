@@ -11,6 +11,7 @@ import { Switch } from "@/components/ui/switch"
 import { ImagePicker } from "./image-picker"
 import { SeoPreview } from "./seo-preview"
 import { TagBadge, type TagData } from "./tag-selector"
+import { TeacherAuthorSelector } from "./teacher-author-selector"
 import { PublishCelebration } from "./publish-celebration"
 import { ArrowLeft, Loader2, Save, Rocket, Check } from "lucide-react"
 import { toast } from "sonner"
@@ -26,6 +27,7 @@ export function PostWizardStep3() {
   const [error, setError] = useState<string | null>(null)
   const [allTags, setAllTags] = useState<TagData[]>([])
   const [authorName, setAuthorName] = useState("")
+  const [authorTeacherIds, setAuthorTeacherIds] = useState<string[]>([])
   const [seoSeparator, setSeoSeparator] = useState(" / ")
   const [seoSuffix, setSeoSuffix] = useState("Grabbe-Gymnasium")
   const [celebrationUrl, setCelebrationUrl] = useState("")
@@ -74,6 +76,20 @@ export function PostWizardStep3() {
     }
     loadSeoSettings()
   }, [])
+
+  // Load existing author teachers when editing
+  useEffect(() => {
+    if (!state.postId) return
+    const supabase = createClient()
+    supabase
+      .from("post_authors")
+      .select("teacher_id")
+      .eq("post_id", state.postId)
+      .then(({ data }) => {
+        if (data) setAuthorTeacherIds(data.map((a: { teacher_id: string }) => a.teacher_id))
+      })
+      .catch(() => {})
+  }, [state.postId])
 
   const selectedTags = allTags.filter((t) => state.tagIds.includes(t.id))
   const postUrl = `/aktuelles/${state.slug || "..."}`
@@ -170,6 +186,13 @@ export function PostWizardStep3() {
             state.tagIds.map((tag_id) => ({ post_id: state.postId!, tag_id })) as never
           )
         }
+        // Save author teachers
+        await supabase.from("post_authors").delete().eq("post_id", state.postId)
+        if (authorTeacherIds.length > 0) {
+          await supabase.from("post_authors").insert(
+            authorTeacherIds.map((teacher_id) => ({ post_id: state.postId!, teacher_id })) as never
+          )
+        }
       } else {
         // For new posts, get the created ID and assign tags
         const { data: newPosts } = await supabase
@@ -187,6 +210,12 @@ export function PostWizardStep3() {
           if (state.tagIds.length > 0) {
             await supabase.from("post_tags").insert(
               state.tagIds.map((tag_id) => ({ post_id: newPostId, tag_id })) as never
+            )
+          }
+          // Save author teachers for new post
+          if (authorTeacherIds.length > 0) {
+            await supabase.from("post_authors").insert(
+              authorTeacherIds.map((teacher_id) => ({ post_id: newPostId, teacher_id })) as never
             )
           }
         }
@@ -305,6 +334,18 @@ export function PostWizardStep3() {
                 <p className="text-sm">{authorName}</p>
               </div>
             )}
+
+            {/* Author Teachers */}
+            <div>
+              <p className="text-xs text-muted-foreground mb-1">Autor/innen (Lehrkräfte)</p>
+              <TeacherAuthorSelector
+                selectedTeacherIds={authorTeacherIds}
+                onChange={setAuthorTeacherIds}
+              />
+              <p className="text-[10px] text-muted-foreground mt-1">
+                Tippen Sie @Kürzel ein, um Lehrkräfte als Autoren zuzuweisen.
+              </p>
+            </div>
 
             {/* Date */}
             <div>

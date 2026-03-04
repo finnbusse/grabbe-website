@@ -22,7 +22,8 @@ import {
   Inbox,
   BarChart2,
   Gauge,
-  Plus
+  Plus,
+  Building2
 } from "lucide-react"
 
 import {
@@ -62,6 +63,7 @@ const contentLinks: SidebarLink[] = [
 ]
 
 const adminLinks: SidebarLink[] = [
+  { icon: Building2, label: "Organisation", href: "/cms/organisation", permCheck: (p) => checkPermission(p, "organisation") },
   { icon: FolderTree, label: "Seitenstruktur", href: "/cms/seitenstruktur", permCheck: (p) => checkPermission(p, "seitenstruktur") },
   { icon: Globe, label: "Website-Einstellungen", href: "/cms/settings/website", permCheck: (p) => checkPermission(p, "settings") },
 ]

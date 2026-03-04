@@ -1,11 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useParentLetterWizard, clearParentLetterWizardStorage, generateParentLetterSlug } from "./parent-letter-wizard-context"
 import { createClient } from "@/lib/supabase/client"
 import { BlockEditor, type ContentBlock } from "./block-editor"
+import { TeacherAuthorSelector } from "./teacher-author-selector"
 import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
 import { ArrowLeft, Loader2, Save, Rocket, Check } from "lucide-react"
 import { toast } from "sonner"
 
@@ -18,6 +20,21 @@ export function ParentLetterWizardStep2() {
   const router = useRouter()
   const [publishState, setPublishState] = useState<"idle" | "saving" | "success">("idle")
   const [error, setError] = useState<string | null>(null)
+  const [authorTeacherIds, setAuthorTeacherIds] = useState<string[]>([])
+
+  // Load existing author teachers when editing
+  useEffect(() => {
+    if (!state.letterId) return
+    const supabase = createClient()
+    supabase
+      .from("parent_letter_authors")
+      .select("teacher_id")
+      .eq("parent_letter_id", state.letterId)
+      .then(({ data }) => {
+        if (data) setAuthorTeacherIds(data.map((a: { teacher_id: string }) => a.teacher_id))
+      })
+      .catch(() => {})
+  }, [state.letterId])
 
   const handleBack = () => {
     dispatch({ type: "SET_STEP", payload: 1 })
@@ -69,6 +86,14 @@ export function ParentLetterWizardStep2() {
           .update(payload as never)
           .eq("id", state.letterId!)
         if (saveError) throw saveError
+
+        // Save author teachers
+        await supabase.from("parent_letter_authors").delete().eq("parent_letter_id", state.letterId!)
+        if (authorTeacherIds.length > 0) {
+          await supabase.from("parent_letter_authors").insert(
+            authorTeacherIds.map((teacher_id) => ({ parent_letter_id: state.letterId!, teacher_id })) as never
+          )
+        }
       } else {
         const insertPayload = {
           ...payload,
@@ -91,6 +116,13 @@ export function ParentLetterWizardStep2() {
         const letters = newLetters as Array<{ id: string }> | null
         if (letters && letters.length > 0) {
           dispatch({ type: "SET_LETTER_ID", payload: letters[0].id })
+
+          // Save author teachers for new letter
+          if (authorTeacherIds.length > 0) {
+            await supabase.from("parent_letter_authors").insert(
+              authorTeacherIds.map((teacher_id) => ({ parent_letter_id: letters[0].id, teacher_id })) as never
+            )
+          }
         }
       }
 
@@ -169,6 +201,18 @@ export function ParentLetterWizardStep2() {
                 {error}
               </div>
             )}
+
+            {/* Author Teachers */}
+            <div className="grid gap-2 pt-2 border-t">
+              <Label>Autor/innen (Lehrkräfte)</Label>
+              <TeacherAuthorSelector
+                selectedTeacherIds={authorTeacherIds}
+                onChange={setAuthorTeacherIds}
+              />
+              <p className="text-[10px] text-muted-foreground">
+                Tippen Sie @Kürzel ein, um Lehrkräfte als Autoren zuzuweisen.
+              </p>
+            </div>
 
             {/* Save as Draft */}
             <Button
