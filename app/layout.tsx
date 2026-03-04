@@ -213,6 +213,12 @@ export default async function RootLayout({
             <link rel="stylesheet" href={fontsUrl} />
           </>
         )}
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9295971353198585"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
         <Script id="clarity-script" strategy="afterInteractive">
           {`
             (function(c,l,a,r,i,t,y){
