@@ -137,8 +137,8 @@ export function SiteHeader({
         {/* Centered glass navbar */}
         <div className="ml-auto mr-4 mt-3 flex w-fit items-center justify-end rounded-full px-2 py-1.5 backdrop-blur-md shadow-lg lg:mx-auto lg:mt-4 lg:w-full lg:max-w-3xl lg:justify-between lg:px-1 lg:py-1"
           style={{
-            backgroundColor: "rgba(var(--nav-glass-bg), 0.2)",
-            border: "1px solid rgba(var(--nav-glass-border), 0.26)",
+            backgroundColor: "rgb(var(--nav-glass-bg) / 0.2)",
+            border: "1px solid rgb(var(--nav-glass-border) / 0.26)",
           }}
         >
         {/* Start button */}
@@ -150,7 +150,7 @@ export function SiteHeader({
               : "text-foreground/85 hover:text-foreground"
           }`}
           style={pathname === "/"
-            ? { backgroundColor: "rgba(var(--nav-glass-item-active), 0.32)" }
+            ? { backgroundColor: "rgb(var(--nav-glass-item-active) / 0.32)" }
             : undefined
           }
         >
@@ -177,7 +177,7 @@ export function SiteHeader({
                       : "text-foreground/85 hover:text-foreground"
                   }`}
                   style={isActive(item.href)
-                    ? { backgroundColor: "rgba(var(--nav-glass-item-active), 0.32)" }
+                    ? { backgroundColor: "rgb(var(--nav-glass-item-active) / 0.32)" }
                     : undefined
                   }
                   onTouchEnd={(e) => {
@@ -205,10 +205,10 @@ export function SiteHeader({
                     onMouseLeave={handleDropdownLeave}
                   >
                     <div
-                      className="min-w-[220px] backdrop-blur-xl rounded-2xl p-1.5 shadow-xl animate-blur-in"
+                      className="min-w-[220px] backdrop-blur-md rounded-2xl p-1.5 shadow-xl animate-blur-in"
                       style={{
-                        backgroundColor: "rgba(var(--nav-dropdown-bg), 0.9)",
-                        border: "1px solid rgba(var(--nav-glass-border), 0.24)",
+                        backgroundColor: "rgb(var(--nav-dropdown-bg) / 0.2)",
+                        border: "1px solid rgb(var(--nav-glass-border) / 0.26)",
                       }}
                     >
                       {item.children.map((child) => (
@@ -221,7 +221,7 @@ export function SiteHeader({
                               : "text-foreground/85 hover:text-foreground"
                           }`}
                           style={pathname === child.href
-                            ? { backgroundColor: "rgba(var(--nav-glass-item-active), 0.28)" }
+                            ? { backgroundColor: "rgb(var(--nav-glass-item-active) / 0.28)" }
                             : undefined
                           }
                         >
@@ -242,7 +242,7 @@ export function SiteHeader({
                     : "text-foreground/85 hover:text-foreground"
                 }`}
                 style={isActive(item.href)
-                  ? { backgroundColor: "rgba(var(--nav-glass-item-active), 0.32)" }
+                  ? { backgroundColor: "rgb(var(--nav-glass-item-active) / 0.32)" }
                   : undefined
                 }
               >
@@ -255,7 +255,7 @@ export function SiteHeader({
         {/* Mobile toggle */}
         <button
           className="flex h-9 w-9 items-center justify-center rounded-full text-foreground/85 hover:text-foreground transition-all duration-200 nav-glass-interactive lg:hidden"
-          style={{ backgroundColor: mobileOpen ? "rgba(var(--nav-glass-item-hover), 0.2)" : undefined }}
+          style={{ backgroundColor: mobileOpen ? "rgb(var(--nav-glass-item-hover) / 0.2)" : undefined }}
           onClick={() => {
             const next = !mobileOpen
             setMobileOpen(next)
@@ -272,8 +272,8 @@ export function SiteHeader({
         <div
           className="mx-4 mt-2 rounded-3xl backdrop-blur-xl p-3 shadow-xl lg:hidden animate-blur-in"
           style={{
-            backgroundColor: "rgba(var(--nav-glass-bg), 0.24)",
-            border: "1px solid rgba(var(--nav-glass-border), 0.26)",
+            backgroundColor: "rgb(var(--nav-glass-bg) / 0.24)",
+            border: "1px solid rgb(var(--nav-glass-border) / 0.26)",
           }}
         >
           <nav className="flex flex-col gap-1">
@@ -287,7 +287,7 @@ export function SiteHeader({
                       : "text-foreground/85 hover:text-foreground"
                   }`}
                   style={pathname === item.href
-                    ? { backgroundColor: "rgba(var(--nav-glass-item-active), 0.3)" }
+                    ? { backgroundColor: "rgb(var(--nav-glass-item-active) / 0.3)" }
                     : undefined
                   }
                   onClick={() => {

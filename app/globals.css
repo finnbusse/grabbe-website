@@ -156,7 +156,7 @@
     --nav-glass-border: 148 163 184;
     --nav-glass-item-active: 148 163 184;
     --nav-glass-item-hover: 148 163 184;
-    --nav-dropdown-bg: 15 23 42;
+    --nav-dropdown-bg: 10 19 35;
   }
 }
 
@@ -190,11 +190,11 @@ html {
 
 
 .nav-glass-interactive:hover {
-  background-color: rgba(var(--nav-glass-item-hover), 0.24);
+  background-color: rgb(var(--nav-glass-item-hover) / 0.24);
 }
 
 .nav-glass-interactive:focus-visible {
-  background-color: rgba(var(--nav-glass-item-hover), 0.3);
+  background-color: rgb(var(--nav-glass-item-hover) / 0.3);
 }
 
 @media (prefers-color-scheme: dark) {
