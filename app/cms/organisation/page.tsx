@@ -42,10 +42,13 @@ import {
   AtSign,
   Users,
   Check,
+  FileText,
 } from "lucide-react"
 import { toast } from "sonner"
 import { SUBJECTS, getSubjectsByIds } from "@/lib/constants/subjects"
 import type { TeacherWithSubjects, TeacherGender } from "@/lib/types/database.types"
+import { DocumentPicker } from "@/components/cms/document-picker"
+import Link from "next/link"
 
 // ---------------------------------------------------------------------------
 // Tab definitions (extensible for future tabs)
@@ -53,6 +56,7 @@ import type { TeacherWithSubjects, TeacherGender } from "@/lib/types/database.ty
 
 const TABS = [
   { id: "lehrer", label: "Lehrer", icon: GraduationCap },
+  { id: "dokumente", label: "Dokumente", icon: FileText },
 ] as const
 
 type TabId = (typeof TABS)[number]["id"]
@@ -111,7 +115,178 @@ export default function OrganisationPage() {
         <TabsContent value="lehrer" className="mt-6">
           <TeacherTab />
         </TabsContent>
+        <TabsContent value="dokumente" className="mt-6">
+          <DocumentPlacementsTab />
+        </TabsContent>
       </Tabs>
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Document Placements Tab
+// ---------------------------------------------------------------------------
+
+interface DocumentPlacement {
+  pageId: string
+  pageLabel: string
+  blockId: string
+  label: string
+  url: string
+  fileType: string
+}
+
+function DocumentPlacementsTab() {
+  const [placements, setPlacements] = useState<DocumentPlacement[]>([])
+  const [loading, setLoading] = useState(true)
+  const [search, setSearch] = useState("")
+  const [updatingBlockId, setUpdatingBlockId] = useState<string | null>(null)
+
+  const fetchPlacements = useCallback(async () => {
+    setLoading(true)
+    try {
+      const res = await fetch("/api/page-content/documents")
+      const data = await res.json()
+      if (Array.isArray(data.placements)) setPlacements(data.placements)
+    } catch {
+      toast.error("Fehler beim Laden der Dokumenten-Platzhalter")
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    fetchPlacements()
+  }, [fetchPlacements])
+
+  const filtered = useMemo(() => {
+    if (!search.trim()) return placements
+    const s = search.toLowerCase()
+    return placements.filter(
+      (p) =>
+        p.label.toLowerCase().includes(s) ||
+        p.pageLabel.toLowerCase().includes(s) ||
+        (p.url && p.url.toLowerCase().includes(s))
+    )
+  }, [placements, search])
+
+  const groupedByPage = useMemo(() => {
+    const groups: Record<string, { label: string; items: DocumentPlacement[] }> = {}
+    filtered.forEach((p) => {
+      if (!groups[p.pageId]) {
+        groups[p.pageId] = { label: p.pageLabel.replace('Seiteninhalt: ', ''), items: [] }
+      }
+      groups[p.pageId].items.push(p)
+    })
+    return groups
+  }, [filtered])
+
+  const handleUpdateDocument = async (placement: DocumentPlacement, newDoc: { url: string; fileType: string } | null) => {
+    setUpdatingBlockId(placement.blockId)
+    try {
+      const res = await fetch("/api/page-content/documents", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          pageId: placement.pageId,
+          blockId: placement.blockId,
+          url: newDoc ? newDoc.url : "",
+          fileType: newDoc ? newDoc.fileType : "",
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || "Fehler beim Speichern")
+      toast.success("Dokument aktualisiert")
+      fetchPlacements()
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Fehler beim Speichern")
+    } finally {
+      setUpdatingBlockId(null)
+    }
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Nach Dokumenten oder Seiten suchen…"
+            className="pl-9"
+          />
+        </div>
+        <p className="text-xs text-muted-foreground whitespace-nowrap">
+          {filtered.length} {filtered.length === 1 ? "Dokumenten-Block" : "Dokumenten-Blöcke"} gefunden
+        </p>
+      </div>
+
+      {loading ? (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        </div>
+      ) : Object.keys(groupedByPage).length === 0 ? (
+        <div className="text-center py-12 rounded-xl border bg-card">
+          <FileText className="mx-auto h-10 w-10 text-muted-foreground/50 mb-3" />
+          <p className="text-sm text-muted-foreground">
+            {placements.length === 0
+              ? "Es wurden noch keine Dokument-Blöcke auf Seiten angelegt."
+              : "Keine übereinstimmenden Dokument-Blöcke gefunden."}
+          </p>
+          {placements.length === 0 && (
+            <p className="text-xs text-muted-foreground mt-2 max-w-sm mx-auto">
+              Lehrer können im Seiten-Editor über den Baustein "Dokument" neue Platzhalter anlegen.
+            </p>
+          )}
+        </div>
+      ) : (
+        <div className="space-y-6">
+          {Object.entries(groupedByPage).map(([pageId, group]) => (
+            <div key={pageId} className="rounded-xl border bg-card overflow-hidden">
+              <div className="flex items-center justify-between bg-muted/40 px-4 py-3 border-b">
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold text-sm">{group.label}</span>
+                  <Badge variant="secondary" className="text-[10px]">{group.items.length}</Badge>
+                </div>
+                <Link href={`/cms/seiten-editor/${pageId}`} className="text-xs text-primary hover:underline">
+                  Seite bearbeiten
+                </Link>
+              </div>
+              <div className="divide-y">
+                {group.items.map((p) => (
+                  <div key={p.blockId} className="p-4 flex flex-col md:flex-row md:items-center gap-4 hover:bg-muted/10 transition-colors">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <p className="font-medium text-sm text-foreground truncate">{p.label}</p>
+                        {!p.url && (
+                          <Badge variant="destructive" className="text-[10px] px-1.5 py-0 h-4">
+                            Kein Dokument hinterlegt
+                          </Badge>
+                        )}
+                      </div>
+                      <p className="text-xs text-muted-foreground truncate font-mono">
+                        {p.url || "Bitte weisen Sie ein Dokument zu."}
+                      </p>
+                    </div>
+                    <div className="shrink-0 w-full md:w-auto flex items-center gap-3">
+                      {updatingBlockId === p.blockId && (
+                        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                      )}
+                      <div className="w-full md:w-64">
+                        <DocumentPicker
+                          value={p.url ? { url: p.url, title: p.url.split('/').pop() || p.label } : null}
+                          onChange={(doc) => handleUpdateDocument(p, doc)}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

@@ -6,13 +6,14 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ImagePicker } from "@/components/cms/image-picker"
-import { Plus, Trash2, GripVertical, ChevronDown, ChevronUp, CreditCard, ImageIcon, HelpCircle, Type, List, Quote, Minus, Video, MousePointerClick, Columns, MoveVertical, ListCollapse, Table2, CalendarDays, Download, Newspaper, Globe } from "lucide-react"
+import { DocumentPicker } from "@/components/cms/document-picker"
+import { Plus, Trash2, GripVertical, ChevronDown, ChevronUp, CreditCard, ImageIcon, HelpCircle, Type, List, Quote, Minus, Video, MousePointerClick, Columns, MoveVertical, ListCollapse, Table2, CalendarDays, Download, Newspaper, Globe, FileText } from "lucide-react"
 
 // ============================================================================
 // Block Types
 // ============================================================================
 
-export type BlockType = 'text' | 'cards' | 'faq' | 'gallery' | 'list' | 'hero' | 'quote' | 'divider' | 'video' | 'cta' | 'columns' | 'spacer' | 'accordion' | 'table' | 'tagged-events' | 'tagged-downloads' | 'tagged-posts' | 'iframe'
+export type BlockType = 'text' | 'cards' | 'faq' | 'gallery' | 'list' | 'hero' | 'quote' | 'divider' | 'video' | 'cta' | 'columns' | 'spacer' | 'accordion' | 'table' | 'tagged-events' | 'tagged-downloads' | 'tagged-posts' | 'iframe' | 'document'
 
 export interface ContentBlock {
   id: string
@@ -29,6 +30,7 @@ interface BlockOption {
 
 const BLOCK_OPTIONS: BlockOption[] = [
   { type: 'text', icon: Type, label: 'Textabschnitt', description: 'Überschrift und Absatz' },
+  { type: 'document', icon: FileText, label: 'Dokument', description: 'Einzelnes Dokument zum Herunterladen' },
   { type: 'cards', icon: CreditCard, label: 'Karten', description: '2-4 Karten mit Titel und Text' },
   { type: 'faq', icon: HelpCircle, label: 'FAQ / Aufklappbar', description: 'Aufklappbare Fragen und Antworten' },
   { type: 'gallery', icon: ImageIcon, label: 'Bildergalerie', description: 'Mehrere Bilder in einem Raster' },
@@ -107,6 +109,8 @@ function createDefaultBlock(type: BlockType): ContentBlock {
       return { id, type, data: { tagId: '', heading: 'Beiträge', limit: 5 } }
     case 'iframe':
       return { id, type, data: { url: '', title: '', height: '500', scrolling: 'auto', allowFullscreen: true, showBorder: true, caption: '' } }
+    case 'document':
+      return { id, type, data: { label: '', url: '', fileType: '' } }
   }
 }
 
@@ -263,9 +267,46 @@ function BlockContent({ block, onChange }: { block: ContentBlock; onChange: (dat
       return <TaggedContentBlockEditor type={block.type} data={block.data} onChange={onChange} />
     case 'iframe':
       return <IframeBlockEditor data={block.data} onChange={onChange} />
+    case 'document':
+      return <DocumentBlockEditor data={block.data} onChange={onChange} />
     default:
       return <p className="text-sm text-muted-foreground">Unbekannter Block-Typ</p>
   }
+}
+
+function DocumentBlockEditor({ data, onChange }: { data: Record<string, unknown>; onChange: (data: Record<string, unknown>) => void }) {
+  const label = (data.label as string) || ''
+  const url = (data.url as string) || ''
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <Label className="text-xs">Beschreibender Name (z.B. "Aktueller Klausurplan Q1") *</Label>
+        <Input
+          value={label}
+          onChange={(e) => onChange({ ...data, label: e.target.value })}
+          placeholder="Name des Dokuments"
+          className="mt-1"
+        />
+        <p className="mt-1 text-[10px] text-muted-foreground">Dieser Name wird den Besuchern als Button-Text angezeigt.</p>
+      </div>
+      <div>
+        <Label className="text-xs">Dokument (Optional, kann auch später in der Verwaltung zugewiesen werden)</Label>
+        <div className="mt-1">
+          <DocumentPicker
+            value={url ? { url, title: label || 'Dokument' } : null}
+            onChange={(doc) => {
+              if (doc) {
+                onChange({ ...data, url: doc.url, fileType: doc.fileType, label: label || doc.title })
+              } else {
+                onChange({ ...data, url: '', fileType: '' })
+              }
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  )
 }
 
 function TextBlockEditor({ data, onChange }: { data: Record<string, unknown>; onChange: (data: Record<string, unknown>) => void }) {
@@ -1331,6 +1372,27 @@ function BlockRenderer({ block }: { block: ContentBlock }) {
             />
           </div>
           {caption && <p className="mt-3 text-center text-sm text-muted-foreground">{caption}</p>}
+        </div>
+      )
+    }
+    case 'document': {
+      const label = (block.data.label as string) || 'Dokument'
+      const url = block.data.url as string
+
+      return (
+        <div className="mb-12">
+          <a
+            href={url || '#'}
+            target={url ? "_blank" : undefined}
+            rel={url ? "noopener noreferrer" : undefined}
+            className={`group flex max-w-sm items-center gap-4 rounded-2xl border border-border/60 bg-card/80 backdrop-blur-sm p-5 transition-all duration-500 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/[0.06] hover:-translate-y-0.5 ${!url ? 'opacity-60 cursor-not-allowed' : ''}`}
+            title={!url ? 'Dokument noch nicht hinterlegt' : undefined}
+          >
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary transition-all duration-500 group-hover:bg-primary group-hover:text-white group-hover:rotate-3">
+              <FileText className="h-5 w-5" />
+            </div>
+            <span className="text-sm font-medium text-card-foreground group-hover:text-primary transition-colors">{label}</span>
+          </a>
         </div>
       )
     }
