@@ -6,13 +6,14 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ImagePicker } from "@/components/cms/image-picker"
-import { Plus, Trash2, GripVertical, ChevronDown, ChevronUp, CreditCard, ImageIcon, HelpCircle, Type, List, Quote, Minus, Video, MousePointerClick, Columns, MoveVertical, ListCollapse, Table2, CalendarDays, Download, Newspaper, Globe } from "lucide-react"
+import { DocumentPicker } from "@/components/cms/document-picker"
+import { Plus, Trash2, GripVertical, ChevronDown, ChevronUp, CreditCard, ImageIcon, HelpCircle, Type, List, Quote, Minus, Video, MousePointerClick, Columns, MoveVertical, ListCollapse, Table2, CalendarDays, Download, Newspaper, Globe, FileDown } from "lucide-react"
 
 // ============================================================================
 // Block Types
 // ============================================================================
 
-export type BlockType = 'text' | 'cards' | 'faq' | 'gallery' | 'list' | 'hero' | 'quote' | 'divider' | 'video' | 'cta' | 'columns' | 'spacer' | 'accordion' | 'table' | 'tagged-events' | 'tagged-downloads' | 'tagged-posts' | 'iframe'
+export type BlockType = 'text' | 'cards' | 'faq' | 'gallery' | 'list' | 'hero' | 'quote' | 'divider' | 'video' | 'cta' | 'columns' | 'spacer' | 'accordion' | 'table' | 'tagged-events' | 'tagged-downloads' | 'tagged-posts' | 'iframe' | 'document'
 
 export interface ContentBlock {
   id: string
@@ -46,6 +47,7 @@ const BLOCK_OPTIONS: BlockOption[] = [
   { type: 'tagged-downloads', icon: Download, label: 'Downloads (Tag)', description: 'Downloads mit bestimmtem Tag anzeigen' },
   { type: 'tagged-posts', icon: Newspaper, label: 'Beiträge (Tag)', description: 'Beiträge mit bestimmtem Tag anzeigen' },
   { type: 'iframe', icon: Globe, label: 'Externe Website (iframe)', description: 'Drittseite per iframe einbetten' },
+  { type: 'document', icon: FileDown, label: 'Dokument', description: 'Download-Schaltfläche für ein Dokument' },
 ]
 
 // ============================================================================
@@ -107,6 +109,8 @@ function createDefaultBlock(type: BlockType): ContentBlock {
       return { id, type, data: { tagId: '', heading: 'Beiträge', limit: 5 } }
     case 'iframe':
       return { id, type, data: { url: '', title: '', height: '500', scrolling: 'auto', allowFullscreen: true, showBorder: true, caption: '' } }
+    case 'document':
+      return { id, type, data: { label: '', fileUrl: '', fileTitle: '', fileType: '' } }
   }
 }
 
@@ -263,6 +267,8 @@ function BlockContent({ block, onChange }: { block: ContentBlock; onChange: (dat
       return <TaggedContentBlockEditor type={block.type} data={block.data} onChange={onChange} />
     case 'iframe':
       return <IframeBlockEditor data={block.data} onChange={onChange} />
+    case 'document':
+      return <DocumentBlockEditor data={block.data} onChange={onChange} />
     default:
       return <p className="text-sm text-muted-foreground">Unbekannter Block-Typ</p>
   }
@@ -1063,6 +1069,58 @@ function TaggedContentBlockEditor({ type, data, onChange }: { type: string; data
   )
 }
 
+function DocumentBlockEditor({ data, onChange }: { data: Record<string, unknown>; onChange: (data: Record<string, unknown>) => void }) {
+  const label = (data.label as string) || ''
+  const fileUrl = (data.fileUrl as string) || ''
+  const fileTitle = (data.fileTitle as string) || ''
+
+  return (
+    <div className="space-y-3">
+      <p className="text-xs text-muted-foreground">
+        Erstellt eine Download-Schaltfläche. Geben Sie einen beschreibenden Namen an und wählen Sie eine Datei aus.
+      </p>
+      <div>
+        <Label className="text-xs">Bezeichnung <span className="text-destructive">*</span></Label>
+        <Input
+          value={label}
+          onChange={(e) => onChange({ ...data, label: e.target.value })}
+          placeholder="z.B. Aktueller Klausurplan Q1"
+          className="mt-1"
+        />
+        <p className="mt-1 text-[11px] text-muted-foreground">
+          Wird als Beschriftung der Download-Schaltfläche angezeigt.
+        </p>
+      </div>
+      <div>
+        <DocumentPicker
+          label="Dokument"
+          hint="Wählen Sie die Datei, die zum Download bereitgestellt werden soll."
+          value={fileUrl ? { url: fileUrl, title: fileTitle } : null}
+          onChange={(doc) => {
+            if (doc) {
+              onChange({ ...data, fileUrl: doc.url, fileTitle: doc.title, fileType: doc.fileType })
+            } else {
+              onChange({ ...data, fileUrl: '', fileTitle: '', fileType: '' })
+            }
+          }}
+        />
+      </div>
+      {fileUrl && (
+        <div className="rounded-lg border border-border/60 bg-muted/30 p-3">
+          <p className="text-xs font-medium text-muted-foreground mb-2">Vorschau</p>
+          <div className="flex items-center gap-3 rounded-xl border border-border/60 bg-card/80 px-4 py-3 text-sm">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <FileDown className="h-4 w-4" />
+            </div>
+            <span className="font-medium text-card-foreground flex-1">{label || 'Dokument'}</span>
+            <Download className="h-4 w-4 text-muted-foreground shrink-0" />
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ============================================================================
 
 export function renderBlocks(blocks: ContentBlock[]): React.ReactNode {
@@ -1331,6 +1389,33 @@ function BlockRenderer({ block }: { block: ContentBlock }) {
             />
           </div>
           {caption && <p className="mt-3 text-center text-sm text-muted-foreground">{caption}</p>}
+        </div>
+      )
+    }
+    case 'document': {
+      const label = (block.data.label as string) || 'Dokument'
+      const fileUrl = block.data.fileUrl as string
+      return (
+        <div className="mb-12">
+          {fileUrl ? (
+            <a
+              href={fileUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center gap-3 rounded-xl border border-border/60 bg-card/80 backdrop-blur-sm px-4 py-3 text-sm transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/[0.06]"
+            >
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-all group-hover:bg-primary group-hover:text-white">
+                <FileDown className="h-4 w-4" />
+              </div>
+              <span className="font-medium text-card-foreground flex-1">{label}</span>
+              <Download className="h-4 w-4 text-muted-foreground shrink-0" />
+            </a>
+          ) : (
+            <div className="flex items-center gap-3 rounded-xl border border-dashed border-border/60 bg-muted/30 px-4 py-3 text-sm text-muted-foreground">
+              <FileDown className="h-4 w-4" />
+              <span>{label} — Kein Dokument hinterlegt</span>
+            </div>
+          )}
         </div>
       )
     }

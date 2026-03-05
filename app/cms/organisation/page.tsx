@@ -42,9 +42,15 @@ import {
   AtSign,
   Users,
   Check,
+  FileText,
+  FileDown,
+  Download,
+  ExternalLink,
+  RefreshCw,
 } from "lucide-react"
 import { toast } from "sonner"
 import { SUBJECTS, getSubjectsByIds } from "@/lib/constants/subjects"
+import { DocumentPicker } from "@/components/cms/document-picker"
 import type { TeacherWithSubjects, TeacherGender } from "@/lib/types/database.types"
 
 // ---------------------------------------------------------------------------
@@ -53,6 +59,7 @@ import type { TeacherWithSubjects, TeacherGender } from "@/lib/types/database.ty
 
 const TABS = [
   { id: "lehrer", label: "Lehrer", icon: GraduationCap },
+  { id: "dokumente", label: "Dokumente", icon: FileText },
 ] as const
 
 type TabId = (typeof TABS)[number]["id"]
@@ -110,6 +117,9 @@ export default function OrganisationPage() {
         </TabsList>
         <TabsContent value="lehrer" className="mt-6">
           <TeacherTab />
+        </TabsContent>
+        <TabsContent value="dokumente" className="mt-6">
+          <DocumentsTab />
         </TabsContent>
       </Tabs>
     </div>
@@ -661,6 +671,269 @@ function SubjectPicker({
           <p className="px-2.5 py-2 text-xs text-muted-foreground">Kein Fach gefunden</p>
         )}
       </div>
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Documents Tab — Centralized document placeholder management
+// ---------------------------------------------------------------------------
+
+interface DocumentPlaceholder {
+  blockId: string
+  label: string
+  fileUrl: string
+  fileTitle: string
+  fileType: string
+}
+
+interface PageWithPlaceholders {
+  pageId: string
+  pageTitle: string
+  pageSlug: string
+  placeholders: DocumentPlaceholder[]
+}
+
+function DocumentsTab() {
+  const [pages, setPages] = useState<PageWithPlaceholders[]>([])
+  const [loading, setLoading] = useState(true)
+  const [updatingId, setUpdatingId] = useState<string | null>(null)
+
+  const loadPlaceholders = useCallback(async () => {
+    setLoading(true)
+    try {
+      const res = await fetch("/api/document-placeholders")
+      if (res.ok) {
+        const data = await res.json()
+        setPages(data)
+      }
+    } catch {
+      // Silent fail
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    loadPlaceholders()
+  }, [loadPlaceholders])
+
+  const handleDocumentChange = async (
+    pageId: string,
+    blockId: string,
+    doc: { url: string; title: string; fileType: string } | null
+  ) => {
+    setUpdatingId(blockId)
+    try {
+      const res = await fetch("/api/document-placeholders", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          pageId,
+          blockId,
+          fileUrl: doc?.url || "",
+          fileTitle: doc?.title || "",
+          fileType: doc?.fileType || "",
+        }),
+      })
+      if (res.ok) {
+        // Update local state
+        setPages((prev) =>
+          prev.map((page) =>
+            page.pageId === pageId
+              ? {
+                  ...page,
+                  placeholders: page.placeholders.map((p) =>
+                    p.blockId === blockId
+                      ? {
+                          ...p,
+                          fileUrl: doc?.url || "",
+                          fileTitle: doc?.title || "",
+                          fileType: doc?.fileType || "",
+                        }
+                      : p
+                  ),
+                }
+              : page
+          )
+        )
+        toast.success("Dokument aktualisiert")
+      } else {
+        toast.error("Fehler beim Aktualisieren")
+      }
+    } catch {
+      toast.error("Fehler beim Aktualisieren")
+    } finally {
+      setUpdatingId(null)
+    }
+  }
+
+  const totalPlaceholders = pages.reduce(
+    (sum, page) => sum + page.placeholders.length,
+    0
+  )
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="font-display text-xl font-semibold">
+            Dokumentenverwaltung
+          </h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            Alle Dokument-Platzhalter auf Unterseiten im Überblick.
+            Tauschen Sie Dokumente zentral aus, ohne jede Seite einzeln
+            bearbeiten zu müssen.
+          </p>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={loadPlaceholders}
+          className="gap-1.5"
+        >
+          <RefreshCw className="h-3.5 w-3.5" />
+          Aktualisieren
+        </Button>
+      </div>
+
+      {/* Stats */}
+      <div className="flex gap-4">
+        <div className="rounded-xl border bg-card px-4 py-3">
+          <p className="text-2xl font-bold text-foreground">{totalPlaceholders}</p>
+          <p className="text-xs text-muted-foreground">Dokument-Platzhalter</p>
+        </div>
+        <div className="rounded-xl border bg-card px-4 py-3">
+          <p className="text-2xl font-bold text-foreground">{pages.length}</p>
+          <p className="text-xs text-muted-foreground">Seiten mit Dokumenten</p>
+        </div>
+        <div className="rounded-xl border bg-card px-4 py-3">
+          <p className="text-2xl font-bold text-foreground">
+            {pages.reduce(
+              (sum, p) => sum + p.placeholders.filter((pl) => !pl.fileUrl).length,
+              0
+            )}
+          </p>
+          <p className="text-xs text-muted-foreground">Ohne Datei</p>
+        </div>
+      </div>
+
+      {/* Content */}
+      {pages.length === 0 ? (
+        <div className="rounded-2xl border bg-card p-12 text-center">
+          <FileDown className="mx-auto h-10 w-10 text-muted-foreground/30 mb-4" />
+          <h3 className="font-display text-lg font-semibold text-foreground">
+            Keine Dokument-Platzhalter vorhanden
+          </h3>
+          <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">
+            Fügen Sie auf Ihren Unterseiten den Baustein &ldquo;Dokument&rdquo;
+            hinzu, um hier Dokumente zentral verwalten zu können.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-6">
+          {pages.map((page) => (
+            <div
+              key={page.pageId}
+              className="rounded-2xl border bg-card overflow-hidden"
+            >
+              {/* Page header */}
+              <div className="flex items-center justify-between border-b px-6 py-4 bg-muted/30">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <FileText className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <h3 className="font-display text-sm font-semibold text-foreground">
+                      {page.pageTitle}
+                    </h3>
+                    <p className="text-xs text-muted-foreground">
+                      /seiten/{page.pageSlug} · {page.placeholders.length}{" "}
+                      {page.placeholders.length === 1
+                        ? "Dokument"
+                        : "Dokumente"}
+                    </p>
+                  </div>
+                </div>
+                <a
+                  href={`/cms/seiten/${page.pageId}/bearbeiten`}
+                  className="text-xs text-primary hover:underline flex items-center gap-1"
+                >
+                  <ExternalLink className="h-3 w-3" />
+                  Seite bearbeiten
+                </a>
+              </div>
+
+              {/* Placeholders */}
+              <div className="divide-y">
+                {page.placeholders.map((placeholder) => (
+                  <div
+                    key={placeholder.blockId}
+                    className="px-6 py-4 flex items-start gap-4"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm text-foreground">
+                        {placeholder.label || "Unbenanntes Dokument"}
+                      </p>
+                      {placeholder.fileUrl ? (
+                        <div className="mt-2 flex items-center gap-2">
+                          <Badge
+                            variant="secondary"
+                            className="gap-1 text-xs font-normal"
+                          >
+                            <Download className="h-3 w-3" />
+                            {placeholder.fileTitle ||
+                              placeholder.fileUrl.split("/").pop()}
+                          </Badge>
+                          <a
+                            href={placeholder.fileUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-primary hover:underline"
+                          >
+                            Öffnen
+                          </a>
+                        </div>
+                      ) : (
+                        <p className="mt-1 text-xs text-amber-600">
+                          ⚠ Kein Dokument hinterlegt
+                        </p>
+                      )}
+                    </div>
+                    <div className="shrink-0">
+                      <DocumentPicker
+                        value={
+                          placeholder.fileUrl
+                            ? {
+                                url: placeholder.fileUrl,
+                                title: placeholder.fileTitle,
+                              }
+                            : null
+                        }
+                        onChange={(doc) =>
+                          handleDocumentChange(page.pageId, placeholder.blockId, doc)
+                        }
+                      />
+                      {updatingId === placeholder.blockId && (
+                        <Loader2 className="mt-1 h-4 w-4 animate-spin text-muted-foreground" />
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

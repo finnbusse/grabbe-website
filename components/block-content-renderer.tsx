@@ -320,6 +320,27 @@ function BlockRenderer({ block }: { block: ContentBlock }) {
         </div>
       )
     }
+    case 'document': {
+      const label = (block.data.label as string) || 'Dokument'
+      const fileUrl = block.data.fileUrl as string
+      if (!fileUrl) return null
+      return (
+        <div className="mb-12">
+          <a
+            href={fileUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex items-center gap-3 rounded-xl border border-border/60 bg-card/80 backdrop-blur-sm px-4 py-3 text-sm transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/[0.06]"
+          >
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-all group-hover:bg-primary group-hover:text-white">
+              <FileText className="h-4 w-4" />
+            </div>
+            <span className="font-medium text-card-foreground flex-1">{label}</span>
+            <Download className="h-4 w-4 text-muted-foreground shrink-0" />
+          </a>
+        </div>
+      )
+    }
     default:
       return null
   }
