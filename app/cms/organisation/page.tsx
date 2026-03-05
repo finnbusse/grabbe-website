@@ -691,8 +691,39 @@ interface PageWithPlaceholders {
   pageId: string
   pageTitle: string
   pageSlug: string
+  source: "static" | "block"
   placeholders: DocumentPlaceholder[]
 }
+
+/**
+ * Default static-page document slots — returned when the API returns nothing
+ * for the static pages (because no content has been saved to DB yet).
+ */
+const STATIC_PAGE_DEFAULTS: PageWithPlaceholders[] = [
+  {
+    pageId: "oberstufe",
+    pageTitle: "Oberstufe",
+    pageSlug: "/unsere-schule/oberstufe",
+    source: "static",
+    placeholders: [
+      { blockId: "antraege_document_slots::antraege_wlan", label: "Antrag WLAN", fileUrl: "", fileTitle: "", fileType: "" },
+      { blockId: "antraege_document_slots::antraege_tablet_knigge", label: "Tablet-Knigge", fileUrl: "", fileTitle: "", fileType: "" },
+      { blockId: "antraege_document_slots::antraege_webuntis", label: "Antrag WebUntis", fileUrl: "", fileTitle: "", fileType: "" },
+      { blockId: "klausuren_document_slots::klausuren_ef2", label: "Klausurplan EF_2", fileUrl: "", fileTitle: "", fileType: "" },
+      { blockId: "klausuren_document_slots::klausuren_q12", label: "Klausurplan Q1_2", fileUrl: "", fileTitle: "", fileType: "" },
+      { blockId: "klausuren_document_slots::klausuren_regelungen", label: "Klausurregelungen ab dem 2. Halbjahr 2025/26", fileUrl: "", fileTitle: "", fileType: "" },
+      { blockId: "klausuren_document_slots::klausuren_uebersicht", label: "Übersicht Anzahl und Länge der Klausuren", fileUrl: "", fileTitle: "", fileType: "" },
+      { blockId: "fehlzeiten_document_slots::fehlzeiten_entschuldigungsformular", label: "Entschuldigungsformular", fileUrl: "", fileTitle: "", fileType: "" },
+      { blockId: "fehlzeiten_document_slots::fehlzeiten_beurlaubungsantrag", label: "Beurlaubungsantrag", fileUrl: "", fileTitle: "", fileType: "" },
+      { blockId: "fehlzeiten_document_slots::fehlzeiten_hinweise_beurlaubung", label: "Hinweise zu Beurlaubungen", fileUrl: "", fileTitle: "", fileType: "" },
+      { blockId: "laufbahn_document_slots::laufbahn_lupo", label: "Anleitung zur Schülerversion von LuPO", fileUrl: "", fileTitle: "", fileType: "" },
+      { blockId: "laufbahn_document_slots::laufbahn_broschuere", label: "Broschüre: Die gymnasiale Oberstufe", fileUrl: "", fileTitle: "", fileType: "" },
+      { blockId: "laufbahn_document_slots::laufbahn_merkblaetter", label: "Merkblätter des Bildungsministeriums", fileUrl: "", fileTitle: "", fileType: "" },
+      { blockId: "facharbeit_document_slots::facharbeit_terminplan", label: "Terminplan Facharbeit", fileUrl: "", fileTitle: "", fileType: "" },
+      { blockId: "facharbeit_document_slots::facharbeit_handreichung", label: "Handreichung zur Facharbeit (2025)", fileUrl: "", fileTitle: "", fileType: "" },
+    ],
+  },
+]
 
 function DocumentsTab() {
   const [pages, setPages] = useState<PageWithPlaceholders[]>([])
@@ -704,11 +735,22 @@ function DocumentsTab() {
     try {
       const res = await fetch("/api/document-placeholders")
       if (res.ok) {
-        const data = await res.json()
-        setPages(data)
+        const data: PageWithPlaceholders[] = await res.json()
+        // Merge API results with defaults for static pages that haven't been
+        // saved to the DB yet (so teachers always see all known slots).
+        const staticPageIds = new Set(
+          data.filter((p) => p.source === "static").map((p) => p.pageId)
+        )
+        const missing = STATIC_PAGE_DEFAULTS.filter(
+          (d) => !staticPageIds.has(d.pageId)
+        )
+        setPages([...data, ...missing])
+      } else {
+        // Fallback to defaults if API fails
+        setPages(STATIC_PAGE_DEFAULTS)
       }
     } catch {
-      // Silent fail
+      setPages(STATIC_PAGE_DEFAULTS)
     } finally {
       setLoading(false)
     }
@@ -721,6 +763,7 @@ function DocumentsTab() {
   const handleDocumentChange = async (
     pageId: string,
     blockId: string,
+    source: "static" | "block",
     doc: { url: string; title: string; fileType: string } | null
   ) => {
     setUpdatingId(blockId)
@@ -731,6 +774,7 @@ function DocumentsTab() {
         body: JSON.stringify({
           pageId,
           blockId,
+          source,
           fileUrl: doc?.url || "",
           fileTitle: doc?.title || "",
           fileType: doc?.fileType || "",
@@ -857,20 +901,30 @@ function DocumentsTab() {
                       {page.pageTitle}
                     </h3>
                     <p className="text-xs text-muted-foreground">
-                      /seiten/{page.pageSlug} · {page.placeholders.length}{" "}
+                      {page.pageSlug} · {page.placeholders.length}{" "}
                       {page.placeholders.length === 1
                         ? "Dokument"
                         : "Dokumente"}
                     </p>
                   </div>
                 </div>
-                <a
-                  href={`/cms/seiten/${page.pageId}/bearbeiten`}
-                  className="text-xs text-primary hover:underline flex items-center gap-1"
-                >
-                  <ExternalLink className="h-3 w-3" />
-                  Seite bearbeiten
-                </a>
+                {page.source === "block" ? (
+                  <a
+                    href={`/cms/seiten/${page.pageId}/bearbeiten`}
+                    className="text-xs text-primary hover:underline flex items-center gap-1"
+                  >
+                    <ExternalLink className="h-3 w-3" />
+                    Seite bearbeiten
+                  </a>
+                ) : (
+                  <a
+                    href={`/cms/seiten-editor/${page.pageId}`}
+                    className="text-xs text-primary hover:underline flex items-center gap-1"
+                  >
+                    <ExternalLink className="h-3 w-3" />
+                    Seite bearbeiten
+                  </a>
+                )}
               </div>
 
               {/* Placeholders */}
@@ -920,7 +974,7 @@ function DocumentsTab() {
                             : null
                         }
                         onChange={(doc) =>
-                          handleDocumentChange(page.pageId, placeholder.blockId, doc)
+                          handleDocumentChange(page.pageId, placeholder.blockId, page.source, doc)
                         }
                       />
                       {updatingId === placeholder.blockId && (

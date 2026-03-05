@@ -300,6 +300,12 @@ export const PAGE_DEFAULTS = {
     antraege_office: 'Alle Lehrenden und Lernenden unserer Schule haben die Möglichkeit, Office 365 zu nutzen; dafür ist kein gesonderter Antrag erforderlich. Die Anmeldedaten von IServ verwenden. Tipp: Bei Anmeldung direkt bei Office den Nutzerinnennamen in der Form mit ...@grabbe-dt.de wählen.',
     // Tag IDs for modular tagged content blocks (configured in CMS)
     antraege_downloads_tag_id: '',
+    // Document slots — JSON arrays of { id, label, fileUrl, fileTitle, fileType }
+    antraege_document_slots: JSON.stringify([
+      { id: 'antraege_wlan', label: 'Antrag WLAN', fileUrl: '', fileTitle: '', fileType: '' },
+      { id: 'antraege_tablet_knigge', label: 'Tablet-Knigge', fileUrl: '', fileTitle: '', fileType: '' },
+      { id: 'antraege_webuntis', label: 'Antrag WebUntis', fileUrl: '', fileTitle: '', fileType: '' },
+    ]),
 
     // Beratung section
     beratung_title: 'Beratungsangebote',
@@ -323,12 +329,23 @@ export const PAGE_DEFAULTS = {
     laufbahn_text: 'Weitere Informationen z.B. zum Zentralabitur oder einzelnen Fächern sind auch auf den Seiten des Ministeriums zugänglich.',
     laufbahn_links: 'Bildungsportal NRW|https://www.schulministerium.nrw.de,FAQ zur Oberstufe|https://www.schulministerium.nrw.de/themen/schulsystem/schulformen/gymnasium/gymnasiale-oberstufe,Standardsicherung NRW|https://www.standardsicherung.schulministerium.nrw.de',
     laufbahn_downloads_tag_id: '',
+    laufbahn_document_slots: JSON.stringify([
+      { id: 'laufbahn_lupo', label: 'Anleitung zur Schülerversion von LuPO', fileUrl: '', fileTitle: '', fileType: '' },
+      { id: 'laufbahn_broschuere', label: 'Broschüre: Die gymnasiale Oberstufe', fileUrl: '', fileTitle: '', fileType: '' },
+      { id: 'laufbahn_merkblaetter', label: 'Merkblätter des Bildungsministeriums', fileUrl: '', fileTitle: '', fileType: '' },
+    ]),
 
     // Klausuren
     klausuren_title: 'Klausuren',
     klausuren_text: 'Die Klausurpläne werden hier jeweils zu Beginn des Halbjahres veröffentlicht und im Kasten im Neubaufoyer ausgehängt. Bitte meldet euch umgehend, falls für euch trotz sorgfältiger Prüfung versehentlich mehr als drei Klausuren pro Woche angesetzt sind oder es andere Terminschwierigkeiten gibt.',
     klausuren_nachschreiben: 'Schülerinnen und Schüler, die eine Klausur aus von ihnen zu vertretenden Gründen versäumen (z.B. Termin falsch notiert, verschlafen usw.), haben keinen Anspruch auf eine Nachschreibklausur; für alle anderen finden jeweils gegen Ende eines Quartals Nachschreibtermine statt.',
     klausuren_downloads_tag_id: '',
+    klausuren_document_slots: JSON.stringify([
+      { id: 'klausuren_ef2', label: 'Klausurplan EF_2', fileUrl: '', fileTitle: '', fileType: '' },
+      { id: 'klausuren_q12', label: 'Klausurplan Q1_2', fileUrl: '', fileTitle: '', fileType: '' },
+      { id: 'klausuren_regelungen', label: 'Klausurregelungen ab dem 2. Halbjahr 2025/26', fileUrl: '', fileTitle: '', fileType: '' },
+      { id: 'klausuren_uebersicht', label: 'Übersicht Anzahl und Länge der Klausuren', fileUrl: '', fileTitle: '', fileType: '' },
+    ]),
 
     // Fehlzeiten
     fehlzeiten_title: 'Fehlzeiten und Beurlaubungen',
@@ -337,11 +354,20 @@ export const PAGE_DEFAULTS = {
     fehlzeiten_beurlaubung: 'Bei allen im Voraus absehbaren Terminen (z.B. nicht akut bedingte Arztbesuche, Fahrprüfung) ist rechtzeitig ein Antrag auf Beurlaubung vom Unterricht zu stellen. Für Tage, an denen Klausuren oder andere Prüfungen angesetzt sind, kann eine Beurlaubung nur in begründeten Ausnahmefällen gewährt werden.',
     fehlzeiten_hinweis: 'Fehlzeiten, für die nicht innerhalb einer Woche nach Rückkehr in den Unterricht eine Entschuldigung vorgelegt worden ist, gelten als unentschuldigt und können als nicht erbrachte Leistungen in die Notengebung einfließen. Schülerinnen und Schüler sind verpflichtet, den versäumten Stoff selbstständig nachzuarbeiten.',
     fehlzeiten_downloads_tag_id: '',
+    fehlzeiten_document_slots: JSON.stringify([
+      { id: 'fehlzeiten_entschuldigungsformular', label: 'Entschuldigungsformular', fileUrl: '', fileTitle: '', fileType: '' },
+      { id: 'fehlzeiten_beurlaubungsantrag', label: 'Beurlaubungsantrag', fileUrl: '', fileTitle: '', fileType: '' },
+      { id: 'fehlzeiten_hinweise_beurlaubung', label: 'Hinweise zu Beurlaubungen', fileUrl: '', fileTitle: '', fileType: '' },
+    ]),
 
     // Facharbeit
     facharbeit_title: 'Facharbeit',
     facharbeit_text: 'Alle Informationen zur Facharbeit finden sich hier. Bitte beachtet den Terminplan für das aktuelle Schuljahr und die Handreichung zur Facharbeit.',
     facharbeit_downloads_tag_id: '',
+    facharbeit_document_slots: JSON.stringify([
+      { id: 'facharbeit_terminplan', label: 'Terminplan Facharbeit', fileUrl: '', fileTitle: '', fileType: '' },
+      { id: 'facharbeit_handreichung', label: 'Handreichung zur Facharbeit (2025)', fileUrl: '', fileTitle: '', fileType: '' },
+    ]),
 
     // Berufsorientierung
     berufsorientierung_title: 'Berufsorientierung',

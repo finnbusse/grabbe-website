@@ -2,9 +2,8 @@
 
 import type { ReactNode } from "react"
 import Link from "next/link"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, FileText, Download } from "lucide-react"
 import { AnimateOnScroll } from "./animate-on-scroll"
-import { trackEvent } from "@/lib/analytics"
 
 interface QuickLink {
   label: string
@@ -169,19 +168,32 @@ export function OberstufeSections({ content, quicklinks }: OberstufeSectionsProp
                 <div className="rounded-2xl border border-border/60 bg-card/80 backdrop-blur-sm p-8">
                   <h3 className="font-display text-xl text-card-foreground">Downloads</h3>
                   <div className="mt-5 space-y-3">
-                    {['Antrag WLAN', 'Tablet-Knigge', 'Antrag WebUntis'].map((label) => (
-                      <button
-                        key={label}
-                        onClick={() => trackEvent("oberstufe_download_click", { label })}
-                        className="flex w-full items-center gap-3 rounded-xl border border-border/60 bg-background px-4 py-3 text-sm transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/[0.06] group"
-                      >
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-all group-hover:bg-primary group-hover:text-white">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
-                        </div>
-                        <span className="font-medium text-card-foreground text-left flex-1">{label}</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-muted-foreground shrink-0"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-                      </button>
-                    ))}
+                    {(() => {
+                      let slots: Array<{ id: string; label: string; fileUrl: string }> = []
+                      try {
+                        const raw = content.antraege_document_slots as string
+                        if (raw) slots = JSON.parse(raw)
+                      } catch { /* empty */ }
+                      const withFiles = slots.filter((s) => s.fileUrl)
+                      if (withFiles.length === 0) return (
+                        <p className="text-sm text-muted-foreground">Noch keine Dokumente hinterlegt.</p>
+                      )
+                      return withFiles.map((slot) => (
+                        <a
+                          key={slot.id}
+                          href={slot.fileUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex w-full items-center gap-3 rounded-xl border border-border/60 bg-background px-4 py-3 text-sm transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/[0.06] group"
+                        >
+                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-all group-hover:bg-primary group-hover:text-white">
+                            <FileText className="h-4 w-4" />
+                          </div>
+                          <span className="font-medium text-card-foreground text-left flex-1">{slot.label}</span>
+                          <Download className="h-4 w-4 text-muted-foreground shrink-0" />
+                        </a>
+                      ))
+                    })()}
                   </div>
                 </div>
 

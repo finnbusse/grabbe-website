@@ -3,6 +3,7 @@ import { PageHero } from "@/components/page-hero"
 import { getPageContent, PAGE_DEFAULTS } from "@/lib/page-content"
 import { TaggedSection } from "@/components/tagged-section"
 import { OberstufeSections } from "@/components/oberstufe-sections"
+import { parseDocumentSlots, DocumentSlotList } from "@/components/document-slot-button"
 import Link from "next/link"
 import { generatePageMetadata } from "@/lib/seo"
 import type { Metadata } from "next"
@@ -161,22 +162,11 @@ export default async function OberstufePage() {
                   </div>
                 </div>
 
-                {/* Dummy download buttons for Klausurpläne */}
-                <div className="mt-6 space-y-2">
-                  <h3 className="font-display text-sm font-semibold text-foreground">Klausurpläne</h3>
-                  {['Klausurplan EF_2', 'Klausurplan Q1_2', 'Klausurregelungen ab dem 2. Halbjahr 2025/26', 'Übersicht Anzahl und Länge der Klausuren'].map((label) => (
-                    <button
-                      key={label}
-                      className="flex w-full items-center gap-3 rounded-xl border border-border/60 bg-card/80 backdrop-blur-sm px-4 py-3 text-sm transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/[0.06] group"
-                    >
-                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-all group-hover:bg-primary group-hover:text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
-                      </div>
-                      <span className="font-medium text-card-foreground text-left flex-1">{label}</span>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-muted-foreground shrink-0"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-                    </button>
-                  ))}
-                </div>
+                {/* CMS-managed document slots for Klausurpläne */}
+                <DocumentSlotList
+                  slots={parseDocumentSlots(content.klausuren_document_slots)}
+                  heading="Klausurpläne"
+                />
 
                 {/* Tagged downloads for exam schedules */}
                 {(content.klausuren_downloads_tag_id as string) && (
@@ -207,22 +197,11 @@ export default async function OberstufePage() {
                   </div>
                 </div>
 
-                {/* Dummy download buttons for Fehlzeiten forms */}
-                <div className="mt-6 space-y-2">
-                  <h3 className="font-display text-sm font-semibold text-foreground">Formulare</h3>
-                  {['Entschuldigungsformular', 'Beurlaubungsantrag', 'Hinweise zu Beurlaubungen'].map((label) => (
-                    <button
-                      key={label}
-                      className="flex w-full items-center gap-3 rounded-xl border border-border/60 bg-card/80 backdrop-blur-sm px-4 py-3 text-sm transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/[0.06] group"
-                    >
-                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-all group-hover:bg-primary group-hover:text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
-                      </div>
-                      <span className="font-medium text-card-foreground text-left flex-1">{label}</span>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-muted-foreground shrink-0"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-                    </button>
-                  ))}
-                </div>
+                {/* CMS-managed document slots for Fehlzeiten */}
+                <DocumentSlotList
+                  slots={parseDocumentSlots(content.fehlzeiten_document_slots)}
+                  heading="Formulare"
+                />
 
                 {/* Tagged downloads for absence forms */}
                 {(content.fehlzeiten_downloads_tag_id as string) && (
@@ -247,22 +226,11 @@ export default async function OberstufePage() {
                 </h2>
                 <p className="mt-6 text-sm leading-relaxed text-muted-foreground">{content.laufbahn_text}</p>
 
-                {/* Dummy download buttons for Laufbahn docs */}
-                <div className="mt-6 space-y-2">
-                  <h3 className="font-display text-sm font-semibold text-foreground">Dokumente</h3>
-                  {['Anleitung zur Schülerversion von LuPO', 'Broschüre: Die gymnasiale Oberstufe', 'Merkblätter des Bildungsministeriums'].map((label) => (
-                    <button
-                      key={label}
-                      className="flex w-full items-center gap-3 rounded-xl border border-border/60 bg-card/80 backdrop-blur-sm px-4 py-3 text-sm transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/[0.06] group"
-                    >
-                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-all group-hover:bg-primary group-hover:text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
-                      </div>
-                      <span className="font-medium text-card-foreground text-left flex-1">{label}</span>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-muted-foreground shrink-0"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-                    </button>
-                  ))}
-                </div>
+                {/* CMS-managed document slots for Laufbahn docs */}
+                <DocumentSlotList
+                  slots={parseDocumentSlots(content.laufbahn_document_slots)}
+                  heading="Dokumente"
+                />
 
                 {/* Tagged downloads for career planning docs */}
                 {(content.laufbahn_downloads_tag_id as string) && (
@@ -303,22 +271,11 @@ export default async function OberstufePage() {
                 </h2>
                 <p className="mt-6 text-sm leading-relaxed text-muted-foreground">{content.facharbeit_text}</p>
 
-                {/* Dummy download buttons for Facharbeit */}
-                <div className="mt-6 space-y-2">
-                  <h3 className="font-display text-sm font-semibold text-foreground">Dokumente</h3>
-                  {['Terminplan Facharbeit', 'Handreichung zur Facharbeit (2025)'].map((label) => (
-                    <button
-                      key={label}
-                      className="flex w-full items-center gap-3 rounded-xl border border-border/60 bg-card/80 backdrop-blur-sm px-4 py-3 text-sm transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/[0.06] group"
-                    >
-                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-all group-hover:bg-primary group-hover:text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
-                      </div>
-                      <span className="font-medium text-card-foreground text-left flex-1">{label}</span>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-muted-foreground shrink-0"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-                    </button>
-                  ))}
-                </div>
+                {/* CMS-managed document slots for Facharbeit */}
+                <DocumentSlotList
+                  slots={parseDocumentSlots(content.facharbeit_document_slots)}
+                  heading="Dokumente"
+                />
 
                 {/* Tagged downloads for research paper docs */}
                 {(content.facharbeit_downloads_tag_id as string) && (
