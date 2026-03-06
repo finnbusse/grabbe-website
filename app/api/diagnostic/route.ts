@@ -234,7 +234,6 @@ export async function GET() {
     results.checks.global_error = {
       status: 'EXCEPTION',
       error: error.message,
-      stack: error.stack,
     }
     results.errors.push(`Global error: ${error.message}`)
     
