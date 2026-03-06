@@ -63,7 +63,7 @@ export function isBlockContent(content: string): boolean {
   try {
     if (content.startsWith("[{")) {
       const parsed = JSON.parse(content)
-      return Array.isArray(parsed) && parsed.length > 0 && parsed[0].type && parsed[0].id
+      return !!(Array.isArray(parsed) && parsed.length > 0 && parsed[0].type && parsed[0].id)
     }
   } catch {
     // not block content
