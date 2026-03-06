@@ -1,4 +1,4 @@
-import { getSettings, getNavigation, getAllNavItems } from "@/lib/settings"
+import { getSettings, getNavigation } from "@/lib/settings"
 import { SiteHeader, type NavItemData } from "@/components/site-header"
 import { SiteFooter, type FooterLink } from "@/components/site-footer"
 
@@ -6,8 +6,8 @@ export async function SiteLayout({ children }: { children: React.ReactNode }) {
   const [settings, headerNav, footerNav, footerLegalNav] = await Promise.all([
     getSettings(),
     getNavigation("header"),
-    getAllNavItems("footer"),
-    getAllNavItems("footer-legal"),
+    getNavigation("footer"),
+    getNavigation("footer-legal"),
   ])
 
   const defaultNavItems: NavItemData[] = [
