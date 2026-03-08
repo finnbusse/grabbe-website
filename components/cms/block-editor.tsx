@@ -166,6 +166,8 @@ export function BlockEditor({ blocks, onChange }: BlockEditorProps) {
                 variant="ghost" size="icon" className="h-7 w-7"
                 onClick={() => moveBlock(index, 'up')}
                 disabled={index === 0}
+                aria-label="Nach oben verschieben"
+                title="Nach oben verschieben"
               >
                 <ChevronUp className="h-3.5 w-3.5" />
               </Button>
@@ -173,12 +175,16 @@ export function BlockEditor({ blocks, onChange }: BlockEditorProps) {
                 variant="ghost" size="icon" className="h-7 w-7"
                 onClick={() => moveBlock(index, 'down')}
                 disabled={index === blocks.length - 1}
+                aria-label="Nach unten verschieben"
+                title="Nach unten verschieben"
               >
                 <ChevronDown className="h-3.5 w-3.5" />
               </Button>
               <Button
                 variant="ghost" size="icon" className="h-7 w-7 text-destructive hover:text-destructive"
                 onClick={() => removeBlock(index)}
+                aria-label="Block löschen"
+                title="Block löschen"
               >
                 <Trash2 className="h-3.5 w-3.5" />
               </Button>

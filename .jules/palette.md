@@ -1,0 +1,3 @@
+## 2024-05-24 - [A11y Issue Pattern: Missing ARIA Labels on CMS Icon Buttons]
+**Learning:** Found an accessibility issue pattern across CMS components (especially `components/cms/block-editor.tsx`) where icon-only action buttons (e.g. for reordering and deleting blocks) lacked `aria-label` and `title` attributes. This makes screen reader navigation and general usability difficult since their purposes aren't clear without visual context.
+**Action:** Always verify that `<Button size="icon">` usages, particularly in highly interactive and complex components like content editors or wizards, include comprehensive `aria-label` and `title` attributes (using German terms consistent with the rest of the app like "Nach oben verschieben", "Block löschen").
