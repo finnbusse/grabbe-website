@@ -25,14 +25,46 @@ export default async function HomePage() {
     'homepage-news', 'homepage-calendar',
   ]
 
-  const [postsRes, eventsRes, pageContents, campaignsRes] = await Promise.all([
+  const [postsWithProfiles, eventsRes, pageContents, campaignsRes] = await Promise.all([
+    // Fetch posts and then chain the dependent author profiles fetch
+    // so it runs concurrently with events, page contents, and campaigns
     supabase
       .from("posts")
       .select("id, title, slug, excerpt, category, image_url, author_name, event_date, created_at, user_id")
       .eq("status", "published")
       .order("event_date", { ascending: false, nullsFirst: false })
       .order("created_at", { ascending: false })
-      .limit(4),
+      .limit(4)
+      .then(async (postsRes) => {
+        const posts = postsRes.data || []
+        const userIds = [...new Set(posts.map(p => p.user_id).filter(Boolean))]
+        let authorProfiles: Record<string, { first_name?: string; last_name?: string; title?: string; avatar_url?: string | null }> = {}
+
+        if (userIds.length > 0) {
+          const { data: profiles, error: profilesError } = await supabase
+            .from("user_profiles")
+            .select("user_id, first_name, last_name, title, avatar_url")
+            .in("user_id", userIds)
+
+          if (profiles) {
+            authorProfiles = Object.fromEntries(profiles.map(p => [p.user_id, p]))
+          } else if (profilesError?.message?.includes("avatar_url")) {
+            // avatar_url column doesn't exist yet - query without it
+            const { data: fallbackProfiles } = await supabase
+              .from("user_profiles")
+              .select("user_id, first_name, last_name, title")
+              .in("user_id", userIds)
+            if (fallbackProfiles) {
+              authorProfiles = Object.fromEntries(fallbackProfiles.map(p => [p.user_id, { ...p, avatar_url: null }]))
+            }
+          }
+        }
+
+        return posts.map(p => ({
+          ...p,
+          author_profile: p.user_id ? authorProfiles[p.user_id] || null : null,
+        }))
+      }),
     supabase
       .from("events")
       .select("id, title, starts_at, ends_at, is_all_day, timezone, location, category")
@@ -47,33 +79,6 @@ export default async function HomePage() {
       .eq("is_active", true)
       .order("created_at", { ascending: false }),
   ])
-
-  // Fetch author profiles for posts
-  const posts = postsRes.data || []
-  const userIds = [...new Set(posts.map(p => p.user_id).filter(Boolean))]
-  let authorProfiles: Record<string, { first_name?: string; last_name?: string; title?: string; avatar_url?: string | null }> = {}
-  if (userIds.length > 0) {
-    const { data: profiles, error: profilesError } = await supabase
-      .from("user_profiles")
-      .select("user_id, first_name, last_name, title, avatar_url")
-      .in("user_id", userIds)
-    if (profiles) {
-      authorProfiles = Object.fromEntries(profiles.map(p => [p.user_id, p]))
-    } else if (profilesError?.message?.includes("avatar_url")) {
-      // avatar_url column doesn't exist yet - query without it
-      const { data: fallbackProfiles } = await supabase
-        .from("user_profiles")
-        .select("user_id, first_name, last_name, title")
-        .in("user_id", userIds)
-      if (fallbackProfiles) {
-        authorProfiles = Object.fromEntries(fallbackProfiles.map(p => [p.user_id, { ...p, avatar_url: null }]))
-      }
-    }
-  }
-  const postsWithProfiles = posts.map(p => ({
-    ...p,
-    author_profile: p.user_id ? authorProfiles[p.user_id] || null : null,
-  }))
 
   return (
     <SiteLayout>
