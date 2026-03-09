@@ -1,16 +1,17 @@
 import { createAdminClient } from "@/lib/supabase/admin"
 import { sendEmail } from "@/lib/email"
 import { passwordResetEmailTemplate } from "@/lib/email-templates/password-reset"
+import { generateInvitationToken } from "@/lib/invitation-tokens"
 import { NextResponse, type NextRequest } from "next/server"
-import { createHmac, randomUUID } from "crypto"
 
 export const dynamic = "force-dynamic"
 
 // In-memory rate limiting for password reset requests (per IP)
+// Note: In serverless/multi-instance deployments this is per-instance only.
+// For stronger protection, consider a shared store (DB/Redis).
 const resetAttempts = new Map<string, { count: number; firstAttempt: number }>()
 const MAX_ATTEMPTS = 3
 const WINDOW_MS = 15 * 60 * 1000 // 15 minutes
-const COOLDOWN_SECONDS = 60
 
 function getIp(request: NextRequest): string {
   return (
@@ -31,7 +32,7 @@ function checkResetRateLimit(ip: string): { allowed: boolean; retryAfterSeconds?
     } else if (entry.count >= MAX_ATTEMPTS) {
       const elapsed = now - entry.firstAttempt
       const remaining = Math.ceil((WINDOW_MS - elapsed) / 1000)
-      return { allowed: false, retryAfterSeconds: Math.min(remaining, COOLDOWN_SECONDS) }
+      return { allowed: false, retryAfterSeconds: remaining }
     }
   }
 
@@ -49,18 +50,24 @@ function recordResetAttempt(ip: string): void {
   }
 }
 
-function generateResetToken(): string {
-  const secret = process.env.INVITATION_HMAC_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY || ""
-  const id = randomUUID()
-  const signature = createHmac("sha256", secret)
-    .update(id)
-    .digest("hex")
-    .slice(0, 16)
-  return `${id}-${signature}`
-}
-
 function getBaseUrl(): string {
   return process.env.NEXT_PUBLIC_SITE_URL || "https://grabbe.site"
+}
+
+/**
+ * Find a user by email, paginating through all users.
+ */
+async function findUserByEmail(adminClient: ReturnType<typeof createAdminClient>, email: string) {
+  let page = 1
+  const perPage = 1000
+  while (true) {
+    const { data, error } = await adminClient.auth.admin.listUsers({ page, perPage })
+    if (error || !data?.users?.length) return null
+    const found = data.users.find((u) => u.email?.toLowerCase() === email)
+    if (found) return found
+    if (data.users.length < perPage) return null
+    page++
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -99,15 +106,12 @@ export async function POST(request: NextRequest) {
     // Behind the scenes, only send if the user exists.
     const adminClient = createAdminClient()
 
-    // Check if user exists
-    const { data: usersData } = await adminClient.auth.admin.listUsers()
-    const user = usersData?.users?.find(
-      (u) => u.email?.toLowerCase() === email
-    )
+    // Check if user exists (paginated lookup)
+    const user = await findUserByEmail(adminClient, email)
 
     if (user) {
-      // Generate a secure reset token
-      const token = generateResetToken()
+      // Generate a secure reset token (uses shared guarded HMAC secret)
+      const token = generateInvitationToken()
       const expiresAt = new Date(Date.now() + 60 * 60 * 1000).toISOString() // 1 hour
 
       // Store reset token in a simple way using user metadata

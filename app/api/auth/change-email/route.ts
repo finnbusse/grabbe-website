@@ -4,23 +4,29 @@ import { getUserRoleSlugs } from "@/lib/permissions"
 import { isAdmin } from "@/lib/permissions-shared"
 import { sendEmail } from "@/lib/email"
 import { emailChangeConfirmationTemplate } from "@/lib/email-templates/email-change"
+import { generateInvitationToken } from "@/lib/invitation-tokens"
 import { NextResponse, type NextRequest } from "next/server"
-import { createHmac, randomUUID } from "crypto"
 
 export const dynamic = "force-dynamic"
 
-function generateEmailChangeToken(): string {
-  const secret = process.env.INVITATION_HMAC_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY || ""
-  const id = randomUUID()
-  const signature = createHmac("sha256", secret)
-    .update(id)
-    .digest("hex")
-    .slice(0, 16)
-  return `${id}-${signature}`
-}
-
 function getBaseUrl(): string {
   return process.env.NEXT_PUBLIC_SITE_URL || "https://grabbe.site"
+}
+
+/**
+ * Find if any user (other than excludeId) already uses this email, paginating through all users.
+ */
+async function isEmailInUse(adminClient: ReturnType<typeof createAdminClient>, email: string, excludeId: string): Promise<boolean> {
+  let page = 1
+  const perPage = 1000
+  while (true) {
+    const { data, error } = await adminClient.auth.admin.listUsers({ page, perPage })
+    if (error || !data?.users?.length) return false
+    const found = data.users.some((u) => u.email?.toLowerCase() === email && u.id !== excludeId)
+    if (found) return true
+    if (data.users.length < perPage) return false
+    page++
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -51,17 +57,14 @@ export async function POST(request: NextRequest) {
 
     const adminClient = createAdminClient()
 
-    // Check if email is already in use
-    const { data: existingUsers } = await adminClient.auth.admin.listUsers()
-    const emailInUse = existingUsers?.users?.some(
-      (u) => u.email?.toLowerCase() === newEmail && u.id !== user.id
-    )
-    if (emailInUse) {
+    // Check if email is already in use (paginated)
+    const emailTaken = await isEmailInUse(adminClient, newEmail, user.id)
+    if (emailTaken) {
       return NextResponse.json({ error: "Diese E-Mail-Adresse wird bereits verwendet." }, { status: 409 })
     }
 
-    // Generate confirmation token
-    const token = generateEmailChangeToken()
+    // Generate confirmation token (uses shared guarded HMAC secret)
+    const token = generateInvitationToken()
     const expiresAt = new Date(Date.now() + 60 * 60 * 1000).toISOString() // 1 hour
 
     // Store email change request in app_metadata

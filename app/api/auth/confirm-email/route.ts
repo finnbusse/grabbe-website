@@ -1,28 +1,8 @@
 import { createAdminClient } from "@/lib/supabase/admin"
+import { validateTokenSignature } from "@/lib/invitation-tokens"
 import { NextResponse, type NextRequest } from "next/server"
-import { createHmac } from "crypto"
 
 export const dynamic = "force-dynamic"
-
-function validateToken(token: string): boolean {
-  const secret = process.env.INVITATION_HMAC_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY || ""
-  const parts = token.split("-")
-  if (parts.length !== 6) return false
-
-  const id = parts.slice(0, 5).join("-")
-  const providedSignature = parts[5]
-  const expectedSignature = createHmac("sha256", secret)
-    .update(id)
-    .digest("hex")
-    .slice(0, 16)
-
-  if (providedSignature.length !== expectedSignature.length) return false
-  let result = 0
-  for (let i = 0; i < providedSignature.length; i++) {
-    result |= providedSignature.charCodeAt(i) ^ expectedSignature.charCodeAt(i)
-  }
-  return result === 0
-}
 
 export async function POST(request: NextRequest) {
   try {
@@ -33,7 +13,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Ungültige Anfrage." }, { status: 400 })
     }
 
-    if (!validateToken(token)) {
+    if (!validateTokenSignature(token)) {
       return NextResponse.json({ error: "Der Bestätigungslink ist ungültig." }, { status: 400 })
     }
 

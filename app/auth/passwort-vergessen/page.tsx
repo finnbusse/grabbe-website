@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import Image from "next/image"
-import { useState, useEffect, useCallback, useRef } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Loader2, ArrowLeft, CheckCircle2 } from "lucide-react"
 
 function generateCaptcha(): { question: string; answer: number } {
@@ -23,7 +23,6 @@ export default function ForgotPasswordPage() {
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [cooldown, setCooldown] = useState(0)
-  const cooldownRef = useRef(0)
 
   useEffect(() => {
     if (cooldown <= 0) return

@@ -493,7 +493,7 @@ export default function ProfilPage() {
                       type="button"
                       onClick={() => setShowCurrentPw(!showCurrentPw)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                      tabIndex={-1}
+                      aria-label={showCurrentPw ? "Passwort verbergen" : "Passwort anzeigen"}
                     >
                       {showCurrentPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
@@ -514,7 +514,7 @@ export default function ProfilPage() {
                       type="button"
                       onClick={() => setShowNewPw(!showNewPw)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                      tabIndex={-1}
+                      aria-label={showNewPw ? "Passwort verbergen" : "Passwort anzeigen"}
                     >
                       {showNewPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>

@@ -47,7 +47,6 @@ import {
   Download,
   ExternalLink,
   RefreshCw,
-  Send,
   UserPlus,
 } from "lucide-react"
 import { toast } from "sonner"
@@ -214,6 +213,10 @@ function TeacherTab() {
     try {
       // Get default role (Redakteur or first available)
       const rolesRes = await fetch("/api/roles")
+      if (!rolesRes.ok) {
+        const errorData = await rolesRes.json().catch(() => ({}))
+        throw new Error(errorData.error || "Fehler beim Laden der Rollen")
+      }
       const rolesData = await rolesRes.json()
       const roles = rolesData.roles || []
       const defaultRole = roles.find((r: { slug: string }) => r.slug === "redakteur") || roles[0]

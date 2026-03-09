@@ -1,29 +1,8 @@
 import { createAdminClient } from "@/lib/supabase/admin"
+import { validateTokenSignature } from "@/lib/invitation-tokens"
 import { NextResponse, type NextRequest } from "next/server"
-import { createHmac } from "crypto"
 
 export const dynamic = "force-dynamic"
-
-function validateResetToken(token: string): boolean {
-  const secret = process.env.INVITATION_HMAC_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY || ""
-  const parts = token.split("-")
-  if (parts.length !== 6) return false
-
-  const id = parts.slice(0, 5).join("-")
-  const providedSignature = parts[5]
-  const expectedSignature = createHmac("sha256", secret)
-    .update(id)
-    .digest("hex")
-    .slice(0, 16)
-
-  // Constant-time comparison to prevent timing attacks
-  if (providedSignature.length !== expectedSignature.length) return false
-  let result = 0
-  for (let i = 0; i < providedSignature.length; i++) {
-    result |= providedSignature.charCodeAt(i) ^ expectedSignature.charCodeAt(i)
-  }
-  return result === 0
-}
 
 function validatePassword(password: string): string | null {
   if (password.length < 8) return "Das Passwort muss mindestens 8 Zeichen lang sein."
@@ -47,7 +26,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate token structure
-    if (!validateResetToken(token)) {
+    if (!validateTokenSignature(token)) {
       return NextResponse.json(
         { error: "Der Link zum Zurücksetzen des Passworts ist ungültig." },
         { status: 400 }

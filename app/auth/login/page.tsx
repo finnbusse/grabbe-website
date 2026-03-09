@@ -31,6 +31,8 @@ export default function LoginPage() {
   const [mfaFactorId, setMfaFactorId] = useState<string | null>(null)
   const [mfaCode, setMfaCode] = useState("")
   const [mfaVerifying, setMfaVerifying] = useState(false)
+  // Hold session tokens in memory until MFA is verified to prevent session-based bypass
+  const [pendingSession, setPendingSession] = useState<{ access_token: string; refresh_token: string } | null>(null)
 
   // Live countdown timer
   useEffect(() => {
@@ -87,7 +89,7 @@ export default function LoginPage() {
       // Reset on success
       failCountRef.current = 0
 
-      // Set the session in the browser Supabase client
+      // Set the session temporarily to check for MFA factors
       if (data.session) {
         const supabase = createClient()
         await supabase.auth.setSession({
@@ -100,6 +102,13 @@ export default function LoginPage() {
         const verifiedTotpFactor = factorsData?.totp?.find((f) => f.status === "verified")
 
         if (verifiedTotpFactor) {
+          // Sign out immediately so the AAL1 session cannot be used to access /cms
+          await supabase.auth.signOut()
+          // Store session tokens in memory for re-authentication after MFA
+          setPendingSession({
+            access_token: data.session.access_token,
+            refresh_token: data.session.refresh_token,
+          })
           setMfaRequired(true)
           setMfaFactorId(verifiedTotpFactor.id)
           setIsLoading(false)
@@ -124,24 +133,42 @@ export default function LoginPage() {
 
   const handleMfaVerify = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!mfaFactorId || mfaCode.length !== 6) return
+    if (!mfaFactorId || mfaCode.length !== 6 || !pendingSession) return
 
     setMfaVerifying(true)
     setError(null)
 
     try {
       const supabase = createClient()
+
+      // Re-establish session for MFA verification
+      await supabase.auth.setSession({
+        access_token: pendingSession.access_token,
+        refresh_token: pendingSession.refresh_token,
+      })
+
       const { data: challengeData, error: challengeError } = await supabase.auth.mfa.challenge({
         factorId: mfaFactorId,
       })
-      if (challengeError) throw challengeError
+      if (challengeError) {
+        // Sign out on failure to prevent AAL1 access
+        await supabase.auth.signOut()
+        throw challengeError
+      }
 
       const { error: verifyError } = await supabase.auth.mfa.verify({
         factorId: mfaFactorId,
         challengeId: challengeData.id,
         code: mfaCode,
       })
-      if (verifyError) throw verifyError
+      if (verifyError) {
+        // Sign out on failure to prevent AAL1 access
+        await supabase.auth.signOut()
+        throw verifyError
+      }
+
+      // MFA verified — session is now at AAL2
+      setPendingSession(null)
 
       if (rememberMe) {
         localStorage.setItem("cms_remember_me", "true")
@@ -221,6 +248,7 @@ export default function LoginPage() {
                         setMfaRequired(false)
                         setMfaCode("")
                         setError(null)
+                        setPendingSession(null)
                       }}
                     >
                       Zurück zum Login
@@ -258,7 +286,6 @@ export default function LoginPage() {
                     <Link
                       href="/auth/passwort-vergessen"
                       className="text-xs text-muted-foreground hover:text-primary hover:underline"
-                      tabIndex={-1}
                     >
                       Passwort vergessen?
                     </Link>

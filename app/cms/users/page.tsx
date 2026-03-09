@@ -482,8 +482,12 @@ export default function UsersPage() {
 
   async function handleCopyInviteLink() {
     if (inviteLink) {
-      await navigator.clipboard.writeText(inviteLink)
-      toast.success("Link in die Zwischenablage kopiert!")
+      try {
+        await navigator.clipboard.writeText(inviteLink)
+        toast.success("Link in die Zwischenablage kopiert!")
+      } catch {
+        toast.error("Link konnte nicht kopiert werden. Bitte markieren und kopieren Sie den Link manuell.")
+      }
     }
   }
 
@@ -1054,7 +1058,7 @@ export default function UsersPage() {
                     </Button>
                   )}
                   {isCurrentAdmin && (
-                    <Button variant="ghost" size="sm" title="Lehrer verknüpfen" onClick={() => openTeacherLinkDialog(u.id)}>
+                    <Button variant="ghost" size="sm" title="Lehrer verknüpfen" aria-label="Lehrer verknüpfen" onClick={() => openTeacherLinkDialog(u.id)}>
                       <Link2 className="h-4 w-4" />
                     </Button>
                   )}
