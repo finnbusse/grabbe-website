@@ -26,6 +26,12 @@ export default function LoginPage() {
   const [retryAfterSeconds, setRetryAfterSeconds] = useState(0)
   const failCountRef = useRef(0)
 
+  // MFA state
+  const [mfaRequired, setMfaRequired] = useState(false)
+  const [mfaFactorId, setMfaFactorId] = useState<string | null>(null)
+  const [mfaCode, setMfaCode] = useState("")
+  const [mfaVerifying, setMfaVerifying] = useState(false)
+
   // Live countdown timer
   useEffect(() => {
     if (retryAfterSeconds <= 0) return
@@ -88,6 +94,17 @@ export default function LoginPage() {
           access_token: data.session.access_token,
           refresh_token: data.session.refresh_token,
         })
+
+        // Check if MFA is required
+        const { data: factorsData } = await supabase.auth.mfa.listFactors()
+        const verifiedTotpFactor = factorsData?.totp?.find((f) => f.status === "verified")
+
+        if (verifiedTotpFactor) {
+          setMfaRequired(true)
+          setMfaFactorId(verifiedTotpFactor.id)
+          setIsLoading(false)
+          return
+        }
       }
 
       if (rememberMe) {
@@ -102,6 +119,42 @@ export default function LoginPage() {
       setError("Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.")
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const handleMfaVerify = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!mfaFactorId || mfaCode.length !== 6) return
+
+    setMfaVerifying(true)
+    setError(null)
+
+    try {
+      const supabase = createClient()
+      const { data: challengeData, error: challengeError } = await supabase.auth.mfa.challenge({
+        factorId: mfaFactorId,
+      })
+      if (challengeError) throw challengeError
+
+      const { error: verifyError } = await supabase.auth.mfa.verify({
+        factorId: mfaFactorId,
+        challengeId: challengeData.id,
+        code: mfaCode,
+      })
+      if (verifyError) throw verifyError
+
+      if (rememberMe) {
+        localStorage.setItem("cms_remember_me", "true")
+      } else {
+        localStorage.removeItem("cms_remember_me")
+      }
+
+      window.location.href = "/cms"
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Ungültiger Code. Bitte versuchen Sie es erneut.")
+      setMfaCode("")
+    } finally {
+      setMfaVerifying(false)
     }
   }
 
@@ -127,14 +180,61 @@ export default function LoginPage() {
           </Link>
         </div>
         <Card>
-          <CardHeader>
-            <CardTitle className="font-display text-2xl">CMS Login</CardTitle>
-            <CardDescription>
-              Melden Sie sich an, um Inhalte zu verwalten.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleLogin}>
+          {mfaRequired ? (
+            <>
+              <CardHeader>
+                <CardTitle className="font-display text-2xl">Zwei-Faktor-Authentifizierung</CardTitle>
+                <CardDescription>
+                  Geben Sie den 6-stelligen Code aus Ihrer Authenticator-App ein.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleMfaVerify}>
+                  <div className="flex flex-col gap-4">
+                    <div className="grid gap-2">
+                      <Label htmlFor="mfaCode">Verifizierungscode</Label>
+                      <Input
+                        id="mfaCode"
+                        type="text"
+                        inputMode="numeric"
+                        pattern="[0-9]{6}"
+                        maxLength={6}
+                        value={mfaCode}
+                        onChange={(e) => setMfaCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                        placeholder="000000"
+                        className="text-center font-mono text-lg tracking-[0.3em]"
+                        autoFocus
+                        required
+                      />
+                    </div>
+                    {error && (
+                      <p className="text-sm text-destructive">{error}</p>
+                    )}
+                    <Button type="submit" className="w-full" disabled={mfaVerifying || mfaCode.length !== 6}>
+                      {mfaVerifying ? "Verifiziere..." : "Bestätigen"}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      className="w-full"
+                      onClick={() => { setMfaRequired(false); setMfaCode(""); setError(null) }}
+                    >
+                      Zurück zum Login
+                    </Button>
+                  </div>
+                </form>
+              </CardContent>
+            </>
+          ) : (
+            <>
+              <CardHeader>
+                <CardTitle className="font-display text-2xl">CMS Login</CardTitle>
+                <CardDescription>
+                  Melden Sie sich an, um Inhalte zu verwalten.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleLogin}>
               <div className="flex flex-col gap-6">
                 <div className="grid gap-2">
                   <Label htmlFor="email">E-Mail</Label>
@@ -233,6 +333,8 @@ export default function LoginPage() {
               </div>
             </form>
           </CardContent>
+            </>
+          )}
         </Card>
         <p className="mt-4 text-center text-xs text-muted-foreground">
           <Link href="/" className="hover:text-foreground hover:underline">

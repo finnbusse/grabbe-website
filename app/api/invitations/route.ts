@@ -14,6 +14,8 @@ const CreateInvitationSchema = z.object({
   email: z.string().email("Ungültige E-Mail-Adresse"),
   roleId: z.string().uuid("Ungültige Rollen-ID"),
   personalMessage: z.string().max(200, "Persönliche Nachricht darf maximal 200 Zeichen lang sein").optional().nullable(),
+  expiryHours: z.number().min(1).max(720).optional().default(72),
+  sendEmail: z.boolean().optional().default(true),
 })
 
 export async function GET() {
@@ -86,7 +88,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: firstError }, { status: 400 })
   }
 
-  const { email, roleId, personalMessage } = parsed.data
+  const { email, roleId, personalMessage, expiryHours, sendEmail: shouldSendEmail } = parsed.data
 
   const adminClient = createAdminClient()
 
@@ -136,7 +138,7 @@ export async function POST(request: NextRequest) {
 
   // Generate token and expiry
   const token = generateInvitationToken()
-  const expiresAt = new Date(Date.now() + 72 * 60 * 60 * 1000).toISOString()
+  const expiresAt = new Date(Date.now() + expiryHours * 60 * 60 * 1000).toISOString()
 
   // Store invitation
   const { data: invitation, error: insertError } = await adminClient
@@ -159,29 +161,31 @@ export async function POST(request: NextRequest) {
   // Build onboarding URL
   const onboardingUrl = buildOnboardingUrl(token)
 
-  // Send invitation email
-  const recipientFirstName = guessFirstNameFromEmail(email)
-  const template = invitationEmailTemplate({
-    recipientEmail: email,
-    recipientFirstName,
-    inviterName,
-    roleName: (role as { name: string }).name,
-    personalMessage: personalMessage || null,
-    onboardingUrl,
-  })
+  // Send invitation email (if mode is email)
+  if (shouldSendEmail) {
+    const recipientFirstName = guessFirstNameFromEmail(email)
+    const template = invitationEmailTemplate({
+      recipientEmail: email,
+      recipientFirstName,
+      inviterName,
+      roleName: (role as { name: string }).name,
+      personalMessage: personalMessage || null,
+      onboardingUrl,
+    })
 
-  const emailResult = await sendEmail({
-    to: email,
-    subject: template.subject,
-    html: template.html,
-    replyTo: user.email || undefined,
-  })
+    const emailResult = await sendEmail({
+      to: email,
+      subject: template.subject,
+      html: template.html,
+      replyTo: user.email || undefined,
+    })
 
-  if (!emailResult.success) {
-    // Clean up invitation if email fails
-    await adminClient.from("invitations").delete().eq("id", (invitation as { id: string }).id)
-    return NextResponse.json({ error: `E-Mail konnte nicht gesendet werden: ${emailResult.error}` }, { status: 500 })
+    if (!emailResult.success) {
+      // Clean up invitation if email fails
+      await adminClient.from("invitations").delete().eq("id", (invitation as { id: string }).id)
+      return NextResponse.json({ error: `E-Mail konnte nicht gesendet werden: ${emailResult.error}` }, { status: 500 })
+    }
   }
 
-  return NextResponse.json({ success: true, invitation })
+  return NextResponse.json({ success: true, invitation, onboardingUrl })
 }
