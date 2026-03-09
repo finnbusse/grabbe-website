@@ -227,21 +227,10 @@ export const PAGE_DEFAULTS = {
   // Static pages
   'erprobungsstufe': {
     page_label: 'Klassen 5 & 6',
-    page_title: 'Erprobungsstufe',
-    page_subtitle: 'Entdecke deine Talente! Bringe deine Ideen ein und mach sie sichtbar! Ich kann was - und es zählt!',
+    page_title: 'Die Erprobungsstufe',
+    page_subtitle: 'Die Jahrgänge 5 und 6 bilden eine besondere pädagogische Einheit. Wir begleiten Ihre Kinder intensiv und individuell beim Übergang von der Grundschule zum Gymnasium.',
     hero_image_url: '',
-    card1_title: 'Deine Talente entdecken',
-    card1_text: 'Du wirst zunehmend kreativer und selbstständiger!',
-    card2_title: 'Gemeinschaft bilden',
-    card2_text: 'Wir beteiligen Dich an immer mehr Entscheidungen!',
-    card3_title: 'Persönlichkeit stärken',
-    card3_text: 'Du kannst was - und es zählt!',
-    content_p1: 'Die Jahrgänge 5 und 6 bilden eine besondere pädagogische Einheit, die Erprobungsstufe. Während dieser Zeit, die für Schüler:innen mit dem Übergang von der Grundschule zum Gymnasium viele Veränderungen mit sich bringt, begleiten wir Ihre Kinder intensiv. Anknüpfend an die Lernerfahrungen in der Grundschule führen wir die Schüler:innen an die Unterrichtsmethoden und Lernangebote des Gymnasiums heran.',
-    content_p2: 'Das besondere Profil des Grabbe mit den Profilprojekten in Kunst, Musik, Sport oder NaWi bietet den Schüler:innen die Möglichkeit, frei wählbar in einem der vier Profilprojekte für ein Jahr in einer gemischten Gruppe neue Lernwege zu entdecken. Moderner, vom Leistungsdruck befreiter und die unterschiedlichen Talente und Neigungen der Schüler:innen fördernder Projektunterricht steht dabei im Mittelpunkt.',
-    content_p3: 'Die Klassenbildung erfolgt dabei nach sozialen Kriterien und berücksichtigt dabei neben der Grundschulzugehörigkeit auch die Wunschpartner:innen.',
-    content_p4: 'Wir laden Sie vor den Sommerferien zu einem Begrüßungsnachmittag ein, an dem Ihre Kinder ihre neuen Mitschüler:innen sowie ihr Klassenleitungsteam und ihren Klassenraum kennenlernen. Die ersten Unterrichtstage zum Kennenlernen gestaltet das Klassenleitungsteam mit einem pädagogischen Programm und auch in der Klassenleitungsstunde liegt der Schwerpunkt auf dem sozialen Lernen. Eine einwöchige Klassenfahrt zu Beginn der sechsten Klasse festigt weiterhin die Klassengemeinschaft.',
-    cta1_text: 'Profilprojekte entdecken',
-    cta2_text: 'Zur Anmeldung',
+    hecker_image_url: '',
   },
 
   // Profilprojekte
@@ -828,34 +817,10 @@ export const EDITABLE_PAGES: PageDefinition[] = [
         ],
       },
       {
-        id: 'cards',
-        title: 'Werte-Karten',
+        id: 'contact',
+        title: 'Ansprechpartner',
         fields: [
-          { key: 'card1_title', label: 'Karte 1: Titel', type: 'text' },
-          { key: 'card1_text', label: 'Karte 1: Text', type: 'text' },
-          { key: 'card2_title', label: 'Karte 2: Titel', type: 'text' },
-          { key: 'card2_text', label: 'Karte 2: Text', type: 'text' },
-          { key: 'card3_title', label: 'Karte 3: Titel', type: 'text' },
-          { key: 'card3_text', label: 'Karte 3: Text', type: 'text' },
-        ],
-      },
-      {
-        id: 'content',
-        title: 'Inhalt',
-        description: 'Die Textabsätze auf der Seite',
-        fields: [
-          { key: 'content_p1', label: 'Absatz 1', type: 'textarea' },
-          { key: 'content_p2', label: 'Absatz 2', type: 'textarea' },
-          { key: 'content_p3', label: 'Absatz 3', type: 'textarea' },
-          { key: 'content_p4', label: 'Absatz 4', type: 'textarea' },
-        ],
-      },
-      {
-        id: 'buttons',
-        title: 'Buttons',
-        fields: [
-          { key: 'cta1_text', label: 'Button 1 Text', type: 'text' },
-          { key: 'cta2_text', label: 'Button 2 Text', type: 'text' },
+          { key: 'hecker_image_url', label: 'Foto Stefan Hecker (CDN-URL)', type: 'text' },
         ],
       },
       HERO_IMAGE_SECTION,
