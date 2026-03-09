@@ -1,6 +1,7 @@
-import { createClient } from "@/lib/supabase/server"
+import { createServerClient, type CookieOptions } from "@supabase/ssr"
 import { checkRateLimit, recordLoginAttempt, applyDelay } from "@/lib/rate-limiter"
 import { NextResponse, type NextRequest } from "next/server"
+import type { Database } from "@/lib/types/database.types"
 
 /**
  * POST /api/auth/login
@@ -9,8 +10,8 @@ import { NextResponse, type NextRequest } from "next/server"
  * - Checks IP and account-level rate limits
  * - Applies progressive server-side delays
  * - Returns uniform 401 for all failures (no user enumeration)
- * - Uses the server client (anon key + cookie handling) so session
- *   cookies are set on the response automatically.
+ * - Uses explicit request/response cookie handling (middleware-style)
+ *   so session cookies are reliably set on every deployment environment.
  */
 export async function POST(request: NextRequest) {
   try {
@@ -48,10 +49,44 @@ export async function POST(request: NextRequest) {
     // ── Apply progressive server-side delay ──
     await applyDelay(rateLimit.delayMs)
 
-    // ── Attempt authentication via server client ──
-    // Uses the anon key + cookie handling so session cookies are
-    // automatically set on the response.
-    const supabase = await createClient()
+    // ── Attempt authentication ──
+    // Use explicit request/response cookie handling (same pattern as
+    // the middleware) instead of cookies() from next/headers.  This
+    // guarantees Set-Cookie headers are present in the response on
+    // every deployment environment (preview AND production domains).
+
+    const supabaseUrl =
+      process.env.NEXT_PUBLIC_SUPABASE_URL ||
+      process.env.SUPABASE_URL ||
+      ""
+    const supabaseKey =
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+      process.env.SUPABASE_PUBLISHABLE_KEY ||
+      ""
+
+    if (!supabaseUrl || !supabaseKey) {
+      console.error("Missing Supabase environment variables in login route")
+      return NextResponse.json(
+        { error: "Ein Fehler ist aufgetreten." },
+        { status: 500 }
+      )
+    }
+
+    // Collect cookies that Supabase sets during signInWithPassword so
+    // we can apply them to the response explicitly.
+    const cookiesToSet: Array<{ name: string; value: string; options: CookieOptions }> = []
+
+    const supabase = createServerClient<Database>(supabaseUrl, supabaseKey, {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll()
+        },
+        setAll(cookies: Array<{ name: string; value: string; options: CookieOptions }>) {
+          cookies.forEach((cookie) => cookiesToSet.push(cookie))
+        },
+      },
+    })
 
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
@@ -72,15 +107,21 @@ export async function POST(request: NextRequest) {
     // ── Successful login ──
     await recordLoginAttempt(ip, email, true)
 
-    // Return session tokens so the client can establish the session
-    // (also needed for the MFA flow which re-authenticates after TOTP)
-    return NextResponse.json({
+    // Build the response with session tokens (needed on the client for
+    // setSession + MFA flow) and explicitly attach the auth cookies.
+    const response = NextResponse.json({
       success: true,
       session: {
         access_token: data.session.access_token,
         refresh_token: data.session.refresh_token,
       },
     })
+
+    cookiesToSet.forEach(({ name, value, options }) =>
+      response.cookies.set(name, value, options)
+    )
+
+    return response
   } catch (error) {
     console.error("Login API error:", error)
     return NextResponse.json(
