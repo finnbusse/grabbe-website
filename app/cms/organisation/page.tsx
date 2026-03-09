@@ -24,12 +24,12 @@ import {
 } from "@/components/ui/select"
 import { ImagePicker } from "@/components/cms/image-picker"
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog"
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet"
 import {
   Search,
   Plus,
@@ -47,7 +47,6 @@ import {
   Download,
   ExternalLink,
   RefreshCw,
-  UserPlus,
 } from "lucide-react"
 import { toast } from "sonner"
 import { SUBJECTS, getSubjectsByIds } from "@/lib/constants/subjects"
@@ -137,8 +136,7 @@ function TeacherTab() {
   const [search, setSearch] = useState("")
   const [editingTeacher, setEditingTeacher] = useState<TeacherWithSubjects | null>(null)
   const [isCreating, setIsCreating] = useState(false)
-  const [dialogOpen, setDialogOpen] = useState(false)
-  const [invitingTeacherId, setInvitingTeacherId] = useState<string | null>(null)
+  const [sheetOpen, setSheetOpen] = useState(false)
 
   // Fetch teachers
   const fetchTeachers = useCallback(async () => {
@@ -174,13 +172,13 @@ function TeacherTab() {
   const openCreate = () => {
     setEditingTeacher(null)
     setIsCreating(true)
-    setDialogOpen(true)
+    setSheetOpen(true)
   }
 
   const openEdit = (teacher: TeacherWithSubjects) => {
     setEditingTeacher(teacher)
     setIsCreating(false)
-    setDialogOpen(true)
+    setSheetOpen(true)
   }
 
   const handleDelete = async (teacher: TeacherWithSubjects) => {
@@ -199,51 +197,8 @@ function TeacherTab() {
   }
 
   const handleSaved = () => {
-    setDialogOpen(false)
+    setSheetOpen(false)
     fetchTeachers()
-  }
-
-  // Invite teacher to CMS
-  async function handleInviteTeacher(teacher: TeacherWithSubjects) {
-    if (!teacher.email) {
-      toast.error("Diese Lehrkraft hat keine E-Mail-Adresse hinterlegt. Bitte zuerst eine E-Mail hinzufügen.")
-      return
-    }
-    setInvitingTeacherId(teacher.id)
-    try {
-      // Get default role (Redakteur or first available)
-      const rolesRes = await fetch("/api/roles")
-      if (!rolesRes.ok) {
-        const errorData = await rolesRes.json().catch(() => ({}))
-        throw new Error(errorData.error || "Fehler beim Laden der Rollen")
-      }
-      const rolesData = await rolesRes.json()
-      const roles = rolesData.roles || []
-      const defaultRole = roles.find((r: { slug: string }) => r.slug === "redakteur") || roles[0]
-      if (!defaultRole) {
-        toast.error("Keine Rollen verfügbar. Bitte zuerst Rollen anlegen.")
-        return
-      }
-
-      const res = await fetch("/api/invitations", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: teacher.email,
-          roleId: defaultRole.id,
-          personalMessage: null,
-          expiryHours: 168, // 1 week
-          sendEmail: true,
-        }),
-      })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error || "Fehler beim Einladen")
-      toast.success(`Einladung an ${teacher.first_name} ${teacher.last_name} gesendet!`)
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Fehler beim Einladen")
-    } finally {
-      setInvitingTeacherId(null)
-    }
   }
 
   return (
@@ -381,28 +336,6 @@ function TeacherTab() {
                       </td>
                       <td className="px-4 py-3 text-right">
                         <div className="flex items-center justify-end gap-1">
-                          {!teacher.user_id && teacher.email && (
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-8 w-8"
-                              onClick={() => handleInviteTeacher(teacher)}
-                              disabled={invitingTeacherId === teacher.id}
-                              title="Ins CMS einladen"
-                              aria-label={`${teacher.first_name} ${teacher.last_name} ins CMS einladen`}
-                            >
-                              {invitingTeacherId === teacher.id ? (
-                                <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                              ) : (
-                                <UserPlus className="h-3.5 w-3.5" />
-                              )}
-                            </Button>
-                          )}
-                          {teacher.user_id && (
-                            <Badge variant="outline" className="text-[10px] text-green-600 border-green-200 bg-green-50">
-                              CMS
-                            </Badge>
-                          )}
                           <Button
                             variant="ghost"
                             size="icon"
@@ -434,30 +367,30 @@ function TeacherTab() {
         </div>
       )}
 
-      {/* Create / Edit Dialog */}
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>{isCreating ? "Neue Lehrkraft" : "Lehrkraft bearbeiten"}</DialogTitle>
-            <DialogDescription>
+      {/* Create / Edit Sheet */}
+      <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+        <SheetContent className="sm:max-w-lg overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle>{isCreating ? "Neue Lehrkraft" : "Lehrkraft bearbeiten"}</SheetTitle>
+            <SheetDescription>
               {isCreating
                 ? "Legen Sie eine neue Lehrkraft an."
                 : `${editingTeacher?.first_name} ${editingTeacher?.last_name} bearbeiten`}
-            </DialogDescription>
-          </DialogHeader>
+            </SheetDescription>
+          </SheetHeader>
           <TeacherForm
             teacher={isCreating ? null : editingTeacher}
             onSaved={handleSaved}
-            onCancel={() => setDialogOpen(false)}
+            onCancel={() => setSheetOpen(false)}
           />
-        </DialogContent>
-      </Dialog>
+        </SheetContent>
+      </Sheet>
     </div>
   )
 }
 
 // ---------------------------------------------------------------------------
-// Teacher Form (used in Dialog for create/edit)
+// Teacher Form (used in Sheet for create/edit)
 // ---------------------------------------------------------------------------
 
 interface TeacherFormProps {

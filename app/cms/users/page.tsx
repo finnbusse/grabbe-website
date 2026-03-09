@@ -6,13 +6,12 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { UserPlus, Trash2, Shield, Mail, Pencil, X, Save, Loader2, Camera, Search, Users, ShieldCheck, FileStack, Send, RotateCcw, Clock, Copy, Link2, CheckCircle2 } from "lucide-react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
+import { UserPlus, Trash2, Shield, Mail, Pencil, X, Save, Loader2, Camera, Search, Users, ShieldCheck, FileStack, Send, RotateCcw, Clock } from "lucide-react"
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet"
 import { Textarea } from "@/components/ui/textarea"
 import { usePermissions } from "@/components/cms/permissions-context"
 import type { CmsRole } from "@/lib/permissions-shared"
 import { UsersRolesTabs } from "@/components/cms/users-roles-tabs"
-import { toast } from "sonner"
 
 interface UserProfile {
   user_id: string
@@ -134,6 +133,8 @@ export default function UsersPage() {
   const [newTitle, setNewTitle] = useState("")
   const [newRoleId, setNewRoleId] = useState("")
   const [creating, setCreating] = useState(false)
+  const [message, setMessage] = useState("")
+  const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editFirstName, setEditFirstName] = useState("")
   const [editLastName, setEditLastName] = useState("")
@@ -145,28 +146,15 @@ export default function UsersPage() {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Invitation state
-  const [inviteDialogOpen, setInviteDialogOpen] = useState(false)
+  const [inviteSheetOpen, setInviteSheetOpen] = useState(false)
   const [inviteEmail, setInviteEmail] = useState("")
   const [inviteRoleId, setInviteRoleId] = useState("")
   const [inviteMessage, setInviteMessage] = useState("")
   const [inviteSending, setInviteSending] = useState(false)
   const [inviteError, setInviteError] = useState("")
-  const [inviteExpiry, setInviteExpiry] = useState("72") // hours
-  const [inviteMode, setInviteMode] = useState<"email" | "link">("email")
-  const [inviteLink, setInviteLink] = useState<string | null>(null)
   const [pendingInvitations, setPendingInvitations] = useState<PendingInvitation[]>([])
   const [resendingId, setResendingId] = useState<string | null>(null)
   const [revokingId, setRevokingId] = useState<string | null>(null)
-
-  // Teacher linking state
-  const [teacherLinkDialogOpen, setTeacherLinkDialogOpen] = useState(false)
-  const [teacherLinkUserId, setTeacherLinkUserId] = useState<string | null>(null)
-  const [teachers, setTeachers] = useState<Array<{ id: string; first_name: string; last_name: string; abbreviation: string; user_id: string | null }>>([])
-  const [selectedTeacherId, setSelectedTeacherId] = useState("")
-  const [teacherLinkSaving, setTeacherLinkSaving] = useState(false)
-
-  // Create user dialog state
-  const [createDialogOpen, setCreateDialogOpen] = useState(false)
 
   // Role management state
   const [allRoles, setAllRoles] = useState<CmsRole[]>([])
@@ -236,25 +224,13 @@ export default function UsersPage() {
     } catch { /* ok */ }
   }, [isCurrentAdmin])
 
-  const loadTeachers = useCallback(async () => {
-    if (!isCurrentAdmin) return
-    try {
-      const res = await fetch("/api/teachers")
-      if (res.ok) {
-        const data = await res.json()
-        setTeachers(data.teachers || [])
-      }
-    } catch { /* ok */ }
-  }, [isCurrentAdmin])
-
   useEffect(() => {
     loadUsers()
     loadRoles()
     loadUserRoles()
     loadCmsPages()
     loadInvitations()
-    loadTeachers()
-  }, [loadUsers, loadRoles, loadUserRoles, loadCmsPages, loadInvitations, loadTeachers])
+  }, [loadUsers, loadRoles, loadUserRoles, loadCmsPages, loadInvitations])
 
   const filteredUsers = useMemo(() => {
     if (!searchQuery.trim()) return users
@@ -282,6 +258,7 @@ export default function UsersPage() {
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault()
     setCreating(true)
+    setMessage("")
     try {
       const res = await fetch("/api/users", {
         method: "POST",
@@ -306,18 +283,18 @@ export default function UsersPage() {
         })
       }
 
-      toast.success("Benutzer erfolgreich erstellt.")
+      setMessage("Benutzer erfolgreich erstellt. Der Nutzer erhält ggf. eine Bestätigungsmail.")
       setNewEmail("")
       setNewPassword("")
       setNewFirstName("")
       setNewLastName("")
       setNewTitle("")
       setNewRoleId("")
-      setCreateDialogOpen(false)
+      setShowForm(false)
       loadUsers()
       loadUserRoles()
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Unbekannter Fehler")
+      setMessage(err instanceof Error ? err.message : "Unbekannter Fehler")
     } finally {
       setCreating(false)
     }
@@ -347,7 +324,7 @@ export default function UsersPage() {
       setEditingId(null)
       loadUsers()
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Fehler")
+      setMessage(err instanceof Error ? err.message : "Fehler")
     } finally {
       setEditSaving(false)
     }
@@ -367,7 +344,7 @@ export default function UsersPage() {
       if (!res.ok) throw new Error("Upload fehlgeschlagen")
       loadUsers()
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Upload-Fehler")
+      setMessage(err instanceof Error ? err.message : "Upload-Fehler")
     } finally {
       setUploadingId(null)
       if (fileInputRef.current) fileInputRef.current.value = ""
@@ -395,7 +372,7 @@ export default function UsersPage() {
       setRoleEditingId(null)
       loadUserRoles()
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Fehler beim Speichern der Rollen")
+      setMessage(err instanceof Error ? err.message : "Fehler beim Speichern der Rollen")
     } finally {
       setRoleSaving(false)
     }
@@ -427,7 +404,7 @@ export default function UsersPage() {
       }
       setPageEditingId(null)
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Fehler beim Speichern der Seitenzuweisungen")
+      setMessage(err instanceof Error ? err.message : "Fehler beim Speichern der Seitenzuweisungen")
     } finally {
       setPageSaving(false)
     }
@@ -445,7 +422,6 @@ export default function UsersPage() {
     e.preventDefault()
     setInviteSending(true)
     setInviteError("")
-    setInviteLink(null)
     try {
       const res = await fetch("/api/invitations", {
         method: "POST",
@@ -454,40 +430,20 @@ export default function UsersPage() {
           email: inviteEmail,
           roleId: inviteRoleId,
           personalMessage: inviteMessage || null,
-          expiryHours: parseInt(inviteExpiry, 10) || 72,
-          sendEmail: inviteMode === "email",
         }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || "Fehler beim Senden")
-
-      if (inviteMode === "link" && data.onboardingUrl) {
-        setInviteLink(data.onboardingUrl)
-        toast.success("Einladungslink erstellt!")
-      } else {
-        setInviteEmail("")
-        setInviteRoleId("")
-        setInviteMessage("")
-        setInviteExpiry("72")
-        setInviteDialogOpen(false)
-        toast.success("Einladung erfolgreich gesendet!")
-      }
+      setInviteEmail("")
+      setInviteRoleId("")
+      setInviteMessage("")
+      setInviteSheetOpen(false)
+      setMessage("Einladung erfolgreich gesendet!")
       loadInvitations()
     } catch (err) {
       setInviteError(err instanceof Error ? err.message : "Fehler beim Senden der Einladung")
     } finally {
       setInviteSending(false)
-    }
-  }
-
-  async function handleCopyInviteLink() {
-    if (inviteLink) {
-      try {
-        await navigator.clipboard.writeText(inviteLink)
-        toast.success("Link in die Zwischenablage kopiert!")
-      } catch {
-        toast.error("Link konnte nicht kopiert werden. Bitte markieren und kopieren Sie den Link manuell.")
-      }
     }
   }
 
@@ -497,10 +453,10 @@ export default function UsersPage() {
       const res = await fetch(`/api/invitations/${id}/resend`, { method: "POST" })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || "Fehler")
-      toast.success("Einladung erneut gesendet!")
+      setMessage("Einladung erneut gesendet!")
       loadInvitations()
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Fehler beim erneuten Senden")
+      setMessage(err instanceof Error ? err.message : "Fehler beim erneuten Senden")
     } finally {
       setResendingId(null)
     }
@@ -513,40 +469,12 @@ export default function UsersPage() {
       const res = await fetch(`/api/invitations/${id}`, { method: "DELETE" })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || "Fehler")
-      toast.success("Einladung widerrufen.")
+      setMessage("Einladung widerrufen.")
       loadInvitations()
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Fehler beim Widerrufen")
+      setMessage(err instanceof Error ? err.message : "Fehler beim Widerrufen")
     } finally {
       setRevokingId(null)
-    }
-  }
-
-  // Teacher linking
-  function openTeacherLinkDialog(userId: string) {
-    setTeacherLinkUserId(userId)
-    setSelectedTeacherId("")
-    setTeacherLinkDialogOpen(true)
-  }
-
-  async function handleLinkTeacher() {
-    if (!teacherLinkUserId || !selectedTeacherId) return
-    setTeacherLinkSaving(true)
-    try {
-      const res = await fetch("/api/teachers", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: selectedTeacherId, user_id: teacherLinkUserId }),
-      })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error || "Fehler beim Verknüpfen")
-      toast.success("Benutzerprofil erfolgreich mit Lehrer verknüpft!")
-      setTeacherLinkDialogOpen(false)
-      loadTeachers()
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Fehler beim Verknüpfen")
-    } finally {
-      setTeacherLinkSaving(false)
     }
   }
 
@@ -559,13 +487,13 @@ export default function UsersPage() {
         </div>
         <div className="flex items-center gap-2">
           {isCurrentAdmin && (
-            <Button onClick={() => { setInviteDialogOpen(true); setInviteLink(null); setInviteError("") }} variant="outline" className="gap-2">
+            <Button onClick={() => setInviteSheetOpen(true)} variant="outline" className="gap-2">
               <Send className="h-4 w-4" />
               Mitglied einladen
             </Button>
           )}
           {permissions.users.create && (
-            <Button onClick={() => setCreateDialogOpen(true)} className="gap-2">
+            <Button onClick={() => setShowForm(!showForm)} className="gap-2">
               <UserPlus className="h-4 w-4" />
               Neuer Benutzer
             </Button>
@@ -577,224 +505,62 @@ export default function UsersPage() {
 
       <div className="mt-6 space-y-6">
 
-      {/* Invite Dialog */}
-      <Dialog open={inviteDialogOpen} onOpenChange={setInviteDialogOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Mitglied einladen</DialogTitle>
-            <DialogDescription>Sende eine Einladung per E-Mail oder erstelle einen Einladungslink.</DialogDescription>
-          </DialogHeader>
-          {inviteLink ? (
-            <div className="space-y-4">
-              <div className="flex items-start gap-3 rounded-lg border border-primary/20 bg-primary/5 p-4">
-                <CheckCircle2 className="h-5 w-5 text-primary mt-0.5" />
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium">Einladungslink erstellt</p>
-                  <p className="mt-1 break-all text-xs text-muted-foreground">{inviteLink}</p>
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <Button onClick={handleCopyInviteLink} className="flex-1 gap-2">
-                  <Copy className="h-4 w-4" />
-                  Link kopieren
-                </Button>
-                <Button
-                  variant="outline"
-                  aria-label="Einladungsdialog schließen"
-                  onClick={() => {
-                    setInviteLink(null)
-                    setInviteEmail("")
-                    setInviteRoleId("")
-                    setInviteMessage("")
-                    setInviteDialogOpen(false)
-                  }}
-                >
-                  Schließen
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <form onSubmit={handleSendInvite} className="space-y-4">
-              {/* Mode toggle */}
-              <div className="flex rounded-lg border border-border overflow-hidden">
-                <button
-                  type="button"
-                  onClick={() => setInviteMode("email")}
-                  className={`flex-1 py-2 text-sm font-medium transition-colors ${inviteMode === "email" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
-                >
-                  <Mail className="inline h-3.5 w-3.5 mr-1.5 -mt-0.5" />
-                  Per E-Mail
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setInviteMode("link")}
-                  className={`flex-1 py-2 text-sm font-medium transition-colors ${inviteMode === "link" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
-                >
-                  <Link2 className="inline h-3.5 w-3.5 mr-1.5 -mt-0.5" />
-                  Link erstellen
-                </button>
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="inviteEmail">E-Mail-Adresse</Label>
-                <Input
-                  id="inviteEmail"
-                  type="email"
-                  value={inviteEmail}
-                  onChange={(e) => setInviteEmail(e.target.value)}
-                  placeholder="lehrer@schule.de"
-                  required
-                />
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="grid gap-2">
-                  <Label htmlFor="inviteRole">Rolle zuweisen</Label>
-                  <select
-                    id="inviteRole"
-                    value={inviteRoleId}
-                    onChange={(e) => setInviteRoleId(e.target.value)}
-                    className="rounded-md border border-input bg-background px-3 py-2 text-sm"
-                    required
-                  >
-                    <option value="">Rolle wählen...</option>
-                    {assignableRoles.map((r) => (
-                      <option key={r.id} value={r.id}>{r.name}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="inviteExpiry">Gültigkeitsdauer</Label>
-                  <select
-                    id="inviteExpiry"
-                    value={inviteExpiry}
-                    onChange={(e) => setInviteExpiry(e.target.value)}
-                    className="rounded-md border border-input bg-background px-3 py-2 text-sm"
-                  >
-                    <option value="24">24 Stunden</option>
-                    <option value="48">48 Stunden</option>
-                    <option value="72">72 Stunden (Standard)</option>
-                    <option value="168">1 Woche</option>
-                    <option value="720">30 Tage</option>
-                  </select>
-                </div>
-              </div>
-              {inviteMode === "email" && (
-                <div className="grid gap-2">
-                  <Label htmlFor="inviteMsg">Persönliche Nachricht (optional)</Label>
-                  <Textarea
-                    id="inviteMsg"
-                    value={inviteMessage}
-                    onChange={(e) => setInviteMessage(e.target.value.slice(0, 200))}
-                    placeholder="Willkommen im Team..."
-                    rows={3}
-                    maxLength={200}
-                  />
-                  <span className="text-xs text-muted-foreground">{inviteMessage.length}/200</span>
-                </div>
-              )}
-              {inviteError && (
-                <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive">{inviteError}</div>
-              )}
-              <Button type="submit" className="w-full gap-2" disabled={inviteSending || !inviteEmail || !inviteRoleId}>
-                {inviteSending ? <Loader2 className="h-4 w-4 animate-spin" /> : inviteMode === "email" ? <Send className="h-4 w-4" /> : <Link2 className="h-4 w-4" />}
-                {inviteMode === "email" ? "Einladung senden" : "Link generieren"}
-              </Button>
-            </form>
-          )}
-        </DialogContent>
-      </Dialog>
-
-      {/* Create User Dialog */}
-      <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader>
-            <DialogTitle>Neuen Lehrer-Account erstellen</DialogTitle>
-            <DialogDescription>Der neue Benutzer kann sich nach der Erstellung im CMS anmelden.</DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handleCreate} className="space-y-4">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="grid gap-2">
-                <Label htmlFor="firstName">Vorname</Label>
-                <Input id="firstName" value={newFirstName} onChange={(e) => setNewFirstName(e.target.value)} placeholder="Max" />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="lastName">Nachname</Label>
-                <Input id="lastName" value={newLastName} onChange={(e) => setNewLastName(e.target.value)} placeholder="Mustermann" />
-              </div>
-            </div>
-            <div className="grid gap-4 sm:grid-cols-3">
-              <div className="grid gap-2">
-                <Label htmlFor="userTitle">Titel (optional)</Label>
-                <Input id="userTitle" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} placeholder="Dr., Prof." />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="email">E-Mail</Label>
-                <Input id="email" type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} placeholder="lehrer@schule.de" required />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="password">Passwort</Label>
-                <Input id="password" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Mind. 6 Zeichen" minLength={6} required />
-              </div>
-            </div>
-            {canManageRoles && assignableRoles.length > 0 && (
-              <div className="grid gap-2">
-                <Label htmlFor="newUserRole">Rolle zuweisen</Label>
-                <select
-                  id="newUserRole"
-                  value={newRoleId}
-                  onChange={(e) => setNewRoleId(e.target.value)}
-                  className="rounded-md border border-input bg-background px-3 py-2 text-sm"
-                >
-                  <option value="">Keine Rolle</option>
-                  {assignableRoles.map((r) => (
-                    <option key={r.id} value={r.id}>{r.name}</option>
-                  ))}
-                </select>
-              </div>
-            )}
-            <div className="flex justify-end gap-2">
-              <Button type="button" variant="ghost" onClick={() => setCreateDialogOpen(false)}>Abbrechen</Button>
-              <Button type="submit" disabled={creating}>{creating ? "Erstelle..." : "Account erstellen"}</Button>
-            </div>
-          </form>
-        </DialogContent>
-      </Dialog>
-
-      {/* Teacher Link Dialog */}
-      <Dialog open={teacherLinkDialogOpen} onOpenChange={setTeacherLinkDialogOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Lehrer verknüpfen</DialogTitle>
-            <DialogDescription>Wählen Sie einen Lehrer aus der Datenbank, um ihn mit diesem Benutzerprofil zu verknüpfen.</DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
+      {/* Invite Sheet */}
+      <Sheet open={inviteSheetOpen} onOpenChange={setInviteSheetOpen}>
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle>Mitglied einladen</SheetTitle>
+            <SheetDescription>Sende eine Einladung per E-Mail, um ein neues Teammitglied hinzuzufügen.</SheetDescription>
+          </SheetHeader>
+          <form onSubmit={handleSendInvite} className="mt-6 space-y-4">
             <div className="grid gap-2">
-              <Label htmlFor="teacherSelect">Lehrer auswählen</Label>
+              <Label htmlFor="inviteEmail">E-Mail-Adresse</Label>
+              <Input
+                id="inviteEmail"
+                type="email"
+                value={inviteEmail}
+                onChange={(e) => setInviteEmail(e.target.value)}
+                placeholder="lehrer@schule.de"
+                required
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="inviteRole">Rolle zuweisen</Label>
               <select
-                id="teacherSelect"
-                value={selectedTeacherId}
-                onChange={(e) => setSelectedTeacherId(e.target.value)}
+                id="inviteRole"
+                value={inviteRoleId}
+                onChange={(e) => setInviteRoleId(e.target.value)}
                 className="rounded-md border border-input bg-background px-3 py-2 text-sm"
+                required
               >
-                <option value="">Lehrer wählen...</option>
-                {teachers
-                  .filter((t) => !t.user_id || t.user_id === teacherLinkUserId)
-                  .map((t) => (
-                    <option key={t.id} value={t.id}>
-                      {t.first_name} {t.last_name} ({t.abbreviation})
-                    </option>
-                  ))}
+                <option value="">Rolle wählen...</option>
+                {assignableRoles.map((r) => (
+                  <option key={r.id} value={r.id}>{r.name}</option>
+                ))}
               </select>
             </div>
-            <div className="flex justify-end gap-2">
-              <Button variant="ghost" onClick={() => setTeacherLinkDialogOpen(false)}>Abbrechen</Button>
-              <Button onClick={handleLinkTeacher} disabled={teacherLinkSaving || !selectedTeacherId}>
-                {teacherLinkSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Link2 className="mr-2 h-4 w-4" />}
-                Verknüpfen
-              </Button>
+            <div className="grid gap-2">
+              <Label htmlFor="inviteMsg">Persönliche Nachricht (optional)</Label>
+              <Textarea
+                id="inviteMsg"
+                value={inviteMessage}
+                onChange={(e) => setInviteMessage(e.target.value.slice(0, 200))}
+                placeholder="Willkommen im Team..."
+                rows={3}
+                maxLength={200}
+              />
+              <span className="text-xs text-muted-foreground">{inviteMessage.length}/200</span>
             </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+            {inviteError && (
+              <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive">{inviteError}</div>
+            )}
+            <Button type="submit" className="w-full gap-2" disabled={inviteSending || !inviteEmail || !inviteRoleId}>
+              {inviteSending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+              Einladung senden
+            </Button>
+          </form>
+        </SheetContent>
+      </Sheet>
 
       <div className="flex items-center justify-between gap-4 rounded-xl border border-border bg-card p-3">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -811,6 +577,66 @@ export default function UsersPage() {
           />
         </div>
       </div>
+
+      {message && (
+        <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 text-sm text-primary">{message}</div>
+      )}
+
+      {showForm && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Neuen Lehrer-Account erstellen</CardTitle>
+            <CardDescription>Der neue Benutzer kann sich nach der Erstellung im CMS anmelden.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleCreate} className="space-y-4">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-2">
+                  <Label htmlFor="firstName">Vorname</Label>
+                  <Input id="firstName" value={newFirstName} onChange={(e) => setNewFirstName(e.target.value)} placeholder="Max" />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="lastName">Nachname</Label>
+                  <Input id="lastName" value={newLastName} onChange={(e) => setNewLastName(e.target.value)} placeholder="Mustermann" />
+                </div>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-3">
+                <div className="grid gap-2">
+                  <Label htmlFor="userTitle">Titel (optional)</Label>
+                  <Input id="userTitle" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} placeholder="Dr., Prof." />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="email">E-Mail</Label>
+                  <Input id="email" type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} placeholder="lehrer@schule.de" required />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="password">Passwort</Label>
+                  <Input id="password" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Mind. 6 Zeichen" minLength={6} required />
+                </div>
+              </div>
+              {canManageRoles && assignableRoles.length > 0 && (
+                <div className="grid gap-2">
+                  <Label htmlFor="newUserRole">Rolle zuweisen</Label>
+                  <select
+                    id="newUserRole"
+                    value={newRoleId}
+                    onChange={(e) => setNewRoleId(e.target.value)}
+                    className="rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  >
+                    <option value="">Keine Rolle</option>
+                    {assignableRoles.map((r) => (
+                      <option key={r.id} value={r.id}>{r.name}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+              <div className="flex justify-end">
+                <Button type="submit" disabled={creating}>{creating ? "Erstelle..." : "Account erstellen"}</Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Pending Invitations */}
       {isCurrentAdmin && pendingInvitations.length > 0 && (
@@ -1057,25 +883,21 @@ export default function UsersPage() {
                       <FileStack className="h-4 w-4" />
                     </Button>
                   )}
-                  {isCurrentAdmin && (
-                    <Button variant="ghost" size="sm" title="Lehrer verknüpfen" aria-label="Lehrer verknüpfen" onClick={() => openTeacherLinkDialog(u.id)}>
-                      <Link2 className="h-4 w-4" />
-                    </Button>
-                  )}
                   {u.id !== currentUser && permissions.users.delete && (
                     <Button variant="ghost" size="sm" className="text-destructive hover:bg-destructive/10 hover:text-destructive"
                       disabled={deletingId === u.id}
                       onClick={async () => {
                         if (!confirm(`"${getDisplayName(u.profile, u.email)}" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.`)) return
                         setDeletingId(u.id)
+                        setMessage("")
                         try {
                           const res = await fetch("/api/users", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ userId: u.id }) })
                           const data = await res.json()
                           if (!res.ok) throw new Error(data.error || "Fehler beim Löschen")
-                          toast.success("Benutzer erfolgreich gelöscht.")
+                          setMessage("Benutzer erfolgreich gelöscht.")
                           loadUsers()
                         } catch (err) {
-                          toast.error(err instanceof Error ? err.message : "Fehler beim Löschen")
+                          setMessage(err instanceof Error ? err.message : "Fehler beim Löschen")
                         } finally {
                           setDeletingId(null)
                         }

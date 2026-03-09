@@ -25,7 +25,6 @@ export function generateInvitationToken(): string {
 /**
  * Validate the structure of an invitation token.
  * Checks that the HMAC signature matches the UUID portion.
- * Uses constant-time comparison to prevent timing attacks.
  */
 export function validateTokenSignature(token: string): boolean {
   const parts = token.split("-")
@@ -40,13 +39,7 @@ export function validateTokenSignature(token: string): boolean {
     .digest("hex")
     .slice(0, 16)
 
-  // Constant-time comparison to prevent timing attacks
-  if (providedSignature.length !== expectedSignature.length) return false
-  let result = 0
-  for (let i = 0; i < providedSignature.length; i++) {
-    result |= providedSignature.charCodeAt(i) ^ expectedSignature.charCodeAt(i)
-  }
-  return result === 0
+  return providedSignature === expectedSignature
 }
 
 /**

@@ -6,9 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
-import Image from "next/image"
 import { useState, useEffect, useCallback, useRef } from "react"
-import { Github } from "lucide-react"
 
 /** Calculate cooldown in seconds based on consecutive failure count.
  *  1→2s, 2→3s, 3→5s, 4→7s, 5→11s, 6→16s, 7→23s, 8+→30s */
@@ -25,14 +23,6 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [retryAfterSeconds, setRetryAfterSeconds] = useState(0)
   const failCountRef = useRef(0)
-
-  // MFA state
-  const [mfaRequired, setMfaRequired] = useState(false)
-  const [mfaFactorId, setMfaFactorId] = useState<string | null>(null)
-  const [mfaCode, setMfaCode] = useState("")
-  const [mfaVerifying, setMfaVerifying] = useState(false)
-  // Hold session tokens in memory until MFA is verified to prevent session-based bypass
-  const [pendingSession, setPendingSession] = useState<{ access_token: string; refresh_token: string } | null>(null)
 
   // Live countdown timer
   useEffect(() => {
@@ -89,31 +79,13 @@ export default function LoginPage() {
       // Reset on success
       failCountRef.current = 0
 
-      // Set the session temporarily to check for MFA factors
+      // Set the session in the browser Supabase client
       if (data.session) {
         const supabase = createClient()
         await supabase.auth.setSession({
           access_token: data.session.access_token,
           refresh_token: data.session.refresh_token,
         })
-
-        // Check if MFA is required
-        const { data: factorsData } = await supabase.auth.mfa.listFactors()
-        const verifiedTotpFactor = factorsData?.totp?.find((f) => f.status === "verified")
-
-        if (verifiedTotpFactor) {
-          // Sign out immediately so the AAL1 session cannot be used to access /cms
-          await supabase.auth.signOut()
-          // Store session tokens in memory for re-authentication after MFA
-          setPendingSession({
-            access_token: data.session.access_token,
-            refresh_token: data.session.refresh_token,
-          })
-          setMfaRequired(true)
-          setMfaFactorId(verifiedTotpFactor.id)
-          setIsLoading(false)
-          return
-        }
       }
 
       if (rememberMe) {
@@ -131,142 +103,28 @@ export default function LoginPage() {
     }
   }
 
-  const handleMfaVerify = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!mfaFactorId || mfaCode.length !== 6 || !pendingSession) return
-
-    setMfaVerifying(true)
-    setError(null)
-
-    try {
-      const supabase = createClient()
-
-      // Re-establish session for MFA verification
-      await supabase.auth.setSession({
-        access_token: pendingSession.access_token,
-        refresh_token: pendingSession.refresh_token,
-      })
-
-      const { data: challengeData, error: challengeError } = await supabase.auth.mfa.challenge({
-        factorId: mfaFactorId,
-      })
-      if (challengeError) {
-        // Sign out on failure to prevent AAL1 access
-        await supabase.auth.signOut()
-        throw challengeError
-      }
-
-      const { error: verifyError } = await supabase.auth.mfa.verify({
-        factorId: mfaFactorId,
-        challengeId: challengeData.id,
-        code: mfaCode,
-      })
-      if (verifyError) {
-        // Sign out on failure to prevent AAL1 access
-        await supabase.auth.signOut()
-        throw verifyError
-      }
-
-      // MFA verified — session is now at AAL2
-      setPendingSession(null)
-
-      if (rememberMe) {
-        localStorage.setItem("cms_remember_me", "true")
-      } else {
-        localStorage.removeItem("cms_remember_me")
-      }
-
-      window.location.href = "/cms"
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Ungültiger Code. Bitte versuchen Sie es erneut.")
-      setMfaCode("")
-    } finally {
-      setMfaVerifying(false)
-    }
-  }
-
   return (
     <div className="flex min-h-svh w-full items-center justify-center bg-muted p-6 md:p-10">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <Link href="/" className="inline-flex flex-col items-center gap-2">
-            <Image
-              src="/images/grabbe-logo.svg"
-              alt="Grabbe-Gymnasium Logo"
-              width={64}
-              height={64}
-              className="h-16 w-16"
-              priority
-            />
+          <Link href="/" className="inline-flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
+              <span className="text-lg font-bold text-primary-foreground font-display">G</span>
+            </div>
             <span className="font-display text-lg font-semibold text-foreground">
               Grabbe-Gymnasium
-            </span>
-            <span className="text-sm text-muted-foreground -mt-1">
-              Content Management
             </span>
           </Link>
         </div>
         <Card>
-          {mfaRequired ? (
-            <>
-              <CardHeader>
-                <CardTitle className="font-display text-2xl">Zwei-Faktor-Authentifizierung</CardTitle>
-                <CardDescription>
-                  Geben Sie den 6-stelligen Code aus Ihrer Authenticator-App ein.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleMfaVerify}>
-                  <div className="flex flex-col gap-4">
-                    <div className="grid gap-2">
-                      <Label htmlFor="mfaCode">Verifizierungscode</Label>
-                      <Input
-                        id="mfaCode"
-                        type="text"
-                        inputMode="numeric"
-                        pattern="[0-9]{6}"
-                        maxLength={6}
-                        value={mfaCode}
-                        onChange={(e) => setMfaCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
-                        placeholder="000000"
-                        className="text-center font-mono text-lg tracking-[0.3em]"
-                        autoFocus
-                        required
-                      />
-                    </div>
-                    {error && (
-                      <p className="text-sm text-destructive">{error}</p>
-                    )}
-                    <Button type="submit" className="w-full" disabled={mfaVerifying || mfaCode.length !== 6}>
-                      {mfaVerifying ? "Verifiziere..." : "Bestätigen"}
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      className="w-full"
-                      onClick={() => {
-                        setMfaRequired(false)
-                        setMfaCode("")
-                        setError(null)
-                        setPendingSession(null)
-                      }}
-                    >
-                      Zurück zum Login
-                    </Button>
-                  </div>
-                </form>
-              </CardContent>
-            </>
-          ) : (
-            <>
-              <CardHeader>
-                <CardTitle className="font-display text-2xl">CMS Login</CardTitle>
-                <CardDescription>
-                  Melden Sie sich an, um Inhalte zu verwalten.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleLogin}>
+          <CardHeader>
+            <CardTitle className="font-display text-2xl">CMS Login</CardTitle>
+            <CardDescription>
+              Melden Sie sich an, um Inhalte zu verwalten.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleLogin}>
               <div className="flex flex-col gap-6">
                 <div className="grid gap-2">
                   <Label htmlFor="email">E-Mail</Label>
@@ -281,15 +139,7 @@ export default function LoginPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="password">Passwort</Label>
-                    <Link
-                      href="/auth/passwort-vergessen"
-                      className="text-xs text-muted-foreground hover:text-primary hover:underline"
-                    >
-                      Passwort vergessen?
-                    </Link>
-                  </div>
+                  <Label htmlFor="password">Passwort</Label>
                   <Input
                     id="password"
                     type="password"
@@ -330,42 +180,9 @@ export default function LoginPage() {
                       ? "Anmelden..."
                       : "Anmelden"}
                 </Button>
-
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-border" />
-                  </div>
-                  <div className="relative flex justify-center text-xs">
-                    <span className="bg-card px-2 text-muted-foreground">oder</span>
-                  </div>
-                </div>
-
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full gap-2"
-                  disabled={isBlocked}
-                  onClick={async () => {
-                    const supabase = createClient()
-                    const { data, error } = await supabase.auth.signInWithOAuth({
-                      provider: "github",
-                      options: { redirectTo: `${window.location.origin}/cms` },
-                    })
-                    if (error) {
-                      setError("GitHub-Anmeldung fehlgeschlagen.")
-                    } else if (data.url) {
-                      window.location.href = data.url
-                    }
-                  }}
-                >
-                  <Github className="h-4 w-4" />
-                  Mit GitHub anmelden
-                </Button>
               </div>
             </form>
           </CardContent>
-            </>
-          )}
         </Card>
         <p className="mt-4 text-center text-xs text-muted-foreground">
           <Link href="/" className="hover:text-foreground hover:underline">
