@@ -58,12 +58,13 @@ function getBaseUrl(): string {
  * Find a user by email, paginating through all users.
  */
 async function findUserByEmail(adminClient: ReturnType<typeof createAdminClient>, email: string) {
+  const searchEmail = email.toLowerCase()
   let page = 1
   const perPage = 1000
   while (true) {
     const { data, error } = await adminClient.auth.admin.listUsers({ page, perPage })
     if (error || !data?.users?.length) return null
-    const found = data.users.find((u) => u.email?.toLowerCase() === email)
+    const found = data.users.find((u) => u.email?.toLowerCase() === searchEmail)
     if (found) return found
     if (data.users.length < perPage) return null
     page++

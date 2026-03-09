@@ -17,12 +17,13 @@ function getBaseUrl(): string {
  * Find if any user (other than excludeId) already uses this email, paginating through all users.
  */
 async function isEmailInUse(adminClient: ReturnType<typeof createAdminClient>, email: string, excludeId: string): Promise<boolean> {
+  const searchEmail = email.toLowerCase()
   let page = 1
   const perPage = 1000
   while (true) {
     const { data, error } = await adminClient.auth.admin.listUsers({ page, perPage })
     if (error || !data?.users?.length) return false
-    const found = data.users.some((u) => u.email?.toLowerCase() === email && u.id !== excludeId)
+    const found = data.users.some((u) => u.email?.toLowerCase() === searchEmail && u.id !== excludeId)
     if (found) return true
     if (data.users.length < perPage) return false
     page++

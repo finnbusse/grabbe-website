@@ -7,6 +7,7 @@
  * Escape HTML special characters to prevent injection in email templates.
  */
 export function escapeHtml(str: string): string {
+  if (!str) return ""
   return str
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
