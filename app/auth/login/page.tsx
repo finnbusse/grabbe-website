@@ -116,8 +116,9 @@ export default function LoginPage() {
             setIsLoading(false)
             return
           }
-        } catch {
+        } catch (mfaErr) {
           // MFA check failed — proceed without MFA
+          console.error("MFA check failed, proceeding without MFA:", mfaErr)
         }
       }
 
