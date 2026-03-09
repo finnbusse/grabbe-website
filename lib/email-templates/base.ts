@@ -2,6 +2,20 @@
  * Base email layout wrapper.
  * Uses inline CSS only — email clients do not support external stylesheets.
  */
+
+/**
+ * Escape HTML special characters to prevent injection in email templates.
+ */
+export function escapeHtml(str: string): string {
+  if (!str) return ""
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;")
+}
+
 export function baseLayout(content: string): string {
   return `<!DOCTYPE html>
 <html lang="de">
