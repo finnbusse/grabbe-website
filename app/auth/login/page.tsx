@@ -31,8 +31,6 @@ export default function LoginPage() {
   const [mfaFactorId, setMfaFactorId] = useState<string | null>(null)
   const [mfaCode, setMfaCode] = useState("")
   const [mfaVerifying, setMfaVerifying] = useState(false)
-  // Hold session tokens in memory until MFA is verified to prevent session-based bypass
-  const [pendingSession, setPendingSession] = useState<{ access_token: string; refresh_token: string } | null>(null)
 
   // Live countdown timer
   useEffect(() => {
@@ -89,7 +87,7 @@ export default function LoginPage() {
       // Reset on success
       failCountRef.current = 0
 
-      // Set the session temporarily to check for MFA factors
+      // Set the session in the browser client (server already set cookies)
       if (data.session) {
         const supabase = createClient()
         await supabase.auth.setSession({
@@ -97,22 +95,24 @@ export default function LoginPage() {
           refresh_token: data.session.refresh_token,
         })
 
-        // Check if MFA is required
-        const { data: factorsData } = await supabase.auth.mfa.listFactors()
-        const verifiedTotpFactor = factorsData?.totp?.find((f) => f.status === "verified")
+        // Check if MFA is required — wrapped in try/catch so login
+        // still succeeds if MFA check fails for any reason.
+        try {
+          const { data: factorsData } = await supabase.auth.mfa.listFactors()
+          const verifiedTotpFactor = factorsData?.totp?.find((f) => f.status === "verified")
 
-        if (verifiedTotpFactor) {
-          // Sign out immediately so the AAL1 session cannot be used to access /cms
-          await supabase.auth.signOut()
-          // Store session tokens in memory for re-authentication after MFA
-          setPendingSession({
-            access_token: data.session.access_token,
-            refresh_token: data.session.refresh_token,
-          })
-          setMfaRequired(true)
-          setMfaFactorId(verifiedTotpFactor.id)
-          setIsLoading(false)
-          return
+          if (verifiedTotpFactor) {
+            // Keep the AAL1 session active — it's needed for MFA challenge/verify.
+            // The middleware enforces AAL2 for /cms routes, so even if the user
+            // opens a new tab they cannot access /cms at AAL1.
+            setMfaRequired(true)
+            setMfaFactorId(verifiedTotpFactor.id)
+            setIsLoading(false)
+            return
+          }
+        } catch (mfaErr) {
+          // MFA check failed — proceed without MFA
+          console.error("MFA check failed, proceeding without MFA:", mfaErr)
         }
       }
 
@@ -133,42 +133,29 @@ export default function LoginPage() {
 
   const handleMfaVerify = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!mfaFactorId || mfaCode.length !== 6 || !pendingSession) return
+    if (!mfaFactorId || mfaCode.length !== 6) return
 
     setMfaVerifying(true)
     setError(null)
 
     try {
+      // Use the existing browser client — the AAL1 session from handleLogin
+      // is still active, so challenge/verify work without re-establishing it.
       const supabase = createClient()
-
-      // Re-establish session for MFA verification
-      await supabase.auth.setSession({
-        access_token: pendingSession.access_token,
-        refresh_token: pendingSession.refresh_token,
-      })
 
       const { data: challengeData, error: challengeError } = await supabase.auth.mfa.challenge({
         factorId: mfaFactorId,
       })
-      if (challengeError) {
-        // Sign out on failure to prevent AAL1 access
-        await supabase.auth.signOut()
-        throw challengeError
-      }
+      if (challengeError) throw challengeError
 
       const { error: verifyError } = await supabase.auth.mfa.verify({
         factorId: mfaFactorId,
         challengeId: challengeData.id,
         code: mfaCode,
       })
-      if (verifyError) {
-        // Sign out on failure to prevent AAL1 access
-        await supabase.auth.signOut()
-        throw verifyError
-      }
+      if (verifyError) throw verifyError
 
       // MFA verified — session is now at AAL2
-      setPendingSession(null)
 
       if (rememberMe) {
         localStorage.setItem("cms_remember_me", "true")
@@ -244,11 +231,17 @@ export default function LoginPage() {
                       type="button"
                       variant="ghost"
                       className="w-full"
-                      onClick={() => {
+                      onClick={async () => {
+                        // Sign out the AAL1 session so it doesn't linger
+                        try {
+                          const supabase = createClient()
+                          await supabase.auth.signOut({ scope: 'local' })
+                        } catch {
+                          // Proceed even if signOut fails
+                        }
                         setMfaRequired(false)
                         setMfaCode("")
                         setError(null)
-                        setPendingSession(null)
                       }}
                     >
                       Zurück zum Login

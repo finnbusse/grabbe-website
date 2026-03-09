@@ -1,4 +1,4 @@
-import { createAdminClient } from "@/lib/supabase/admin"
+import { createClient } from "@/lib/supabase/server"
 import { checkRateLimit, recordLoginAttempt, applyDelay } from "@/lib/rate-limiter"
 import { NextResponse, type NextRequest } from "next/server"
 
@@ -9,6 +9,8 @@ import { NextResponse, type NextRequest } from "next/server"
  * - Checks IP and account-level rate limits
  * - Applies progressive server-side delays
  * - Returns uniform 401 for all failures (no user enumeration)
+ * - Uses the server client (anon key + cookie handling) so session
+ *   cookies are set on the response automatically.
  */
 export async function POST(request: NextRequest) {
   try {
@@ -46,11 +48,11 @@ export async function POST(request: NextRequest) {
     // ── Apply progressive server-side delay ──
     await applyDelay(rateLimit.delayMs)
 
-    // ── Attempt authentication via Supabase Admin API ──
-    const supabase = createAdminClient()
+    // ── Attempt authentication via server client ──
+    // Uses the anon key + cookie handling so session cookies are
+    // automatically set on the response.
+    const supabase = await createClient()
 
-    // Use signInWithPassword via the admin client's auth API
-    // We need a client-style auth call; admin client can verify credentials
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -71,6 +73,7 @@ export async function POST(request: NextRequest) {
     await recordLoginAttempt(ip, email, true)
 
     // Return session tokens so the client can establish the session
+    // (also needed for the MFA flow which re-authenticates after TOTP)
     return NextResponse.json({
       success: true,
       session: {
