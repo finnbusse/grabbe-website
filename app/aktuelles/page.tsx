@@ -36,21 +36,18 @@ export default async function AktuellesPage() {
       .eq("status", "published")
       .order("event_date", { ascending: false, nullsFirst: false })
       .order("created_at", { ascending: false })
-      .limit(20)
       .returns<PostListItem[]>(),
     supabase
       .from("presentations")
       .select("id, title, slug, subtitle, cover_image_url, created_at")
       .eq("status", "published")
       .eq("show_on_aktuelles", true)
-      .order("created_at", { ascending: false })
-      .limit(20),
+      .order("created_at", { ascending: false }),
     supabase
       .from("parent_letters")
       .select("id, number, title, slug, date_from, date_to, created_at")
       .eq("status", "published")
-      .order("created_at", { ascending: false })
-      .limit(20),
+      .order("created_at", { ascending: false }),
   ])
 
   const posts = postsResult.data || []
