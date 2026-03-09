@@ -1,9 +1,26 @@
 "use client"
 
 import { useSearchParams } from "next/navigation"
-import { useCallback } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import Link from "next/link"
-import { CalendarDays, ArrowRight } from "lucide-react"
+import { CalendarDays, ArrowRight, Search, ArrowUpDown } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
 
 export type ContentItemType = "news" | "presentation" | "parent_letter"
 
@@ -41,9 +58,27 @@ const TAB_TYPE_MAP: Record<TabKey, ContentItemType[] | null> = {
   elternbriefe: ["parent_letter"],
 }
 
+const SORT_OPTIONS = [
+  { value: "newest", label: "Neueste zuerst" },
+  { value: "oldest", label: "Älteste zuerst" },
+  { value: "alpha_asc", label: "A – Z" },
+  { value: "alpha_desc", label: "Z – A" },
+]
+
+const ITEMS_PER_PAGE = 12
+
 export function AktuellesContent({ items }: { items: ContentItem[] }) {
   const searchParams = useSearchParams()
   const activeTab = (searchParams.get("tab") as TabKey) || "alle"
+
+  const [searchValue, setSearchValue] = useState("")
+  const [sortOrder, setSortOrder] = useState("newest")
+  const [currentPage, setCurrentPage] = useState(1)
+
+  // Reset page to 1 whenever filter/sort/tab changes
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [activeTab, searchValue, sortOrder])
 
   const setTab = useCallback((tab: TabKey) => {
     const url = new URL(window.location.href)
@@ -57,34 +92,100 @@ export function AktuellesContent({ items }: { items: ContentItem[] }) {
     window.dispatchEvent(new PopStateEvent("popstate"))
   }, [])
 
+  // Filter by tab
   const allowedTypes = TAB_TYPE_MAP[activeTab]
-  const filtered = allowedTypes
-    ? items.filter((item) => allowedTypes.includes(item.type))
-    : items
+
+  // Filter and sort are memoized to avoid redundant work on unrelated re-renders
+  const sorted = useMemo(() => {
+    let filtered = allowedTypes
+      ? items.filter((item) => allowedTypes.includes(item.type))
+      : items
+
+    // Filter by search query
+    if (searchValue.trim()) {
+      const q = searchValue.trim().toLowerCase()
+      filtered = filtered.filter(
+        (item) =>
+          item.title.toLowerCase().includes(q) ||
+          item.excerpt?.toLowerCase().includes(q) ||
+          item.category?.toLowerCase().includes(q) ||
+          item.authorName?.toLowerCase().includes(q) ||
+          item.subtitle?.toLowerCase().includes(q)
+      )
+    }
+
+    return [...filtered].sort((a, b) => {
+      if (sortOrder === "oldest") {
+        return new Date(a.date).getTime() - new Date(b.date).getTime()
+      } else if (sortOrder === "alpha_asc") {
+        return a.title.localeCompare(b.title, "de")
+      } else if (sortOrder === "alpha_desc") {
+        return b.title.localeCompare(a.title, "de")
+      }
+      // default: newest
+      return new Date(b.date).getTime() - new Date(a.date).getTime()
+    })
+  }, [items, allowedTypes, searchValue, sortOrder])
+
+  // Pagination
+  const totalPages = Math.max(1, Math.ceil(sorted.length / ITEMS_PER_PAGE))
+  const safePage = Math.min(Math.max(1, currentPage), totalPages)
+  const paginated = sorted.slice((safePage - 1) * ITEMS_PER_PAGE, safePage * ITEMS_PER_PAGE)
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-16 lg:px-8">
-      {/* Tab filter bar */}
-      <div className="mb-8 flex flex-wrap gap-2">
-        {TABS.map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => setTab(tab.key)}
-            className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-              activeTab === tab.key
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
+      {/* Filter bar: tabs | search | sort */}
+      <div className="mb-8 flex flex-wrap items-center gap-3">
+        {/* Tab buttons */}
+        <div className="flex flex-wrap gap-2">
+          {TABS.map((tab) => (
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => setTab(tab.key)}
+              className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                activeTab === tab.key
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Search input */}
+        <div className="relative min-w-[180px] flex-1">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            type="search"
+            placeholder="Beiträge suchen…"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+            className="rounded-full pl-9"
+          />
+        </div>
+
+        {/* Sort dropdown */}
+        <Select value={sortOrder} onValueChange={setSortOrder}>
+          <SelectTrigger className="w-44 rounded-full">
+            <ArrowUpDown className="mr-1.5 h-3.5 w-3.5 shrink-0" />
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {SORT_OPTIONS.map((opt) => (
+              <SelectItem key={opt.value} value={opt.value}>
+                {opt.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Content feed */}
-      {filtered.length > 0 ? (
+      {paginated.length > 0 ? (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((item) => (
+          {paginated.map((item) => (
             <ContentCard key={`${item.type}-${item.id}`} item={item} />
           ))}
         </div>
@@ -95,12 +196,78 @@ export function AktuellesContent({ items }: { items: ContentItem[] }) {
             Keine Beiträge
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            In dieser Kategorie gibt es derzeit keine Beiträge.
+            {searchValue.trim()
+              ? "Keine Beiträge entsprechen Ihrer Suche."
+              : "In dieser Kategorie gibt es derzeit keine Beiträge."}
           </p>
+        </div>
+      )}
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="mt-12">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  aria-label="Vorherige Seite"
+                  aria-disabled={safePage <= 1}
+                  className={safePage <= 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                  onClick={safePage > 1 ? () => setCurrentPage(safePage - 1) : undefined}
+                />
+              </PaginationItem>
+
+              {generatePageNumbers(safePage, totalPages).map((page, i) =>
+                page === null ? (
+                  <PaginationItem key={`ellipsis-${i}`}>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                ) : (
+                  <PaginationItem key={page}>
+                    <PaginationLink
+                      isActive={page === safePage}
+                      className="cursor-pointer"
+                      onClick={() => setCurrentPage(page)}
+                    >
+                      {page}
+                    </PaginationLink>
+                  </PaginationItem>
+                )
+              )}
+
+              <PaginationItem>
+                <PaginationNext
+                  aria-label="Nächste Seite"
+                  aria-disabled={safePage >= totalPages}
+                  className={safePage >= totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                  onClick={safePage < totalPages ? () => setCurrentPage(safePage + 1) : undefined}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
         </div>
       )}
     </section>
   )
+}
+
+/**
+ * Generates a page number sequence with ellipsis placeholders (null) for large page counts.
+ * Always shows the first and last page; shows up to 3 pages around the current page.
+ * Renders a compact list of at most 7 items (numbers + ellipses) for any page count.
+ */
+function generatePageNumbers(current: number, total: number): (number | null)[] {
+  if (total <= 7) {
+    return Array.from({ length: total }, (_, i) => i + 1)
+  }
+  const pages: (number | null)[] = [1]
+  if (current > 3) pages.push(null)
+  for (let i = Math.max(2, current - 1); i <= Math.min(total - 1, current + 1); i++) {
+    pages.push(i)
+  }
+  if (current < total - 2) pages.push(null)
+  pages.push(total)
+  return pages
 }
 
 function ContentCard({ item }: { item: ContentItem }) {
