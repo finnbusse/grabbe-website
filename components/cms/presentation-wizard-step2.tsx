@@ -119,7 +119,7 @@ function PresentationBlockEditor({ blocks, onChange }: PresentationBlockEditorPr
         <div className="rounded-xl border bg-muted/50 p-4 space-y-3 animate-fade-in">
           <div className="flex items-center justify-between">
             <h4 className="text-sm font-semibold">Blocktyp wählen</h4>
-            <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setShowAddPanel(false)}>
+            <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setShowAddPanel(false)} title="Schließen" aria-label="Schließen">
               <X className="h-4 w-4" />
             </Button>
           </div>
@@ -190,11 +190,11 @@ function SortableBlockCard({ block, onUpdate, onRemove }: SortableBlockCardProps
   return (
     <div ref={setNodeRef} style={style} className="rounded-2xl border bg-card">
       <div className="flex items-center gap-2 border-b px-4 py-2">
-        <button type="button" className="cursor-grab text-muted-foreground hover:text-foreground" {...attributes} {...listeners}>
+        <button type="button" className="cursor-grab text-muted-foreground hover:text-foreground" {...attributes} {...listeners} title="Block verschieben" aria-label="Block verschieben">
           <GripVertical className="h-4 w-4" />
         </button>
         <span className="text-sm font-medium flex-1">{meta?.label ?? block.type}</span>
-        <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive hover:text-destructive" onClick={onRemove}>
+        <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive hover:text-destructive" onClick={onRemove} title="Block löschen" aria-label="Block löschen">
           <Trash2 className="h-3.5 w-3.5" />
         </Button>
       </div>
@@ -384,7 +384,7 @@ function GalleryForm({ block, onUpdate }: { block: Extract<PresentationBlock, { 
         <div key={i} className="rounded-lg border bg-background p-3 space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium">Bild {i + 1}</span>
-            <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive" onClick={() => removeImage(i)}>
+            <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive" onClick={() => removeImage(i)} title="Bild löschen" aria-label="Bild löschen">
               <Trash2 className="h-3 w-3" />
             </Button>
           </div>
@@ -470,7 +470,7 @@ function FeatureCardsForm({ block, onUpdate }: { block: Extract<PresentationBloc
         <div key={i} className="rounded-lg border bg-background p-3 space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium">Karte {i + 1}</span>
-            <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive" onClick={() => removeCard(i)}>
+            <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive" onClick={() => removeCard(i)} title="Karte löschen" aria-label="Karte löschen">
               <Trash2 className="h-3 w-3" />
             </Button>
           </div>
@@ -529,7 +529,7 @@ function StatsForm({ block, onUpdate }: { block: Extract<PresentationBlock, { ty
         <div key={i} className="rounded-lg border bg-background p-3 space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium">Kennzahl {i + 1}</span>
-            <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive" onClick={() => removeItem(i)}>
+            <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive" onClick={() => removeItem(i)} title="Kennzahl löschen" aria-label="Kennzahl löschen">
               <Trash2 className="h-3 w-3" />
             </Button>
           </div>
