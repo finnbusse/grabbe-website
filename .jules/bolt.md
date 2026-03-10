@@ -214,3 +214,6 @@ Route (app)                             Revalidate  Expire
 All the public pages are now `○` (Static with ISR/revalidate of 5m or 1h) or `●` (SSG parameterized routes).
 We have successfully eliminated the dynamic rendering (and the expensive per-request DB calls) for every single public page on the website!
 The performance of this site will now be orders of magnitude faster.
+## 2025-03-06 - Replacing Server Client with Static Client to Enable SSG
+**Learning:** The public website was being dynamically rendered (`ƒ (Dynamic)`) because the `SiteLayout` and `sitemap.ts` were utilizing `getAllNavItems` and other queries that fetched data using the `createClient` from `@/lib/supabase/server`. Since that client invokes Next.js `cookies()` behind the scenes, Next.js was opting all public routes into dynamic rendering on-demand.
+**Action:** Always use the `createStaticClient` from `@/lib/supabase/static` for public unauthenticated pages and queries (and replace CMS/editor functions like `getAllNavItems` with explicitly cached static equivalents like `getNavigation`) to ensure Next.js can fully cache them as Static (`○`) or SSG (`●`), reducing database roundtrips and significantly improving TTFB.

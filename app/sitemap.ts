@@ -1,10 +1,10 @@
 import type { MetadataRoute } from "next"
-import { createClient } from "@/lib/supabase/server"
+import { createStaticClient as createClient } from "@/lib/supabase/static"
 import { resolveBaseUrl } from "@/lib/seo"
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = resolveBaseUrl()
-  const supabase = await createClient()
+  const supabase = createClient()
 
   // Fetch all published posts
   const { data: posts } = await supabase
