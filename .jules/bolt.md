@@ -214,3 +214,7 @@ Route (app)                             Revalidate  Expire
 All the public pages are now `○` (Static with ISR/revalidate of 5m or 1h) or `●` (SSG parameterized routes).
 We have successfully eliminated the dynamic rendering (and the expensive per-request DB calls) for every single public page on the website!
 The performance of this site will now be orders of magnitude faster.
+
+## 2024-03-10 - Optimize Next.js Sitemap Generation with createStaticClient
+**Learning:** Using `createClient()` from `@/lib/supabase/server` inside Next.js route handlers or pages (like `sitemap.ts`) opts the entire route into dynamic rendering because it accesses `cookies()`. This completely defeats Next.js caching and forces a database round-trip on every request, which is especially wasteful for public endpoints like sitemaps that are frequently polled by bots.
+**Action:** Always use `createStaticClient()` from `@/lib/supabase/static` for public, read-only data fetching in Next.js App Router to allow Static Site Generation (SSG) and Incremental Static Regeneration (ISR). Pair it with `export const revalidate = <seconds>` to ensure the data is periodically refreshed without sacrificing Time to First Byte (TTFB).
