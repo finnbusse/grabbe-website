@@ -1,10 +1,14 @@
+// Since this is a public API route reading static data, we can revalidate it.
+// We avoid force-dynamic to allow SSG/ISR.
+export const revalidate = 3600
+
 import type { MetadataRoute } from "next"
-import { createClient } from "@/lib/supabase/server"
+import { createStaticClient } from "@/lib/supabase/static"
 import { resolveBaseUrl } from "@/lib/seo"
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = resolveBaseUrl()
-  const supabase = await createClient()
+  const supabase = createStaticClient()
 
   // Fetch all published posts
   const { data: posts } = await supabase
