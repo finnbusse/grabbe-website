@@ -231,12 +231,12 @@ export async function GET() {
     })
 
   } catch (error: any) {
+    console.error("Global diagnostic error:", error)
     results.checks.global_error = {
       status: 'EXCEPTION',
-      error: error.message,
-      stack: error.stack,
+      error: 'An internal error occurred during diagnostics.',
     }
-    results.errors.push(`Global error: ${error.message}`)
+    results.errors.push('Global error: An internal error occurred during diagnostics.')
     
     return NextResponse.json(results, { status: 500 })
   }
