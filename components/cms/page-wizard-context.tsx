@@ -183,11 +183,11 @@ export function PageWizardProvider({ children, initialState: initialOverrides }:
     }
   }, [initialOverrides])
 
-  // Auto-save to localStorage every 30s (only for new pages)
+  // Auto-save to localStorage every 30s (only for new, unpublished pages)
   useEffect(() => {
     if (initialOverrides) return // skip auto-save in edit mode
     const interval = setInterval(() => {
-      if (state.title || state.markdownContent || state.blocks.length > 0) {
+      if (!state.isPublished && (state.title || state.markdownContent || state.blocks.length > 0)) {
         try {
           const toSave = { ...state, isSaving: false, savedPageId: null }
           localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave))

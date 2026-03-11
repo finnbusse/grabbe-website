@@ -234,6 +234,7 @@ export function PostWizardStep3() {
       }
 
       clearPostWizardStorage()
+      dispatch({ type: "SET_IS_PUBLISHED", payload: true })
 
       if (publish) {
         setPublishState("success")

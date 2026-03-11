@@ -162,11 +162,11 @@ export function PresentationWizardProvider({ children, initialState: initialOver
     }
   }, [initialOverrides])
 
-  // Auto-save to localStorage every 30s (only for new presentations)
+  // Auto-save to localStorage every 30s (only for new, unpublished presentations)
   useEffect(() => {
     if (initialOverrides) return
     const interval = setInterval(() => {
-      if (state.title || state.blocks.length > 0) {
+      if (!state.isPublished && (state.title || state.blocks.length > 0)) {
         try {
           const toSave = { ...state, isSaving: false, presentationId: null }
           localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave))
