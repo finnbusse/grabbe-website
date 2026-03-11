@@ -80,39 +80,43 @@ export async function PUT(request: NextRequest) {
     )
   }
 
-  // Validate the token with Buffer API before saving
+  // 1. Save the token to the database FIRST – this must always succeed
+  //    regardless of whether Buffer's external API is reachable.
+  const { error: dbError } = await adminSupabase
+    .from("site_settings")
+    .upsert(
+      {
+        key: "buffer_access_token",
+        value: access_token.trim(),
+        type: "secret",
+        label: "Buffer Access Token",
+        category: "social_media",
+        updated_at: new Date().toISOString(),
+      } as never,
+      { onConflict: "key" }
+    )
+
+  if (dbError) {
+    return NextResponse.json({ error: dbError.message }, { status: 500 })
+  }
+
+  // 2. Try to validate the token with Buffer API (non-blocking for the save).
+  //    If validation fails the token is still saved – the user can test later.
+  let bufferUser: { name: string; plan: string } | null = null
+  let validationError: string | null = null
   try {
     const user = await validateBufferToken(access_token.trim())
-    // Save to site_settings
-    const { error } = await adminSupabase
-      .from("site_settings")
-      .upsert(
-        {
-          key: "buffer_access_token",
-          value: access_token.trim(),
-          type: "secret",
-          label: "Buffer Access Token",
-          category: "social_media",
-          updated_at: new Date().toISOString(),
-        } as never,
-        { onConflict: "key" }
-      )
-
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 })
-    }
-
-    return NextResponse.json({
-      success: true,
-      buffer_user: { name: user.name, plan: user.plan },
-    })
+    bufferUser = { name: user.name, plan: user.plan }
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Unbekannter Fehler"
-    return NextResponse.json(
-      { error: `Token-Validierung fehlgeschlagen: ${message}` },
-      { status: 400 }
-    )
+    validationError =
+      err instanceof Error ? err.message : "Unbekannter Validierungsfehler"
   }
+
+  return NextResponse.json({
+    success: true,
+    buffer_user: bufferUser,
+    validation_warning: validationError,
+  })
 }
 
 // ============================================================================

@@ -62,6 +62,36 @@ export interface BufferUserResponse {
 
 const BUFFER_API_BASE = "https://api.bufferapp.com/1"
 
+/** Default timeout for external Buffer API calls (in ms) */
+const API_TIMEOUT_MS = 10_000
+
+// ============================================================================
+// Internal helpers
+// ============================================================================
+
+/**
+ * Fetch wrapper that enforces a timeout via AbortController.
+ * Prevents indefinite hangs when Buffer's API is slow or unreachable.
+ */
+async function fetchWithTimeout(
+  url: string,
+  init: RequestInit = {},
+  timeoutMs = API_TIMEOUT_MS
+): Promise<Response> {
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), timeoutMs)
+  try {
+    return await fetch(url, { ...init, signal: controller.signal })
+  } catch (err) {
+    if (err instanceof DOMException && err.name === "AbortError") {
+      throw new Error(`Buffer API Timeout: Keine Antwort innerhalb von ${timeoutMs / 1000}s.`)
+    }
+    throw err
+  } finally {
+    clearTimeout(timer)
+  }
+}
+
 // ============================================================================
 // API Functions
 // ============================================================================
@@ -71,10 +101,10 @@ const BUFFER_API_BASE = "https://api.bufferapp.com/1"
  * Returns the user data on success, throws on failure.
  */
 export async function validateBufferToken(accessToken: string): Promise<BufferUserResponse> {
-  const res = await fetch(`${BUFFER_API_BASE}/user.json?access_token=${encodeURIComponent(accessToken)}`, {
-    method: "GET",
-    headers: { "Accept": "application/json" },
-  })
+  const res = await fetchWithTimeout(
+    `${BUFFER_API_BASE}/user.json?access_token=${encodeURIComponent(accessToken)}`,
+    { method: "GET", headers: { "Accept": "application/json" } }
+  )
 
   if (!res.ok) {
     const body = await res.text()
@@ -88,10 +118,10 @@ export async function validateBufferToken(accessToken: string): Promise<BufferUs
  * Fetch all connected profiles (social media channels) for the authenticated user.
  */
 export async function getBufferProfiles(accessToken: string): Promise<BufferProfile[]> {
-  const res = await fetch(`${BUFFER_API_BASE}/profiles.json?access_token=${encodeURIComponent(accessToken)}`, {
-    method: "GET",
-    headers: { "Accept": "application/json" },
-  })
+  const res = await fetchWithTimeout(
+    `${BUFFER_API_BASE}/profiles.json?access_token=${encodeURIComponent(accessToken)}`,
+    { method: "GET", headers: { "Accept": "application/json" } }
+  )
 
   if (!res.ok) {
     const body = await res.text()
@@ -139,7 +169,7 @@ export async function createBufferPost(
     formData.append("shorten", params.shorten ? "true" : "false")
   }
 
-  const res = await fetch(`${BUFFER_API_BASE}/updates/create.json`, {
+  const res = await fetchWithTimeout(`${BUFFER_API_BASE}/updates/create.json`, {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",

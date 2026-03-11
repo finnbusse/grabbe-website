@@ -177,7 +177,17 @@ export default function SocialMediaTab() {
       })
       const data = await res.json()
       if (res.ok && data.success) {
-        toast.success(`Buffer-Token gespeichert. Verbunden als: ${data.buffer_user?.name ?? "Unbekannt"}`)
+        // Token was saved to DB. Show validation result (if any).
+        if (data.buffer_user?.name) {
+          toast.success(`Buffer-Token gespeichert. Verbunden als: ${data.buffer_user.name}`)
+        } else if (data.validation_warning) {
+          toast.success("Buffer-Token gespeichert.", {
+            description: `Hinweis: Validierung fehlgeschlagen – ${data.validation_warning}. Du kannst den Token später erneut prüfen.`,
+            duration: 8000,
+          })
+        } else {
+          toast.success("Buffer-Token gespeichert.")
+        }
         setKeyStatus({ configured: true, masked_key: maskToken(newToken.trim()) })
         setNewToken("")
       } else {
@@ -338,7 +348,7 @@ export default function SocialMediaTab() {
             {/* Token input */}
             <Field
               label="Access Token"
-              hint="Gib den Buffer Access Token ein. Er wird bei der Eingabe validiert."
+              hint="Gib den Buffer Access Token ein. Er wird sofort gespeichert. Die Validierung gegen Buffer erfolgt anschließend (nicht blockierend)."
             >
               <div className="flex items-center gap-3">
                 <Input
