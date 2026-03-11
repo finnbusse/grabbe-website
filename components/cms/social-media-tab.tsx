@@ -15,6 +15,7 @@ import {
 } from "lucide-react"
 import { toast } from "sonner"
 import { getServiceDisplayName, maskToken } from "@/lib/buffer"
+import { ImagePicker } from "./image-picker"
 
 // ============================================================================
 // Types
@@ -622,17 +623,13 @@ export default function SocialMediaTab() {
                 <ImageIcon className="h-4 w-4" />
                 Bild-Anhang
               </h3>
-              <Field
-                label="Bild-URL"
-                hint="Direkte URL zu einem Bild (JPG, PNG, GIF). Wird dem Post als Bild beigefügt."
-              >
-                <Input
-                  type="url"
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
-                  placeholder="https://example.com/bild.jpg"
-                />
-              </Field>
+              <ImagePicker
+                value={imageUrl || null}
+                onChange={(url) => setImageUrl(url || "")}
+                label="Bild für Social-Media-Post"
+                hint="Wähle ein Bild aus der Mediathek oder lade ein neues hoch."
+                aspectRatio="free"
+              />
             </div>
           )}
 

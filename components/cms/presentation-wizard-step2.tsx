@@ -14,6 +14,7 @@ import { DndContext, closestCenter, type DragEndEvent } from "@dnd-kit/core"
 import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import { ArrowLeft, ArrowRight, GripVertical, Plus, Trash2, X } from "lucide-react"
+import { ImagePicker } from "./image-picker"
 
 // ============================================================================
 // Step 2 — Block Editor
@@ -247,8 +248,12 @@ function HeroForm({ block, onUpdate }: { block: Extract<PresentationBlock, { typ
   return (
     <div className="space-y-3">
       <div className="space-y-1">
-        <Label className="text-xs">Hintergrundbild-URL</Label>
-        <Input value={block.backgroundImageUrl} onChange={(e) => onUpdate({ ...block, backgroundImageUrl: e.target.value })} placeholder="https://…" />
+        <ImagePicker
+          value={block.backgroundImageUrl || null}
+          onChange={(url) => onUpdate({ ...block, backgroundImageUrl: url || "" })}
+          label="Hintergrundbild"
+          aspectRatio="16/9"
+        />
       </div>
       <div className="space-y-1">
         <Label className="text-xs">Überschrift</Label>
@@ -334,8 +339,12 @@ function ImageFullForm({ block, onUpdate }: { block: Extract<PresentationBlock, 
   return (
     <div className="space-y-3">
       <div className="space-y-1">
-        <Label className="text-xs">Bild-URL</Label>
-        <Input value={block.imageUrl} onChange={(e) => onUpdate({ ...block, imageUrl: e.target.value })} placeholder="https://…" />
+        <ImagePicker
+          value={block.imageUrl || null}
+          onChange={(url) => onUpdate({ ...block, imageUrl: url || "" })}
+          label="Bild"
+          aspectRatio="free"
+        />
       </div>
       <div className="space-y-1">
         <Label className="text-xs">Alt-Text</Label>
@@ -388,7 +397,11 @@ function GalleryForm({ block, onUpdate }: { block: Extract<PresentationBlock, { 
               <Trash2 className="h-3 w-3" />
             </Button>
           </div>
-          <Input value={img.imageUrl} onChange={(e) => updateImage(i, "imageUrl", e.target.value)} placeholder="Bild-URL" className="text-xs" />
+          <ImagePicker
+            value={img.imageUrl || null}
+            onChange={(url) => updateImage(i, "imageUrl", url || "")}
+            aspectRatio="free"
+          />
           <Input value={img.alt} onChange={(e) => updateImage(i, "alt", e.target.value)} placeholder="Alt-Text" className="text-xs" />
           <Input value={img.caption} onChange={(e) => updateImage(i, "caption", e.target.value)} placeholder="Bildunterschrift" className="text-xs" />
         </div>
@@ -562,8 +575,12 @@ function TwoColumnForm({ block, onUpdate }: { block: Extract<PresentationBlock, 
       </div>
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1">
-          <Label className="text-xs">Bild-URL</Label>
-          <Input value={block.imageUrl} onChange={(e) => onUpdate({ ...block, imageUrl: e.target.value })} placeholder="https://…" />
+          <ImagePicker
+            value={block.imageUrl || null}
+            onChange={(url) => onUpdate({ ...block, imageUrl: url || "" })}
+            label="Bild"
+            aspectRatio="free"
+          />
         </div>
         <div className="space-y-1">
           <Label className="text-xs">Bild Alt-Text</Label>

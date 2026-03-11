@@ -8,6 +8,7 @@ import {
   ImageIcon, Upload, Link as LinkIcon, X, Check, Loader2, Search, AlertTriangle,
 } from "lucide-react"
 import { TagSelector } from "./tag-selector"
+import { processImageForUpload, fetchImageAsFile } from "@/lib/image-processing"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -257,6 +258,8 @@ function ImagePickerModal({
   const [selected, setSelected] = useState<string | null>(currentValue)
   const [urlInput, setUrlInput] = useState("")
   const [uploading, setUploading] = useState(false)
+  const [urlImporting, setUrlImporting] = useState(false)
+  const [urlError, setUrlError] = useState<string | null>(null)
   const [metadataForm, setMetadataForm] = useState<MetadataFormState | null>(null)
   const [duplicate, setDuplicate] = useState<DuplicateInfo | null>(null)
   const [pendingFile, setPendingFile] = useState<File | null>(null)
@@ -320,16 +323,22 @@ function ImagePickerModal({
     setDuplicate(null)
     setPendingFile(null)
     try {
+      // Process image: convert to WebP, compress, strip metadata, add copyright
+      const processed = await processImageForUpload(file)
+      const processedFile = new File([processed.blob], processed.filename, {
+        type: processed.mimeType,
+      })
+
       const fd = new FormData()
-      fd.append("file", file)
+      fd.append("file", processedFile)
       const res = await fetch("/api/upload", { method: "POST", body: fd })
       const data = await res.json()
       if (res.ok && data.url) {
         setMetadataForm({
           documentId: data.documentId || "",
           url: data.url,
-          filename: data.filename || file.name,
-          size: data.size || file.size,
+          filename: data.filename || processed.filename,
+          size: data.size || processed.blob.size,
           title: file.name.replace(/\.[^.]+$/, ""),
           altText: "",
           tagIds: [],
@@ -559,12 +568,17 @@ function ImagePickerModal({
 
           {tab === "url" && (
             <div className="space-y-4">
-              <Input
-                value={urlInput}
-                onChange={(e) => setUrlInput(e.target.value)}
-                placeholder="https://example.com/bild.jpg"
-                className="font-mono text-sm"
-              />
+              <div>
+                <Input
+                  value={urlInput}
+                  onChange={(e) => { setUrlInput(e.target.value); setUrlError(null) }}
+                  placeholder="https://example.com/bild.jpg"
+                  className="font-mono text-sm"
+                />
+                <p className="mt-1.5 text-[10px] text-muted-foreground">
+                  Das Bild wird automatisch als WebP komprimiert und in die Mediathek hochgeladen.
+                </p>
+              </div>
               {urlInput && (
                 <div className="overflow-hidden rounded-xl border">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -578,15 +592,39 @@ function ImagePickerModal({
                   />
                 </div>
               )}
-              <Button
-                size="sm"
-                onClick={() => {
-                  if (urlInput.trim()) onSelect(urlInput.trim())
-                }}
-                disabled={!urlInput.trim()}
-              >
-                URL verwenden
-              </Button>
+              {urlError && (
+                <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive">
+                  {urlError}
+                </div>
+              )}
+              {metadataForm ? (
+                <PostUploadMetadata
+                  data={metadataForm}
+                  onSaveAndUse={handleMetadataDone}
+                  onSkip={handleMetadataDone}
+                />
+              ) : (
+                <Button
+                  size="sm"
+                  onClick={async () => {
+                    if (!urlInput.trim()) return
+                    setUrlImporting(true)
+                    setUrlError(null)
+                    try {
+                      const file = await fetchImageAsFile(urlInput.trim())
+                      await performUpload(file)
+                    } catch (err: unknown) {
+                      setUrlError(err instanceof Error ? err.message : "Import fehlgeschlagen")
+                    } finally {
+                      setUrlImporting(false)
+                    }
+                  }}
+                  disabled={!urlInput.trim() || urlImporting}
+                >
+                  {urlImporting ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : <Upload className="mr-1.5 h-3.5 w-3.5" />}
+                  {urlImporting ? "Wird importiert…" : "Importieren & hochladen"}
+                </Button>
+              )}
             </div>
           )}
         </div>

@@ -213,10 +213,12 @@ Zusätzlich gibt es den **„Live ansehen"**-Button, der die veröffentlichte Se
 
 Jede Seite kann ein Hero-Bild haben, das im Seitenkopf angezeigt wird:
 
-1. Klicken Sie auf **„Bild hochladen"** oder
-2. Geben Sie eine **Bild-URL** direkt ein
+1. Klicken Sie auf **„Bild auswählen"** → der Bilder-Picker öffnet sich
+2. Wählen Sie ein Bild aus der **Mediathek**, laden Sie ein neues hoch oder importieren Sie von einer URL
 3. Das Bild wird als Vorschau angezeigt
 4. Klicken Sie auf **✕** um das Bild zu entfernen
+
+> **Automatische Bildoptimierung:** Alle hochgeladenen Bilder werden automatisch ins **WebP-Format** konvertiert, auf eine Zielgröße von ca. 500 KB komprimiert und von sämtlichen Metadaten (EXIF, GPS, Kamera-Daten) bereinigt. SVG-Dateien bleiben unverändert.
 
 ---
 
@@ -256,7 +258,7 @@ Raster aus mehreren Bildern.
 
 | Feld | Beschreibung |
 |---|---|
-| Bild-URL | URL zum Bild (aus Dokumente-Bereich hochladen) |
+| Bild | Per Bilder-Picker aus der Mediathek auswählen oder hochladen |
 | Bildbeschreibung | Alt-Text für Barrierefreiheit |
 
 **Layout:** 1–2 Bilder = 2 Spalten, 3+ = 3 Spalten
@@ -276,7 +278,7 @@ Großer Banner-Bereich mit Hintergrundbild und Call-to-Action.
 |---|---|
 | Überschrift | Große Hauptüberschrift |
 | Unterüberschrift | Erklärungstext unter der Überschrift |
-| Hintergrundbild-URL | Bild das den gesamten Banner füllt |
+| Hintergrundbild | Per Bilder-Picker auswählen (wird automatisch als WebP optimiert) |
 | Button-Text | Beschriftung des CTA-Buttons (optional) |
 | Button-URL | Ziel-Link des Buttons (optional) |
 
@@ -491,12 +493,14 @@ Der Dokumenten-Bereich dient zum Hochladen und Verwalten von Dateien:
 
 ### Dateien in Inhalten verwenden
 
-Kopieren Sie die URL einer hochgeladenen Datei und verwenden Sie sie:
+Bilder werden überall über den **Bilder-Picker** verwaltet:
 
-- **In Beiträgen:** `![Bildname](URL)` für Bilder oder `[Linktext](URL)` für Downloads
-- **In Seiten (Markdown):** Gleiche Syntax wie bei Beiträgen
-- **In Bausteinen:** Fügen Sie die URL direkt in das Bild-URL-Feld ein
-- **In Einstellungen:** Nutzen Sie den „Bild hochladen"-Button
+- **In Beiträgen:** Der Bilder-Picker steht für Beitragsbilder und Inline-Bilder zur Verfügung
+- **In Bausteinen:** Bildfelder nutzen den Bilder-Picker (Galerie, Hero, Zwei-Spalten-Layout, etc.)
+- **In Einstellungen:** Nutzen Sie den Bilder-Picker für Logos und Hintergrundbilder
+- **Social Media:** Auch für Social-Media-Posts wird ein Bild über den Bilder-Picker ausgewählt
+
+> **Hinweis:** Es gibt keine manuellen Bild-URL-Eingabefelder mehr. Alle Bilder werden zentral über den Bilder-Picker verwaltet und automatisch optimiert.
 
 ---
 
@@ -789,12 +793,15 @@ A: Nein, Sie können nur andere Accounts löschen. Wenden Sie sich an einen Admi
 
 **F: Welche Dateiformate werden unterstützt?**
 A: 
-- **Bilder:** JPEG, PNG, GIF, WebP, SVG
+- **Bilder:** JPEG, PNG, GIF, WebP, SVG — alle Rasterformate werden beim Hochladen automatisch in **WebP** konvertiert und komprimiert. SVGs bleiben unverändert.
 - **Dokumente:** PDF, DOC/DOCX, XLS/XLSX
 - **Andere:** Nahezu alle gängigen Formate
 
 **F: Gibt es eine Größenbeschränkung für Uploads?**
-A: Ja, die maximale Dateigröße richtet sich nach der Konfiguration des Hosting-Anbieters (Vercel). Profilbilder werden automatisch auf max. 400px Breite komprimiert.
+A: Die maximale Dateigröße beträgt 50 MB. Bilder werden vor dem Hochladen automatisch auf ca. 500 KB (WebP) komprimiert und auf maximal 2048 px Seitenlänge skaliert. Profilbilder werden separat auf max. 400 px Breite komprimiert.
+
+**F: Was passiert mit den Metadaten meiner Bilder?**
+A: Alle Metadaten (EXIF, GPS-Standort, Kamera-Informationen, Aufnahmezeitpunkt) werden beim Hochladen automatisch entfernt. Es wird lediglich eine Copyright-Information (© Finbooster) in das Bild eingebettet. Dateinamen werden durch Zufallswerte ersetzt.
 
 ---
 
@@ -803,7 +810,7 @@ A: Ja, die maximale Dateigröße richtet sich nach der Konfiguration des Hosting
 ### Inhaltserstellung
 
 1. **Aussagekräftige Titel:** Verwenden Sie klare, beschreibende Titel für Seiten und Beiträge
-2. **Bilder optimieren:** Laden Sie Bilder in angemessener Größe hoch (max. 2000px Breite empfohlen)
+2. **Bilder werden automatisch optimiert:** Alle Bilder werden beim Hochladen automatisch als WebP komprimiert (Ziel: ≤ 500 KB). Sie müssen Bilder nicht mehr manuell verkleinern.
 3. **Vorschau nutzen:** Prüfen Sie immer die Vorschau bevor Sie veröffentlichen
 4. **Entwürfe nutzen:** Speichern Sie Inhalte zunächst als Entwurf und veröffentlichen Sie erst, wenn alles fertig ist
 5. **Kurztexte schreiben:** Füllen Sie bei Beiträgen immer den „Kurztext" aus – er wird in der Übersicht angezeigt

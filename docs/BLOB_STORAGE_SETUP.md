@@ -151,6 +151,33 @@ Falls Sie Vercel Blob **nicht** verwenden möchten:
 4. ✅ Testen in `/cms/documents`
 5. ✅ **Funktioniert!** 🎉
 
+## Automatische Bildoptimierung
+
+Alle Bilder, die über den **Bilder-Picker** hochgeladen werden (per Datei-Upload oder URL-Import), durchlaufen vor dem Hochladen zum CDN eine automatische Optimierungspipeline:
+
+### Was passiert beim Bild-Upload?
+
+| Schritt | Beschreibung |
+|---|---|
+| **1. Format-Konvertierung** | Alle Rasterbilder (JPEG, PNG, GIF, etc.) werden in **WebP** konvertiert. SVGs bleiben unverändert. |
+| **2. Metadaten entfernen** | Sämtliche EXIF-Daten (GPS-Standort, Kamera-Modell, Aufnahmezeit, etc.) werden entfernt. |
+| **3. Komprimierung** | Die WebP-Qualität wird iterativ angepasst, bis die Datei unter **700 KB** liegt (Ziel: ~500 KB). Bilder mit mehr als 2048 px Seitenlänge werden proportional herunterskaliert. |
+| **4. Copyright** | Eine XMP-Copyright-Information (`© Finbooster`) wird in die Datei eingebettet. |
+| **5. Dateiname** | Der ursprüngliche Dateiname wird durch einen **zufälligen UUID** ersetzt (z.B. `a1b2c3d4-e5f6-7890-abcd-ef1234567890.webp`). |
+
+### Warum?
+
+- **Performance:** Kleinere Dateien = schnellere Ladezeiten = besseres Largest Contentful Paint (LCP)
+- **Datenschutz:** Keine persönlichen Metadaten (Standort, Geräteinformationen) in öffentlichen Bildern
+- **Konsistenz:** Einheitliches WebP-Format für alle Bilder
+- **Urheberrecht:** Automatische Copyright-Kennzeichnung
+
+### Technische Details
+
+Die Bildverarbeitung findet **vollständig im Browser** statt (in `lib/image-processing.ts`). Es wird keine serverseitige Bibliothek benötigt. Die Verarbeitung nutzt die Canvas API für Konvertierung und Komprimierung.
+
+---
+
 ## Support
 
 Bei Problemen:
