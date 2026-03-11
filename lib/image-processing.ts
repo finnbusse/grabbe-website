@@ -14,7 +14,7 @@
  *    is already adjusted based on the source file size so that most images
  *    are compressed in a single pass.
  * 4. **Copyright injection** – a lightweight XMP packet containing
- *    `© Finbooster` is embedded in the WebP RIFF container.
+ *    `© Finn Busse` is embedded in the WebP RIFF container.
  * 5. **Random filename** – the original filename is replaced by a
  *    `crypto.randomUUID()`-based name with a `.webp` extension.
  */
@@ -60,7 +60,7 @@ const XMP_COPYRIGHT = [
   '      xmlns:xmpRights="http://ns.adobe.com/xap/1.0/rights/">',
   "      <dc:rights>",
   "        <rdf:Alt>",
-  '          <rdf:li xml:lang="x-default">\u00A9 Finbooster</rdf:li>',
+  '          <rdf:li xml:lang="x-default">\u00A9 Finn Busse</rdf:li>',
   "        </rdf:Alt>",
   "      </dc:rights>",
   "      <xmpRights:Marked>True</xmpRights:Marked>",
