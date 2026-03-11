@@ -160,7 +160,7 @@ Gibt alle mit Buffer verbundenen Social-Media-Kanäle zurück (über die GraphQL
 
 #### `POST /api/social-media/publish`
 
-Erstellt einen neuen Post über Buffer (GraphQL `createPost` Mutation). Posts werden pro Kanal erstellt.
+Erstellt einen neuen Post über die Buffer REST API (`/1/updates/create.json`). Posts werden pro Kanal parallel erstellt.
 
 **Berechtigung:** Nur Administratoren
 
@@ -220,7 +220,7 @@ Die Client-Bibliothek bietet folgende Funktionen:
 |----------|-------------|
 | `validateBufferToken(token)` | Validiert einen Token gegen die Buffer GraphQL API |
 | `getBufferChannels(token)` | Listet alle verbundenen Kanäle (Organizations → Channels) |
-| `createBufferPost(token, params)` | Erstellt einen neuen Post (GraphQL Mutation) |
+| `createBufferPost(token, params)` | Erstellt einen neuen Post (REST API) |
 | `getServiceDisplayName(service)` | Gibt den Anzeigenamen eines Dienstes zurück |
 | `maskToken(token)` | Maskiert einen Token für die Anzeige |
 
