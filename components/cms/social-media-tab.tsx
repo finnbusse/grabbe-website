@@ -114,6 +114,7 @@ export default function SocialMediaTab() {
   // ---- Channels State ----
   const [channels, setChannels] = useState<BufferChannel[]>([])
   const [channelsLoading, setChannelsLoading] = useState(false)
+  const [channelsError, setChannelsError] = useState<string | null>(null)
 
   // ---- Post Composer State ----
   const [postText, setPostText] = useState("")
@@ -140,16 +141,24 @@ export default function SocialMediaTab() {
   // ---- Load Channels ----
   const loadChannels = useCallback(async () => {
     setChannelsLoading(true)
+    setChannelsError(null)
     try {
       const res = await fetch("/api/social-media/profiles")
       const data = await res.json()
       if (res.ok && data.channels) {
         setChannels(data.channels)
+        if (data.channels.length === 0) {
+          setChannelsError("Keine Kanäle gefunden. Verbinde Social-Media-Kanäle in deinem Buffer-Dashboard.")
+        }
       } else {
-        toast.error(data.error || "Kanäle konnten nicht geladen werden.")
+        const errMsg = data.error || "Kanäle konnten nicht geladen werden."
+        setChannelsError(errMsg)
+        toast.error(errMsg)
       }
     } catch {
-      toast.error("Netzwerkfehler beim Laden der Kanäle.")
+      const errMsg = "Netzwerkfehler beim Laden der Kanäle."
+      setChannelsError(errMsg)
+      toast.error(errMsg)
     } finally {
       setChannelsLoading(false)
     }
@@ -408,6 +417,22 @@ export default function SocialMediaTab() {
           {channelsLoading ? (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Loader2 className="h-4 w-4 animate-spin" /> Lade Kanäle…
+            </div>
+          ) : channelsError && channels.length === 0 ? (
+            <div className="rounded-lg border border-red-200 bg-red-50 p-3 dark:border-red-900 dark:bg-red-950">
+              <p className="text-sm text-red-700 dark:text-red-300">{channelsError}</p>
+              <p className="mt-1.5 text-xs text-red-600 dark:text-red-400">
+                Stelle sicher, dass dein Buffer Access Token gültig ist und Social-Media-Kanäle in deinem{" "}
+                <a
+                  href="https://publish.buffer.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline font-medium"
+                >
+                  Buffer-Dashboard
+                </a>{" "}
+                verbunden sind.
+              </p>
             </div>
           ) : channels.length === 0 ? (
             <p className="text-sm text-muted-foreground">

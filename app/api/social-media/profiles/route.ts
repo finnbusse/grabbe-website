@@ -56,6 +56,7 @@ export async function GET() {
     return NextResponse.json({ channels })
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unbekannter Fehler"
+    console.error("[social-media/profiles] Fehler beim Abrufen der Kanäle:", err)
     return NextResponse.json(
       { error: `Fehler beim Abrufen der Kanäle: ${message}` },
       { status: 502 }

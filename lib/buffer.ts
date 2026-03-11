@@ -4,6 +4,10 @@
  * Provides a type-safe interface to the Buffer GraphQL API.
  * Used for social media publishing from the CMS.
  *
+ * All GraphQL queries use inline values (not variables) to exactly match
+ * the format from Buffer's official API documentation, avoiding any
+ * potential type-mismatch issues with GraphQL variable declarations.
+ *
  * @see https://developers.buffer.com/guides/getting-started.html
  */
 
@@ -61,13 +65,28 @@ const API_TIMEOUT_MS = 15_000
 // ============================================================================
 
 /**
+ * Escape a string value for safe inline use in a GraphQL query.
+ * Handles quotes, backslashes, and newlines.
+ */
+function escapeGraphQLString(value: string): string {
+  return value
+    .replace(/\\/g, "\\\\")
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, "\\n")
+    .replace(/\r/g, "\\r")
+    .replace(/\t/g, "\\t")
+    .replace(/\f/g, "\\f")
+    .replace(/\b/g, "\\b")
+    .replace(/\0/g, "")
+}
+
+/**
  * Execute a GraphQL query/mutation against Buffer's API.
  * Uses Bearer token authentication and enforces a timeout.
  */
 async function bufferGraphQL<T>(
   accessToken: string,
   query: string,
-  variables?: Record<string, unknown>,
 ): Promise<T> {
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), API_TIMEOUT_MS)
@@ -79,7 +98,7 @@ async function bufferGraphQL<T>(
         "Content-Type": "application/json",
         "Authorization": `Bearer ${accessToken}`,
       },
-      body: JSON.stringify({ query, variables }),
+      body: JSON.stringify({ query }),
       signal: controller.signal,
     })
 
@@ -110,82 +129,106 @@ async function bufferGraphQL<T>(
 }
 
 // ============================================================================
-// GraphQL Queries
+// GraphQL Query Builders
+//
+// These functions build GraphQL queries with inline values, exactly matching
+// the format shown in Buffer's official API documentation.
+// @see https://developers.buffer.com/guides/getting-started.html
 // ============================================================================
 
-const GET_ORGANIZATIONS_QUERY = `
-  query GetOrganizations {
-    account {
-      organizations {
+/**
+ * Build the GetOrganizations query.
+ * @see https://developers.buffer.com/guides/getting-started.html
+ */
+function buildGetOrganizationsQuery(): string {
+  return `
+    query GetOrganizations {
+      account {
+        organizations {
+          id
+          name
+          ownerEmail
+        }
+      }
+    }
+  `
+}
+
+/**
+ * Build the GetChannels query with an inline organization ID.
+ * Uses the exact format from the Buffer API docs.
+ * @see https://developers.buffer.com/guides/getting-started.html
+ */
+function buildGetChannelsQuery(organizationId: string): string {
+  const safeOrgId = escapeGraphQLString(organizationId)
+  return `
+    query GetChannels {
+      channels(input: {
+        organizationId: "${safeOrgId}"
+      }) {
         id
         name
-        ownerEmail
+        displayName
+        service
+        avatar
+        isQueuePaused
       }
     }
-  }
-`
+  `
+}
 
-const GET_CHANNELS_QUERY = `
-  query GetChannels($organizationId: String!) {
-    channels(input: { organizationId: $organizationId }) {
-      id
-      name
-      displayName
-      service
-      avatar
-      isQueuePaused
-    }
-  }
-`
+/**
+ * Build the CreatePost mutation with inline values.
+ * Matches the exact format from the Buffer API docs.
+ * @see https://developers.buffer.com/guides/getting-started.html
+ */
+function buildCreatePostMutation(params: {
+  text: string
+  channelId: string
+  dueAt: string
+  imageUrl?: string
+}): string {
+  const safeText = escapeGraphQLString(params.text)
+  const safeChannelId = escapeGraphQLString(params.channelId)
+  const safeDueAt = escapeGraphQLString(params.dueAt)
 
-const CREATE_POST_MUTATION = `
-  mutation CreatePost($text: String!, $channelId: String!, $dueAt: String, $imageUrl: String) {
-    createPost(input: {
-      text: $text
-      channelId: $channelId
-      schedulingType: automatic
-      mode: customSchedule
-      dueAt: $dueAt
-      assets: {
-        images: [{
-          url: $imageUrl
-        }]
-      }
-    }) {
-      ... on PostActionSuccess {
-        post {
-          id
-          text
+  const assetsBlock = params.imageUrl
+    ? `
+    assets: {
+      images: [
+        {
+          url: "${escapeGraphQLString(params.imageUrl)}"
+        }
+      ]
+    }`
+    : ""
+
+  return `
+    mutation CreatePost {
+      createPost(input: {
+        text: "${safeText}",
+        channelId: "${safeChannelId}",
+        schedulingType: automatic,
+        mode: customSchedule,
+        dueAt: "${safeDueAt}"${assetsBlock}
+      }) {
+        ... on PostActionSuccess {
+          post {
+            id
+            text
+            assets {
+              id
+              mimeType
+            }
+          }
+        }
+        ... on MutationError {
+          message
         }
       }
-      ... on MutationError {
-        message
-      }
     }
-  }
-`
-
-const CREATE_POST_TEXT_ONLY_MUTATION = `
-  mutation CreateTextPost($text: String!, $channelId: String!, $dueAt: String) {
-    createPost(input: {
-      text: $text
-      channelId: $channelId
-      schedulingType: automatic
-      mode: customSchedule
-      dueAt: $dueAt
-    }) {
-      ... on PostActionSuccess {
-        post {
-          id
-          text
-        }
-      }
-      ... on MutationError {
-        message
-      }
-    }
-  }
-`
+  `
+}
 
 // ============================================================================
 // API Functions
@@ -198,7 +241,7 @@ const CREATE_POST_TEXT_ONLY_MUTATION = `
 export async function validateBufferToken(accessToken: string): Promise<BufferAccountInfo> {
   const data = await bufferGraphQL<{ account: { organizations: BufferOrganization[] } }>(
     accessToken,
-    GET_ORGANIZATIONS_QUERY,
+    buildGetOrganizationsQuery(),
   )
 
   if (!data.account?.organizations) {
@@ -215,7 +258,7 @@ export async function getBufferChannels(accessToken: string): Promise<BufferChan
   // Step 1: Get all organizations
   const accountData = await bufferGraphQL<{ account: { organizations: BufferOrganization[] } }>(
     accessToken,
-    GET_ORGANIZATIONS_QUERY,
+    buildGetOrganizationsQuery(),
   )
 
   const orgs = accountData.account?.organizations ?? []
@@ -226,16 +269,20 @@ export async function getBufferChannels(accessToken: string): Promise<BufferChan
   // Step 2: Get channels for each organization
   const allChannels: BufferChannel[] = []
   for (const org of orgs) {
-    const channelData = await bufferGraphQL<{ channels: BufferChannel[] }>(
-      accessToken,
-      GET_CHANNELS_QUERY,
-      { organizationId: org.id },
-    )
-    const channels = (channelData.channels ?? []).map((ch) => ({
-      ...ch,
-      organizationId: org.id,
-    }))
-    allChannels.push(...channels)
+    try {
+      const channelData = await bufferGraphQL<{ channels: BufferChannel[] }>(
+        accessToken,
+        buildGetChannelsQuery(org.id),
+      )
+      const channels = (channelData.channels ?? []).map((ch) => ({
+        ...ch,
+        organizationId: org.id,
+      }))
+      allChannels.push(...channels)
+    } catch (err) {
+      // Log but continue — one failing org shouldn't block all channels
+      console.error(`[Buffer] Fehler beim Laden der Kanäle für Org ${org.id} (${org.name}):`, err)
+    }
   }
 
   return allChannels
@@ -249,28 +296,19 @@ export async function createBufferPost(
   accessToken: string,
   params: BufferCreatePostParams
 ): Promise<BufferPostResult> {
-  const variables: Record<string, unknown> = {
+  const mutation = buildCreatePostMutation({
     text: params.text,
     channelId: params.channelId,
     dueAt: params.dueAt || new Date().toISOString(),
-  }
-
-  const hasImage = params.imageUrl && params.imageUrl.trim().length > 0
-  let mutation: string
-
-  if (hasImage) {
-    variables.imageUrl = params.imageUrl
-    mutation = CREATE_POST_MUTATION
-  } else {
-    mutation = CREATE_POST_TEXT_ONLY_MUTATION
-  }
+    imageUrl: params.imageUrl?.trim() || undefined,
+  })
 
   const data = await bufferGraphQL<{
     createPost: {
-      post?: { id: string; text: string }
+      post?: { id: string; text: string; assets?: Array<{ id: string; mimeType: string }> }
       message?: string
     }
-  }>(accessToken, mutation, variables)
+  }>(accessToken, mutation)
 
   if (data.createPost.message) {
     // MutationError
