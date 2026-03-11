@@ -4,9 +4,9 @@
  * Provides a type-safe interface to the Buffer GraphQL API.
  * Used for social media publishing from the CMS.
  *
- * All GraphQL queries use inline values (not variables) to exactly match
- * the format from Buffer's official API documentation, avoiding any
- * potential type-mismatch issues with GraphQL variable declarations.
+ * All queries use proper GraphQL variables so that Buffer's custom scalar
+ * types (OrganizationId, ChannelId, etc.) are correctly coerced by the
+ * server-side type system.
  *
  * @see https://developers.buffer.com/guides/getting-started.html
  */
@@ -65,40 +65,30 @@ const API_TIMEOUT_MS = 15_000
 // ============================================================================
 
 /**
- * Escape a string value for safe inline use in a GraphQL query.
- * Handles quotes, backslashes, and newlines.
- */
-function escapeGraphQLString(value: string): string {
-  return value
-    .replace(/\\/g, "\\\\")
-    .replace(/"/g, '\\"')
-    .replace(/\n/g, "\\n")
-    .replace(/\r/g, "\\r")
-    .replace(/\t/g, "\\t")
-    .replace(/\f/g, "\\f")
-    .replace(/\b/g, "\\b")
-    .replace(/\0/g, "")
-}
-
-/**
  * Execute a GraphQL query/mutation against Buffer's API.
  * Uses Bearer token authentication and enforces a timeout.
  */
 async function bufferGraphQL<T>(
   accessToken: string,
   query: string,
+  variables?: Record<string, unknown>,
 ): Promise<T> {
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), API_TIMEOUT_MS)
 
   try {
+    const payload: Record<string, unknown> = { query }
+    if (variables) {
+      payload.variables = variables
+    }
+
     const res = await fetch(BUFFER_GRAPHQL_ENDPOINT, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${accessToken}`,
       },
-      body: JSON.stringify({ query }),
+      body: JSON.stringify(payload),
       signal: controller.signal,
     })
 
@@ -131,13 +121,14 @@ async function bufferGraphQL<T>(
 // ============================================================================
 // GraphQL Query Builders
 //
-// These functions build GraphQL queries with inline values, exactly matching
-// the format shown in Buffer's official API documentation.
+// Queries use proper GraphQL variables so that Buffer's custom scalar types
+// (OrganizationId, ChannelId, DateTime, etc.) are correctly coerced.
 // @see https://developers.buffer.com/guides/getting-started.html
 // ============================================================================
 
 /**
  * Build the GetOrganizations query.
+ * No variables needed – just fetches the authenticated account's orgs.
  * @see https://developers.buffer.com/guides/getting-started.html
  */
 function buildGetOrganizationsQuery(): string {
@@ -155,17 +146,16 @@ function buildGetOrganizationsQuery(): string {
 }
 
 /**
- * Build the GetChannels query with an inline organization ID.
- * Uses the exact format from the Buffer API docs.
- * @see https://developers.buffer.com/guides/getting-started.html
+ * Build the GetChannels query using a GraphQL variable for the
+ * organization ID.  Buffer's ChannelsInput expects an OrganizationId
+ * scalar; passing it as a variable lets the server coerce the value
+ * correctly (inline string literals fail with "Invalid OrganizationId
+ * format").
  */
-function buildGetChannelsQuery(organizationId: string): string {
-  const safeOrgId = escapeGraphQLString(organizationId)
+function buildGetChannelsQuery(): string {
   return `
-    query GetChannels {
-      channels(input: {
-        organizationId: "${safeOrgId}"
-      }) {
+    query GetChannels($input: ChannelsInput!) {
+      channels(input: $input) {
         id
         name
         displayName
@@ -178,40 +168,14 @@ function buildGetChannelsQuery(organizationId: string): string {
 }
 
 /**
- * Build the CreatePost mutation with inline values.
- * Matches the exact format from the Buffer API docs.
- * @see https://developers.buffer.com/guides/getting-started.html
+ * Build the CreatePost mutation using GraphQL variables.
+ * This ensures ChannelId, DateTime, and other custom scalars are
+ * properly coerced by the server.
  */
-function buildCreatePostMutation(params: {
-  text: string
-  channelId: string
-  dueAt: string
-  imageUrl?: string
-}): string {
-  const safeText = escapeGraphQLString(params.text)
-  const safeChannelId = escapeGraphQLString(params.channelId)
-  const safeDueAt = escapeGraphQLString(params.dueAt)
-
-  const assetsBlock = params.imageUrl
-    ? `
-    assets: {
-      images: [
-        {
-          url: "${escapeGraphQLString(params.imageUrl)}"
-        }
-      ]
-    }`
-    : ""
-
+function buildCreatePostMutation(): string {
   return `
-    mutation CreatePost {
-      createPost(input: {
-        text: "${safeText}",
-        channelId: "${safeChannelId}",
-        schedulingType: automatic,
-        mode: customSchedule,
-        dueAt: "${safeDueAt}"${assetsBlock}
-      }) {
+    mutation CreatePost($input: CreatePostInput!) {
+      createPost(input: $input) {
         ... on PostActionSuccess {
           post {
             id
@@ -278,7 +242,8 @@ export async function getBufferChannels(accessToken: string): Promise<{
     try {
       const channelData = await bufferGraphQL<{ channels: BufferChannel[] }>(
         accessToken,
-        buildGetChannelsQuery(org.id),
+        buildGetChannelsQuery(),
+        { input: { organizationId: org.id } },
       )
       const channels = (channelData.channels ?? []).map((ch) => ({
         ...ch,
@@ -303,19 +268,29 @@ export async function createBufferPost(
   accessToken: string,
   params: BufferCreatePostParams
 ): Promise<BufferPostResult> {
-  const mutation = buildCreatePostMutation({
+  const dueAt = params.dueAt || new Date().toISOString()
+  const imageUrl = params.imageUrl?.trim() || undefined
+
+  const input: Record<string, unknown> = {
     text: params.text,
     channelId: params.channelId,
-    dueAt: params.dueAt || new Date().toISOString(),
-    imageUrl: params.imageUrl?.trim() || undefined,
-  })
+    schedulingType: "automatic",
+    mode: "customSchedule",
+    dueAt,
+  }
+
+  if (imageUrl) {
+    input.assets = {
+      images: [{ url: imageUrl }],
+    }
+  }
 
   const data = await bufferGraphQL<{
     createPost: {
       post?: { id: string; text: string; assets?: Array<{ id: string; mimeType: string }> }
       message?: string
     }
-  }>(accessToken, mutation)
+  }>(accessToken, buildCreatePostMutation(), { input })
 
   if (data.createPost.message) {
     // MutationError
