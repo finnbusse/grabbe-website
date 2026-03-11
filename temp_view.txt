@@ -1,0 +1,200 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { ImagePicker } from "@/components/cms/image-picker"
+import { DocumentPicker } from "@/components/cms/document-picker"
+import { Plus, Trash2, GripVertical, ChevronDown, ChevronUp, CreditCard, ImageIcon, HelpCircle, Type, List, Quote, Minus, Video, MousePointerClick, Columns, MoveVertical, ListCollapse, Table2, CalendarDays, Download, Newspaper, Globe, FileDown, FileText } from "lucide-react"
+
+// ============================================================================
+// Block Types
+// ============================================================================
+
+export type BlockType = 'text' | 'cards' | 'faq' | 'gallery' | 'list' | 'hero' | 'quote' | 'divider' | 'video' | 'cta' | 'columns' | 'spacer' | 'accordion' | 'table' | 'tagged-events' | 'tagged-downloads' | 'tagged-posts' | 'iframe' | 'document'
+
+export interface ContentBlock {
+  id: string
+  type: BlockType
+  data: Record<string, unknown>
+}
+
+interface BlockOption {
+  type: BlockType
+  icon: React.ElementType
+  label: string
+  description: string
+}
+
+const BLOCK_OPTIONS: BlockOption[] = [
+  { type: 'text', icon: Type, label: 'Textabschnitt', description: 'Überschrift und Absatz' },
+  { type: 'cards', icon: CreditCard, label: 'Karten', description: '2-4 Karten mit Titel und Text' },
+  { type: 'faq', icon: HelpCircle, label: 'FAQ / Aufklappbar', description: 'Aufklappbare Fragen und Antworten' },
+  { type: 'gallery', icon: ImageIcon, label: 'Bildergalerie', description: 'Mehrere Bilder in einem Raster' },
+  { type: 'list', icon: List, label: 'Aufzählung', description: 'Liste mit Aufzählungspunkten' },
+  { type: 'hero', icon: ImageIcon, label: 'Hero / Banner', description: 'Großer Banner mit Überschrift und Bild' },
+  { type: 'quote', icon: Quote, label: 'Zitat', description: 'Zitat mit optionalem Autor' },
+  { type: 'divider', icon: Minus, label: 'Trennlinie', description: 'Visueller Trenner zwischen Abschnitten' },
+  { type: 'video', icon: Video, label: 'Video', description: 'YouTube/Vimeo Video einbetten' },
+  { type: 'cta', icon: MousePointerClick, label: 'Call-to-Action', description: 'Auffälliger Handlungsaufruf mit Button' },
+  { type: 'columns', icon: Columns, label: 'Zwei Spalten', description: 'Zwei-Spalten-Layout mit Überschrift und Text' },
+  { type: 'spacer', icon: MoveVertical, label: 'Abstand', description: 'Vertikaler Abstand zwischen Abschnitten' },
+  { type: 'accordion', icon: ListCollapse, label: 'Akkordeon', description: 'Aufklappbare Abschnitte mit Titel und Inhalt' },
+  { type: 'table', icon: Table2, label: 'Tabelle', description: 'Einfache Tabelle mit Zeilen und Spalten' },
+  { type: 'tagged-events', icon: CalendarDays, label: 'Termine (Tag)', description: 'Termine mit bestimmtem Tag anzeigen' },
+  { type: 'tagged-downloads', icon: Download, label: 'Downloads (Tag)', description: 'Downloads mit bestimmtem Tag anzeigen' },
+  { type: 'tagged-posts', icon: Newspaper, label: 'Beiträge (Tag)', description: 'Beiträge mit bestimmtem Tag anzeigen' },
+  { type: 'iframe', icon: Globe, label: 'Externe Website (iframe)', description: 'Drittseite per iframe einbetten' },
+  { type: 'document', icon: FileDown, label: 'Dokument', description: 'Download-Schaltfläche für ein Dokument' },
+]
+
+// ============================================================================
+// Default data for each block type
+// ============================================================================
+
+function createDefaultBlock(type: BlockType): ContentBlock {
+  const id = `block_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`
+
+  switch (type) {
+    case 'text':
+      return { id, type, data: { heading: '', text: '' } }
+    case 'cards':
+      return {
+        id, type,
+        data: {
+          cards: [
+            { title: '', text: '' },
+            { title: '', text: '' },
+          ],
+        },
+      }
+    case 'faq':
+      return {
+        id, type,
+        data: {
+          items: [
+            { question: '', answer: '' },
+          ],
+        },
+      }
+    case 'gallery':
+      return { id, type, data: { images: [{ url: '', alt: '' }] } }
+    case 'list':
+      return { id, type, data: { heading: '', items: [''] } }
+    case 'hero':
+      return { id, type, data: { heading: '', subheading: '', backgroundImage: '', ctaText: '', ctaUrl: '' } }
+    case 'quote':
+      return { id, type, data: { quote: '', author: '' } }
+    case 'divider':
+      return { id, type, data: {} }
+    case 'video':
+      return { id, type, data: { url: '', caption: '' } }
+    case 'cta':
+      return { id, type, data: { heading: '', text: '', buttonText: '', buttonUrl: '', style: 'light' } }
+    case 'columns':
+      return { id, type, data: { left: { heading: '', text: '' }, right: { heading: '', text: '' } } }
+    case 'spacer':
+      return { id, type, data: { size: 'medium' } }
+    case 'accordion':
+      return { id, type, data: { items: [{ title: '', content: '' }] } }
+    case 'table':
+      return { id, type, data: { rows: [['', ''], ['', '']] } }
+    case 'tagged-events':
+      return { id, type, data: { tagId: '', heading: 'Termine', limit: 5 } }
+    case 'tagged-downloads':
+      return { id, type, data: { tagId: '', heading: 'Downloads' } }
+    case 'tagged-posts':
+      return { id, type, data: { tagId: '', heading: 'Beiträge', limit: 5 } }
+    case 'iframe':
+      return { id, type, data: { url: '', title: '', height: '500', scrolling: 'auto', allowFullscreen: true, showBorder: true, caption: '' } }
+    case 'document':
+      return { id, type, data: { label: '', fileUrl: '', fileTitle: '', fileType: '' } }
+  }
+}
+
+// ============================================================================
+// Main Block Editor Component
+// ============================================================================
+
+interface BlockEditorProps {
+  blocks: ContentBlock[]
+  onChange: (blocks: ContentBlock[]) => void
+}
+
+export function BlockEditor({ blocks, onChange }: BlockEditorProps) {
+  const [showAddMenu, setShowAddMenu] = useState(false)
+
+  const addBlock = (type: BlockType) => {
+    onChange([...blocks, createDefaultBlock(type)])
+    setShowAddMenu(false)
+  }
+
+  const updateBlock = (index: number, data: Record<string, unknown>) => {
+    const updated = [...blocks]
+    updated[index] = { ...updated[index], data }
+    onChange(updated)
+  }
+
+  const removeBlock = (index: number) => {
+    onChange(blocks.filter((_, i) => i !== index))
+  }
+
+  const moveBlock = (index: number, direction: 'up' | 'down') => {
+    const newIndex = direction === 'up' ? index - 1 : index + 1
+    if (newIndex < 0 || newIndex >= blocks.length) return
+    const updated = [...blocks]
+    const temp = updated[index]
+    updated[index] = updated[newIndex]
+    updated[newIndex] = temp
+    onChange(updated)
+  }
+
+  return (
+    <div className="space-y-4">
+      {blocks.map((block, index) => (
+        <div key={block.id} className="rounded-2xl border bg-card">
+          {/* Block Header */}
+          <div className="flex items-center gap-2 border-b px-4 py-2">
+            <GripVertical className="h-4 w-4 text-muted-foreground/40" />
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              {BLOCK_OPTIONS.find(o => o.type === block.type)?.label || block.type}
+            </span>
+            <div className="ml-auto flex items-center gap-1">
+              <Button
+                variant="ghost" size="icon" className="h-7 w-7"
+                onClick={() => moveBlock(index, 'up')}
+                disabled={index === 0}
+              >
+                <ChevronUp className="h-3.5 w-3.5" />
+              </Button>
+              <Button
+                variant="ghost" size="icon" className="h-7 w-7"
+                onClick={() => moveBlock(index, 'down')}
+                disabled={index === blocks.length - 1}
+              >
+                <ChevronDown className="h-3.5 w-3.5" />
+              </Button>
+              <Button
+                variant="ghost" size="icon" className="h-7 w-7 text-destructive hover:text-destructive"
+                onClick={() => removeBlock(index)}
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+          </div>
+
+          {/* Block Content */}
+          <div className="p-4">
+            <BlockContent block={block} onChange={(data) => updateBlock(index, data)} />
+          </div>
+        </div>
+      ))}
+
+      {/* Add Block Button */}
+      <div className="relative">
+        <Button
+          variant="outline"
+          className="w-full border-dashed"
+          onClick={() => setShowAddMenu(!showAddMenu)}
