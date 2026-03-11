@@ -1,17 +1,18 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import {
-  Settings, Save, Loader2, Mail, Globe, Send,
-  CheckCircle2, XCircle,
+  Settings, Loader2, Mail, Globe, Send,
+  CheckCircle2, XCircle, Share2,
 } from "lucide-react"
 import { toast } from "sonner"
 import { usePermissions } from "@/components/cms/permissions-context"
 import { isAdmin } from "@/lib/permissions-shared"
+import SocialMediaTab from "@/components/cms/social-media-tab"
 
 // ---------------------------------------------------------------------------
 // Section component
@@ -66,7 +67,7 @@ function Field({
 // ===========================================================================
 export default function SystemSettingsPage() {
   const { roleSlugs } = usePermissions()
-  const showEmailSection = isAdmin(roleSlugs)
+  const showAdminSections = isAdmin(roleSlugs)
 
   // Email tab state
   const [emailStatus, setEmailStatus] = useState<{ configured: boolean; domain: string; from: string } | null>(null)
@@ -76,14 +77,14 @@ export default function SystemSettingsPage() {
 
   // Load email configuration status (admin only)
   useEffect(() => {
-    if (!showEmailSection) return
+    if (!showAdminSections) return
     setEmailStatusLoading(true)
     fetch("/api/email/status")
       .then((res) => res.ok ? res.json() : null)
       .then((data) => { if (data) setEmailStatus(data) })
       .catch((err) => { console.error("[Email] Failed to load status:", err) })
       .finally(() => setEmailStatusLoading(false))
-  }, [showEmailSection])
+  }, [showAdminSections])
 
   const handleSendTestEmail = async () => {
     if (!testEmailAddress.trim()) return
@@ -108,6 +109,31 @@ export default function SystemSettingsPage() {
     }
   }
 
+  // Non-admin fallback
+  if (!showAdminSections) {
+    return (
+      <div>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="font-display text-2xl font-bold text-foreground">CMS-Einstellungen</h1>
+            <p className="text-sm text-muted-foreground mt-1">
+              Einstellungen, die das CMS-System betreffen.
+            </p>
+          </div>
+        </div>
+        <div className="mt-8 flex flex-col items-center justify-center text-center">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-muted">
+            <Settings className="h-8 w-8 text-muted-foreground" />
+          </div>
+          <h2 className="mt-6 text-lg font-semibold text-foreground">Keine Systemeinstellungen verfügbar</h2>
+          <p className="mt-2 max-w-sm text-sm text-muted-foreground">
+            Sie benötigen Administrator-Rechte, um die Systemeinstellungen zu verwalten.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div>
       {/* Header */}
@@ -120,10 +146,21 @@ export default function SystemSettingsPage() {
         </div>
       </div>
 
-      <div className="mt-6 space-y-6 pb-12">
+      {/* Tabs */}
+      <Tabs defaultValue="system" className="mt-6">
+        <TabsList>
+          <TabsTrigger value="system">
+            <Settings className="mr-1.5 h-3.5 w-3.5" />
+            System
+          </TabsTrigger>
+          <TabsTrigger value="social-media">
+            <Share2 className="mr-1.5 h-3.5 w-3.5" />
+            Social Media
+          </TabsTrigger>
+        </TabsList>
 
-      {showEmailSection && (
-        <>
+        {/* ==================== SYSTEM TAB ==================== */}
+        <TabsContent value="system" className="mt-6 space-y-6 pb-12">
           <Section
             icon={Mail}
             title="E-Mail-Konfiguration"
@@ -188,21 +225,13 @@ export default function SystemSettingsPage() {
               </div>
             </Field>
           </Section>
-        </>
-      )}
+        </TabsContent>
 
-      {!showEmailSection && (
-        <div className="mt-8 flex flex-col items-center justify-center text-center">
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-muted">
-            <Settings className="h-8 w-8 text-muted-foreground" />
-          </div>
-          <h2 className="mt-6 text-lg font-semibold text-foreground">Keine Systemeinstellungen verfügbar</h2>
-          <p className="mt-2 max-w-sm text-sm text-muted-foreground">
-            Sie benötigen Administrator-Rechte, um die Systemeinstellungen zu verwalten.
-          </p>
-        </div>
-      )}
-      </div>
+        {/* ==================== SOCIAL MEDIA TAB ==================== */}
+        <TabsContent value="social-media" className="mt-6">
+          <SocialMediaTab />
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }
