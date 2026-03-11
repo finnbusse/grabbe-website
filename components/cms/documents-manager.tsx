@@ -5,10 +5,42 @@ import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog"
 import { FileUploader } from "./file-uploader"
 import { TagSelector, TagBadge } from "./tag-selector"
 import type { TagData } from "./tag-selector"
-import { Trash2, ExternalLink, FileText, ImageIcon, Copy, Check, Download } from "lucide-react"
+import {
+  Trash2,
+  ExternalLink,
+  FileText,
+  ImageIcon,
+  Copy,
+  Check,
+  Settings2,
+  Loader2,
+} from "lucide-react"
+import { toast } from "sonner"
+
+// ---------------------------------------------------------------------------
+// Constants
+// ---------------------------------------------------------------------------
+
+/** Available document categories — kept in one place for easy maintenance. */
+const CATEGORIES: { value: string; label: string }[] = [
+  { value: "allgemein", label: "Allgemein" },
+  { value: "elternbriefe", label: "Elternbriefe" },
+  { value: "formulare", label: "Formulare" },
+  { value: "lehrplaene", label: "Lehrpläne" },
+  { value: "bilder", label: "Bilder" },
+  { value: "praesentation", label: "Präsentationen" },
+]
 
 // ---------------------------------------------------------------------------
 // Types
@@ -28,8 +60,203 @@ interface Doc {
   created_at: string
 }
 
+// ---------------------------------------------------------------------------
+// DocSettingsDialog — per-document edit popup
+// ---------------------------------------------------------------------------
+
+interface DocSettingsDialogProps {
+  /** The document being edited, or null when the dialog is closed. */
+  doc: Doc | null
+  /** Current tag objects for this document. */
+  currentTags: TagData[]
+  onClose: () => void
+  /** Called when the document was updated successfully. */
+  onUpdated: (updated: Doc, updatedTagIds: string[]) => void
+  /** Called when the document was deleted. */
+  onDeleted: (id: string) => void
+}
+
+/**
+ * Settings dialog for a single document.
+ * Allows editing: title, category, tags, and Downloads-page visibility.
+ */
+function DocSettingsDialog({
+  doc,
+  currentTags,
+  onClose,
+  onUpdated,
+  onDeleted,
+}: DocSettingsDialogProps) {
+  const [editTitle, setEditTitle] = useState("")
+  const [editCategory, setEditCategory] = useState("allgemein")
+  const [editTagIds, setEditTagIds] = useState<string[]>([])
+  const [editShowInDownloads, setEditShowInDownloads] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+
+  // Sync form state whenever the active document changes
+  useEffect(() => {
+    if (!doc) return
+    setEditTitle(doc.title)
+    setEditCategory(doc.category)
+    setEditTagIds(currentTags.map((t) => t.id))
+    setEditShowInDownloads(doc.show_in_downloads)
+  }, [doc, currentTags])
+
+  async function handleSave() {
+    if (!doc || !editTitle.trim()) return
+    setSaving(true)
+    try {
+      const res = await fetch(`/api/upload/${doc.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: editTitle.trim(),
+          category: editCategory,
+          tagIds: editTagIds,
+          show_in_downloads: editShowInDownloads,
+        }),
+      })
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}))
+        throw new Error(body.error || "Speichern fehlgeschlagen")
+      }
+      onUpdated(
+        { ...doc, title: editTitle.trim(), category: editCategory, show_in_downloads: editShowInDownloads },
+        editTagIds,
+      )
+      toast.success("Änderungen gespeichert")
+      onClose()
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Speichern fehlgeschlagen")
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  async function handleDelete() {
+    if (!doc) return
+    if (!confirm(`Dokument „${doc.title}" wirklich löschen?`)) return
+    setDeleting(true)
+    try {
+      const supabase = createClient()
+      await supabase.from("documents").delete().eq("id", doc.id)
+      try {
+        await fetch("/api/upload/delete", {
+          method: "DELETE",
+          body: JSON.stringify({ url: doc.file_url }),
+        })
+      } catch {
+        // Blob deletion is best-effort — do not abort on failure
+      }
+      onDeleted(doc.id)
+      toast.success("Dokument gelöscht")
+      onClose()
+    } catch {
+      toast.error("Löschen fehlgeschlagen")
+    } finally {
+      setDeleting(false)
+    }
+  }
+
+  return (
+    <Dialog open={!!doc} onOpenChange={(open) => { if (!open) onClose() }}>
+      <DialogContent className="sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Dokument bearbeiten</DialogTitle>
+          <DialogDescription>
+            Passen Sie Titel, Kategorie, Tags und die Sichtbarkeit auf der Download-Seite an.
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-4 py-2">
+          {/* Title */}
+          <div className="grid gap-1.5">
+            <Label htmlFor="doc-edit-title">Titel</Label>
+            <Input
+              id="doc-edit-title"
+              value={editTitle}
+              onChange={(e) => setEditTitle(e.target.value)}
+              placeholder="z.B. Elternbrief Dezember 2025"
+            />
+          </div>
+
+          {/* Category */}
+          <div className="grid gap-1.5">
+            <Label htmlFor="doc-edit-category">Kategorie</Label>
+            <select
+              id="doc-edit-category"
+              value={editCategory}
+              onChange={(e) => setEditCategory(e.target.value)}
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+            >
+              {CATEGORIES.map((c) => (
+                <option key={c.value} value={c.value}>{c.label}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Tags */}
+          <div className="grid gap-1.5">
+            <Label>Tags</Label>
+            <TagSelector selectedTagIds={editTagIds} onChange={setEditTagIds} />
+          </div>
+
+          {/* Downloads-page visibility */}
+          <div className="flex items-center justify-between rounded-lg border bg-muted/30 px-4 py-3">
+            <div className="space-y-0.5">
+              <Label htmlFor="doc-edit-show-in-downloads" className="text-sm font-medium cursor-pointer">
+                Auf Download-Seite anzeigen
+              </Label>
+              <p className="text-[11px] text-muted-foreground">
+                Wenn aktiv, erscheint dieses Dokument für Besucher auf der öffentlichen Download-Seite.
+              </p>
+            </div>
+            <Switch
+              id="doc-edit-show-in-downloads"
+              checked={editShowInDownloads}
+              onCheckedChange={setEditShowInDownloads}
+            />
+          </div>
+        </div>
+
+        {/* Footer actions */}
+        <div className="flex items-center justify-between pt-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-destructive hover:text-destructive hover:bg-destructive/10"
+            onClick={handleDelete}
+            disabled={deleting || saving}
+            title="Dokument löschen"
+            aria-label="Dokument löschen"
+          >
+            {deleting ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : <Trash2 className="mr-1.5 h-3.5 w-3.5" />}
+            Löschen
+          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={onClose} disabled={saving || deleting}>
+              Abbrechen
+            </Button>
+            <Button size="sm" onClick={handleSave} disabled={saving || deleting || !editTitle.trim()}>
+              {saving ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : <Check className="mr-1.5 h-3.5 w-3.5" />}
+              Speichern
+            </Button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// DocumentsManager
+// ---------------------------------------------------------------------------
+
 export function DocumentsManager({ initialDocuments }: { initialDocuments: Doc[] }) {
   const [docs, setDocs] = useState(initialDocuments)
+
+  // ---- Upload form state ----
   const [title, setTitle] = useState("")
   const [category, setCategory] = useState("allgemein")
   const [uploadedUrl, setUploadedUrl] = useState("")
@@ -37,19 +264,26 @@ export function DocumentsManager({ initialDocuments }: { initialDocuments: Doc[]
   const [uploadedType, setUploadedType] = useState("")
   const [uploadedSize, setUploadedSize] = useState(0)
   const [saving, setSaving] = useState(false)
-  const [copiedId, setCopiedId] = useState<string | null>(null)
   const [newDocTagIds, setNewDocTagIds] = useState<string[]>([])
+
+  // ---- Per-row state ----
+  const [copiedId, setCopiedId] = useState<string | null>(null)
+
+  // ---- Tag data ----
   const [docTags, setDocTags] = useState<Record<string, TagData[]>>({})
   const [allTags, setAllTags] = useState<TagData[]>([])
 
-  // Load all tags and document-tag assignments
+  // ---- Settings dialog ----
+  const [editingDoc, setEditingDoc] = useState<Doc | null>(null)
+
+  // Load all tags and document-tag assignments on mount
   useEffect(() => {
     const supabase = createClient()
     fetch("/api/tags")
       .then((r) => r.json())
       .then((data) => { if (Array.isArray(data)) setAllTags(data) })
       .catch(() => {})
-    // Load document_tags for all documents
+
     supabase.from("document_tags").select("document_id, tag_id").then(({ data }) => {
       if (!data) return
       const map: Record<string, string[]> = {}
@@ -57,10 +291,10 @@ export function DocumentsManager({ initialDocuments }: { initialDocuments: Doc[]
         if (!map[dt.document_id]) map[dt.document_id] = []
         map[dt.document_id].push(dt.tag_id)
       })
-      // We'll resolve tag objects once allTags loads
       setDocTags((prev) => {
         const result: Record<string, TagData[]> = {}
-        // Will be resolved via allTags effect
+        // Carry forward any entries already in state, then overlay the fresh data
+        Object.assign(result, prev)
         Object.entries(map).forEach(([docId, tIds]) => {
           result[docId] = tIds.map((tid) => ({ id: tid, name: "", color: "blue" }))
         })
@@ -69,7 +303,7 @@ export function DocumentsManager({ initialDocuments }: { initialDocuments: Doc[]
     }).catch(() => {})
   }, [])
 
-  // Resolve tag names once allTags is loaded
+  // Resolve tag display names once allTags is available
   useEffect(() => {
     if (allTags.length === 0) return
     setDocTags((prev) => {
@@ -83,6 +317,7 @@ export function DocumentsManager({ initialDocuments }: { initialDocuments: Doc[]
     })
   }, [allTags])
 
+  // ---- Upload form: save new document ----
   async function handleSave() {
     if (!title || !uploadedUrl) return
     setSaving(true)
@@ -97,22 +332,23 @@ export function DocumentsManager({ initialDocuments }: { initialDocuments: Doc[]
       file_size: uploadedSize,
       file_type: uploadedType,
       category,
-      // Documents uploaded intentionally through the Downloads manager
-      // should appear on the public Downloads page immediately.
+      // Documents uploaded via the Downloads Manager are intentional downloads
+      // and should appear on the public Downloads page immediately.
       show_in_downloads: true,
-      status: 'published',
+      status: "published",
       user_id: user.id,
     }).select().single()
 
     if (!error && data) {
-      // Save tags for the new document
       if (newDocTagIds.length > 0) {
         await supabase.from("document_tags").insert(
           newDocTagIds.map((tag_id) => ({ document_id: data.id, tag_id }))
         )
         setDocTags((prev) => ({
           ...prev,
-          [data.id]: newDocTagIds.map((tid) => allTags.find((t) => t.id === tid)).filter(Boolean) as TagData[],
+          [data.id]: newDocTagIds
+            .map((tid) => allTags.find((t) => t.id === tid))
+            .filter(Boolean) as TagData[],
         }))
       }
       setDocs([data, ...docs])
@@ -124,31 +360,22 @@ export function DocumentsManager({ initialDocuments }: { initialDocuments: Doc[]
     setSaving(false)
   }
 
-  /**
-   * Toggle the `show_in_downloads` flag for an existing document.
-   * This lets admins control precisely which documents appear on the
-   * public Downloads page without having to delete and re-upload files.
-   */
-  async function handleToggleShowInDownloads(id: string, current: boolean) {
-    const next = !current
-    const res = await fetch(`/api/upload/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ show_in_downloads: next }),
-    })
-    if (res.ok) {
-      setDocs(docs.map((d) => d.id === id ? { ...d, show_in_downloads: next } : d))
-    }
+  // ---- Settings dialog callbacks ----
+  function handleDocUpdated(updated: Doc, updatedTagIds: string[]) {
+    setDocs((prev) => prev.map((d) => d.id === updated.id ? updated : d))
+    setDocTags((prev) => ({
+      ...prev,
+      [updated.id]: updatedTagIds
+        .map((tid) => allTags.find((t) => t.id === tid))
+        .filter(Boolean) as TagData[],
+    }))
   }
 
-  async function handleDelete(id: string, fileUrl: string) {
-    if (!confirm("Dokument wirklich löschen?")) return
-    const supabase = createClient()
-    await supabase.from("documents").delete().eq("id", id)
-    try { await fetch("/api/upload/delete", { method: "DELETE", body: JSON.stringify({ url: fileUrl }) }) } catch {}
-    setDocs(docs.filter((d) => d.id !== id))
+  function handleDocDeleted(id: string) {
+    setDocs((prev) => prev.filter((d) => d.id !== id))
   }
 
+  // ---- Utility ----
   function copyUrl(id: string, url: string) {
     navigator.clipboard.writeText(url)
     setCopiedId(id)
@@ -163,30 +390,42 @@ export function DocumentsManager({ initialDocuments }: { initialDocuments: Doc[]
 
   return (
     <div>
+      {/* ------------------------------------------------------------------ */}
+      {/* Page header                                                         */}
+      {/* ------------------------------------------------------------------ */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-display text-2xl font-bold text-foreground">Dokumente & Medien</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Laden Sie Dateien hoch und kopieren Sie die URL, um sie auf Seiten und Beiträgen einzubinden.</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Laden Sie Dateien hoch und kopieren Sie die URL, um sie auf Seiten und Beiträgen einzubinden.
+          </p>
         </div>
       </div>
 
+      {/* ------------------------------------------------------------------ */}
+      {/* Upload form                                                         */}
+      {/* ------------------------------------------------------------------ */}
       <div className="mt-6 rounded-2xl border bg-card p-6 space-y-4">
         <h3 className="font-display font-semibold">Neues Dokument hochladen</h3>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <Label>Titel / Beschreibung</Label>
-            <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="z.B. Elternbrief Dezember 2025" />
+            <Input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="z.B. Elternbrief Dezember 2025"
+            />
           </div>
           <div className="space-y-2">
             <Label>Kategorie</Label>
-            <select value={category} onChange={(e) => setCategory(e.target.value)}
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
-              <option value="allgemein">Allgemein</option>
-              <option value="elternbriefe">Elternbriefe</option>
-              <option value="formulare">Formulare</option>
-              <option value="lehrplaene">Lehrpläne</option>
-              <option value="bilder">Bilder</option>
-              <option value="praesentation">Präsentationen</option>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+            >
+              {CATEGORIES.map((c) => (
+                <option key={c.value} value={c.value}>{c.label}</option>
+              ))}
             </select>
           </div>
         </div>
@@ -198,36 +437,66 @@ export function DocumentsManager({ initialDocuments }: { initialDocuments: Doc[]
           <div className="flex items-center gap-3 rounded-lg border bg-muted/50 p-3">
             <FileText className="h-5 w-5 text-primary shrink-0" />
             <span className="text-sm font-medium flex-1 truncate">{uploadedName}</span>
-            <Button variant="outline" size="sm" onClick={() => { setUploadedUrl(""); setUploadedName("") }}>Andere Datei</Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => { setUploadedUrl(""); setUploadedName("") }}
+            >
+              Andere Datei
+            </Button>
           </div>
         ) : (
-          <FileUploader label="Datei hochladen (PDF, Bild, etc.)" onUpload={(f) => { setUploadedUrl(f.url); setUploadedName(f.filename); setUploadedType(f.type); setUploadedSize(f.size) }} />
+          <FileUploader
+            label="Datei hochladen (PDF, Bild, etc.)"
+            onUpload={(f) => {
+              setUploadedUrl(f.url)
+              setUploadedName(f.filename)
+              setUploadedType(f.type)
+              setUploadedSize(f.size)
+            }}
+          />
         )}
         <Button onClick={handleSave} disabled={saving || !title || !uploadedUrl}>
           {saving ? "Wird gespeichert..." : "Dokument speichern"}
         </Button>
       </div>
 
+      {/* ------------------------------------------------------------------ */}
+      {/* Document list                                                       */}
+      {/* ------------------------------------------------------------------ */}
       <div className="mt-8">
-        <h3 className="font-display font-semibold mb-1">Alle Dokumente ({docs.length})</h3>
-        <p className="text-xs text-muted-foreground mb-4">
-          Das Download-Symbol (<Download className="inline h-3 w-3" />) zeigt an, ob ein Dokument auf der öffentlichen
-          Download-Seite erscheint. Klicken Sie darauf, um die Sichtbarkeit umzuschalten.
-        </p>
+        <h3 className="font-display font-semibold mb-4">Alle Dokumente ({docs.length})</h3>
         {docs.length === 0 ? (
-          <p className="text-sm text-muted-foreground py-8 text-center">Noch keine Dokumente hochgeladen.</p>
+          <p className="text-sm text-muted-foreground py-8 text-center">
+            Noch keine Dokumente hochgeladen.
+          </p>
         ) : (
           <div className="space-y-2">
             {docs.map((doc) => (
-              <div key={doc.id} className="flex items-center gap-4 rounded-xl border bg-card p-4 transition-colors hover:bg-muted/30">
+              <div
+                key={doc.id}
+                className="flex items-center gap-4 rounded-xl border bg-card p-4 transition-colors hover:bg-muted/30"
+              >
+                {/* File-type icon */}
                 {doc.file_type?.startsWith("image/") ? (
                   <ImageIcon className="h-5 w-5 text-primary shrink-0" />
                 ) : (
                   <FileText className="h-5 w-5 text-primary shrink-0" />
                 )}
+
+                {/* Meta */}
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-sm">{doc.title}</p>
-                  <p className="text-xs text-muted-foreground">{doc.file_name} &middot; {formatSize(doc.file_size)} &middot; {doc.category}</p>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="font-medium text-sm">{doc.title}</p>
+                    {doc.show_in_downloads && (
+                      <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
+                        Download-Seite
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {doc.file_name} &middot; {formatSize(doc.file_size)} &middot; {doc.category}
+                  </p>
                   {docTags[doc.id] && docTags[doc.id].length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-1">
                       {docTags[doc.id].map((tag) => (
@@ -236,35 +505,65 @@ export function DocumentsManager({ initialDocuments }: { initialDocuments: Doc[]
                     </div>
                   )}
                 </div>
+
+                {/* Actions */}
                 <div className="flex items-center gap-1 shrink-0">
-                  {/* Toggle: show this document on the public Downloads page */}
+                  {/* Settings gear — opens the edit dialog */}
                   <Button
                     variant="ghost"
                     size="icon"
-                    className={`h-8 w-8 ${doc.show_in_downloads ? "text-primary" : "text-muted-foreground"}`}
-                    onClick={() => handleToggleShowInDownloads(doc.id, doc.show_in_downloads)}
-                    title={doc.show_in_downloads ? "Auf Download-Seite sichtbar (klicken zum Ausblenden)" : "Nicht auf Download-Seite (klicken zum Anzeigen)"}
-                    aria-label={doc.show_in_downloads ? "Auf Download-Seite ausblenden" : "Auf Download-Seite anzeigen"}
+                    className="h-8 w-8"
+                    onClick={() => setEditingDoc(doc)}
+                    title="Einstellungen"
+                    aria-label="Dokument-Einstellungen öffnen"
                   >
-                    <Download className="h-3.5 w-3.5" />
+                    <Settings2 className="h-3.5 w-3.5" />
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => copyUrl(doc.id, doc.file_url)} title="URL kopieren" aria-label="URL kopieren">
-                    {copiedId === doc.id ? <Check className="h-3.5 w-3.5 text-green-600" /> : <Copy className="h-3.5 w-3.5" />}
+
+                  {/* Copy URL */}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => copyUrl(doc.id, doc.file_url)}
+                    title="URL kopieren"
+                    aria-label="URL kopieren"
+                  >
+                    {copiedId === doc.id
+                      ? <Check className="h-3.5 w-3.5 text-green-600" />
+                      : <Copy className="h-3.5 w-3.5" />
+                    }
                   </Button>
+
+                  {/* Open in new tab */}
                   <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
-                    <Button variant="ghost" size="icon" className="h-8 w-8" title="Öffnen" aria-label="Datei öffnen">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      title="Öffnen"
+                      aria-label="Datei öffnen"
+                    >
                       <ExternalLink className="h-3.5 w-3.5" />
                     </Button>
                   </a>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => handleDelete(doc.id, doc.file_url)} title="Löschen" aria-label="Dokument löschen">
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </Button>
                 </div>
               </div>
             ))}
           </div>
         )}
       </div>
+
+      {/* ------------------------------------------------------------------ */}
+      {/* Per-document settings dialog                                        */}
+      {/* ------------------------------------------------------------------ */}
+      <DocSettingsDialog
+        doc={editingDoc}
+        currentTags={editingDoc ? (docTags[editingDoc.id] ?? []) : []}
+        onClose={() => setEditingDoc(null)}
+        onUpdated={handleDocUpdated}
+        onDeleted={handleDocDeleted}
+      />
     </div>
   )
 }
