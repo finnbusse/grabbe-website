@@ -56,7 +56,7 @@ const BLOCK_OPTIONS: BlockOption[] = [
 
 function createDefaultBlock(type: BlockType): ContentBlock {
   const id = `block_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`
-  
+
   switch (type) {
     case 'text':
       return { id, type, data: { heading: '', text: '' } }
@@ -166,8 +166,6 @@ export function BlockEditor({ blocks, onChange }: BlockEditorProps) {
                 variant="ghost" size="icon" className="h-7 w-7"
                 onClick={() => moveBlock(index, 'up')}
                 disabled={index === 0}
-                title="Nach oben verschieben"
-                aria-label="Block nach oben verschieben"
               >
                 <ChevronUp className="h-3.5 w-3.5" />
               </Button>
@@ -175,16 +173,12 @@ export function BlockEditor({ blocks, onChange }: BlockEditorProps) {
                 variant="ghost" size="icon" className="h-7 w-7"
                 onClick={() => moveBlock(index, 'down')}
                 disabled={index === blocks.length - 1}
-                title="Nach unten verschieben"
-                aria-label="Block nach unten verschieben"
               >
                 <ChevronDown className="h-3.5 w-3.5" />
               </Button>
               <Button
                 variant="ghost" size="icon" className="h-7 w-7 text-destructive hover:text-destructive"
                 onClick={() => removeBlock(index)}
-                title="Block löschen"
-                aria-label="Block löschen"
               >
                 <Trash2 className="h-3.5 w-3.5" />
               </Button>
