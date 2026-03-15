@@ -266,12 +266,24 @@ export default function UsersPage() {
     })
   }, [users, searchQuery])
 
-  function getRoleNames(userId: string): string[] {
+  // ⚡ Bolt Performance Optimization:
+  // We use an O(1) Map lookup instead of an O(N) Array.find() for roles.
+  // This reduces the complexity of rendering the user list from O(Users * RolesPerUser * TotalRoles)
+  // down to O(Users * RolesPerUser), preventing unnecessary CPU work during renders.
+  const roleNameMap = useMemo(() => {
+    const map = new Map<string, string>()
+    for (const role of allRoles) {
+      map.set(role.id, role.name)
+    }
+    return map
+  }, [allRoles])
+
+  const getRoleNames = useCallback((userId: string): string[] => {
     const roleIds = userRoleMap[userId] || []
     return roleIds
-      .map((rid) => allRoles.find((r) => r.id === rid)?.name)
+      .map((rid) => roleNameMap.get(rid))
       .filter((n): n is string => !!n)
-  }
+  }, [userRoleMap, roleNameMap])
 
   // Available roles for assignment (Schulleitung can't assign admin/schulleitung)
   const assignableRoles = useMemo(() => {
